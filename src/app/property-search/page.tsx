@@ -7,6 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import type { MeqasaListing } from "@/types/meqasa";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
+
 
 export default function PropertySearchPage() {
   const [searchResults, setSearchResults] = useState<MeqasaListing[]>([]);
@@ -85,48 +87,53 @@ export default function PropertySearchPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {searchResults.map((property) => (
-            <Card
+          {searchResults.map((property) => 
+            <Link
               key={property.listingid}
-              className="overflow-hidden hover:shadow-lg transition-shadow"
+              href={`/listings/${property.type}-for-${property.contract}-at-${property.locationstring.replace(/,/g, "-").replace(/\s+/g, "-")}-${property.listingid}`}
+              aria-label={property.summary}
             >
-              <CardHeader className="p-4">
-                <CardTitle className="text-lg line-clamp-1">
-                  {property.summary}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-4 pt-0">
-                <p className="text-gray-600 text-sm mb-3">
-                  {property.locationstring}
-                </p>
-                <p className="text-[#cf007a] font-bold text-xl mb-3">
-                  {property.pricepart1}
-                  <span className="text-sm font-normal text-gray-600">
-                    {property.pricepart2}
-                  </span>
-                </p>
-                <Separator className="my-3" />
-                <div className="flex flex-wrap gap-2">
-                  <Badge variant="outline" className="text-xs">
-                    {property.bedroomcount} beds
-                  </Badge>
-                  <Badge variant="outline" className="text-xs">
-                    {property.bathroomcount} baths
-                  </Badge>
-                  <Badge variant="outline" className="text-xs">
-                    {property.type}
-                  </Badge>
-                  <Badge variant="outline" className="text-xs">
-                    {property.contract}
-                  </Badge>
-                </div>
-                {property.recency && (
-                  <p className="text-xs text-gray-500 mt-2">
-                    Listed {property.recency}
+              <Card className="overflow-hidden hover:shadow-lg transition-shadow">
+                <CardHeader className="p-4">
+                  <CardTitle className="text-lg line-clamp-1">
+                    {property.summary}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-4 pt-0">
+                  <p className="text-gray-600 text-sm mb-3">
+                    {property.locationstring}
                   </p>
-                )}
-              </CardContent>
-            </Card>
+                  <p className="text-[#cf007a] font-bold text-xl mb-3">
+                    <span
+                      dangerouslySetInnerHTML={{ __html: property.pricepart1 }}
+                    ></span>
+                    <span className="text-sm font-normal text-gray-600">
+                      {property.pricepart2}
+                    </span>
+                  </p>
+                  <Separator className="my-3" />
+                  <div className="flex flex-wrap gap-2">
+                    <Badge variant="outline" className="text-xs">
+                      {property.bedroomcount} beds
+                    </Badge>
+                    <Badge variant="outline" className="text-xs">
+                      {property.bathroomcount} baths
+                    </Badge>
+                    <Badge variant="outline" className="text-xs">
+                      {property.type}
+                    </Badge>
+                    <Badge variant="outline" className="text-xs">
+                      {property.contract}
+                    </Badge>
+                  </div>
+                  {property.recency && (
+                    <p className="text-xs text-gray-500 mt-2">
+                      Listed {property.recency}
+                    </p>
+                  )}
+                </CardContent>
+              </Card>
+            </Link>
           ))}
         </div>
 
