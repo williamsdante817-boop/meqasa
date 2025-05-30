@@ -9,6 +9,7 @@ import type { MeqasaListing } from "@/types/meqasa";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
+
 export default function PropertySearchPage() {
   const [searchResults, setSearchResults] = useState<MeqasaListing[]>([]);
   const [totalResults, setTotalResults] = useState(0);
@@ -86,7 +87,7 @@ export default function PropertySearchPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {searchResults.map((property) => (
+          {searchResults.map((property) => 
             <Link
               key={property.listingid}
               href={`/listings/${property.type}-for-${property.contract}-at-${property.locationstring.replace(/,/g, "-").replace(/\s+/g, "-")}-${property.listingid}`}
