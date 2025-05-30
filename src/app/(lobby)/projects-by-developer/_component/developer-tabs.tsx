@@ -46,7 +46,7 @@ export function DeveloperTabs({ developer }: { developer: DeveloperDetails }) {
         ) : (
           <div className="grid grid-cols-2 gap-4 lg:gap-8">
             {developer?.projects?.map((project, i: number) => {
-              const url = `development-projects/${project?.city.split(" ").join("-")}-${project?.projectname.split(" ").join("-")}-${project?.projectid}`;
+              const url = `/development-projects/${project?.city.split(" ").join("-")}-${project?.projectname.split(" ").join("-")}-${project?.projectid}`;
               return (
                 <React.Fragment key={i}>
                   <ProjectCard
