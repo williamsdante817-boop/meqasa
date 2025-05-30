@@ -23,10 +23,6 @@ export const formatToGhsCurrency = createNumberFormatter("en-GH", {
   notation: "compact",
 });
 
-// export function absoluteUrl(path: string) {
-//   return `${env.NEXT_PUBLIC_APP_URL}${path}`
-// }
-
 export function formatPrice(
   price: number | string,
   opts: Intl.NumberFormatOptions = {},
@@ -123,14 +119,6 @@ export function extractSlugAndId(
   if (!match) return [remaining, ""];
   return [match[1]!, match[2]!];
 }
-
-// export function getUserEmail(user: User | null) {
-//   const email =
-//     user?.emailAddresses?.find((e) => e.id === user.primaryEmailAddressId)
-//       ?.emailAddress ?? ""
-
-//   return email
-// }
 
 export function isMacOs() {
   if (typeof window === "undefined") return false;

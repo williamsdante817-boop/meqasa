@@ -20,7 +20,6 @@ export default function PropertyDetailsTable({
   details,
   className = "",
   title,
-  alternateRowColors = true,
 }: PropertyDetailsTableProps) {
   // Filter out any details that should not be displayed
   const filteredDetails = details.filter(

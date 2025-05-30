@@ -43,7 +43,7 @@ export default function ContactCard({
   const [emailPhoneError, setEmailPhoneError] = useState("");
   const [alertsChecked, setAlertsChecked] = useState(true);
   const phoneNumber = "+233 24 325 6789";
-  const maskedNumber = "+233 24 325 xxxx";
+  const maskedNumber = "+233 xx xxx xxxx";
   const [imageError, setImageError] = useState(false);
 
   const handleFormSubmit = (e: React.FormEvent) => {
@@ -93,12 +93,14 @@ export default function ContactCard({
     }
   };
 
+  console.log("logging logo", image);
+
   return (
     <>
       <Card className="max-w-md mx-auto sticky top-36">
         <CardContent>
           <div className="flex flex-col items-center">
-            <div className="w-20 h-20 rounded-full overflow-hidden border border-gray-200 mb-4 relative bg-gray-100">
+            <div className="w-20 h-20 rounded-full overflow-hidden border border-gray-200 mb-4">
               {imageError ? (
                 <div className="w-full h-full flex items-center justify-center">
                   <User className="w-12 h-12 text-gray-400" />
@@ -113,7 +115,7 @@ export default function ContactCard({
                   alt={name}
                   width={80}
                   height={80}
-                  className="object-cover"
+                  className="object-contain w-full h-full"
                   onError={() => setImageError(true)}
                 />
               )}

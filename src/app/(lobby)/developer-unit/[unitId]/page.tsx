@@ -123,7 +123,19 @@ export default async function DeveloperUnitPage({
       >
         <DynamicCarousel
           isDeveloper={typeof unitDetails.unit.unitid === "number"}
-          images={unitDetails.photos.map((photo) => photo.photo)}
+          images={(() => {
+            // duplicate last photo to ensure at least 5 images
+            const photos: string[] = unitDetails.photos.map(
+              (photo) => photo.photo,
+            );
+            if (photos.length >= 5) return photos;
+            if (photos.length === 0) return Array<string>(5).fill("");
+            const lastPhoto = photos[photos.length - 1] ?? photos[0] ?? "";
+            const additionalPhotos: string[] = Array<string>(
+              5 - photos.length,
+            ).fill(lastPhoto);
+            return [...photos, ...additionalPhotos];
+          })()}
           unitId={Number(unitDetails.unit.unitid)}
         />
       </section>

@@ -340,6 +340,7 @@ export interface DeveloperProject {
   unittypes: UnitType[];
   parkingtypes: ParkingType[];
   project: ProjectDetails;
+  minmax: { minprice: number; maxprice: number }[];
   saleunits: unknown[];
   rentunits: unknown[];
   presaleunits: unknown[];

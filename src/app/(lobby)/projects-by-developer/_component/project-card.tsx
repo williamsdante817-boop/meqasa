@@ -16,6 +16,8 @@ export function ProjectCard({
   status: string;
   url:string
 }) {
+
+  console.log("ProjectCard rendered with URL:", url);
   return (
     <Card className="group relative overflow-hidden rounded-lg border-0 bg-transparent p-0">
       <Link href={url} className="inline-block">

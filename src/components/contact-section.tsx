@@ -38,7 +38,7 @@ export default function ContactSection({
 
       <div className="flex items-center gap-2 mb-6">
         <span className="text-brand-blue">
-          {showNumber ? "+233 24 325 6789" : "+233 24 325 xxxx"}
+          {showNumber ? "+233 24 325 6789" : "+233 xx xxx xxxx"}
         </span>
         {!showNumber && (
           <Button

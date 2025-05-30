@@ -41,6 +41,8 @@ const CarouselSlide = ({
   isDeveloper,
   index,
   onImageClick,
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   unitId,
 }: {
   image: string;
@@ -243,15 +245,14 @@ export function DynamicCarousel({
           <CarouselPrevious
             aria-label="Previous slide"
             className={cn(
-              "absolute left-6 top-1/2 -translate-y-1/2 z-10 hidden h-11 w-11 items-center justify-center bg-white text-accent-foreground shadow-md md:flex",
-              isDeveloper ? "hidden lg:flex" : "block",
+              "absolute left-6 top-1/2 -translate-y-1/2 z-10 h-11 w-11 items-center justify-center bg-white text-accent-foreground shadow-md md:flex",
+              isDeveloper ? "hidden md:flex" : "hidden md:flex",
             )}
           />
           <CarouselNext
             aria-label="Next slide"
             className={cn(
-              "absolute right-6 top-1/2 -translate-y-1/2 z-10 hidden h-11 w-11 items-center justify-center bg-white text-accent-foreground shadow-md md:flex",
-              isDeveloper ? "hidden lg:flex" : "block",
+              "absolute right-6 top-1/2 -translate-y-1/2 z-10 h-11 w-11 items-center justify-center bg-white text-accent-foreground shadow-md hidden md:flex"
             )}
           />
         </Carousel>

@@ -9,7 +9,7 @@ import PropertyListings from "@/components/property-listings";
 import PropertyShowcase from "@/components/property-showcase";
 import { Badge } from "@/components/ui/badge";
 import Shell from "@/layouts/shell";
-import { cn } from "@/lib/utils";
+import { cn, formatPrice } from "@/lib/utils";
 import type { DeveloperProject } from "@/types";
 import { Dot, MapPin } from "lucide-react";
 import { useRef } from "react";
@@ -85,6 +85,7 @@ export default function PropertyContainer({
     location: useRef<HTMLDivElement>(null),
     "available-units": useRef<HTMLDivElement>(null),
   };
+
   return (
     <>
       {/* Pass the section refs to both components */}
@@ -135,32 +136,37 @@ export default function PropertyContainer({
                 </div>
               </div>
 
-              <div className="mt-6 flex items-center justify-between rounded-[16px] border border-orange-300 p-3 text-brand-accent shadow-sm">
-                <div>
-                  <div className="mb-3">
-                    <span className="text-sm font-semibold capitalize text-inherit lg:text-base">
-                      price range
-                    </span>
-                    <span className="text-xs tracking-wide"> (minimum)</span>
-                  </div>
+              {projectData.minmax.map((obj) => (
+                <div
+                  className="mt-6 flex items-center justify-between rounded-[16px] border border-orange-300 p-3 text-brand-accent shadow-sm"
+                  key={projectData.project.projectid}
+                >
+                  <div>
+                    <div className="mb-3">
+                      <span className="text-sm font-semibold capitalize text-inherit lg:text-base">
+                        price range
+                      </span>
+                      <span className="text-xs tracking-wide"> (minimum)</span>
+                    </div>
 
-                  <span className="text-xl font-extrabold text-inherit lg:text-2xl lg:font-bold">
-                    GH₵ 1,380,000
-                  </span>
-                </div>
-                <div>
-                  <div className="mb-3">
-                    <span className="text-sm font-semibold capitalize text-inherit lg:text-base">
-                      price range
+                    <span className="text-xl font-extrabold text-inherit lg:text-2xl lg:font-bold">
+                      {formatPrice(obj.minprice, { currency: "GHS" })}
                     </span>
-                    <span className="text-xs tracking-wide"> (maximum)</span>
                   </div>
+                  <div>
+                    <div className="mb-3">
+                      <span className="text-sm font-semibold capitalize text-inherit lg:text-base">
+                        price range
+                      </span>
+                      <span className="text-xs tracking-wide"> (maximum)</span>
+                    </div>
 
-                  <span className="text-xl font-extrabold text-inherit lg:text-2xl lg:font-bold">
-                    GH₵ 10,380,000
-                  </span>
+                    <span className="text-xl font-extrabold text-inherit lg:text-2xl lg:font-bold">
+                      {formatPrice(obj.maxprice, { currency: "GHS" })}
+                    </span>
+                  </div>
                 </div>
-              </div>
+              ))}
 
               <div className="container mx-auto">
                 <ContentSection
@@ -231,8 +237,8 @@ export default function PropertyContainer({
           <aside className="hidden lg:block pb-6">
             <ContactCard
               src
-              name={"Quao"}
-              image={`${"developer?.developer?.logo"}`}
+              name={projectData.project.companyname}
+              image={projectData.project.logo}
             />
           </aside>
         </div>
@@ -276,45 +282,59 @@ export default function PropertyContainer({
         </div>
       </Shell>
       <ContactSection
-        name={"Quao"}
-        image={`${"developer?.developer?.logo"}`}
+        name={projectData.project.companyname}
+        image={projectData.project.logo}
         src
       />
       {/* <Shell> */}
-        <div
-          id="available-units"
-          ref={sectionRefs["available-units"]}
-          className="w-full"
-        >
-          {projectData.units.length !== 0 ? (
-            <ContentSection
-              title="Available Units"
-              description=""
-              href="/listings"
-              className={cn(
-                projectData.units.length !== 0 ? "px-0 mb-6" : "px-4",
-                "pt-14 md:pt-20 lg:pt-24  md:block lg:max-w-7xl lg:mx-auto [&_p]:px-4 [&_h2]:px-4",
-              )}
-            >
-              <PropertyListings
-                listings={projectData.units}
-                parentContract={
-                  projectData.project.projectstatus === "completed"
-                    ? "sale"
-                    : "rent"
-                }
-              />
-            </ContentSection>
-          ) : (
-            <Shell>
-              <AlertCard
-                className="my-10"
-                title="No units available"
-                description="Please check back later."
-              />
-            </Shell>
-          )}
-        </div>
+      <div
+        id="available-units"
+        ref={sectionRefs["available-units"]}
+        className="w-full"
+      >
+        {projectData.units.length !== 0 ? (
+          <ContentSection
+            title="Available Units"
+            description=""
+            href="/listings"
+            className={cn(
+              projectData.units.length !== 0 ? "px-0 mb-6" : "px-4",
+              "pt-14 md:pt-20 lg:pt-24  md:block lg:max-w-7xl lg:mx-auto [&_p]:px-4 [&_h2]:px-4",
+            )}
+          >
+            <PropertyListings
+              listings={projectData.units.map((unit) => ({
+                ...unit,
+                image: unit.coverphoto,
+                detailreq: `/developer-unit/${unit.unitid}`,
+                streetaddress: unit.address,
+                contract: unit.terms,
+                title: unit.title || unit.unitname,
+                garages: unit.garages.toString(),
+                price: unit.price.toString(),
+                bathroomcount: unit.baths.toString(),
+                bedroomcount: unit.beds.toString(),
+                summary: unit.title || unit.unitname,
+                pricepart1: unit.price.toString(),
+                pricepart2: unit.terms === "rent" ? "/month" : "",
+              }))}
+              parentContract={
+                projectData.project.projectstatus === "completed"
+                  ? "sale"
+                  : "rent"
+              }
+            />
+          </ContentSection>
+        ) : (
+          <Shell>
+            <AlertCard
+              className="my-10"
+              title="No units available"
+              description="Please check back later."
+            />
+          </Shell>
+        )}
+      </div>
       {/* </Shell> */}
     </>
   );

@@ -1,5 +1,4 @@
 import { Breadcrumbs } from "@/components/bread-crumbs";
-import { AddFavoriteButton } from "@/components/add-favorite-button";
 import { Badge } from "@/components/ui/badge";
 import Shell from "@/layouts/shell";
 import { CheckCircle, MapPin } from "lucide-react";
@@ -20,6 +19,8 @@ export default async function DeveloperProjectPage({
   ];
 
   const projectData = await getDeveloperProject(Number(id));
+
+  console.log(projectData);
 
   return (
     <div>
@@ -46,7 +47,6 @@ export default async function DeveloperProjectPage({
           ]}
         />
       </Shell>
-      {/* <ProjectCarousel photos={projectData.photos} /> */}
       <div className="relative w-full h-[250px] md:h-[450px] overflow-hidden flex mb-4 ">
         {/* Background Image */}
         <Image
@@ -102,7 +102,6 @@ export default async function DeveloperProjectPage({
               </div>
 
               <div className="flex items-center gap-2">
-                {/* <AddFavoriteButton projectId={Number(id)} variant="button" /> */}
                 <BrochureDialog
                   className="hidden rounded-md md:flex items-center justify-center bg-brand-accent font-semibold hover:bg-brand-accent "
                   showIcon

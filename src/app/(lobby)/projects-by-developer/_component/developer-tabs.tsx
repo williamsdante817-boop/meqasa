@@ -1,10 +1,9 @@
 import { AlertCard } from "@/components/alert-card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import UnitCard from "@/components/unit-card";
 import type { DeveloperDetails } from "@/types";
 import React from "react";
 import { ProjectCard } from "./project-card";
-import { PropertyUnitCard } from "./property-unit-card";
-import UnitCard from "@/components/unit-card";
 
 export function DeveloperTabs({ developer }: { developer: DeveloperDetails }) {
   const pastProjects = developer?.projects?.filter(
@@ -15,7 +14,7 @@ export function DeveloperTabs({ developer }: { developer: DeveloperDetails }) {
       <TabsList className="grid h-[60px] w-full grid-cols-3 px-2">
         <TabsTrigger
           value="current"
-          className="group h-11 text-sm text-muted-foreground data-[state=active]:text-b-accent"
+          className="group h-11 text-sm text-brand-muted data-[state=active]:text-brand-accent"
         >
           Current Projects{" "}
           <span className="ml-2 hidden h-6 w-6 items-center justify-center rounded-md bg-rose-500 font-semibold text-white opacity-0 shadow-subtle transition-opacity duration-200 ease-in group-data-[state=active]:opacity-100 lg:flex">
@@ -24,7 +23,7 @@ export function DeveloperTabs({ developer }: { developer: DeveloperDetails }) {
         </TabsTrigger>
         <TabsTrigger
           value="available"
-          className="group h-11 text-sm text-b-muted data-[state=active]:text-b-accent"
+          className="group h-11 text-sm text-brand-muted data-[state=active]:text-brand-accent"
         >
           Available Units{" "}
           <span className="ml-2 hidden h-6 w-6 items-center justify-center rounded-md bg-rose-500 font-semibold text-white opacity-0 shadow-subtle transition-opacity duration-200 ease-in group-data-[state=active]:opacity-100 lg:flex">
@@ -33,7 +32,7 @@ export function DeveloperTabs({ developer }: { developer: DeveloperDetails }) {
         </TabsTrigger>
         <TabsTrigger
           value="past"
-          className="group h-11 text-sm text-b-muted data-[state=active]:text-b-accent"
+          className="group h-11 text-sm text-brand-muted data-[state=active]:text-brand-accent"
         >
           Past Projects{" "}
           <span className="ml-2 hidden h-6 w-6 items-center justify-center rounded-md bg-rose-500 font-semibold text-white opacity-0 shadow-subtle transition-opacity duration-200 ease-in group-data-[state=active]:opacity-100 lg:flex">
@@ -54,7 +53,7 @@ export function DeveloperTabs({ developer }: { developer: DeveloperDetails }) {
                     name={project.projectname}
                     status={project.projectstatus}
                     src={`https://meqasa.com/uploads/imgs/${project?.photo}`}
-                    url={url.toLocaleLowerCase()}
+                    url={`/${url.toLocaleLowerCase()}`}
                   />
                 </React.Fragment>
               );
@@ -81,7 +80,7 @@ export function DeveloperTabs({ developer }: { developer: DeveloperDetails }) {
         ) : (
           <div className="grid grid-cols-2 gap-4 lg:gap-8">
             {pastProjects?.map((project, i) => {
-              const url = `development-project-${project?.city.split(" ").join("-")}-${project?.projectname.split(" ").join("-")}-${project?.projectid}`;
+              const url = `development-projects/${project?.city.split(" ").join("-")}-${project?.projectname.split(" ").join("-")}-${project?.projectid}`;
 
               return (
                 <React.Fragment key={i}>
@@ -89,7 +88,7 @@ export function DeveloperTabs({ developer }: { developer: DeveloperDetails }) {
                     name={project.projectname}
                     status={project.projectstatus}
                     src={`https://meqasa.com/uploads/imgs/${project?.photo}`}
-                    url={url.toLocaleLowerCase()}
+                    url={`/${url.toLocaleLowerCase()}`}
                   />
                 </React.Fragment>
               );

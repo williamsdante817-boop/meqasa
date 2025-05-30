@@ -12,6 +12,8 @@ interface AddFavoriteButtonProps {
 }
 
 export function AddFavoriteButton({
+  
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   listingId,
   className,
 }: AddFavoriteButtonProps) {
