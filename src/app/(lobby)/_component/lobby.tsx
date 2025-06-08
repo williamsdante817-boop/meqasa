@@ -10,7 +10,7 @@ import { InfiniteMovingCards } from "@/components/infinite-moving-card";
 import LocationCard from "@/components/location-card";
 import MarketNewsCard from "@/components/market-news-card";
 import PropertyListings from "@/components/property-listings";
-import SearchForm from "@/components/search-form";
+
 import SeoText from "@/components/seo-text";
 import Shell from "@/layouts/shell";
 import type { getAgentLogos } from "@/lib/get-agents-logos";
@@ -22,6 +22,7 @@ import type { getLatestListings } from "@/lib/get-latest-listing";
 import MobilePageHeader from "./mobile-page-header";
 import { LatestListingsTab } from "@/components/latest-listings-tab";
 import type { getFlexiBanner } from "@/lib/get-flexi-banner";
+import { SearchFilter } from "@/components/search";
 
 interface LobbyProps {
   latestListingsPromise: ReturnType<typeof getLatestListings>;
@@ -70,7 +71,8 @@ function LobbyContent({
         ></div>
 
         <MobilePageHeader />
-        <SearchForm />
+        {/* <SearchForm /> */}
+        <SearchFilter />
       </div>
       <div
         className="mt-[180px] hidden lg:flex"
@@ -81,6 +83,7 @@ function LobbyContent({
           items={agentLogos}
           direction="left"
           speed="normal"
+          className="relative -z-50"
         />
       </div>
 
