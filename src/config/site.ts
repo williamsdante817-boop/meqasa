@@ -58,8 +58,6 @@ export interface SiteConfig {
   selectOptions: {
     propertyType: SelectOption[];
     bedrooms: SelectOption[];
-    minPrice: SelectOption[];
-    maxPrice: SelectOption[];
     landType: SelectOption[];
     landSize: SelectOption[];
   };
@@ -594,6 +592,13 @@ export const siteConfig: SiteConfig = {
       { value: "apartment", label: "Apartment" },
       { value: "office", label: "Office" },
       { value: "land", label: "Land" },
+      { value: "townhouse", label: "Townhouse" },
+      { value: "commercial space", label: "Commercial" },
+      { value: "warehouse", label: "Warehouse" },
+      { value: "guest house", label: "Guest" },
+      { value: "shop", label: "Shop" },
+      { value: "retail", label: "Retail" },
+      { value: "beach house", label: "Beach" },
     ],
     bedrooms: [
       { value: "1", label: "1 Bedroom" },
@@ -602,20 +607,7 @@ export const siteConfig: SiteConfig = {
       { value: "4", label: "4 Bedrooms" },
       { value: "5+", label: "5+ Bedrooms" },
     ],
-    minPrice: [
-      { value: "0", label: "No Min" },
-      { value: "50000", label: "GH₵ 50,000" },
-      { value: "100000", label: "GH₵ 100,000" },
-      { value: "200000", label: "GH₵ 200,000" },
-      { value: "500000", label: "GH₵ 500,000" },
-    ],
-    maxPrice: [
-      { value: "0", label: "No Max" },
-      { value: "100000", label: "GH₵ 100,000" },
-      { value: "200000", label: "GH₵ 200,000" },
-      { value: "500000", label: "GH₵ 500,000" },
-      { value: "1000000", label: "GH₵ 1,000,000" },
-    ],
+    
     landType: [
       { value: "residential", label: "Residential" },
       { value: "commercial", label: "Commercial" },
