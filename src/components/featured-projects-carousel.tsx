@@ -33,7 +33,7 @@ export default function FeaturedProjectsCarousel({
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [emblaRef, emblaApi] = useEmblaCarousel({
-    align: "center",
+    align: "start",
     loop: true,
   });
   const plugin = useRef(
@@ -112,7 +112,7 @@ export default function FeaturedProjectsCarousel({
           {properties.map((item, index) => (
             <CarouselItem
               key={item.projectid}
-              className="basis-[350px] md:basis-[500px] lg:basis-[600px] pl-4"
+              className="basis-[350px] md:basis-[500px]  pl-4"
               role="listitem"
               aria-label={`Featured Project ${index + 1} of ${properties.length}`}
             >

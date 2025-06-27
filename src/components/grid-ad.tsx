@@ -72,11 +72,11 @@ export default function GridAd({
   return (
     <section className="hidden lg:block" aria-label="Featured items grid">
       <div
-        className="grid grid-cols-1 gap-4 sm:grid-cols-6 sm:grid-rows-4 h-[450px]"
+        className="grid grid-cols-1 gap-4 sm:grid-cols-6 sm:grid-rows-4 h-full"
         role="grid"
       >
         {/* First placeholder item */}
-        <div className="sm:col-span-3 sm:row-span-2 bg-gray-50 rounded-lg overflow-hidden h-full">
+        <div className="sm:col-span-3 sm:row-span-2 bg-gray-50 rounded-lg overflow-hidden h-[320px]">
           <a
             href="https://www.thorpe-bedu.com/belton-residences/"
             target="_blank"
@@ -103,7 +103,7 @@ export default function GridAd({
         </div>
 
         {/* Flexi banner in the middle position */}
-        <div className="sm:col-span-3 sm:row-span-2 bg-white border border-gray-100 rounded-lg shadow-elegant-sm overflow-hidden h-full">
+        <div className="sm:col-span-3 sm:row-span-2 bg-white border border-gray-100 rounded-lg shadow-elegant-sm overflow-hidden h-[320px]">
           <div className="w-full h-full [&>*]:w-full [&>*]:h-full [&>img]:object-cover [&>img]:w-full [&>img]:h-full">
             <a
               href="/follow-ad-2502?u=https://meqasa.com/1-bedroom-apartment-for-sale-in-nungua-unit-3222"

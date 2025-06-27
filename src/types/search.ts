@@ -2,6 +2,7 @@ export interface FormState {
   search: string;
   propertyType: string;
   bedrooms: string;
+  bathrooms: string;
   minPrice: string;
   maxPrice: string;
   minArea: string;
@@ -10,5 +11,4 @@ export interface FormState {
   sort: string;
   furnished: boolean;
   owner: boolean;
-  bedroomRadio: string;
 }

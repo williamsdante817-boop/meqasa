@@ -1,13 +1,18 @@
 export interface MeqasaOwner {
+  haswan: boolean;
   name: string;
   first: string;
   image: string;
+  verification: string;
+  type: string;
+  page: string;
 }
 
 export interface MeqasaListing {
+  istopad: boolean;
   photocount: string;
   recency: string;
-  detailrequest: string;
+  detailreq: string;
   image: string;
   streetaddress: string;
   locationstring: string;
@@ -16,11 +21,14 @@ export interface MeqasaListing {
   bedroomcount: string;
   garagecount: string;
   listingid: string;
+  isunit: boolean;
   type: string;
   contract: "rent" | "sale";
   summary: string;
-  description: string;
+  description: string | null;
   owner: MeqasaOwner;
+  pdr: string;
+  priceval: number;
   pricepart1: string;
   pricepart2: string;
   availability: string;
@@ -38,10 +46,28 @@ export interface MeqasaSimilarResponse {
   similar: MeqasaListing[];
 }
 
+export interface MeqasaProject {
+  city: string;
+  projectname: string;
+  projectid: string;
+  photo: string;
+  logo: string;
+  name: string;
+}
+
+export interface MeqasaEmptyProject {
+  empty: boolean;
+}
+
 export interface MeqasaSearchResponse {
-  resultcount: number;
-  results: MeqasaListing[];
   searchid: number;
+  resultcount: number;
+  topads: MeqasaListing[];
+  project1: MeqasaProject | MeqasaEmptyProject;
+  results: MeqasaListing[];
+  project2: MeqasaProject | MeqasaEmptyProject;
+  bottomads: MeqasaListing[];
+  searchdesc: string;
 }
 
 export type PropertyType =

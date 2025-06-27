@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { useState, useRef } from "react";
@@ -32,6 +33,14 @@ const PROPERTY_TYPES: PropertyType[] = [
   "townhouse",
   "land",
 ];
+
+const CONTRACT_TYPES = [
+  { value: "rent", label: "Rent" },
+  { value: "sale", label: "Sale" },
+  { value: "land", label: "Land" },
+  { value: "short-let", label: "Short Let" },
+];
+
 const BEDROOM_OPTIONS = ["- Any -", "1", "2", "3", "4", "5", "6+"];
 const BATHROOM_OPTIONS = ["- Any -", "1", "2", "3", "4", "5+"];
 const SORT_OPTIONS: { value: SortOrder; label: string }[] = [
@@ -69,55 +78,47 @@ export default function MeqasaSearchForm({
       const formData = new FormData(e.currentTarget);
       const contract = formData.get("contract") as ContractType;
       const locality = formData.get("place") as string;
+      const propertyType = formData.get("ftype") as PropertyType;
 
       if (!contract || !locality) {
         setError("Please select a contract type and enter a location");
         return;
       }
 
-      const params: MeqasaSearchParams = {
-        ftype: formData.get("ftype") as PropertyType | undefined,
-        fbeds:
-          formData.get("fbeds") === "- Any -"
-            ? "- Any -"
-            : formData.get("fbeds")
-              ? Number(formData.get("fbeds"))
-              : undefined,
-        fbaths:
-          formData.get("fbaths") === "- Any -"
-            ? "- Any -"
-            : formData.get("fbaths")
-              ? Number(formData.get("fbaths"))
-              : undefined,
-        fmin: formData.get("fmin") ? Number(formData.get("fmin")) : undefined,
-        fmax: formData.get("fmax") ? Number(formData.get("fmax")) : undefined,
-        frentperiod: formData.get("frentperiod") as
-          | RentPeriod
-          | "- Any -"
-          | undefined,
-        fsort: formData.get("fsort") as SortOrder | undefined,
-        app: "vercel",
-      };
+      // Build search params
+      const searchParams = new URLSearchParams();
+      searchParams.set("contract", contract);
+      searchParams.set("q", locality);
+      searchParams.set("type", propertyType || "");
 
-      // Only add boolean parameters if they are checked
-      if (formData.has("fisfurnished")) {
-        params.fisfurnished = 1;
-      }
-      if (formData.has("ffsbo")) {
-        params.ffsbo = 1;
-      }
+      // Add optional parameters
+      const fbeds = formData.get("fbeds") as string | null;
+      if (fbeds && fbeds !== "- Any -") searchParams.set("fbeds", fbeds);
 
-      const response = await searchProperties(contract, locality, params);
-      onSearchResults(
-        response.results,
-        response.resultcount,
-        response.searchid,
-        contract,
-        locality,
-      );
+      const fbaths = formData.get("fbaths") as string | null;
+      if (fbaths && fbaths !== "- Any -") searchParams.set("fbaths", fbaths);
+
+      const fmin = formData.get("fmin") as string | null;
+      if (fmin) searchParams.set("fmin", fmin);
+
+      const fmax = formData.get("fmax") as string | null;
+      if (fmax) searchParams.set("fmax", fmax);
+
+      const frentperiod = formData.get("frentperiod") as string | null;
+      if (frentperiod && frentperiod !== "- Any -")
+        searchParams.set("frentperiod", frentperiod);
+
+      const fsort = formData.get("fsort") as string | null;
+      if (fsort) searchParams.set("fsort", fsort);
+
+      if (formData.has("fisfurnished")) searchParams.set("fisfurnished", "1");
+      if (formData.has("ffsbo")) searchParams.set("ffsbo", "1");
+
+      // Navigate to search page with parameters
+      window.location.href = `/search/${contract}?${searchParams.toString()}`;
     } catch (error) {
-      console.error("Error searching properties:", error);
-      setError("Failed to search properties. Please try again.");
+      console.error("Error preparing search:", error);
+      setError("Failed to prepare search. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -150,6 +151,22 @@ export default function MeqasaSearchForm({
                 height={50}
               />
             </a>
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Contract Type</label>
+            <Select name="contract" required>
+              <SelectTrigger>
+                <SelectValue placeholder="Select contract type" />
+              </SelectTrigger>
+              <SelectContent>
+                {CONTRACT_TYPES.map((contract) => (
+                  <SelectItem key={contract.value} value={contract.value}>
+                    {contract.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="space-y-2">
@@ -201,33 +218,6 @@ export default function MeqasaSearchForm({
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium">Contract Type</label>
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                <input
-                  type="radio"
-                  id="rent"
-                  name="contract"
-                  value="rent"
-                  defaultChecked
-                  className="h-4 w-4 border-gray-300 text-[#cf007a] focus:ring-[#cf007a]"
-                />
-                <Label htmlFor="rent">For rent</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <input
-                  type="radio"
-                  id="sale"
-                  name="contract"
-                  value="sale"
-                  className="h-4 w-4 border-gray-300 text-[#cf007a] focus:ring-[#cf007a]"
-                />
-                <Label htmlFor="sale">For sale</Label>
-              </div>
-            </div>
-          </div>
-
-          <div className="space-y-2">
             <label className="text-sm font-medium">Rent Period</label>
             <Select name="frentperiod">
               <SelectTrigger>
@@ -245,8 +235,8 @@ export default function MeqasaSearchForm({
             <label className="text-sm font-medium">Location</label>
             <Input
               name="place"
-              type="text"
               placeholder="Enter location"
+              required
               className="w-full"
             />
           </div>

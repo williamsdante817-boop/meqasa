@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import {
@@ -44,6 +45,7 @@ interface AgentCardProps {
 export function AgentCard({
   description,
   id,
+  
   isVerified,
   listings,
   location,

@@ -1,5 +1,3 @@
-import { apiFetch } from "./api-client";
-
 export interface Developer {
   developerid: string;
   about: string;
@@ -33,16 +31,18 @@ export interface DevelopersResponse {
  * @throws An error if the request fails or the server returns an error.
  */
 export async function getDevelopers(): Promise<DevelopersResponse> {
-  const url = "https://meqasa.com/real-estate-developers";
+  const url = "https://meqasa.com/real-estate-developers?app=vercel";
 
-  return await apiFetch<DevelopersResponse>({
-    url,
-    method: "POST",
-    params: {
-      app: "vercel",
-    },
+  const response = await fetch(url, {
+    method: "GET",
     headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
+      Accept: "application/json",
     },
   });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  return response.json() as Promise<DevelopersResponse>;
 }

@@ -140,14 +140,15 @@ export function DeveloperCard({ developer, className }: DeveloperCardProps) {
                       : "Not Available"}
                   </span>
                 </div>
-                <div className="mb-2 flex items-center text-brand-accent gap-1.5 text-sm font-normal">
+
+                <div className="flex items-center space-x-2 text-[#1d2951] font-medium">
                   <span>{developer.unitcount} units</span>
                   <Dot aria-hidden="true" />
                   <span>{developer.prcount} projects</span>
                 </div>
               </div>
             </div>
-            <p className="text-brand-muted leading-relaxed ">
+            <p className="text-brand-muted leading-relaxed mt-2">
               {developer.about}
             </p>
           </Link>
