@@ -17,6 +17,7 @@ export default function PropertySearchPage() {
   const [contract, setContract] = useState<string>("");
   const [locality, setLocality] = useState<string>("");
   console.log(searchResults);
+  console.log("Loaded more properties:", searchResults);
 
   const handleSearchResults = (
     results: MeqasaListing[],
@@ -49,6 +50,7 @@ export default function PropertySearchPage() {
 
       if (!response.ok) throw new Error("Failed to load more properties");
       const data = (await response.json()) as { results: MeqasaListing[] };
+
       setSearchResults((prev) => [...prev, ...data.results]);
       setCurrentPage((prev) => prev + 1);
     } catch (error) {
@@ -103,12 +105,40 @@ export default function PropertySearchPage() {
                     {property.locationstring}
                   </p>
                   <p className="text-[#cf007a] font-bold text-xl mb-3">
-                    <span
-                      dangerouslySetInnerHTML={{ __html: property.pricepart1 }}
-                    ></span>
-                    <span className="text-sm font-normal text-gray-600">
-                      {property.pricepart2}
-                    </span>
+                    {(() => {
+                      const numericPrice = Number(property.pricepart1);
+                      if (!isNaN(numericPrice)) {
+                        return (
+                          <>
+                            {new Intl.NumberFormat("en-GH", {
+                              style: "currency",
+                              currency: "GHS",
+                              maximumFractionDigits: 0,
+                            }).format(numericPrice)}
+                            {property.contract === "rent" &&
+                              property.pricepart2 && (
+                                <span className="text-sm font-normal text-gray-600">
+                                  /{property.pricepart2}
+                                </span>
+                              )}
+                          </>
+                        );
+                      }
+                      return (
+                        <>
+                          <span
+                            dangerouslySetInnerHTML={{
+                              __html: property.pricepart1,
+                            }}
+                          />
+                          {property.pricepart2 && (
+                            <span className="text-sm font-normal text-gray-600">
+                              {property.pricepart2}
+                            </span>
+                          )}
+                        </>
+                      );
+                    })()}
                   </p>
                   <Separator className="my-3" />
                   <div className="flex flex-wrap gap-2">

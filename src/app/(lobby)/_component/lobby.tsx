@@ -23,6 +23,7 @@ import MobilePageHeader from "./mobile-page-header";
 import { LatestListingsTab } from "@/components/latest-listings-tab";
 import type { getFlexiBanner } from "@/lib/get-flexi-banner";
 import { SearchFilter } from "@/components/search";
+import { getDevelopers } from "@/lib/get-developers";
 
 interface LobbyProps {
   latestListingsPromise: ReturnType<typeof getLatestListings>;
@@ -34,7 +35,7 @@ interface LobbyProps {
   flexiBannerPromise: ReturnType<typeof getFlexiBanner>;
 }
 
-function LobbyContent({
+async function LobbyContent({
   agentLogos,
   featuredProjects,
   featuredListings,
@@ -56,7 +57,12 @@ function LobbyContent({
     (listing) => listing.contract === "sale",
   );
 
-  console.log(flexiBanner);
+  const testData = await getDevelopers();
+  console.log("Test Data:", testData);
+
+  console.log("feturedProjects:", featuredProjects);
+  console.log("featuredListings:", featuredListings);
+  console.log("latest:", latestListings);
 
   return (
     <main>
@@ -99,14 +105,14 @@ function LobbyContent({
           className="pt-14 md:pt-20 lg:pt-24 w-full mx-auto [&_p]:px-4 [&_h2]:px-4 md:max-w-[720px] lg:max-w-[960px] xl:max-w-[1140px] 2xl:max-w-[1320px]"
         >
           <FeaturedProjectsCarousel
-            properties={featuredProjects.slice(0, 3)}
+            properties={featuredProjects}
             delay={7000}
           />
-          <br />
-          <FeaturedProjectsCarousel
+          {/* <br /> */}
+          {/* <FeaturedProjectsCarousel
             properties={featuredProjects.slice(3, 6)}
             delay={5000}
-          />
+          /> */}
         </ContentSection>
 
         <ContentSection

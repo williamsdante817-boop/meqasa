@@ -58,6 +58,7 @@ export interface SiteConfig {
   selectOptions: {
     propertyType: SelectOption[];
     bedrooms: SelectOption[];
+    bathrooms: SelectOption[];
     landType: SelectOption[];
     landSize: SelectOption[];
   };
@@ -607,7 +608,14 @@ export const siteConfig: SiteConfig = {
       { value: "4", label: "4 Bedrooms" },
       { value: "5+", label: "5+ Bedrooms" },
     ],
-    
+    bathrooms: [
+      { value: "1", label: "1 Bathroom" },
+      { value: "2", label: "2 Bathrooms" },
+      { value: "3", label: "3 Bathrooms" },
+      { value: "4", label: "4 Bathrooms" },
+      { value: "5+", label: "5+ Bathrooms" },
+    ],
+
     landType: [
       { value: "residential", label: "Residential" },
       { value: "commercial", label: "Commercial" },

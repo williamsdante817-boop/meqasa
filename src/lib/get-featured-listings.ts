@@ -24,7 +24,7 @@ type Listing = Pick<
  * @throws An error if the request fails or the server returns an error.
  */
 export async function getFeaturedListings(): Promise<Listing[]> {
-  const url = "https://meqasa.com/hp-8";
+  const url = "https://meqasa.com/hp-7";
 
   return await apiFetch<Listing[]>({
     url,

@@ -27,7 +27,7 @@ type Listing = Pick<
  */
 
 export async function getLatestListings(): Promise<Listing[]> {
-  const url = "https://meqasa.com/hp-7";
+  const url = "https://meqasa.com/hp-8";
 
   return await apiFetch<Listing[]>({
     url,

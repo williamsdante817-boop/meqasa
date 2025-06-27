@@ -24,6 +24,7 @@ export default async function HomePage() {
   const latestListings = getLatestListings();
   const heroBanner = getHeroBanner();
   const flexiBanner = getFlexiBanner();
+  
 
   return (
     <React.Suspense fallback={<LobbySkeleton />}>

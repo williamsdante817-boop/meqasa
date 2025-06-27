@@ -58,9 +58,34 @@ export function CommonFilters({
         <SelectContent>
           <SelectGroup>
             <SelectItem value="all" key="default-beds" className="line-clamp-1">
-              All Beds
+              Bedrooms
             </SelectItem>
             {searchConfig.selectOptions.bedrooms.map(({ value, label }) => (
+              <SelectItem value={value} key={value} className="line-clamp-1">
+                {label}
+              </SelectItem>
+            ))}
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+      <Separator orientation="vertical" className="h-[20px] bg-[#9A9EB5]" />
+      <Select
+        value={formState.bathrooms}
+        onValueChange={(value) => updateFormState({ bathrooms: value })}
+      >
+        <SelectTrigger className="h-5 min-w-[150px] max-w-fit cursor-pointer rounded-none border-0 bg-transparent py-0 text-base font-medium shadow-none text-white focus:border-0 focus:ring-0 focus:ring-transparent">
+          <SelectValue placeholder="Baths" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectItem
+              value="all"
+              key="default-baths"
+              className="line-clamp-1"
+            >
+              Bathrooms
+            </SelectItem>
+            {searchConfig.selectOptions.bathrooms.map(({ value, label }) => (
               <SelectItem value={value} key={value} className="line-clamp-1">
                 {label}
               </SelectItem>
@@ -80,6 +105,7 @@ export function CommonFilters({
         onMinChange={(value) => updateFormState({ minPrice: value })}
         onMaxChange={(value) => updateFormState({ maxPrice: value })}
       />
+
       {showMoreFilters && (
         <>
           <Separator orientation="vertical" className="h-[20px] bg-[#9A9EB5]" />

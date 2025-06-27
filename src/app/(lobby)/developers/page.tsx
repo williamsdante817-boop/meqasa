@@ -1,6 +1,7 @@
 import Shell from "@/layouts/shell";
 import { DeveloperCard } from "@/components/developer-card";
 import SearchInput from "@/components/search-input";
+import { getDevelopers } from "@/lib/get-developers";
 
 export const metadata = {
   title: "Real Estate Developers | Meqasa",
@@ -8,7 +9,7 @@ export const metadata = {
     "Browse through our list of trusted real estate developers in Ghana",
 };
 
-export default function DevelopersPage() {
+export default async function DevelopersPage() {
   const developers = [
     {
       developerid: "549504051",
@@ -74,6 +75,7 @@ export default function DevelopersPage() {
       prcount: 12,
     },
   ];
+ 
 
   return (
     <Shell>
