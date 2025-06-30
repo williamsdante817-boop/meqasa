@@ -79,7 +79,7 @@ export type PropertyType =
   | "townhouse"
   | "land";
 export type ContractType = "rent" | "sale";
-export type RentPeriod = "shortrent" | "longrent";
+export type RentPeriod = "shortrent" | "longrent" | "- Any -";
 export type SortOrder = "date" | "date2" | "price" | "price2";
 
 export interface MeqasaSearchParams {
@@ -88,9 +88,9 @@ export interface MeqasaSearchParams {
   fbaths?: number | "- Any -";
   fmin?: number;
   fmax?: number;
-  fisfurnished?: 0 | 1;
-  ffsbo?: 0 | 1;
-  frentperiod?: RentPeriod | "- Any -";
+  fisfurnished?: 1;
+  ffsbo?: 1;
+  frentperiod?: RentPeriod;
   fsort?: SortOrder;
   app: "vercel";
 }

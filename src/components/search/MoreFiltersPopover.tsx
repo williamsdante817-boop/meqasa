@@ -46,18 +46,9 @@ export function MoreFiltersPopover({
             </SelectTrigger>
             <SelectContent className="text-b-accent">
               <SelectGroup>
-                {[
-                  { label: "Daily", value: "day" },
-                  { label: "Weekly", value: "week" },
-                  { label: "Up to 6 months", value: "month" },
-                  { label: "12 months plus", value: "year" },
-                ].map((str) => (
-                  <SelectItem
-                    value={str.value}
-                    className="py-1.5 hover:text-b-accent"
-                    key={str.value}
-                  >
-                    {str.label}
+                {searchConfig.selectOptions.period.map(({ value, label }) => (
+                  <SelectItem value={value} key={value}>
+                    {label}
                   </SelectItem>
                 ))}
               </SelectGroup>
@@ -72,18 +63,9 @@ export function MoreFiltersPopover({
             </SelectTrigger>
             <SelectContent className="border-none text-b-accent shadow-spread">
               <SelectGroup>
-                {[
-                  { label: "New to old", value: "new" },
-                  { label: "Old to new", value: "old" },
-                  { label: "Lower to higher", value: "low" },
-                  { label: "Higher to lower", value: "high" },
-                ].map((str) => (
-                  <SelectItem
-                    value={str.value}
-                    className="py-1.5 hover:text-b-accent"
-                    key={str.value}
-                  >
-                    {str.label}
+                {searchConfig.selectOptions.sort.map(({ value, label }) => (
+                  <SelectItem value={value} key={value+label}>
+                    {label}
                   </SelectItem>
                 ))}
               </SelectGroup>

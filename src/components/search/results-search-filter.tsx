@@ -3,7 +3,7 @@
 import type React from "react";
 import { useState, useEffect, useCallback } from "react";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,31 +22,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Search, ChevronDown, ListFilterPlus } from "lucide-react";
-
-// Mock site config data
-const siteConfig = {
-  propertyType: [
-    { value: "apartment", label: "Apartment" },
-    { value: "house", label: "House" },
-    { value: "villa", label: "Villa" },
-    { value: "townhouse", label: "Townhouse" },
-    { value: "studio", label: "Studio" },
-  ],
-  propertyBed: [
-    { value: "1", label: "1 Bedroom" },
-    { value: "2", label: "2 Bedrooms" },
-    { value: "3", label: "3 Bedrooms" },
-    { value: "4", label: "4 Bedrooms" },
-    { value: "5+", label: "5+ Bedrooms" },
-  ],
-  priceRange: {
-    min: 0,
-    max: 1000000,
-    step: 10000,
-  },
-};
+import { siteConfig } from "@/config/site";
+import { searchConfig } from "@/config/search";
+import { type FormState } from "@/types/search";
 
 // Mock location data for suggestions
 const mockLocations = [
@@ -67,19 +46,9 @@ const mockLocations = [
   "Osu, Accra",
 ];
 
-// Form state interface
-interface FormState {
+// Extended FormState interface to include listingType
+interface ExtendedFormState extends FormState {
   listingType: string;
-  search: string;
-  propertyType: string;
-  bedrooms: string;
-  minPrice: string;
-  maxPrice: string;
-  period: string;
-  sort: string;
-  furnished: boolean;
-  owner: boolean;
-  bedroomRadio: string;
 }
 
 // Price Range Component
@@ -88,11 +57,13 @@ const PriceRangeSelect = ({
   maxValue,
   onMinChange,
   onMaxChange,
+  priceRange,
 }: {
   minValue: string;
   maxValue: string;
   onMinChange: (value: string) => void;
   onMaxChange: (value: string) => void;
+  priceRange: { min: number; max: number; step: number };
 }) => {
   const getDisplayText = () => {
     const min = minValue ? Number.parseInt(minValue) : null;
@@ -139,9 +110,9 @@ const PriceRangeSelect = ({
                 id="min-price"
                 placeholder="Min price"
                 type="number"
-                min={siteConfig.priceRange.min}
-                max={siteConfig.priceRange.max}
-                step={siteConfig.priceRange.step}
+                min={priceRange.min}
+                max={priceRange.max}
+                step={priceRange.step}
                 value={minValue}
                 onChange={(e) => onMinChange(e.target.value)}
                 className={`${isInvalid() ? "border-red-500 focus:border-red-500" : ""}`}
@@ -153,9 +124,9 @@ const PriceRangeSelect = ({
                 id="max-price"
                 placeholder="Max price"
                 type="number"
-                min={siteConfig.priceRange.min}
-                max={siteConfig.priceRange.max}
-                step={siteConfig.priceRange.step}
+                min={priceRange.min}
+                max={priceRange.max}
+                step={priceRange.step}
                 value={maxValue}
                 onChange={(e) => onMaxChange(e.target.value)}
                 className={`${isInvalid() ? "border-red-500 focus:border-red-500" : ""}`}
@@ -294,8 +265,8 @@ const MoreFiltersPopover = ({
   formState,
   updateFormState,
 }: {
-  formState: FormState;
-  updateFormState: (updates: Partial<FormState>) => void;
+  formState: ExtendedFormState;
+  updateFormState: (updates: Partial<ExtendedFormState>) => void;
 }) => (
   <Popover>
     <PopoverTrigger asChild>
@@ -323,10 +294,9 @@ const MoreFiltersPopover = ({
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem value="day">Daily</SelectItem>
-                  <SelectItem value="week">Weekly</SelectItem>
-                  <SelectItem value="month">Up to 6 months</SelectItem>
-                  <SelectItem value="year">12 months plus</SelectItem>
+                  <SelectItem value="- Any -">Any Period</SelectItem>
+                  <SelectItem value="shortrent">Short Term</SelectItem>
+                  <SelectItem value="longrent">Long Term</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -343,35 +313,14 @@ const MoreFiltersPopover = ({
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem value="new">New to old</SelectItem>
-                  <SelectItem value="old">Old to new</SelectItem>
-                  <SelectItem value="low">Lower to higher</SelectItem>
-                  <SelectItem value="high">Higher to lower</SelectItem>
+                  <SelectItem value="date">Newest First</SelectItem>
+                  <SelectItem value="date2">Oldest First</SelectItem>
+                  <SelectItem value="price">Lowest Price</SelectItem>
+                  <SelectItem value="price2">Highest Price</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
           </div>
-        </div>
-
-        <div>
-          <Label className="text-sm font-medium">Bedrooms</Label>
-          <RadioGroup
-            value={formState.bedroomRadio}
-            onValueChange={(value) => updateFormState({ bedroomRadio: value })}
-            className="flex flex-wrap gap-2 mt-2"
-          >
-            {[1, 2, 3, 4, 5].map((num) => (
-              <div
-                key={num}
-                className="flex items-center space-x-1 rounded-full border px-3 py-1.5"
-              >
-                <RadioGroupItem value={num.toString()} id={`r${num}`} />
-                <Label htmlFor={`r${num}`} className="cursor-pointer text-xs">
-                  {num} Bed{num > 1 ? "s" : ""}
-                </Label>
-              </div>
-            ))}
-          </RadioGroup>
         </div>
 
         <div className="space-y-3">
@@ -409,39 +358,161 @@ const MoreFiltersPopover = ({
 );
 
 export function ResultSearchFilter() {
-  const navigate = useRouter();
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const [formState, setFormState] = useState<FormState>({
-    listingType: "sale",
-    search: "",
-    propertyType: "",
-    bedrooms: "",
-    minPrice: "",
-    maxPrice: "",
-    period: "",
-    sort: "",
-    furnished: false,
-    owner: false,
-    bedroomRadio: "1",
-  });
+  // Initialize form state from URL parameters
+  const initializeFormState = (): ExtendedFormState => {
+    const searchParamsObj = Object.fromEntries(searchParams.entries());
 
-  const updateFormState = (updates: Partial<FormState>) => {
+    // Helper function to safely convert string to number or return empty string
+    const safeNumber = (value: string | undefined): string => {
+      if (!value || value.trim() === "") return "";
+      const num = Number(value);
+      return !isNaN(num) && num > 0 ? String(num) : "";
+    };
+
+    // Helper function to handle bedroom/bathroom values
+    const safeBedBath = (value: string | undefined): string => {
+      if (!value || value.trim() === "") return "";
+      // If it's a valid number, return it as string
+      const num = Number(value);
+      if (!isNaN(num) && num > 0) {
+        return String(num);
+      }
+      // If it's not a valid number, return empty string (will default to "- Any -")
+      return "";
+    };
+
+    return {
+      listingType: searchParamsObj.contract ?? "sale",
+      search: searchParamsObj.q ?? "",
+      propertyType: searchParamsObj.ftype ?? "",
+      bedrooms: safeBedBath(searchParamsObj.fbeds),
+      bathrooms: safeBedBath(searchParamsObj.fbaths),
+      minPrice: safeNumber(searchParamsObj.fmin),
+      maxPrice: safeNumber(searchParamsObj.fmax),
+      minArea: safeNumber(searchParamsObj.fminarea),
+      maxArea: safeNumber(searchParamsObj.fmaxarea),
+      period: searchParamsObj.frentperiod ?? "",
+      sort: searchParamsObj.fsort ?? "",
+      furnished: searchParamsObj.fisfurnished === "1",
+      owner: searchParamsObj.ffsbo === "1",
+    };
+  };
+
+  const [formState, setFormState] =
+    useState<ExtendedFormState>(initializeFormState);
+
+  // Update form state when URL parameters change
+  useEffect(() => {
+    setFormState(initializeFormState());
+  }, [searchParams]);
+
+  const updateFormState = (updates: Partial<ExtendedFormState>) => {
     setFormState((prev) => ({ ...prev, ...updates }));
   };
 
-  const handleSearch = () => {
-    // Ensure default location is 'ghana' if not provided
+  const handleSearch = async () => {
+    // Set default location to 'ghana' if not provided
     const searchValue =
       formState.search && formState.search.trim() !== ""
         ? formState.search
         : "ghana";
-    // You may want to update the navigation path to use searchValue if needed
-    // For now, just log or use as needed
-    navigate.push("/results/1");
+
+    // Map UI contract types to API contract types
+    const contractMap: Record<string, string> = {
+      rent: "rent",
+      buy: "sale",
+      land: "sale",
+      "short-let": "rent",
+    };
+
+    // Get the API-compliant contract type
+    const apiContract =
+      contractMap[formState.listingType] ?? formState.listingType;
+
+    // Build search params according to API documentation
+    const searchParams = new URLSearchParams();
+    searchParams.set("q", searchValue);
+
+    // Property type
+    if (formState.propertyType && formState.propertyType !== "all") {
+      searchParams.set("ftype", formState.propertyType);
+    }
+
+    // Bedrooms and bathrooms - only add if they have valid numeric values
+    if (
+      formState.bedrooms &&
+      formState.bedrooms !== "- Any -" &&
+      formState.bedrooms.trim() !== ""
+    ) {
+      const bedsNum = Number(formState.bedrooms);
+      if (!isNaN(bedsNum) && bedsNum > 0) {
+        searchParams.set("fbeds", String(bedsNum));
+      }
+    }
+    if (
+      formState.bathrooms &&
+      formState.bathrooms !== "- Any -" &&
+      formState.bathrooms.trim() !== ""
+    ) {
+      const bathsNum = Number(formState.bathrooms);
+      if (!isNaN(bathsNum) && bathsNum > 0) {
+        searchParams.set("fbaths", String(bathsNum));
+      }
+    }
+
+    // Price range - only add if they have valid numeric values
+    if (formState.minPrice && formState.minPrice.trim() !== "") {
+      const minPriceNum = Number(formState.minPrice);
+      if (!isNaN(minPriceNum) && minPriceNum > 0) {
+        searchParams.set("fmin", String(minPriceNum));
+      }
+    }
+    if (formState.maxPrice && formState.maxPrice.trim() !== "") {
+      const maxPriceNum = Number(formState.maxPrice);
+      if (!isNaN(maxPriceNum) && maxPriceNum > 0) {
+        searchParams.set("fmax", String(maxPriceNum));
+      }
+    }
+
+    // Area range - only add if they have valid numeric values
+    if (formState.minArea && formState.minArea.trim() !== "") {
+      const minAreaNum = Number(formState.minArea);
+      if (!isNaN(minAreaNum) && minAreaNum > 0) {
+        searchParams.set("fminarea", String(minAreaNum));
+      }
+    }
+    if (formState.maxArea && formState.maxArea.trim() !== "") {
+      const maxAreaNum = Number(formState.maxArea);
+      if (!isNaN(maxAreaNum) && maxAreaNum > 0) {
+        searchParams.set("fmaxarea", String(maxAreaNum));
+      }
+    }
+
+    // Rent period and sort
+    if (formState.period && formState.period !== "- Any -") {
+      searchParams.set("frentperiod", formState.period);
+    }
+    if (formState.sort) {
+      searchParams.set("fsort", formState.sort);
+    }
+
+    // Boolean filters
+    if (formState.furnished) {
+      searchParams.set("fisfurnished", "1");
+    }
+    if (formState.owner) {
+      searchParams.set("ffsbo", "1");
+    }
+
+    // Navigate to search page
+    router.push(`/search/${apiContract}?${searchParams.toString()}`);
   };
 
   return (
-    <div className=" bg-white border border-gray-200  shadow-sm">
+    <div className="bg-white border border-gray-200 shadow-sm">
       <div className="flex items-center gap-2 p-4 container mx-auto">
         {/* For Sale/Rent Dropdown */}
         <Select
@@ -455,8 +526,6 @@ export function ResultSearchFilter() {
             <SelectGroup>
               <SelectItem value="sale">For sale</SelectItem>
               <SelectItem value="rent">For rent</SelectItem>
-              <SelectItem value="land">Land</SelectItem>
-              <SelectItem value="short-let">Short let</SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>
@@ -478,7 +547,7 @@ export function ResultSearchFilter() {
           <SelectContent>
             <SelectGroup>
               <SelectItem value="all">All Types</SelectItem>
-              {siteConfig.propertyType.map(({ value, label }) => (
+              {siteConfig.selectOptions.propertyType.map(({ value, label }) => (
                 <SelectItem value={value} key={value}>
                   {label}
                 </SelectItem>
@@ -489,7 +558,7 @@ export function ResultSearchFilter() {
 
         {/* Bedrooms */}
         <Select
-          value={formState.bedrooms}
+          value={formState.bedrooms || "- Any -"}
           onValueChange={(value) => updateFormState({ bedrooms: value })}
         >
           <SelectTrigger className="h-12 w-32 bg-white border-gray-200 hover:bg-gray-50">
@@ -497,8 +566,28 @@ export function ResultSearchFilter() {
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              <SelectItem value="all">All Beds</SelectItem>
-              {siteConfig.propertyBed.map(({ value, label }) => (
+              <SelectItem value="- Any -">Any Beds</SelectItem>
+              {siteConfig.selectOptions.bedrooms.map(({ value, label }) => (
+                <SelectItem value={value} key={value}>
+                  {label}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+
+        {/* Bathrooms */}
+        <Select
+          value={formState.bathrooms || "- Any -"}
+          onValueChange={(value) => updateFormState({ bathrooms: value })}
+        >
+          <SelectTrigger className="h-12 w-32 bg-white border-gray-200 hover:bg-gray-50">
+            <SelectValue placeholder="Bathrooms" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectItem value="- Any -">Any Baths</SelectItem>
+              {siteConfig.selectOptions.bathrooms.map(({ value, label }) => (
                 <SelectItem value={value} key={value}>
                   {label}
                 </SelectItem>
@@ -513,6 +602,7 @@ export function ResultSearchFilter() {
           maxValue={formState.maxPrice}
           onMinChange={(value) => updateFormState({ minPrice: value })}
           onMaxChange={(value) => updateFormState({ maxPrice: value })}
+          priceRange={searchConfig.priceRange}
         />
 
         {/* More Filters */}

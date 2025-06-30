@@ -36,7 +36,7 @@ export function CommonFilters({
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            <SelectItem value="all" key="default-type" className="line-clamp-1">
+            <SelectItem value="- Any -" key="default-type" className="line-clamp-1">
               All Types
             </SelectItem>
             {searchConfig.selectOptions.propertyType.map(({ value, label }) => (
@@ -57,7 +57,7 @@ export function CommonFilters({
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            <SelectItem value="all" key="default-beds" className="line-clamp-1">
+            <SelectItem value="- Any -" key="default-beds" className="line-clamp-1">
               Bedrooms
             </SelectItem>
             {searchConfig.selectOptions.bedrooms.map(({ value, label }) => (
@@ -79,7 +79,7 @@ export function CommonFilters({
         <SelectContent>
           <SelectGroup>
             <SelectItem
-              value="all"
+              value="- Any -"
               key="default-baths"
               className="line-clamp-1"
             >
