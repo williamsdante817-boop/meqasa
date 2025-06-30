@@ -8,6 +8,26 @@ import type {
 
 const MEQASA_API_BASE = "https://meqasa.com";
 
+// Valid contract types according to API docs
+const VALID_CONTRACTS = ["rent", "sale"] as const;
+
+// Valid property types according to API docs
+const VALID_PROPERTY_TYPES = [
+  "apartment",
+  "house",
+  "office",
+  "warehouse",
+  "guesthouse",
+  "townhouse",
+  "land",
+] as const;
+
+// Valid sort options according to API docs
+const VALID_SORT_OPTIONS = ["date", "date2", "price", "price2"] as const;
+
+// Valid rent period options according to API docs
+const VALID_RENT_PERIODS = ["- Any -", "shortrent", "longrent"] as const;
+
 interface RequestBody {
   type: "search" | "loadMore";
   params: (MeqasaSearchParams | MeqasaLoadMoreParams) & {
@@ -21,13 +41,10 @@ export async function POST(request: NextRequest) {
     const body = (await request.json()) as RequestBody;
     const { type, params } = body;
 
-    console.log("API Route - Request body:", body);
-
-    let url: string;
-    let searchParams: URLSearchParams;
+    console.log("API Route - Request:", { type, params });
 
     if (type === "search") {
-      const { contract, locality, ...restParams } =
+      const { contract, locality, ...searchParams } =
         params as MeqasaSearchParams & {
           contract: string;
           locality: string;
@@ -35,124 +52,178 @@ export async function POST(request: NextRequest) {
 
       // Validate required fields
       if (!contract || !locality) {
-        console.error("Missing required fields in search request:", {
-          contract,
-          locality,
-        });
         return NextResponse.json(
-          { error: "Missing required fields" },
+          { error: "Missing required fields: contract and locality" },
           { status: 400 },
         );
       }
 
-      url = `${MEQASA_API_BASE}/properties-for-${contract}-in-${locality}`;
-
-      console.log("this is locality", locality);
-      console.log("API Route - Formatted URL:", url);
-
-      searchParams = new URLSearchParams();
-      const searchParamsObj: Record<
-        string,
-        string | number | boolean | undefined
-      > = {
-        ...restParams,
-        app: "vercel",
-        locality,
-      };
-
-      // Only add boolean parameters if they are checked (value is 1)
-      if (restParams.fisfurnished === 1) {
-        searchParamsObj.fisfurnished = 1;
-      }
-      if (restParams.ffsbo === 1) {
-        searchParamsObj.ffsbo = 1;
+      // Validate contract type
+      if (!VALID_CONTRACTS.includes(contract as "rent" | "sale")) {
+        return NextResponse.json(
+          { error: "Invalid contract type. Must be 'rent' or 'sale'" },
+          { status: 400 },
+        );
       }
 
-      Object.entries(searchParamsObj).forEach(([key, value]) => {
-        if (value !== undefined && value !== null && value !== "") {
-          searchParams.append(key, String(value));
-        }
+      // Build URL according to API docs: /properties-for-[contract]-in-[locality]
+      const url = `${MEQASA_API_BASE}/properties-for-${contract}-in-${locality}`;
+
+      // Build POST parameters according to API docs
+      const postParams = new URLSearchParams();
+      postParams.set("app", "vercel");
+
+      // Add optional parameters if they exist and are valid
+      if (
+        searchParams.ftype &&
+        VALID_PROPERTY_TYPES.includes(searchParams.ftype)
+      ) {
+        postParams.set("ftype", searchParams.ftype);
+      }
+
+      if (searchParams.fbeds && searchParams.fbeds !== "- Any -") {
+        postParams.set("fbeds", String(searchParams.fbeds));
+      }
+
+      if (searchParams.fbaths && searchParams.fbaths !== "- Any -") {
+        postParams.set("fbaths", String(searchParams.fbaths));
+      }
+
+      if (searchParams.fmin && searchParams.fmin > 0) {
+        postParams.set("fmin", String(searchParams.fmin));
+      }
+
+      if (searchParams.fmax && searchParams.fmax > 0) {
+        postParams.set("fmax", String(searchParams.fmax));
+      }
+
+      if (searchParams.fisfurnished === 1) {
+        postParams.set("fisfurnished", "1");
+      }
+
+      if (searchParams.ffsbo === 1) {
+        postParams.set("ffsbo", "1");
+      }
+
+      if (
+        searchParams.frentperiod &&
+        VALID_RENT_PERIODS.includes(searchParams.frentperiod)
+      ) {
+        postParams.set("frentperiod", searchParams.frentperiod);
+      }
+
+      if (
+        searchParams.fsort &&
+        VALID_SORT_OPTIONS.includes(searchParams.fsort)
+      ) {
+        postParams.set("fsort", searchParams.fsort);
+      }
+
+      console.log("Search API call:", {
+        url,
+        params: Object.fromEntries(postParams.entries()),
       });
 
-      console.log("API Route - Search URL:", url);
-      console.log(
-        "API Route - Search params:",
-        Object.fromEntries(searchParams.entries()),
-      );
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: postParams.toString(),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Meqasa API error: ${response.statusText}`);
+      }
+
+      const data = (await response.json()) as MeqasaSearchResponse;
+      console.log("Search response:", {
+        searchId: data.searchid,
+        resultCount: data.resultcount,
+        resultsLength: data.results.length,
+      });
+
+      return NextResponse.json(data);
     } else if (type === "loadMore") {
-      const { contract, locality, ...loadMoreParams } =
-        params as MeqasaLoadMoreParams & {
-          contract: string;
-          locality: string;
-        };
+      const {
+        contract,
+        locality,
+        y: searchId,
+        w: pageNumber,
+      } = params as MeqasaLoadMoreParams & {
+        contract: string;
+        locality: string;
+      };
 
       // Validate required fields
-      if (!contract || !locality || !loadMoreParams.y || !loadMoreParams.w) {
-        console.error("Missing required fields in loadMore request:", {
-          contract,
-          locality,
-          loadMoreParams,
-        });
+      if (!contract || !locality || !searchId || !pageNumber) {
         return NextResponse.json(
-          { error: "Missing required fields" },
+          {
+            error:
+              "Missing required fields: contract, locality, searchId, and pageNumber",
+          },
           { status: 400 },
         );
       }
 
-      url = `${MEQASA_API_BASE}/properties-for-${contract}-in-${locality}`;
+      // Validate contract type
+      if (!VALID_CONTRACTS.includes(contract as "rent" | "sale")) {
+        return NextResponse.json(
+          { error: "Invalid contract type. Must be 'rent' or 'sale'" },
+          { status: 400 },
+        );
+      }
 
-      console.log("API Route - Formatted URL:", url);
+      // Validate searchId and page number
+      if (searchId <= 0 || pageNumber < 1) {
+        return NextResponse.json(
+          { error: "Invalid searchId or page number" },
+          { status: 400 },
+        );
+      }
 
-      searchParams = new URLSearchParams();
-      const searchParamsObj = {
-        y: loadMoreParams.y,
-        w: loadMoreParams.w,
-        locality,
-        app: "vercel",
-      };
+      // Build URL according to API docs: /properties-for-[contract]-in-[locality]
+      const url = `${MEQASA_API_BASE}/properties-for-${contract}-in-${locality}`;
 
-      Object.entries(searchParamsObj).forEach(([key, value]) => {
-        if (value !== undefined && value !== null && value !== "") {
-          searchParams.append(key, String(value));
-        }
+      // Build POST parameters according to API docs
+      const postParams = new URLSearchParams();
+      postParams.set("y", String(searchId));
+      postParams.set("w", String(pageNumber));
+      postParams.set("app", "vercel");
+
+      console.log("LoadMore API call:", {
+        url,
+        params: Object.fromEntries(postParams.entries()),
       });
 
-      console.log("API Route - LoadMore URL:", url);
-      console.log(
-        "API Route - LoadMore params:",
-        Object.fromEntries(searchParams.entries()),
-      );
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: postParams.toString(),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Meqasa API error: ${response.statusText}`);
+      }
+
+      const data = (await response.json()) as MeqasaSearchResponse;
+      console.log("LoadMore response:", {
+        searchId: data.searchid,
+        resultCount: data.resultcount,
+        resultsLength: data.results.length,
+      });
+
+      return NextResponse.json(data);
     } else {
-      console.error("Invalid request type:", type);
       return NextResponse.json(
-        { error: "Invalid request type" },
+        { error: "Invalid request type. Must be 'search' or 'loadMore'" },
         { status: 400 },
       );
     }
-
-    const response = await fetch(`${url}?${searchParams.toString()}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: searchParams.toString(),
-    });
-
-    if (!response.ok) {
-      console.error("Meqasa API error:", response.statusText);
-      throw new Error(`Meqasa API error: ${response.statusText}`);
-    }
-
-    const data = (await response.json()) as MeqasaSearchResponse;
-    console.log("API Route - Response data:", {
-      resultCount: data.resultcount,
-      searchId: data.searchid,
-      resultsCount: data.results.length,
-    });
-
-    return NextResponse.json(data);
   } catch (error) {
-    console.error("Error fetching properties:", error);
+    console.error("Error in properties API route:", error);
     return NextResponse.json(
       { error: "Failed to fetch properties" },
       { status: 500 },

@@ -5,16 +5,16 @@ export const searchConfig = {
   selectOptions: {
     ...siteConfig.selectOptions,
     period: [
-      { value: "day", label: "Daily" },
-      { value: "week", label: "Weekly" },
-      { value: "month", label: "Up to 6 months" },
-      { value: "year", label: "12 months plus" },
+      { value: "shortrent", label: "Daily" },
+      { value: "shortrent", label: "Weekly" },
+      { value: "longrent", label: "Up to 6 months" },
+      { value: "longrent", label: "12 months plus" },
     ],
     sort: [
-      { value: "new", label: "New to old" },
-      { value: "old", label: "Old to new" },
-      { value: "low", label: "Lower to higher" },
-      { value: "high", label: "Higher to lower" },
+      { value: "date", label: "New to old" },
+      { value: "date2", label: "Old to new" },
+      { value: "price", label: "Lower to higher" },
+      { value: "price2", label: "Higher to lower" },
     ],
   },
   priceRange: {

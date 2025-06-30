@@ -606,14 +606,14 @@ export const siteConfig: SiteConfig = {
       { value: "2", label: "2 Bedrooms" },
       { value: "3", label: "3 Bedrooms" },
       { value: "4", label: "4 Bedrooms" },
-      { value: "5+", label: "5+ Bedrooms" },
+      { value: "5", label: "5+ Bedrooms" },
     ],
     bathrooms: [
       { value: "1", label: "1 Bathroom" },
       { value: "2", label: "2 Bathrooms" },
       { value: "3", label: "3 Bathrooms" },
       { value: "4", label: "4 Bathrooms" },
-      { value: "5+", label: "5+ Bathrooms" },
+      { value: "5", label: "5+ Bathrooms" },
     ],
 
     landType: [
@@ -625,7 +625,7 @@ export const siteConfig: SiteConfig = {
       { value: "0-100", label: "0-100 sqm" },
       { value: "100-500", label: "100-500 sqm" },
       { value: "500-1000", label: "500-1000 sqm" },
-      { value: "1000+", label: "1000+ sqm" },
+      { value: "1000", label: "1000+ sqm" },
     ],
   },
 };

@@ -42,74 +42,6 @@ export function SearchFilter() {
     setFormState((prev) => ({ ...prev, ...updates }));
   };
 
-  const handleSubmit = (type: string) => {
-    const params = new URLSearchParams();
-
-    // Ensure default location is 'ghana' if not provided
-    const searchValue =
-      formState.search && formState.search.trim() !== ""
-        ? formState.search
-        : "ghana";
-
-    // Add search query if present
-    if (searchValue) {
-      params.set("q", searchValue);
-    }
-
-    // Add property type
-    if (formState.propertyType !== "all") {
-      params.set("type", formState.propertyType);
-    }
-
-    // Add bedrooms if not default
-    if (formState.bedrooms !== "-Any-") {
-      params.set("beds", formState.bedrooms);
-    }
-
-    // Add bathrooms if not default
-    if (formState.bathrooms !== "-Any-") {
-      params.set("baths", formState.bathrooms);
-    }
-
-    // Add price range if present
-    if (formState.minPrice) {
-      params.set("minPrice", formState.minPrice);
-    }
-    if (formState.maxPrice) {
-      params.set("maxPrice", formState.maxPrice);
-    }
-
-    // Add area range if present
-    if (formState.minArea) {
-      params.set("minArea", formState.minArea);
-    }
-    if (formState.maxArea) {
-      params.set("maxArea", formState.maxArea);
-    }
-
-    // Add period if present
-    if (formState.period) {
-      params.set("period", formState.period);
-    }
-
-    // Add sort if present
-    if (formState.sort) {
-      params.set("sort", formState.sort);
-    }
-
-    // Add boolean filters
-    if (formState.furnished) {
-      params.set("furnished", "true");
-    }
-    if (formState.owner) {
-      params.set("owner", "true");
-    }
-
-    // Construct SEO-friendly URL
-    const searchPath = `/search/${type}${params.toString() ? `?${params.toString()}` : ""}`;
-    router.push(searchPath);
-  };
-
   return (
     <div className="hidden lg:block absolute left-1/2 w-[920px] -translate-x-1/2 -translate-y-1/2 z-50">
       <h1 className="sr-only mb-4 text-center text-3xl font-extrabold text-b-accent">
@@ -178,7 +110,20 @@ export function SearchFilter() {
                   />
                   <Button
                     className="w-full"
-                    onClick={() => handleSubmit("rent")}
+                    onClick={() => {
+                      const searchValue =
+                        formState.search && formState.search.trim() !== ""
+                          ? formState.search
+                          : "ghana";
+                      const params = new URLSearchParams();
+                      params.set("q", searchValue);
+
+                      // Set a flag in sessionStorage to indicate this is a manual search update
+                      // This will be checked by the SearchResults component to prevent duplicate API calls
+                      sessionStorage.setItem("manualSearchUpdate", "true");
+
+                      router.push(`/search/rent?${params.toString()}`);
+                    }}
                   >
                     Search
                   </Button>
@@ -189,10 +134,9 @@ export function SearchFilter() {
 
           <TabsContent value="buy">
             <SearchForm
-              type="sale"
+              type="buy"
               formState={formState}
               updateFormState={updateFormState}
-              onSubmit={() => handleSubmit("sale")}
             >
               <CommonFilters
                 formState={formState}
@@ -205,7 +149,6 @@ export function SearchFilter() {
               type="rent"
               formState={formState}
               updateFormState={updateFormState}
-              onSubmit={() => handleSubmit("rent")}
             >
               <CommonFilters
                 showMoreFilters
@@ -219,7 +162,6 @@ export function SearchFilter() {
               type="land"
               formState={formState}
               updateFormState={updateFormState}
-              onSubmit={() => handleSubmit("land")}
             >
               <div className="relative mx-auto mt-3 hidden max-w-max items-end justify-center gap-2 py-1 lg:flex">
                 <PriceInput
@@ -256,7 +198,6 @@ export function SearchFilter() {
               type="short-let"
               formState={formState}
               updateFormState={updateFormState}
-              onSubmit={() => handleSubmit("short-let")}
             >
               <CommonFilters
                 showMoreFilters
