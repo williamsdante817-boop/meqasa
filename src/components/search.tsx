@@ -26,8 +26,8 @@ export function SearchFilter() {
   const [formState, setFormState] = useState<FormState>({
     search: "ghana",
     propertyType: "all",
-    bedrooms: "-Any-",
-    bathrooms: "-Any-",
+    bedrooms: "- Any -",
+    bathrooms: "- Any -",
     minPrice: "",
     maxPrice: "",
     minArea: "",
@@ -201,6 +201,7 @@ export function SearchFilter() {
             >
               <CommonFilters
                 showMoreFilters
+                hidePropertyType
                 formState={formState}
                 updateFormState={updateFormState}
               />
