@@ -46,6 +46,7 @@ export function MoreFiltersPopover({
             </SelectTrigger>
             <SelectContent className="text-b-accent">
               <SelectGroup>
+                <SelectItem value="- Any -">Any Period</SelectItem>
                 {searchConfig.selectOptions.period.map(({ value, label }) => (
                   <SelectItem value={value} key={value}>
                     {label}
@@ -63,8 +64,9 @@ export function MoreFiltersPopover({
             </SelectTrigger>
             <SelectContent className="border-none text-b-accent shadow-spread">
               <SelectGroup>
+                <SelectItem value="- Any -">Any Sort</SelectItem>
                 {searchConfig.selectOptions.sort.map(({ value, label }) => (
-                  <SelectItem value={value} key={value+label}>
+                  <SelectItem value={value} key={value + label}>
                     {label}
                   </SelectItem>
                 ))}
