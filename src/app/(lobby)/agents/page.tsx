@@ -8,6 +8,7 @@ import InfoBanner from "./_components/info-banner";
 
 export default async function AgentsPage() {
   const { list: agents } = await getAllAgents();
+  console.log("Agents Data:", agents);
 
   return (
     <Shell>

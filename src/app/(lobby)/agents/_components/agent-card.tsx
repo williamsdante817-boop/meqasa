@@ -149,25 +149,25 @@ export function AgentCard({
               <p className="text-brand-muted leading-relaxed">{description}</p>
             </div>
           )}
-
-          {/* Social Media Section */}
-          {socialLinks.length > 0 && (
-            <div className="flex items-center gap-3">
-              {socialLinks.map((social) => (
-                <a
-                  key={social.label}
-                  href={social.url ?? "#"}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:opacity-80 transition-opacity"
-                  aria-label={`Visit ${name}'s ${social.label}`}
-                >
-                  <social.icon className="w-5 h-5 text-gray-400 hover:text-brand-primary cursor-pointer" />
-                </a>
-              ))}
-            </div>
-          )}
         </Link>
+
+        {/* Social Media Section - moved outside the main Link to avoid nested <a> tags */}
+        {socialLinks.length > 0 && (
+          <div className="flex items-center gap-3 mt-2">
+            {socialLinks.map((social) => (
+              <a
+                key={social.label}
+                href={social.url ?? "#"}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:opacity-80 transition-opacity"
+                aria-label={`Visit ${name}'s ${social.label}`}
+              >
+                <social.icon className="w-5 h-5 text-gray-400 hover:text-brand-primary cursor-pointer" />
+              </a>
+            ))}
+          </div>
+        )}
 
         {/* Contact Button */}
         <div className="flex-shrink-0">
