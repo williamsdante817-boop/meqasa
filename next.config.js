@@ -28,6 +28,10 @@ const config = {
         protocol: "https",
         hostname: "placehold.co",
       },
+      {
+        protocol: "https",
+        hostname: "dve7rykno93gs.cloudfront.nethttps",
+      },
     ],
   },
 };

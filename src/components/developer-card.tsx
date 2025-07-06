@@ -68,10 +68,14 @@ export function DeveloperCard({ developer, className }: DeveloperCardProps) {
                   )}
                 />
                 <Image
-                  className="h-[60px] w-[60px] rounded-full object-cover"
+                  className="h-[60px] w-[60px] rounded-full object-contain"
                   width={170}
                   height={100}
-                  src={`https://dve7rykno93gs.cloudfront.net/uploads/imgs/${developer.logo}`}
+                  src={
+                    developer.logo
+                      ? `https://dve7rykno93gs.cloudfront.net/uploads/imgs/${developer.logo}`
+                      : "/placeholder-image.png"
+                  }
                   alt={`${developer.companyname} logo`}
                   sizes="120px"
                   onError={handleImageError}

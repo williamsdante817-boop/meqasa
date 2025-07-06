@@ -1,29 +1,59 @@
-# Create T3 App
+# Meqasa Real Estate Platform
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+A modern real estate web application for discovering, listing, and exploring properties, developers, and agents in Ghana. Built with Next.js, TypeScript, and Tailwind CSS.
 
-## What's next? How do I make an app with this?
+---
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+## Tech Stack
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+- **Next.js** (App Router)
+- **React 19**
+- **TypeScript**
+- **Tailwind CSS**
+- **Radix UI**
+- **Embla Carousel**
+- **Lucide Icons**
+- **ESLint & Prettier**
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+---
 
-## Learn More
+## Features
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+- **Home Page Dashboard**: Hero banner, featured projects carousel, latest and featured property listings, partner/agent logos, and blog/news sections.
+- **Property Listings**: Browse, search, and filter properties for sale or rent. Detailed property pages with images, amenities, mortgage calculator, and contact options.
+- **Developer Projects**: Explore real estate development projects, view project details, floor plans, amenities, and contact developers.
+- **Agents Directory**: Browse and search for real estate agents, view agent profiles, and their property listings.
+- **Developers Directory**: List of trusted real estate developers, with profile pages and client reviews.
+- **Unit Details**: Detailed view for individual units, including price, features, images, and mortgage calculator.
+- **Search**: Advanced property search with filters for type, location, price, and more.
+- **Favorites**: Add properties to favorites (UI present; backend integration in progress).
+- **Responsive Design**: Fully responsive and mobile-friendly UI.
+- **Accessibility**: ARIA roles and keyboard navigation in key components.
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+---
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+## Progress So Far
 
-## How do I deploy this?
+- [x] Core page structure and navigation implemented (Home, Listings, Agents, Developers, Projects, Search)
+- [x] Featured projects and listings carousel
+- [x] Property and unit detail pages with amenities, images, and mortgage calculator
+- [x] Developer and agent directories with profile pages
+- [x] Blog/news and market insights section
+- [x] Responsive and accessible UI components
+- [x] Utility hooks, types, and configuration for scalability
+- [ ] Favorites backend and user authentication (in progress)
+- [ ] Automated tests and CI/CD (planned)
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+---
+
+## Getting Started
+
+1. Install dependencies: `npm install`
+2. Run the development server: `npm run dev`
+3. Visit [http://localhost:3000](http://localhost:3000)
+
+---
+
+## License
+
+This project is for demonstration and educational purposes.

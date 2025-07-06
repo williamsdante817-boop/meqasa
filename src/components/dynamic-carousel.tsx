@@ -23,7 +23,7 @@ interface CarouselProps {
 }
 
 const getImageUrl = (imagePath: string, cloudfrontDomain: string) => {
-  if (!imagePath) return "";
+  if (!imagePath) return "/placeholder-image.png";
 
   // Check if the path is already a full URL or path
   if (imagePath.includes("/")) {
@@ -185,7 +185,7 @@ export function DynamicCarousel({
   const slides = images.length ? (
     images.map((img, i) => (
       <CarouselSlide
-        key={img}
+        key={img ? `${img}-${i}` : `slide-${i}`}
         image={getImageUrl(img, cloudfrontDomain)}
         isDeveloper={isDeveloper}
         index={i}
@@ -252,7 +252,7 @@ export function DynamicCarousel({
           <CarouselNext
             aria-label="Next slide"
             className={cn(
-              "absolute right-6 top-1/2 -translate-y-1/2 z-10 h-11 w-11 items-center justify-center bg-white text-accent-foreground shadow-md hidden md:flex"
+              "absolute right-6 top-1/2 -translate-y-1/2 z-10 h-11 w-11 items-center justify-center bg-white text-accent-foreground shadow-md hidden md:flex",
             )}
           />
         </Carousel>

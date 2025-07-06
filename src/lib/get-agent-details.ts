@@ -1,0 +1,68 @@
+import { apiFetch } from "./api-client";
+
+export interface AgentDetails {
+  name: string;
+  id: number;
+  verified: "plus" | "agent" | "owner" | "";
+  accounttype: string;
+  company: string;
+  logo: string;
+  photo: string;
+  regfee: string;
+  rentcommission: string;
+  salecommission: string;
+  locality: string;
+  about: string;
+  tenure: number;
+  activelistings: number;
+  listings: AgentListing[];
+  haswan: boolean;
+  rfilid: number;
+}
+
+export interface AgentListing {
+  photocount: string;
+  detailreq: string;
+  image: string;
+  streetaddress: string;
+  locationstring: string;
+  floorarea: string;
+  bathroomcount: string;
+  bedroomcount: string;
+  garagecount: string;
+  listingid: number;
+  type: string;
+  contract: string;
+  summary: string;
+  description: string;
+  owner: any;
+  pricepart1: string;
+  pricepart2: string;
+  availability: string;
+}
+
+/**
+ * Fetches agent details from the Meqasa API.
+ * @param agentId The agent's ID
+ * @param agentName The agent's name (url-encoded)
+ * @returns A promise that resolves to the agent details
+ */
+export async function getAgentDetails(
+  agentId: string,
+  agentName: string,
+): Promise<AgentDetails> {
+  const url = `https://meqasa.com/properties-listed-by-${"Joseph%20Yeboah"}?s=${encodeURIComponent(1810965854)}&app=vercel`;
+
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Request failed with status: ${response.status}`);
+  }
+
+  return (await response.json()) as AgentDetails;
+}
