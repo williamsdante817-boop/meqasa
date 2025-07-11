@@ -15,7 +15,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
     }).format(price);
   };
 
-  const listingUrl = `https://meqasa.com/property/${property.detailrequest}`;
+  const listingUrl = `https://meqasa.com/property/${property.detailreq}`;
 
   return (
     <Link

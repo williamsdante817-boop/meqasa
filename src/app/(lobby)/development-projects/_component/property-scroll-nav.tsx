@@ -1,7 +1,6 @@
 import { cn } from "@/lib/utils";
 import { BuildingIcon, LayoutIcon, MapIcon, MapPinIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-// import type { RefObject } from "react";
 import Shell from "@/layouts/shell";
 import BrochureDialog from "./brochure-dialog";
 

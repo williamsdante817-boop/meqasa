@@ -48,6 +48,8 @@ export default function PropertyListings({
     };
   }, [api]);
 
+  console.log('Testing Property Listings',listings);
+
   const transformedListings = listings.map((listing) => {
     if ("unitid" in listing) return listing;
     if ("baths" in listing) {

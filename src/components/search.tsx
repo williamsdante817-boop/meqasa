@@ -1,10 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { SearchIcon } from "lucide-react";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -12,14 +9,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { searchConfig } from "@/config/search";
 import { type FormState } from "@/types/search";
-import { SearchForm } from "./search/SearchForm";
+import { SearchIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { CommonFilters } from "./search/CommonFilters";
 import { PriceInput } from "./search/PriceInput";
-import { Separator } from "@/components/ui/separator";
-import { searchConfig } from "@/config/search";
-import { useRouter } from "next/navigation";
+import { SearchForm } from "./search/SearchForm";
 
 export function SearchFilter() {
   const router = useRouter();

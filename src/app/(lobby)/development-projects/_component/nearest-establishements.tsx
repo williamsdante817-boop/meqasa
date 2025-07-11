@@ -11,12 +11,11 @@ import {
   AlertCircle,
   RefreshCw,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-// import { Map } from "@/components/Map";
 import { useLocations } from "@/hooks/useLocations";
 import type { Location, LocationCategory, MapViewType } from "@/types/location";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 // Categories with their icons
 const categories = [
@@ -50,7 +49,6 @@ export default function NearbyLocation() {
   console.log(locationData);
   console.log(userLocation);
   console.log(activeCategory);
-  
 
   // Use userLocation if available, otherwise static Accra center
   // const mapCenter = userLocation ?? accraCenter;

@@ -231,6 +231,7 @@ export async function POST(request: NextRequest) {
         searchId: data.searchid,
         resultCount: data.resultcount,
         resultsLength: data.results.length,
+        data,
       });
 
       return NextResponse.json(data);

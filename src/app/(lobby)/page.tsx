@@ -1,4 +1,6 @@
 export const dynamic = "force-dynamic";
+import React from "react";
+import Lobby from "./_component/lobby";
 import { getAgentLogos } from "@/lib/get-agents-logos";
 import { getFeaturedListings } from "@/lib/get-featured-listings";
 import { getFeaturedProjects } from "@/lib/get-featured-projects";
@@ -6,8 +8,6 @@ import { getFeaturedUnits } from "@/lib/get-featured-units";
 import { getHeroBanner } from "@/lib/get-hero-banner";
 import { getLatestListings } from "@/lib/get-latest-listing";
 import { getFlexiBanner } from "@/lib/get-flexi-banner";
-import React from "react";
-import Lobby from "./_component/lobby";
 import { LobbySkeleton } from "./_component/lobby-skeleton";
 
 export default async function HomePage() {

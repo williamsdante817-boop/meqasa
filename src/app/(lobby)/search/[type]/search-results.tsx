@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { Breadcrumbs } from "@/components/bread-crumbs";
@@ -8,15 +7,14 @@ import { FeaturedPropertyVariantCard } from "@/components/search/featured-proper
 import { PremiumPlusPropertyCard } from "@/components/search/premium-plus-card";
 import { ResultsCard } from "@/components/search/results-card";
 import { ResultSearchFilter } from "@/components/search/results-search-filter";
-import { Card } from "@/components/ui/card";
 import {
   Pagination,
   PaginationContent,
+  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-  PaginationEllipsis,
 } from "@/components/ui/pagination";
 import Shell from "@/layouts/shell";
 import type {
@@ -26,9 +24,10 @@ import type {
 } from "@/types/meqasa";
 import Image from "next/image";
 import Link from "next/link";
-import { useSearchParams, useRouter } from "next/navigation";
-import { useEffect, useState, useRef } from "react";
-import SearchResultsSkeleton from "./SearchResultsSkeleton";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import SearchResultsSkeleton from "@/components/search/SearchResultsSkeleton";
+import { Card } from "@/components/ui/card";
 
 interface SearchResultsProps {
   type: string;
@@ -70,42 +69,49 @@ export function SearchResults({ type }: SearchResultsProps) {
   const [searchResults, setSearchResults] = useState<MeqasaListing[]>([]);
   const [totalResults, setTotalResults] = useState(0);
   const [search, setSearch] = useState<MeqasaSearchResponse>();
-  const [searchId, setSearchId] = useState<number | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [searchId, setSearchId] = useState<number | null>(() => {
+    // Try to get searchId from URL parameters first, then sessionStorage
+    if (typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlSearchId = urlParams.get("searchId");
+      if (urlSearchId) {
+        return parseInt(urlSearchId);
+      }
+      const stored = sessionStorage.getItem("meqasa_searchId");
+      return stored ? parseInt(stored) : null;
+    }
+    return null;
+  });
+  const [currentPage, setCurrentPage] = useState(() => {
+    // Try to get currentPage from URL parameters
+    if (typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(window.location.search);
+      const pageParam = urlParams.get("page");
+      return pageParam ? parseInt(pageParam) : 1;
+    }
+    return 1;
+  });
   const [isLoading, setIsLoading] = useState(true);
-  const manualSearchRef = useRef<boolean>(false);
-  const lastSearchParamsRef = useRef<string>("");
 
-  // Map UI contract types to API contract types
-  const contractMap: Record<string, string> = {
-    rent: "rent",
-    buy: "sale",
-    land: "sale",
-    "short-let": "rent",
-  };
+  console.log("Search Params:", Object.fromEntries(searchParams.entries()));
+  console.log("search", search);
 
-  // Get the API-compliant contract type
-  const apiContract = contractMap[type] ?? type;
+  // Store searchId in sessionStorage whenever it changes (for backward compatibility)
+  useEffect(() => {
+    if (searchId && typeof window !== "undefined") {
+      sessionStorage.setItem("meqasa_searchId", searchId.toString());
+    }
+  }, [searchId]);
 
-  // Fetch search results
+  // Scroll to top when loading starts
+  useEffect(() => {
+    if (isLoading) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [isLoading]);
+
   useEffect(() => {
     const fetchResults = async () => {
-      const currentSearchParams = searchParams.toString();
-
-      // Skip if search params haven't changed (prevents duplicate calls)
-      if (currentSearchParams === lastSearchParamsRef.current) {
-        return;
-      }
-
-      // Skip if we're handling search manually
-      if (manualSearchRef.current) {
-        manualSearchRef.current = false;
-        return;
-      }
-
-      // Update the last search params ref
-      lastSearchParamsRef.current = currentSearchParams;
-
       setIsLoading(true);
       try {
         const searchParamsObj = Object.fromEntries(searchParams.entries());
@@ -113,69 +119,70 @@ export function SearchResults({ type }: SearchResultsProps) {
         const pageParam = searchParamsObj.page
           ? parseInt(searchParamsObj.page)
           : 1;
-        const urlSearchId = searchParamsObj.y
-          ? parseInt(searchParamsObj.y)
+        const urlSearchId = searchParamsObj.searchId
+          ? parseInt(searchParamsObj.searchId)
           : null;
-        const { y, w, ...filtersForInitialSearch } = searchParamsObj;
 
         if (!locality) {
           console.error("Missing required parameter: locality");
           return;
         }
 
-        if (urlSearchId) {
-          // If y (searchid) is present, use loadMore
+        // If we have a searchId (from URL or state) and page param, fetch that specific page
+        const currentSearchId = urlSearchId ?? searchId;
+        if (currentSearchId && pageParam > 1) {
           const response = await fetch("/api/properties", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               type: "loadMore",
               params: {
-                y: urlSearchId,
+                y: currentSearchId,
                 w: pageParam,
-                contract: apiContract,
+                ...searchParamsObj,
+                contract: type,
                 locality,
+                propertyType: searchParamsObj.type ?? "",
+                app: "vercel",
               },
             }),
           });
+
           if (!response.ok) throw new Error("Failed to fetch page");
           const data = (await response.json()) as MeqasaSearchResponse;
           setSearchResults(data.results);
           setTotalResults(data.resultcount);
           setSearch(data);
-          setSearchId(data.searchid);
           setCurrentPage(pageParam);
-        } else {
-          // No y in URL, do initial search
-          const response = await fetch("/api/properties", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              type: "search",
-              params: {
-                ...filtersForInitialSearch,
-                contract: apiContract,
-                locality,
-              },
-            }),
-          });
-          if (!response.ok) throw new Error("Failed to fetch properties");
-          const data = (await response.json()) as MeqasaSearchResponse;
-          setSearchResults(data.results);
-          setTotalResults(data.resultcount);
-          setSearch(data);
-          setSearchId(data.searchid);
-          setCurrentPage(1);
-          // Update URL with searchId for persistence
-          if (data.searchid) {
-            const newSearchParams = new URLSearchParams(
-              filtersForInitialSearch,
-            );
-            newSearchParams.set("y", data.searchid.toString());
-            manualSearchRef.current = true;
-            router.push(`?${newSearchParams.toString()}`, { scroll: true });
-          }
+          setSearchId(currentSearchId);
+          setIsLoading(false);
+          return;
         }
+
+        // Initial search
+        const response = await fetch("/api/properties", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            type: "search",
+            params: {
+              ...searchParamsObj,
+              contract: type,
+              locality,
+              propertyType: searchParamsObj.type ?? "",
+              app: "vercel",
+            },
+          }),
+        });
+
+        if (!response.ok) throw new Error("Failed to fetch properties");
+        const data = (await response.json()) as MeqasaSearchResponse;
+        console.log(data);
+        setSearchResults(data.results);
+        setTotalResults(data.resultcount);
+        setSearch(data);
+        setSearchId(data.searchid);
+        setCurrentPage(pageParam);
       } catch (error) {
         console.error("Error fetching properties:", error);
       } finally {
@@ -186,25 +193,50 @@ export function SearchResults({ type }: SearchResultsProps) {
     if (searchParams.toString()) {
       void fetchResults();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams, apiContract]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams, type]);
 
   const handlePageChange = async (pageNumber: number) => {
-    if (pageNumber === currentPage) return;
+    if (!searchId || pageNumber === currentPage) return;
 
+    // Update URL with new page parameter and searchId
     const searchParamsObj = Object.fromEntries(searchParams.entries());
-    const urlSearchId = searchParamsObj.y ? parseInt(searchParamsObj.y) : null;
-
-    if (!urlSearchId) {
-      console.error("No searchId found in URL parameters");
-      return;
-    }
-
     const newSearchParams = new URLSearchParams(searchParamsObj);
     newSearchParams.set("page", pageNumber.toString());
-    newSearchParams.set("y", urlSearchId.toString());
+    newSearchParams.set("searchId", searchId.toString());
 
+    // Update URL without page reload
     router.push(`?${newSearchParams.toString()}`, { scroll: false });
+
+    setIsLoading(true);
+    try {
+      const response = await fetch("/api/properties", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "loadMore",
+          params: {
+            y: searchId,
+            w: pageNumber,
+            ...searchParamsObj,
+            contract: type,
+            locality: searchParamsObj.q,
+            propertyType: searchParamsObj.type ?? "",
+            app: "vercel",
+          },
+        }),
+      });
+      if (!response.ok) throw new Error("Failed to fetch page");
+      const data = (await response.json()) as MeqasaSearchResponse;
+      setSearchResults(data.results);
+      setTotalResults(data.resultcount);
+      setSearch(data);
+      setCurrentPage(pageNumber);
+    } catch (error) {
+      console.error("Error fetching page:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (isLoading) {
@@ -323,24 +355,34 @@ export function SearchResults({ type }: SearchResultsProps) {
             </div>
           </aside>
         </div>
+        {/* <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-semibold">Search Results</h2>
+          {searchResults.length > 0 && (
+            <Badge variant="secondary" className="text-sm">
+              {searchResults.length} of {totalResults} properties
+            </Badge>
+          )}
+        </div> */}
 
         <div>
           <aside>
             <Breadcrumbs
               segments={[
                 { title: "Home", href: "/" },
-                {
-                  title: `For ${type.charAt(0).toUpperCase() + type.slice(1)} `,
-                  href: `/search/${type}`,
-                },
-                { title: searchParams.get("q") ?? "Ghana", href: "#" },
+                { title: "search", href: "/1" },
+                { title: "results", href: "/2" },
               ]}
             />
             <h1 className="mt-2 text-lg font-bold leading-6 text-brand-accent md:text-xl">
-              Property for {type} in {searchParams.get("q") ?? "Ghana"}
+              Property for sale in east legon
             </h1>
             <p className="mt-3 text-sm text-brand-muted">
-              {totalResults} properties found
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam
+              adipisci ullam deserunt est dolorem impedit ratione, ut blanditiis
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam
+              adipisci ullam deserunt est dolorem impedit ratione, ut blanditiis
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam
+              adipisci ullam deserunt est dolorem impedit ratione, ut blanditiis
             </p>
           </aside>
           <div className="mt-12 grid grid-cols-1 gap-8 px-4 md:grid-cols-[736px,1fr] md:px-0">
@@ -415,11 +457,11 @@ export function SearchResults({ type }: SearchResultsProps) {
                           href="#"
                           onClick={(e) => {
                             e.preventDefault();
-                            if (currentPage > 1) {
+                            if (!isLoading && currentPage > 1) {
                               void handlePageChange(currentPage - 1);
                             }
                           }}
-                          aria-disabled={currentPage === 1}
+                          aria-disabled={currentPage === 1 || isLoading}
                         />
                       </PaginationItem>
                       {getPaginationItems(
@@ -451,12 +493,16 @@ export function SearchResults({ type }: SearchResultsProps) {
                           href="#"
                           onClick={(e) => {
                             e.preventDefault();
-                            if (currentPage < Math.ceil(totalResults / 20)) {
+                            if (
+                              !isLoading &&
+                              currentPage < Math.ceil(totalResults / 20)
+                            ) {
                               void handlePageChange(currentPage + 1);
                             }
                           }}
                           aria-disabled={
-                            currentPage === Math.ceil(totalResults / 20)
+                            currentPage === Math.ceil(totalResults / 20) ||
+                            isLoading
                           }
                         />
                       </PaginationItem>
@@ -467,6 +513,22 @@ export function SearchResults({ type }: SearchResultsProps) {
             </div>
             <div>
               <aside className="w-full items-center grid grid-cols-1 gap-4">
+                {/* <Card className="relative h-[450px] w-[225px] overflow-hidden">
+                  <Link
+                    href="https://meqasa.com/follow-ad-1883?u=https://oneelm.quaorealty.com"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <Image
+                      alt="Luxury Real Estate Property"
+                      src="https://dve7rykno93gs.cloudfront.net/pieoq/844216596"
+                      fill
+                      sizes=""
+                      className="object-contain"
+                      priority // Load this image with priority for faster rendering.
+                    />
+                  </Link>
+                </Card> */}
                 <RealEstateAd />
                 <RealEstateAd />
                 <RealEstateAd />

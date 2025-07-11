@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { apiFetch } from "./api-client";
 
 export interface AgentDetails {
@@ -18,6 +19,17 @@ export interface AgentDetails {
   listings: AgentListing[];
   haswan: boolean;
   rfilid: number;
+  socials: {
+    facebook?: string;
+    instagram?: string;
+    twitter?: string;
+    youtube?: string;
+  };
+  commission: {
+    rental?: string;
+    sale?: string;
+  };
+  experience?: string;
 }
 
 export interface AgentListing {
@@ -35,7 +47,10 @@ export interface AgentListing {
   contract: string;
   summary: string;
   description: string;
-  owner: any;
+  owner?: {
+    name?: string;
+    image?: string;
+  };
   pricepart1: string;
   pricepart2: string;
   availability: string;
@@ -48,10 +63,10 @@ export interface AgentListing {
  * @returns A promise that resolves to the agent details
  */
 export async function getAgentDetails(
-  agentId: string,
+  agentId: string | number,
   agentName: string,
 ): Promise<AgentDetails> {
-  const url = `https://meqasa.com/properties-listed-by-${"Joseph%20Yeboah"}?s=${encodeURIComponent(1810965854)}&app=vercel`;
+  const url = `https://meqasa.com/properties-listed-by-${encodeURIComponent(agentName)}?g=${encodeURIComponent(agentId)}&app=vercel`;
 
   const response = await fetch(url, {
     method: "GET",

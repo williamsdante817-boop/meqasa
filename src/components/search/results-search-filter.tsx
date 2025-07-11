@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import type React from "react";
@@ -26,25 +27,7 @@ import { Search, ChevronDown, ListFilterPlus } from "lucide-react";
 import { siteConfig } from "@/config/site";
 import { searchConfig } from "@/config/search";
 import { type FormState } from "@/types/search";
-
-// Mock location data for suggestions
-const mockLocations = [
-  "Accra, Greater Accra",
-  "Kumasi, Ashanti",
-  "Tamale, Northern",
-  "Cape Coast, Central",
-  "Takoradi, Western",
-  "Ho, Volta",
-  "Koforidua, Eastern",
-  "Sunyani, Brong Ahafo",
-  "Wa, Upper West",
-  "Bolgatanga, Upper East",
-  "East Legon, Accra",
-  "Cantonments, Accra",
-  "Airport Residential, Accra",
-  "Labone, Accra",
-  "Osu, Accra",
-];
+import { mockLocations } from "@/config/locations";
 
 // Extended FormState interface to include listingType
 interface ExtendedFormState extends FormState {

@@ -1,6 +1,6 @@
-import { MapPin } from "lucide-react";
-import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { MapPin } from "lucide-react";
+import Image from "next/image";
 
 const RealEstateAd = () => {
   return (
@@ -39,19 +39,23 @@ const RealEstateAd = () => {
         {/* Image Section */}
         <div className="relative mb-6 rounded-2xl overflow-hidden shadow-lg">
           <div className="aspect-[4/3] bg-gradient-to-br from-orange-200 via-orange-300 to-blue-200 flex items-center justify-center">
-            <img
+            <Image
               src="https://images.unsplash.com/photo-1721322800607-8c38375eef04?w=400&h=300&fit=crop"
               alt="Happy couple enjoying beachview apartment"
               className="w-full h-full object-cover"
+              width={400}
+              height={300}
             />
           </div>
 
           {/* Building Image Overlay */}
           <div className="absolute bottom-4 right-4 w-20 h-16 bg-white rounded-lg shadow-lg overflow-hidden">
-            <img
+            <Image
               src="https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=200&h=150&fit=crop"
               alt="Modern apartment building"
               className="w-full h-full object-cover"
+              width={200}
+              height={150}
             />
           </div>
 

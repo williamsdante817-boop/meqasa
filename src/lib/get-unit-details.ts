@@ -108,12 +108,7 @@ export interface UnitDetails {
   similarunits: SimilarUnit[];
 }
 
-/**
- * Fetches the details of a developer unit from the Meqasa API
- * @param unitId The ID of the unit to fetch details for
- * @returns A promise that resolves to the unit details
- * @throws An error if the request fails or the server returns an error
- */
+
 export async function getUnitDetails(unitId: string): Promise<UnitDetails> {
   try {
     const url = `https://meqasa.com/developer-units/details/${unitId}?app=vercel`;

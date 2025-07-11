@@ -9,8 +9,6 @@ import { InfiniteMovingCards } from "@/components/infinite-moving-card";
 import LocationCard from "@/components/location-card";
 import MarketNewsCard from "@/components/market-news-card";
 import PropertyListings from "@/components/property-listings";
-import { Suspense } from "react";
-import { LobbySkeleton } from "./lobby-skeleton";
 
 import { LatestListingsTab } from "@/components/latest-listings-tab";
 import { SearchFilter } from "@/components/search";
@@ -56,6 +54,7 @@ async function LobbyContent({
   const latestListingsForSale = latestListings.filter(
     (listing) => listing.contract === "sale",
   );
+  console.log('New Property Listings', featuredListings);
 
   return (
     <main>
@@ -125,7 +124,8 @@ async function LobbyContent({
           href="/listings"
           className="pt-14 md:pt-20 lg:pt-24 [&_p]:px-4 [&_h2]:px-4 w-full mx-auto md:max-w-[720px] lg:max-w-[960px] xl:max-w-[1140px] 2xl:max-w-[1320px]"
         >
-          <PropertyListings listings={featuredListings} />
+          <p>test</p>
+          {/* <PropertyListings listings={featuredListings} /> */}
         </ContentSection>
         <Shell>
           <div className="lg:flex flex-col md:flex-row gap-6">
@@ -231,9 +231,6 @@ export default async function Lobby({
     heroBannerPromise,
     flexiBannerPromise,
   ]);
-
-  // const flexiBannerHtml = await getFlexiBanner();
-  // console.log(flexiBannerHtml);
 
   return (
     <LobbyContent
