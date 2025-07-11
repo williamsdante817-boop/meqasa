@@ -33,16 +33,16 @@ export default async function DeveloperProjectPage({
               href: "/",
             },
             {
-              title: `developers`,
+              title: "Developers",
               href: `/developers`,
             },
             {
-              title: `Goldkey Properties`,
-              href: `/developers/1`,
+              title: projectData.project.name || "Developer",
+              href: `/projects-by-developer/${projectData.project.developerid || 1}`,
             },
             {
-              title: `One Elm`,
-              href: `/developers/1/projects/1`,
+              title: projectData.project.projectname,
+              href: "#",
             },
           ]}
         />

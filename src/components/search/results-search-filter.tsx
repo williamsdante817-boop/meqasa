@@ -3,7 +3,7 @@
 import type React from "react";
 import { useState, useEffect, useCallback } from "react";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -360,10 +360,23 @@ const MoreFiltersPopover = ({
 export function ResultSearchFilter() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const pathname = usePathname();
 
   // Initialize form state from URL parameters
   const initializeFormState = (): ExtendedFormState => {
     const searchParamsObj = Object.fromEntries(searchParams.entries());
+
+    // Extract contract type from URL path (/search/[type])
+    const pathSegments = pathname.split("/");
+    const urlContractType = pathSegments[pathSegments.length - 1] ?? "sale"; // Get the last segment with fallback
+
+    // Map API contract types back to UI contract types
+    const reverseContractMap: Record<string, string> = {
+      rent: "rent",
+      sale: "sale",
+    };
+
+    const uiContractType = reverseContractMap[urlContractType] ?? "sale";
 
     // Helper function to safely convert string to number or return empty string
     const safeNumber = (value: string | undefined): string => {
@@ -374,18 +387,18 @@ export function ResultSearchFilter() {
 
     // Helper function to handle bedroom/bathroom values
     const safeBedBath = (value: string | undefined): string => {
-      if (!value || value.trim() === "") return "";
+      if (!value || value.trim() === "") return "- Any -";
       // If it's a valid number, return it as string
       const num = Number(value);
       if (!isNaN(num) && num > 0) {
         return String(num);
       }
-      // If it's not a valid number, return empty string (will default to "- Any -")
-      return "";
+      // If it's not a valid number, return "- Any -"
+      return "- Any -";
     };
 
     return {
-      listingType: searchParamsObj.contract ?? "sale",
+      listingType: uiContractType,
       search: searchParamsObj.q ?? "",
       propertyType: searchParamsObj.ftype ?? "",
       bedrooms: safeBedBath(searchParamsObj.fbeds),
@@ -407,7 +420,7 @@ export function ResultSearchFilter() {
   // Update form state when URL parameters change
   useEffect(() => {
     setFormState(initializeFormState());
-  }, [searchParams]);
+  }, [searchParams, pathname]);
 
   const updateFormState = (updates: Partial<ExtendedFormState>) => {
     setFormState((prev) => ({ ...prev, ...updates }));
@@ -507,7 +520,7 @@ export function ResultSearchFilter() {
       searchParams.set("ffsbo", "1");
     }
 
-    // Navigate to search page
+    // Navigate to search page (no y or page for new search)
     router.push(`/search/${apiContract}?${searchParams.toString()}`);
   };
 

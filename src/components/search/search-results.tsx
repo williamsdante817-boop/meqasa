@@ -112,22 +112,18 @@ export function SearchResults({ type }: SearchResultsProps) {
         const pageParam = searchParamsObj.page
           ? parseInt(searchParamsObj.page)
           : 1;
-        const urlSearchId = searchParamsObj.searchId
-          ? parseInt(searchParamsObj.searchId)
+        const urlSearchId = searchParamsObj.y
+          ? parseInt(searchParamsObj.y)
           : null;
+        const { y, w, ...filtersForInitialSearch } = searchParamsObj;
 
         if (!locality) {
           console.error("Missing required parameter: locality");
           return;
         }
 
-        // If we have a searchId, use loadMore API
-        if (urlSearchId && pageParam > 1) {
-          console.log("Making loadMore request:", {
-            searchId: urlSearchId,
-            page: pageParam,
-          });
-
+        if (urlSearchId) {
+          // If y (searchid) is present, use loadMore
           const response = await fetch("/api/properties", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -141,51 +137,42 @@ export function SearchResults({ type }: SearchResultsProps) {
               },
             }),
           });
-
           if (!response.ok) throw new Error("Failed to fetch page");
           const data = (await response.json()) as MeqasaSearchResponse;
-
           setSearchResults(data.results);
           setTotalResults(data.resultcount);
           setSearch(data);
+          setSearchId(data.searchid);
           setCurrentPage(pageParam);
-          setSearchId(urlSearchId);
         } else {
-          // Initial search
-          console.log("Making initial search request:", {
-            contract: apiContract,
-            locality,
-          });
-
+          // No y in URL, do initial search
           const response = await fetch("/api/properties", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               type: "search",
               params: {
-                ...searchParamsObj,
+                ...filtersForInitialSearch,
                 contract: apiContract,
                 locality,
               },
             }),
           });
-
           if (!response.ok) throw new Error("Failed to fetch properties");
           const data = (await response.json()) as MeqasaSearchResponse;
-
           setSearchResults(data.results);
           setTotalResults(data.resultcount);
           setSearch(data);
           setSearchId(data.searchid);
-          setCurrentPage(pageParam);
-
+          setCurrentPage(1);
           // Update URL with searchId for persistence
-          if (data.searchid && !searchParamsObj.searchId) {
-            const newSearchParams = new URLSearchParams(searchParamsObj);
-            newSearchParams.set("searchId", data.searchid.toString());
-            // Set flag to prevent useEffect from running again
+          if (data.searchid) {
+            const newSearchParams = new URLSearchParams(
+              filtersForInitialSearch,
+            );
+            newSearchParams.set("y", data.searchid.toString());
             manualSearchRef.current = true;
-            router.push(`?${newSearchParams.toString()}`, { scroll: false });
+            router.push(`?${newSearchParams.toString()}`, { scroll: true });
           }
         }
       } catch (error) {
@@ -204,9 +191,7 @@ export function SearchResults({ type }: SearchResultsProps) {
     if (pageNumber === currentPage) return;
 
     const searchParamsObj = Object.fromEntries(searchParams.entries());
-    const urlSearchId = searchParamsObj.searchId
-      ? parseInt(searchParamsObj.searchId)
-      : null;
+    const urlSearchId = searchParamsObj.y ? parseInt(searchParamsObj.y) : null;
 
     if (!urlSearchId) {
       console.error("No searchId found in URL parameters");
@@ -215,7 +200,7 @@ export function SearchResults({ type }: SearchResultsProps) {
 
     const newSearchParams = new URLSearchParams(searchParamsObj);
     newSearchParams.set("page", pageNumber.toString());
-    newSearchParams.set("searchId", urlSearchId.toString());
+    newSearchParams.set("y", urlSearchId.toString());
 
     router.push(`?${newSearchParams.toString()}`, { scroll: false });
   };
@@ -342,8 +327,11 @@ export function SearchResults({ type }: SearchResultsProps) {
             <Breadcrumbs
               segments={[
                 { title: "Home", href: "/" },
-                { title: "search", href: "/1" },
-                { title: "results", href: "/2" },
+                {
+                  title: `For ${type.charAt(0).toUpperCase() + type.slice(1)} `,
+                  href: `/search/${type}`,
+                },
+                { title: searchParams.get("q") ?? "Ghana", href: "#" },
               ]}
             />
             <h1 className="mt-2 text-lg font-bold leading-6 text-brand-accent md:text-xl">

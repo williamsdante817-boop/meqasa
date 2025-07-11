@@ -121,7 +121,7 @@ export function ResultsCard({ result }: { result: ResultData }) {
               )}
             </AspectRatio>
           </Link>
-          <Badge className="absolute left-4 top-4 z-30 h-6 bg-b-accent uppercase">
+          <Badge className="absolute left-4 top-4 z-30 h-6 bg-brand-accent uppercase">
             {result.istopad ? "Premium" : result.availability}
           </Badge>
           {listingId > 0 && (

@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import ContactCard from "@/components/contact-card";
 import { AgentPropertyCard } from "../_components/agent-property-card";
 import Shell from "@/layouts/shell";
+import { Breadcrumbs } from "@/components/bread-crumbs";
 
 // Static data for demonstration
 const staticAgentData = {
@@ -158,6 +159,14 @@ export default async function AgentDetailsPage({
       <Shell className="mt-20">
         <section className="grid md:grid-cols-[736px,1fr] md:gap-8">
           <div>
+            <Breadcrumbs
+              className="mb-6"
+              segments={[
+                { title: "Home", href: "/" },
+                { title: "Agents", href: "/agents" },
+                { title: agent.name, href: "#" },
+              ]}
+            />
             <div className="text-brand-accent">
               <div className="flex flex-col items-start gap-3 md:flex-row md:justify-between md:gap-0">
                 <div>

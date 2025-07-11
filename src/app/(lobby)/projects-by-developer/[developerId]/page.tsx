@@ -103,6 +103,7 @@ export default async function DeveloperProfilePage({
                 segments={[
                   { title: "Home", href: "/" },
                   { title: "Developers", href: "/developers" },
+                  { title: developer.developer.companyname, href: "#" },
                 ]}
               />
               <DeveloperTabs developer={developer} />
