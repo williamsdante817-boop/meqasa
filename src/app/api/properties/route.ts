@@ -41,8 +41,6 @@ export async function POST(request: NextRequest) {
     const body = (await request.json()) as RequestBody;
     const { type, params } = body;
 
-    console.log("API Route - Request:", { type, params });
-
     if (type === "search") {
       const { contract, locality, ...searchParams } =
         params as MeqasaSearchParams & {
@@ -82,19 +80,31 @@ export async function POST(request: NextRequest) {
       }
 
       if (searchParams.fbeds && searchParams.fbeds !== "- Any -") {
-        postParams.set("fbeds", String(searchParams.fbeds));
+        const fbedsNum = Number(searchParams.fbeds);
+        if (!isNaN(fbedsNum)) {
+          postParams.set("fbeds", String(fbedsNum));
+        }
       }
 
       if (searchParams.fbaths && searchParams.fbaths !== "- Any -") {
-        postParams.set("fbaths", String(searchParams.fbaths));
+        const fbathsNum = Number(searchParams.fbaths);
+        if (!isNaN(fbathsNum)) {
+          postParams.set("fbaths", String(fbathsNum));
+        }
       }
 
-      if (searchParams.fmin && searchParams.fmin > 0) {
-        postParams.set("fmin", String(searchParams.fmin));
+      if (searchParams.fmin && Number(searchParams.fmin) > 0) {
+        const fminNum = Number(searchParams.fmin);
+        if (!isNaN(fminNum) && fminNum > 0) {
+          postParams.set("fmin", String(fminNum));
+        }
       }
 
-      if (searchParams.fmax && searchParams.fmax > 0) {
-        postParams.set("fmax", String(searchParams.fmax));
+      if (searchParams.fmax && Number(searchParams.fmax) > 0) {
+        const fmaxNum = Number(searchParams.fmax);
+        if (!isNaN(fmaxNum) && fmaxNum > 0) {
+          postParams.set("fmax", String(fmaxNum));
+        }
       }
 
       if (searchParams.fisfurnished === 1) {
@@ -121,7 +131,10 @@ export async function POST(request: NextRequest) {
 
       console.log("Search API call:", {
         url,
-        params: Object.fromEntries(postParams.entries()),
+        contract,
+        locality,
+        postParams: Object.fromEntries(postParams.entries()),
+        rawParams: searchParams,
       });
 
       const response = await fetch(url, {
@@ -193,7 +206,12 @@ export async function POST(request: NextRequest) {
 
       console.log("LoadMore API call:", {
         url,
-        params: Object.fromEntries(postParams.entries()),
+        contract,
+        locality,
+        searchId,
+        pageNumber,
+        postParams: Object.fromEntries(postParams.entries()),
+        rawParams: params,
       });
 
       const response = await fetch(url, {

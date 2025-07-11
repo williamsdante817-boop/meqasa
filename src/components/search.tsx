@@ -24,7 +24,7 @@ import { useRouter } from "next/navigation";
 export function SearchFilter() {
   const router = useRouter();
   const [formState, setFormState] = useState<FormState>({
-    search: "ghana",
+    search: "",
     propertyType: "all",
     bedrooms: "- Any -",
     bathrooms: "- Any -",
@@ -99,35 +99,17 @@ export function SearchFilter() {
                 <DialogHeader>
                   <DialogTitle>Search Properties</DialogTitle>
                 </DialogHeader>
-                <div className="space-y-4">
-                  <Input
-                    placeholder="Search for location"
-                    className="w-full"
-                    value={formState.search}
-                    onChange={(e) =>
-                      updateFormState({ search: e.target.value })
-                    }
-                  />
-                  <Button
-                    className="w-full"
-                    onClick={() => {
-                      const searchValue =
-                        formState.search && formState.search.trim() !== ""
-                          ? formState.search
-                          : "ghana";
-                      const params = new URLSearchParams();
-                      params.set("q", searchValue);
-
-                      // Set a flag in sessionStorage to indicate this is a manual search update
-                      // This will be checked by the SearchResults component to prevent duplicate API calls
-                      sessionStorage.setItem("manualSearchUpdate", "true");
-
-                      router.push(`/search/rent?${params.toString()}`);
-                    }}
-                  >
-                    Search
-                  </Button>
-                </div>
+                <SearchForm
+                  type="rent"
+                  formState={formState}
+                  updateFormState={updateFormState}
+                >
+                  <div className="space-y-4">
+                    <Button type="submit" className="w-full">
+                      Search
+                    </Button>
+                  </div>
+                </SearchForm>
               </DialogContent>
             </Dialog>
           </div>

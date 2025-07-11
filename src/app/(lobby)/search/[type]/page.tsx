@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { SearchResults } from "./search-results";
+import { SearchResults } from "../../../../components/search/search-results";
 
 interface SearchPageProps {
   params: Promise<{ type: string }>;

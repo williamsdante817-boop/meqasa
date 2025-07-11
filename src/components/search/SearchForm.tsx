@@ -3,7 +3,7 @@
 import { Input } from "@/components/ui/input";
 import { type FormState } from "@/types/search";
 import { SearchInput } from "./SearchInput";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 interface SearchFormProps {
   type: string;
@@ -19,6 +19,7 @@ export function SearchForm({
   updateFormState,
 }: SearchFormProps) {
   const router = useRouter();
+  const pathname = usePathname();
 
   // Map UI contract types to API contract types
   const contractMap: Record<string, string> = {
@@ -26,6 +27,16 @@ export function SearchForm({
     buy: "sale",
     land: "sale",
     "short-let": "rent",
+  };
+
+  // Get the actual contract type from URL path if available
+  const getContractType = () => {
+    if (pathname.includes("/search/")) {
+      const pathSegments = pathname.split("/");
+      const urlContractType = pathSegments[pathSegments.length - 1];
+      return urlContractType ?? type;
+    }
+    return type;
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -38,7 +49,7 @@ export function SearchForm({
         : "ghana";
 
     // Get the API-compliant contract type
-    const apiContract = contractMap[type] ?? type;
+    const apiContract = contractMap[getContractType()] ?? getContractType();
 
     // Build search params according to API documentation
     const searchParams = new URLSearchParams();
@@ -97,11 +108,7 @@ export function SearchForm({
 
     console.log("Search Params:", Object.fromEntries(searchParams.entries()));
 
-    // Set a flag in sessionStorage to indicate this is a manual search update
-    // This will be checked by the SearchResults component to prevent duplicate API calls
-    sessionStorage.setItem("manualSearchUpdate", "true");
-
-    // Navigate to search page with parameters
+    // Navigate to search page with parameters (no y or page for new search)
     router.push(`/search/${apiContract}?${searchParams.toString()}`);
   };
 

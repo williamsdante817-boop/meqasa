@@ -154,7 +154,7 @@ export function PremiumPlusPropertyCard({
             style={{ width: "100%", height: "279px" }}
           />
           <div className=" absolute inset-0 rounded-2xl ">
-            <Badge className="absolute left-4 top-4 z-20 bg-brand-accent uppercase">
+            <Badge className="absolute left-4 top-4 z-20 bg-brand-primary uppercase">
               Premium Plus
             </Badge>
             <div className="absolute right-4 top-4 z-30">

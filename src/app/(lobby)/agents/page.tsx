@@ -5,6 +5,7 @@ import { AgentCard } from "./_components/agent-card";
 import AgentFaq from "./_components/agent-faq";
 import AgentSearch from "./_components/agent-search";
 import InfoBanner from "./_components/info-banner";
+import { Breadcrumbs } from "@/components/bread-crumbs";
 
 export default async function AgentsPage() {
   const { list: agents } = await getAllAgents();
@@ -14,6 +15,13 @@ export default async function AgentsPage() {
     <Shell>
       <div className="mt-6 grid gap-8 px-3 transition-all duration-300 ease-in md:container md:grid-cols-[736px,1fr] md:p-0">
         <div>
+          <Breadcrumbs
+            className="mb-6"
+            segments={[
+              { title: "Home", href: "/" },
+              { title: "Agents", href: "#" },
+            ]}
+          />
           <AgentSearch agents={agents} />
           <InfoBanner />
           <section className="mb-8">
