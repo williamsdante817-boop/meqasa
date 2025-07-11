@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import { blog } from "@/assets/data/blog";
 import { location } from "@/assets/data/location";
 import AppPromotion from "@/components/app-promotion";
@@ -10,20 +9,21 @@ import { InfiniteMovingCards } from "@/components/infinite-moving-card";
 import LocationCard from "@/components/location-card";
 import MarketNewsCard from "@/components/market-news-card";
 import PropertyListings from "@/components/property-listings";
+import { Suspense } from "react";
+import { LobbySkeleton } from "./lobby-skeleton";
 
+import { LatestListingsTab } from "@/components/latest-listings-tab";
+import { SearchFilter } from "@/components/search";
 import SeoText from "@/components/seo-text";
 import Shell from "@/layouts/shell";
 import type { getAgentLogos } from "@/lib/get-agents-logos";
 import type { getFeaturedListings } from "@/lib/get-featured-listings";
 import type { getFeaturedProjects } from "@/lib/get-featured-projects";
 import type { getFeaturedUnits } from "@/lib/get-featured-units";
+import type { getFlexiBanner } from "@/lib/get-flexi-banner";
 import type { getHeroBanner } from "@/lib/get-hero-banner";
 import type { getLatestListings } from "@/lib/get-latest-listing";
 import MobilePageHeader from "./mobile-page-header";
-import { LatestListingsTab } from "@/components/latest-listings-tab";
-import type { getFlexiBanner } from "@/lib/get-flexi-banner";
-import { SearchFilter } from "@/components/search";
-import { getDevelopers } from "@/lib/get-developers";
 
 interface LobbyProps {
   latestListingsPromise: ReturnType<typeof getLatestListings>;
@@ -56,13 +56,6 @@ async function LobbyContent({
   const latestListingsForSale = latestListings.filter(
     (listing) => listing.contract === "sale",
   );
-
-  const testData = await getDevelopers();
-  console.log("Test Data:", testData);
-
-  console.log("feturedProjects:", featuredProjects);
-  console.log("featuredListings:", featuredListings);
-  console.log("latest:", latestListings);
 
   return (
     <main>
@@ -243,15 +236,13 @@ export default async function Lobby({
   // console.log(flexiBannerHtml);
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <LobbyContent
-        agentLogos={agentLogos}
-        featuredProjects={featuredProjects}
-        featuredListings={featuredListings}
-        latestListings={latestListings}
-        heroBanner={heroBanner}
-        flexiBanner={flexiBanner}
-      />
-    </Suspense>
+    <LobbyContent
+      agentLogos={agentLogos}
+      featuredProjects={featuredProjects}
+      featuredListings={featuredListings}
+      latestListings={latestListings}
+      heroBanner={heroBanner}
+      flexiBanner={flexiBanner}
+    />
   );
 }

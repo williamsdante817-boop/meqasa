@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { getAgentLogos } from "@/lib/get-agents-logos";
 import { getFeaturedListings } from "@/lib/get-featured-listings";
 import { getFeaturedProjects } from "@/lib/get-featured-projects";
@@ -24,10 +25,11 @@ export default async function HomePage() {
   const latestListings = getLatestListings();
   const heroBanner = getHeroBanner();
   const flexiBanner = getFlexiBanner();
-  
 
   return (
     <React.Suspense fallback={<LobbySkeleton />}>
+      {" "}
+      {/* Use a proper skeleton loader */}
       <Lobby
         agentsLogosPromise={agentLogos}
         heroBannerPromise={heroBanner}

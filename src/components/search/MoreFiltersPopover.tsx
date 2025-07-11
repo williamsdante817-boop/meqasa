@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import { Filter, ListFilter, ListFilterPlus } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Popover,
   PopoverContent,
@@ -15,11 +15,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
 import { searchConfig } from "@/config/search";
 import { type FormState } from "@/types/search";
+import { ListFilterPlus } from "lucide-react";
 
 interface MoreFiltersPopoverProps {
   formState: FormState;
