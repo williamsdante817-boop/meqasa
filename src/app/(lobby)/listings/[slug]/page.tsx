@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Breadcrumbs } from "@/components/bread-crumbs";
 import Shell from "@/layouts/shell";
 

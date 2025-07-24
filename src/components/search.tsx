@@ -22,9 +22,12 @@ import { SearchForm } from "./search/SearchForm";
 
 export function SearchFilter() {
   const router = useRouter();
+  const router = useRouter();
   const [formState, setFormState] = useState<FormState>({
     search: "",
     propertyType: "all",
+    bedrooms: "- Any -",
+    bathrooms: "- Any -",
     bedrooms: "- Any -",
     bathrooms: "- Any -",
     minPrice: "",
@@ -109,12 +112,24 @@ export function SearchFilter() {
                     </Button>
                   </div>
                 </SearchForm>
+                <SearchForm
+                  type="rent"
+                  formState={formState}
+                  updateFormState={updateFormState}
+                >
+                  <div className="space-y-4">
+                    <Button type="submit" className="w-full">
+                      Search
+                    </Button>
+                  </div>
+                </SearchForm>
               </DialogContent>
             </Dialog>
           </div>
 
           <TabsContent value="buy">
             <SearchForm
+              type="buy"
               type="buy"
               formState={formState}
               updateFormState={updateFormState}
@@ -182,6 +197,7 @@ export function SearchFilter() {
             >
               <CommonFilters
                 showMoreFilters
+                hidePropertyType
                 hidePropertyType
                 formState={formState}
                 updateFormState={updateFormState}

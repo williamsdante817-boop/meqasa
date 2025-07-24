@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { Checkbox } from "@/components/ui/checkbox";
@@ -31,7 +32,9 @@ export function MoreFiltersPopover({
     <Popover>
       <PopoverTrigger className="flex min-w-[150px] h-5 max-w-[150px] cursor-pointer items-center rounded-lg text-base font-medium text-white">
         More filters <ListFilterPlus className="ml-2 h-5 w-5" />
+        More filters <ListFilterPlus className="ml-2 h-5 w-5" />
       </PopoverTrigger>
+      <PopoverContent className="w-[400px] p-4">
       <PopoverContent className="w-[400px] p-4">
         <div className="mb-4 grid grid-cols-2 items-center gap-2">
           <Select
@@ -44,7 +47,9 @@ export function MoreFiltersPopover({
             <SelectContent className="text-b-accent">
               <SelectGroup>
                 <SelectItem value="- Any -">Any Period</SelectItem>
+                <SelectItem value="- Any -">Any Period</SelectItem>
                 {searchConfig.selectOptions.period.map(({ value, label }) => (
+                  <SelectItem value={value} key={value}>
                   <SelectItem value={value} key={value}>
                     {label}
                   </SelectItem>
@@ -62,7 +67,9 @@ export function MoreFiltersPopover({
             <SelectContent className="border-none text-b-accent shadow-spread">
               <SelectGroup>
                 <SelectItem value="- Any -">Any Sort</SelectItem>
+                <SelectItem value="- Any -">Any Sort</SelectItem>
                 {searchConfig.selectOptions.sort.map(({ value, label }) => (
+                  <SelectItem value={value} key={value + label}>
                   <SelectItem value={value} key={value + label}>
                     {label}
                   </SelectItem>
@@ -71,6 +78,7 @@ export function MoreFiltersPopover({
             </SelectContent>
           </Select>
         </div>
+
 
         <div className="flex items-start justify-between pt-8 text-sm font-semibold text-b-accent">
           <span>Only show...</span>
@@ -82,6 +90,7 @@ export function MoreFiltersPopover({
                 onCheckedChange={(checked) =>
                   updateFormState({ furnished: !!checked })
                 }
+                className="data-[state=checked]:border-0 data-[state=checked]:bg-primary data-[state=checked]:text-white"
                 className="data-[state=checked]:border-0 data-[state=checked]:bg-primary data-[state=checked]:text-white"
               />
               <label
@@ -98,6 +107,7 @@ export function MoreFiltersPopover({
                 onCheckedChange={(checked) =>
                   updateFormState({ owner: !!checked })
                 }
+                className="data-[state=checked]:border-0 data-[state=checked]:bg-primary data-[state=checked]:text-white"
                 className="data-[state=checked]:border-0 data-[state=checked]:bg-primary data-[state=checked]:text-white"
               />
               <label
