@@ -21,13 +21,9 @@ import { PriceInput } from "./search/PriceInput";
 import { SearchForm } from "./search/SearchForm";
 
 export function SearchFilter() {
-  const router = useRouter();
-  const router = useRouter();
   const [formState, setFormState] = useState<FormState>({
     search: "",
     propertyType: "all",
-    bedrooms: "- Any -",
-    bathrooms: "- Any -",
     bedrooms: "- Any -",
     bathrooms: "- Any -",
     minPrice: "",
