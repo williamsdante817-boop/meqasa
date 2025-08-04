@@ -76,7 +76,9 @@ export function ResultsCard({ result }: { result: ResultData }) {
     detailsLink = `/developer-unit/${result.bedroomcount}-bedroom-${typeSlug}-for-${result.contract}-in-${citySlug}-unit-${result.listingid}`;
     cleanPath = `-${result.listingid}`; // fallback for unit
   } else {
-    cleanPath = result.detailreq.replace(/^https?:\/\/[^/]+\//, "");
+    cleanPath = result.detailreq
+      ? result.detailreq.replace(/^https?:\/\/[^/]+\//, "")
+      : "";
     detailsLink = `/listings${cleanPath}`;
   }
   // Extract listing ID from cleanPath for the favorite button
@@ -86,20 +88,22 @@ export function ResultsCard({ result }: { result: ResultData }) {
     10,
   );
 
-  const agentImageUrl = result.owner.image.startsWith("http")
+  const agentImageUrl = result.owner.image?.startsWith("http")
     ? result.owner.image
-    : `https://meqasa.com/fascimos/somics/${result.owner.image}`;
+    : result.owner.image
+      ? `https://meqasa.com/fascimos/somics/${result.owner.image}`
+      : "";
 
   return (
-    <Card className="flex flex-col gap-4 rounded-xl text-brand-accent shadow-none lg:flex-row lg:border lg:border-[##fea3b1] lg:p-4">
+    <Card className="flex flex-col gap-4 rounded-lg py-0 text-brand-accent shadow-none md:flex-row md:border md:border-[##fea3b1] md:p-4">
       <CardHeader className="min-w-[256px] p-0">
-        <div className="relative min-h-[202px] min-w-[256px] rounded-2xl">
+        <div className="relative min-h-[202px] min-w-[256px] rounded-lg">
           <Link href={detailsLink} className="absolute inset-0 z-10">
             <AspectRatio ratio={4 / 3}>
               {!imgError ? (
                 <Image
                   className={cn(
-                    "object-cover rounded-2xl transition-opacity duration-300 h-[202px] w-full",
+                    "object-cover rounded-xl transition-opacity duration-300 h-[202px] w-full",
                     isLoading ? "opacity-0" : "opacity-100",
                   )}
                   src={result.image}
@@ -117,13 +121,15 @@ export function ResultsCard({ result }: { result: ResultData }) {
                 />
               )}
               {isLoading && !imgError && (
-                <div className="absolute inset-0 bg-gray-100 animate-pulse rounded-2xl" />
+                <div className="absolute inset-0 bg-gray-100 animate-pulse rounded-xl" />
               )}
             </AspectRatio>
           </Link>
-          <Badge className="absolute left-4 top-4 z-30 h-6 bg-brand-accent uppercase">
-            {result.istopad ? "Premium" : result.availability}
-          </Badge>
+          {result.istopad ? (
+            <Badge className="absolute left-4 top-4 z-30 h-6 bg-brand-accent uppercase">
+              {result.availability}
+            </Badge>
+          ) : null}
           {listingId > 0 && (
             <div className="absolute right-4 top-4 z-10">
               <AddFavoriteButton listingId={listingId} />
@@ -138,9 +144,9 @@ export function ResultsCard({ result }: { result: ResultData }) {
           </Button>
         </div>
       </CardHeader>
-      <CardContent className="flex flex-col justify-between px-4 pb-4 lg:p-0">
+      <CardContent className="flex flex-1 flex-col justify-between px-4 pb-4 md:p-0">
         <Link href={detailsLink}>
-          <h3 className="font-bold lg:text-lg ">{result.summary}</h3>
+          <h3 className="font-bold capitalize md:text-md ">{result.summary}</h3>
           <div className="flex h-fit items-center gap-2 pt-3">
             <span
               className="text-base font-semibold"
@@ -158,14 +164,40 @@ export function ResultsCard({ result }: { result: ResultData }) {
               __html: result.description ?? "",
             }}
           />
-          <div className="flex items-center gap-1 pt-2 text-sm">
-            <span>{result.bedroomcount} Beds</span>
-            <Dot className="h-4 w-4" />
-            <span>{result.bathroomcount} Baths</span>
-            <Dot className="h-4 w-4" />
-            <span>{result.garagecount} Parking</span>
-            <Dot className="h-4 w-4" />
-            <span>{result.floorarea ? `${result.floorarea} m²` : ""}</span>
+          <div className="flex items-center justify-between gap-1 pt-2 text-sm">
+            <div className="flex items-center gap-1">
+              {result.bedroomcount && (
+                <>
+                  <span>{result.bedroomcount} Beds</span>
+                  <Dot className="h-4 w-4" />
+                </>
+              )}
+              {result.bathroomcount && (
+                <>
+                  <span>{result.bathroomcount} Baths</span>
+                </>
+              )}
+              {result.garagecount && (
+                <>
+                  <Dot className="h-4 w-4" />
+                  <span>{result.garagecount} Parking</span>
+                </>
+              )}
+              {result.floorarea && (
+                <>
+                  <Dot className="h-4 w-4" />
+                  <span>
+                    {result.floorarea ? `${result.floorarea} m²` : ""}
+                  </span>
+                </>
+              )}
+            </div>
+            {!result.istopad ? (
+              <Badge className="bg-transparent uppercase text-brand-accent border border-orange-400">
+                {" "}
+                top ad
+              </Badge>
+            ) : null}
           </div>
         </Link>
         <CardFooter className="mt-3 flex items-center justify-between p-0 ">
@@ -176,10 +208,12 @@ export function ResultsCard({ result }: { result: ResultData }) {
                 className="rounded-full border border-gray-50 object-contain"
               />
               <AvatarFallback className="flex h-11 w-11 items-center justify-center rounded-full border bg-slate-50 text-sm font-bold text-inherit">
-                {result.owner.name.slice(0, 2).toUpperCase()}
+                {result.owner.name
+                  ? result.owner.name.slice(0, 2).toUpperCase()
+                  : "NA"}
               </AvatarFallback>
             </Avatar>
-            <div className="hidden lg:block">
+            <div className="hidden md:block">
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger>
@@ -201,7 +235,7 @@ export function ResultsCard({ result }: { result: ResultData }) {
                   variant="secondary"
                   size="icon"
                   className="flex items-center gap-1.5  font-semibold text-brand-accent"
-                  aria-label={`Contact ${result.owner.name}`}
+                  aria-label={`Contact ${result.owner.name || "agent"}`}
                 >
                   <Phone className="h-4 w-5" />
                 </Button>
@@ -209,7 +243,7 @@ export function ResultsCard({ result }: { result: ResultData }) {
               <DialogContent className="max-w-4xl w-fit h-fit overflow-y-auto p-0">
                 <div className="h-full">
                   <ContactCard
-                    name={result.owner.name}
+                    name={result.owner.name || "Agent"}
                     image={result.owner.image || ""}
                     src
                   />

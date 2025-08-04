@@ -45,7 +45,7 @@ export function SearchForm({
     // Set default location to 'ghana' if not provided
     const searchValue =
       formState.search && formState.search.trim() !== ""
-        ? formState.search
+        ? formState.search.toLowerCase()
         : "ghana";
 
     // Get the API-compliant contract type
@@ -106,7 +106,22 @@ export function SearchForm({
       searchParams.set("ffsbo", "1");
     }
 
-    console.log("Search Params:", Object.fromEntries(searchParams.entries()));
+    // Short-let specific parameters
+    if (type === "short-let") {
+      // Set required short-let parameters
+      searchParams.set("frentperiod", "shortrent");
+      searchParams.set("ftype", "- Any -"); // Required for short-let searches
+
+      // Add short-let duration - always send a value (default to "day" if none selected)
+      if (formState.howShort && formState.howShort !== "- Any -") {
+        searchParams.set("fhowshort", formState.howShort);
+      } else {
+        // Send default duration when none is selected
+        searchParams.set("fhowshort", "day");
+      }
+    }
+
+    // console.log("Search Params:", Object.fromEntries(searchParams.entries()));
 
     // Navigate to search page with parameters (no y or page for new search)
     router.push(`/search/${apiContract}?${searchParams.toString()}`);

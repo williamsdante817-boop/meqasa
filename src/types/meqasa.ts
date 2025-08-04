@@ -14,6 +14,7 @@ export interface MeqasaListing {
   recency: string;
   detailreq: string;
   image: string;
+  image2: string;
   streetaddress: string;
   locationstring: string;
   floorarea: string;
@@ -81,6 +82,7 @@ export type PropertyType =
 export type ContractType = "rent" | "sale";
 export type RentPeriod = "shortrent" | "longrent" | "- Any -";
 export type SortOrder = "date" | "date2" | "price" | "price2";
+export type ShortLetDuration = "day" | "week" | "month" | "month3" | "month6";
 
 export interface MeqasaSearchParams {
   ftype?: PropertyType;
@@ -92,6 +94,7 @@ export interface MeqasaSearchParams {
   ffsbo?: 1;
   frentperiod?: RentPeriod;
   fsort?: SortOrder;
+  fhowshort?: ShortLetDuration; // New parameter for short-let duration
   app: "vercel";
 }
 

@@ -49,7 +49,7 @@ export default function UnitCard({ unit }: { unit: SimilarUnit | Unit }) {
         className="focus:outline-none focus:ring-2 focus:ring-brand-accent rounded-xl block"
       >
         <CardHeader className="p-0 border-b border-b-gray-100 gap-0 rounded-xl shadow-elegant-sm">
-          <AspectRatio ratio={4 / 3}>
+          <AspectRatio ratio={4 / 3} className="relative">
             {!imgError ? (
               <Image
                 className={cn(
@@ -93,7 +93,7 @@ export default function UnitCard({ unit }: { unit: SimilarUnit | Unit }) {
               {unit.terms === "sale" ? "For Sale" : "For Rent"}
             </Badge>
           </div>
-          
+
           <div className="absolute top-3 right-3 z-10">
             <AddFavoriteButton listingId={Number(unit.unitid)} />
           </div>

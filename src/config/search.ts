@@ -16,6 +16,13 @@ export const searchConfig = {
       { value: "price", label: "Lower to higher" },
       { value: "price2", label: "Higher to lower" },
     ],
+    howShort: [
+      { value: "day", label: "Daily" },
+      { value: "week", label: "Weekly" },
+      { value: "month", label: "Monthly" },
+      { value: "month3", label: "3 Months" },
+      { value: "month6", label: "6 Months" },
+    ],
   },
   priceRange: {
     min: 0,

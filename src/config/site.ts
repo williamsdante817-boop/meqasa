@@ -97,31 +97,32 @@ export const siteConfig: SiteConfig = {
       items: [
         {
           title: "Apartments For Rent",
-          href: "/apartments-for-rent-in-Accra",
+          href: "/search/rent?q=ghana&ftype=apartment",
           description: "Browse apartments available for rent in Accra.",
           items: [],
         },
         {
-          title: "Houses For Sale in Ghana",
-          href: "/houses-for-rent-in-ghana",
-          description: "Explore houses available for rent across Ghana.",
-          items: [],
-        },
-        {
-          title: "Office Spaces",
-          href: "/offices-for-rent-in-Accra",
-          description: "Find office spaces for rent in Accra.",
-          items: [],
-        },
-        {
           title: "Houses For Rent in Ghana",
-          href: "/houses-for-rent-in-Accra",
+          href: "/search/rent?q=ghana&ftype=house",
           description: "Discover houses for rent in Accra and beyond.",
           items: [],
         },
         {
+          title: "Office Spaces",
+          href: "/search/rent?q=ghana&ftype=office",
+          description: "Find office spaces for rent in Accra.",
+          items: [],
+        },
+        {
+          title: "Houses For Rent in Accra",
+          href: "/search/rent?q=accra&ftype=house",
+          description: "Discover houses for rent in Accra and beyond.",
+          items: [],
+        },
+
+        {
           title: "Rented Properties",
-          href: "/rented-properties",
+          href: "/search/rent?q=ghana&ftype=sold",
           description: "View properties that have been rented.",
           items: [],
         },
@@ -134,32 +135,26 @@ export const siteConfig: SiteConfig = {
         "Browse properties for sale, including houses and apartments.",
       items: [
         {
-          title: "Apartment For Sale",
-          href: "/apartments-for-sale-in-Accra",
-          description: "Find apartments for sale in Accra.",
-          items: [],
-        },
-        {
-          title: "Apartment For Sale",
-          href: "/apartments-for-sale-in-Accra",
-          description: "Explore available apartments for sale.",
-          items: [],
-        },
-        {
           title: "Houses For sale",
-          href: "/houses-for-sale-in-ghana",
+          href: "/search/sale?q=ghana&ftype=house",
           description: "Browse houses available for sale in Ghana.",
           items: [],
         },
         {
+          title: "Apartment For Sale",
+          href: "/search/sale?q=ghana&ftype=apartment",
+          description: "Find apartments for sale in Accra.",
+          items: [],
+        },
+        {
           title: "Office Spaces",
-          href: "/offices-for-sale-in-Accra",
+          href: "/search/sale?q=ghana&ftype=office",
           description: "Find office spaces available for sale in Accra.",
           items: [],
         },
         {
           title: "Sold Properties",
-          href: "/rented-properties",
+          href: "/search/sale?q=ghana&ftype=sold",
           description: "View properties that have been sold.",
           items: [],
         },
@@ -233,7 +228,7 @@ export const siteConfig: SiteConfig = {
       items: [],
     },
     {
-      title: "Development",
+      title: "Developments",
       description:
         "Browse properties for sale, including houses and apartments.",
       items: [],
@@ -251,47 +246,47 @@ export const siteConfig: SiteConfig = {
       items: [
         {
           title: "Houses for rent in Accra",
-          href: "/houses-for-rent-in-Accra",
+          href: "/search/rent?q=accra&ftype=house",
           external: false,
         },
         {
           title: "Houses for rent in East Legon",
-          href: "/houses-for-rent-in-East Legon",
+          href: "/search/rent?q=east%20legon&ftype=house",
           external: false,
         },
         {
           title: "Houses for rent in Cantonments",
-          href: "/houses-for-rent-in-Cantonments",
+          href: "/search/rent?q=cantonments&ftype=house",
           external: false,
         },
         {
           title: "Houses for rent in Spintex",
-          href: "/houses-for-rent-in-Spintex",
+          href: "/search/rent?q=spintex&ftype=house",
           external: false,
         },
         {
           title: "Houses for rent in Dworwulu",
-          href: "/houses-for-rent-in-Dworwulu",
+          href: "/search/rent?q=dzorwulu&ftype=house",
           external: false,
         },
         {
           title: "Houses for rent in Airport Hills",
-          href: "/houses-for-rent-in-Airport Hills",
+          href: "/search/rent?q=airport%20hills&ftype=house",
           external: false,
         },
         {
           title: "Houses for sale in Airport Area",
-          href: "Airport Area",
+          href: "/search/sale?q=airport&ftype=house",
           external: false,
         },
         {
           title: "Houses for rent in Labone",
-          href: "/houses-for-rent-in-Labone",
+          href: "/search/rent?q=labone&ftype=house",
           external: false,
         },
         {
           title: "Houses for rent in Tema",
-          href: "/houses-for-rent-in-Tema",
+          href: "/search/rent?q=tema&ftype=house",
           external: false,
         },
       ],
@@ -301,47 +296,47 @@ export const siteConfig: SiteConfig = {
       items: [
         {
           title: "Houses for sale in Accra",
-          href: "/houses-for-sale-in-Accra",
+          href: "/search/sale?q=accra&ftype=house",
           external: false,
         },
         {
           title: "Houses for sale in Kasoa",
-          href: "/houses-for-sale-in-Kasoa",
+          href: "/search/sale?q=kasoa&ftype=house",
           external: false,
         },
         {
           title: "Houses for sale in Tema",
-          href: "/houses-for-sale-in-Tema",
+          href: "/search/sale?q=tema&ftype=house",
           external: false,
         },
         {
           title: "Houses for sale in Kwabenya",
-          href: "/houses-for-sale-in-Kwabenya",
+          href: "/search/sale?q=kwabenya&ftype=house",
           external: false,
         },
         {
           title: "Houses for sale in East Legon",
-          href: "/houses-for-sale-in-East Legon",
+          href: "/search/sale?q=east%20legon&ftype=house",
           external: false,
         },
         {
           title: "Houses for sale in Adjiringanor",
-          href: "/houses-for-sale-in-Adjirigonor",
+          href: "/search/sale?q=adjiringanor&ftype=house",
           external: false,
         },
         {
           title: "Houses for sale in Airport Area",
-          href: "/houses-for-sale-in-Airport Area",
+          href: "/search/sale?q=airport&ftype=house",
           external: false,
         },
         {
           title: "Houses for sale in Airport Hills",
-          href: "/houses-for-sale-in-Airport Hills",
+          href: "/search/sale?q=airport%20hills&ftype=house",
           external: false,
         },
         {
           title: "Houses for sale in Spintex Road",
-          href: "/houses-for-sale-in-Spintex Road",
+          href: "/search/sale?q=spintex&ftype=house",
           external: false,
         },
       ],
@@ -351,47 +346,47 @@ export const siteConfig: SiteConfig = {
       items: [
         {
           title: "Apartments for sale in Ridge",
-          href: "/apartments-for-sale-in-Ridge",
+          href: "/search/sale?q=ridge&ftype=apartment",
           external: false,
         },
         {
           title: "Apartments for sale in Dzorwulu",
-          href: "/apartments-for-sale-in-Dzorwulu",
+          href: "/search/sale?q=dzorwulu&ftype=apartment",
           external: false,
         },
         {
           title: "Apartments for sale in Spintex Road",
-          href: "/apartments-for-sale-in-Spintex Road",
+          href: "/search/sale?q=spintex&ftype=apartment",
           external: false,
         },
         {
           title: "Apartments for sale in Osu",
-          href: "/apartments-for-sale-in-Osu",
+          href: "/search/sale?q=osu&ftype=apartment",
           external: false,
         },
         {
           title: "Apartments for sale in Tema",
-          href: "/apartments-for-sale-in-Tema",
+          href: "/search/sale?q=tema&ftype=apartment",
           external: false,
         },
         {
           title: "Apartments for sale in Cantonments",
-          href: "/apartments-for-sale-in-Cantonments",
+          href: "/search/sale?q=cantonments&ftype=apartment",
           external: false,
         },
         {
           title: "Apartments for sale in Labone",
-          href: "/apartments-for-sale-in-Labone",
+          href: "/search/sale?q=labone&ftype=apartment",
           external: false,
         },
         {
           title: "Apartments for sale in Airport Area",
-          href: "/apartments-for-sale-in-Airport Area",
+          href: "/search/sale?q=airport&ftype=apartment",
           external: false,
         },
         {
           title: "Apartments for sale in East Legon",
-          href: "/apartments-for-sale-in-East Legon",
+          href: "/search/sale?q=east%20legon&ftype=apartment",
           external: false,
         },
       ],
@@ -401,47 +396,47 @@ export const siteConfig: SiteConfig = {
       items: [
         {
           title: "Apartments for rent in Dzorwulu",
-          href: "/apartments-for-rent-in-Dzorwulu",
+          href: "/search/rent?q=dzorwulu&ftype=apartment",
           external: false,
         },
         {
           title: "Apartments for rent in Tema",
-          href: "/apartments-for-rent-in-Tema",
+          href: "/search/rent?q=tema&ftype=apartment",
           external: false,
         },
         {
           title: "Apartments for rent in Spintex Road",
-          href: "/apartments-for-rent-in-Spintex Road",
+          href: "/search/rent?q=spintex&ftype=apartment",
           external: false,
         },
         {
           title: "Apartments for rent in Osu",
-          href: "/apartments-for-rent-in-Osu",
+          href: "/search/rent?q=osu&ftype=apartment",
           external: false,
         },
         {
           title: "Apartments for rent in Ridge",
-          href: "/apartments-for-rent-in-Ridge",
+          href: "/search/rent?q=ridge&ftype=apartment",
           external: false,
         },
         {
           title: "Apartments for rent in Cantonments",
-          href: "/apartments-for-rent-in-Cantonments",
+          href: "/search/rent?q=cantonments&ftype=apartment",
           external: false,
         },
         {
           title: "Apartments for rent in Airport Area",
-          href: "/apartments-for-rent-in-Airport Area",
+          href: "/search/rent?q=airport&ftype=apartment",
           external: false,
         },
         {
           title: "Apartments for rent in Labone",
-          href: "/apartments-for-rent-in-Labone",
+          href: "/search/rent?q=labone&ftype=apartment",
           external: false,
         },
         {
           title: "Apartments for rent in East Legon",
-          href: "/apartments-for-rent-in-East Legon",
+          href: "/search/rent?q=east%20legon&ftype=apartment",
           external: false,
         },
       ],
@@ -451,47 +446,47 @@ export const siteConfig: SiteConfig = {
       items: [
         {
           title: "Office spaces for rent in Accra",
-          href: "/offices-for-rent-in-Accra",
+          href: "/search/rent?q=accra&ftype=office",
           external: false,
         },
         {
           title: "Office spaces for rent in Cantonments",
-          href: "/offices-for-rent-in-Cantonments",
+          href: "/search/rent?q=cantonments&ftype=office",
           external: false,
         },
         {
           title: "Office spaces for rent in Airport Area",
-          href: "/offices-for-rent-in-Airport Area",
+          href: "/search/rent?q=airport&ftype=office",
           external: false,
         },
         {
           title: "Office spaces for rent in Tema",
-          href: "/offices-for-rent-in-Tema",
+          href: "/search/rent?q=tema&ftype=office",
           external: false,
         },
         {
           title: "Office spaces for rent in East Legon",
-          href: "/offices-for-rent-in-East Legon",
+          href: "/search/rent?q=east%20legon&ftype=office",
           external: false,
         },
         {
           title: "Office spaces for rent in Tesano",
-          href: "/offices-for-rent-in-Tesano",
+          href: "/search/rent?q=tesano&ftype=office",
           external: false,
         },
         {
           title: "Office spaces for rent in Spintex Road",
-          href: "/offices-for-rent-in-Spintex Road",
+          href: "/search/rent?q=spintex&ftype=office",
           external: false,
         },
         {
           title: "Office spaces for rent in Dzorwulu",
-          href: "/offices-for-rent-in-Dzorwulu",
+          href: "/search/rent?q=dzorwulu&ftype=office",
           external: false,
         },
         {
           title: "Office spaces for rent in Osu",
-          href: "/offices-for-rent-in-Osu",
+          href: "/search/rent?q=osu&ftype=office",
           external: false,
         },
       ],
@@ -501,27 +496,27 @@ export const siteConfig: SiteConfig = {
       items: [
         {
           title: "Apartment For sale",
-          href: "/apartment-for-sale-in-Accra",
+          href: "/search/sale?q=accra&ftype=apartment",
           external: false,
         },
         {
           title: "Townhouses For sale",
-          href: "/townhouses-for-sale-in-Accra",
+          href: "/search/sale?q=accra&ftype=townhouse",
           external: false,
         },
         {
           title: "Warehouses For sale",
-          href: "/warehouses-for-sale-in-Accra",
+          href: "/search/sale?q=accra&ftype=warehouse",
           external: false,
         },
         {
           title: "Commercial Spaces For sale",
-          href: "/commercial-space-for-sale-in-Accra",
+          href: "/search/sale?q=ghana&ftype=commercial",
           external: false,
         },
         {
           title: "Shops For sale",
-          href: "/shops-for-sale-in-Accra",
+          href: "/search/sale?q=ghana&ftype=shop",
           external: false,
         },
       ],
@@ -531,27 +526,27 @@ export const siteConfig: SiteConfig = {
       items: [
         {
           title: "Retail Spaces For rent",
-          href: "/retail-space-for-rent-in-Accra",
+          href: "/search/rent?q=ghana&ftype=retail",
           external: false,
         },
         {
           title: "Land For rent",
-          href: "/land-for-rent-in-Accra",
+          href: "/search/rent?q=ghana&ftype=land",
           external: false,
         },
         {
           title: "Guest Houses For rent",
-          href: "/guest-houses-for-rent-in-Accra",
+          href: "/search/rent?q=ghana&ftype=guest%20house",
           external: false,
         },
         {
           title: "Office Spaces For rent",
-          href: "/office-space-for-rent-in-Accra",
+          href: "/search/rent?q=ghana&ftype=office",
           external: false,
         },
         {
           title: "Townhouses For rent",
-          href: "/townhouses-for-rent-in-Accra",
+          href: "/search/rent?q=ghana&ftype=townhouse",
           external: false,
         },
       ],
@@ -561,27 +556,27 @@ export const siteConfig: SiteConfig = {
       items: [
         {
           title: "Shops For Sale",
-          href: "/shops-for-sale-in-Accra",
+          href: "/search/sale?q=accra&ftype=shop",
           external: false,
         },
         {
           title: "Commercial Spaces For Sale",
-          href: "/commercial-space-for-sale-in-Accra",
+          href: "/search/sale?q=accra&ftype=commercial",
           external: false,
         },
         {
           title: "Retail Spaces For Sale",
-          href: "/retail-space-for-sale-in-Accra",
+          href: "/search/sale?q=accra&ftype=retail",
           external: false,
         },
         {
           title: "Land For Sale",
-          href: "/land-for-sale-in-Accra",
+          href: "/search/sale?q=ghana&ftype=land",
           external: false,
         },
         {
           title: "Guest Houses For Sale",
-          href: "/guest-house-for-sale-in-Accra",
+          href: "/search/sale?q=ghana&ftype=guest%20house",
           external: false,
         },
       ],

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Breadcrumbs } from "@/components/bread-crumbs";
 import Shell from "@/layouts/shell";
 
@@ -97,22 +96,22 @@ export default async function DetailsPage({
               { title: "Home", href: "/" },
               {
                 title: `For ${listingDetail.contract}`,
-                href: `/properties?contract=${listingDetail.contract}`,
+                href: `/search/${listingDetail.contract.toLowerCase()}?q=ghana&page=1`,
               },
               {
                 title: `${listingDetail.type}`,
-                href: `/properties?type=${listingDetail.type}`,
+                href: `/search/${listingDetail.contract.toLowerCase()}?q=ghana&ftype=${listingDetail.type}&page=1`,
               },
               {
                 title: `${listingDetail.location}`,
-                href: `/properties?location=${listingDetail.location}`,
+                href: `/search/${listingDetail.contract.toLowerCase()}?q=${listingDetail.location}&page=1`,
               },
             ]}
             aria-label="Property listing navigation"
           />
           <h1 className="font-bold leading-tight tracking-tighter text-brand-accent lg:leading-[1.1] text-2xl md:text-3xl capitalize">
-            {listingDetail.title}
-          </h1>
+            {listingDetail.title} 
+          </h1> 
         </div>
       </Shell>
       <section

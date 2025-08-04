@@ -1,15 +1,15 @@
+"use client";
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { ListingDetails } from "@/types";
 import PropertyListings from "./property-listings";
 import { useMemo } from "react";
 
-type Listing = Pick<
+export type Listing = Pick<
   ListingDetails,
   | "detailreq"
   | "image"
   | "streetaddress"
-  | "baths"
-  | "beds"
   | "garages"
   | "title"
   | "contract"
@@ -24,6 +24,7 @@ interface LatestListingsTabProps {
   saleListings: Listing[];
   isLoading?: boolean;
   error?: Error | null;
+  onTabChange?: (activeTab: string) => void;
 }
 
 export function LatestListingsTab({
@@ -31,6 +32,7 @@ export function LatestListingsTab({
   saleListings,
   isLoading = false,
   error = null,
+  onTabChange,
 }: LatestListingsTabProps) {
   const tabs = useMemo(
     () => [
@@ -53,7 +55,7 @@ export function LatestListingsTab({
   }
 
   return (
-    <Tabs defaultValue="rent" className="w-full">
+    <Tabs defaultValue="rent" className="w-full" onValueChange={onTabChange}>
       <TabsList
         className="grid w-full md:w-[400px] grid-cols-2"
         aria-label="Property listing categories"

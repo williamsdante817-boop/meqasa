@@ -63,6 +63,7 @@ interface PremiumPlusPropertyData {
   recency: string;
   detailreq: string;
   image: string;
+  image2: string;
   streetaddress: string;
   locationstring: string;
   floorarea: string;
@@ -112,8 +113,6 @@ export function PremiumPlusPropertyCard({
   }
 
   // Defensive: Fallbacks for images and text
-  const propertyImage =
-    imageError || !data.image ? "/placeholder-image.png" : data.image;
   const ownerImage =
     avatarError || !data.owner?.image
       ? undefined
@@ -132,28 +131,27 @@ export function PremiumPlusPropertyCard({
   const pricePart2 = data.pricepart2 || "";
 
   return (
-    <Card className="mb-8 flex p-0 h-fit min-w-[256px] flex-col gap-4 rounded-2xl border-none text-brand-accent shadow">
+    <Card className="mb-8 flex p-0 h-fit flex-col gap-4 rounded-lg border-none text-brand-accent shadow w-full md:min-w-[256px]">
       <CardHeader className="p-0">
-        <div className="relative min-w-[256px] rounded-2xl lg:min-h-[202px]">
+        <div className="relative w-full rounded-lg md:min-h-[279px] md:min-w-[256px]">
           <Link
             href={detailsLink}
             className="absolute inset-0 z-10"
             aria-label={`View details for ${summary}`}
           ></Link>
           <Image
-            className="h-[202px] w-full rounded-t-2xl object-cover lg:h-[279px] lg:rounded-none lg:rounded-t-2xl"
-            width={1028}
-            height={279}
-            src={propertyImage}
+            className="h-[202px] w-full rounded-t-lg object-cover md:h-[279px] lg:rounded-none lg:rounded-t-lg"
+            src={data.image2}
             alt={summary}
             placeholder="blur"
             blurDataURL={`data:image/svg+xml;base64,${toBase64(shimmer(728, 279))}`}
             sizes="728px"
             onError={() => setImageError(true)}
             priority
-            style={{ width: "100%", height: "279px" }}
+            fill
+            style={{ objectFit: "cover" }}
           />
-          <div className=" absolute inset-0 rounded-2xl ">
+          <div className=" absolute inset-0 rounded-lg ">
             <Badge className="absolute left-4 top-4 z-20 bg-brand-primary uppercase">
               Premium Plus
             </Badge>
@@ -183,11 +181,11 @@ export function PremiumPlusPropertyCard({
           {bathroomCount === 0 ? null : (
             <>
               <span>{bathroomCount} Baths</span>
-              <Dot className="h-4 w-4" />
             </>
           )}
           {garageCount === 0 ? null : (
             <>
+              <Dot className="h-4 w-4" />
               <span>{garageCount} Parking</span>
               <Dot className="h-4 w-4" />
               <span>{floorArea} m²</span>

@@ -11,10 +11,10 @@ import {
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 import { searchConfig } from "@/config/search";
 import { type FormState } from "@/types/search";
 import { SearchIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { CommonFilters } from "./search/CommonFilters";
 import { PriceInput } from "./search/PriceInput";
@@ -34,6 +34,7 @@ export function SearchFilter() {
     sort: "",
     furnished: false,
     owner: false,
+    howShort: "- Any -", // Initialize short-let duration
   });
 
   const updateFormState = (updates: Partial<FormState>) => {
@@ -126,7 +127,6 @@ export function SearchFilter() {
           <TabsContent value="buy">
             <SearchForm
               type="buy"
-              type="buy"
               formState={formState}
               updateFormState={updateFormState}
             >
@@ -151,8 +151,11 @@ export function SearchFilter() {
           </TabsContent>
           <TabsContent value="land">
             <SearchForm
-              type="land"
-              formState={formState}
+              type="buy"
+              formState={{
+                ...formState,
+                propertyType: "land",
+              }}
               updateFormState={updateFormState}
             >
               <div className="relative mx-auto mt-3 hidden max-w-max items-end justify-center gap-2 py-1 lg:flex">
@@ -194,7 +197,7 @@ export function SearchFilter() {
               <CommonFilters
                 showMoreFilters
                 hidePropertyType
-                hidePropertyType
+                isShortLet
                 formState={formState}
                 updateFormState={updateFormState}
               />

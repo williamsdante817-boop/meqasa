@@ -1,3 +1,5 @@
+"use client";
+
 import { cn } from "@/lib/utils";
 import type { FeaturedProject } from "@/types";
 import { Dot } from "lucide-react";
@@ -62,7 +64,7 @@ export default function FeaturedPropertyCard({
         className="block"
       >
         <CardHeader className="p-0 gap-0">
-          <AspectRatio ratio={16 / 9}>
+          <AspectRatio ratio={16 / 9} className="relative">
             {!imgError ? (
               <>
                 <Image
@@ -111,7 +113,7 @@ export default function FeaturedPropertyCard({
               {/* Project name */}
               <CardTitle
                 id={`project-title-${projectid}`}
-                className="text-base font-bold leading-5 text-brand-accent lg:text-[23px] lg:leading-8"
+                className="text-base font-bold line-clamp-1 leading-5 text-brand-accent lg:text-[23px] lg:leading-8"
               >
                 {projectname}
               </CardTitle>

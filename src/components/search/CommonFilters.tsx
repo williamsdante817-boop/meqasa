@@ -17,6 +17,9 @@ import { MoreFiltersPopover } from "./MoreFiltersPopover";
 interface CommonFiltersProps {
   showMoreFilters?: boolean;
   hidePropertyType?: boolean;
+  hideBedBath?: boolean;
+  showAreaRange?: boolean;
+  isShortLet?: boolean; // New prop to identify short-let search
   formState: FormState;
   updateFormState: (updates: Partial<FormState>) => void;
 }
@@ -24,6 +27,9 @@ interface CommonFiltersProps {
 export function CommonFilters({
   showMoreFilters = false,
   hidePropertyType = false,
+  hideBedBath = false,
+  showAreaRange = false,
+  isShortLet = false, // New prop with default value
   formState,
   updateFormState,
 }: CommonFiltersProps) {
@@ -64,56 +70,103 @@ export function CommonFilters({
           <Separator orientation="vertical" className="h-[20px] bg-[#9A9EB5]" />
         </>
       )}
-      <Select
-        value={formState.bedrooms}
-        onValueChange={(value) => updateFormState({ bedrooms: value })}
-      >
-        <SelectTrigger className="h-5 min-w-[150px] max-w-fit cursor-pointer rounded-none border-0 bg-transparent py-0 text-base font-medium shadow-none text-white focus:border-0 focus:ring-0 focus:ring-transparent">
-          <SelectValue placeholder="Beds" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            <SelectItem
-              value="- Any -"
-              key="default-beds"
-              className="line-clamp-1"
-            >
-              Bedrooms
-            </SelectItem>
-            {searchConfig.selectOptions.bedrooms.map(({ value, label }) => (
-              <SelectItem value={value} key={value} className="line-clamp-1">
-                {label}
-              </SelectItem>
-            ))}
-          </SelectGroup>
-        </SelectContent>
-      </Select>
-      <Separator orientation="vertical" className="h-[20px] bg-[#9A9EB5]" />
-      <Select
-        value={formState.bathrooms}
-        onValueChange={(value) => updateFormState({ bathrooms: value })}
-      >
-        <SelectTrigger className="h-5 min-w-[150px] max-w-fit cursor-pointer rounded-none border-0 bg-transparent py-0 text-base font-medium shadow-none text-white focus:border-0 focus:ring-0 focus:ring-transparent">
-          <SelectValue placeholder="Baths" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            <SelectItem
-              value="- Any -"
-              key="default-baths"
-              className="line-clamp-1"
-            >
-              Bathrooms
-            </SelectItem>
-            {searchConfig.selectOptions.bathrooms.map(({ value, label }) => (
-              <SelectItem value={value} key={value} className="line-clamp-1">
-                {label}
-              </SelectItem>
-            ))}
-          </SelectGroup>
-        </SelectContent>
-      </Select>
-      <Separator orientation="vertical" className="h-[20px] bg-[#9A9EB5]" />
+      {isShortLet && (
+        <>
+          <Select
+            value={formState.howShort || "- Any -"}
+            onValueChange={(value) => updateFormState({ howShort: value })}
+          >
+            <SelectTrigger className="h-5 min-w-[150px] max-w-[150px] cursor-pointer rounded-none border-0 bg-transparent py-0 text-base font-medium shadow-none text-white focus:border-0 focus:ring-0 focus:ring-transparent">
+              <SelectValue placeholder="Duration" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem
+                  value="- Any -"
+                  key="default-duration"
+                  className="line-clamp-1"
+                >
+                  Duration
+                </SelectItem>
+                {searchConfig.selectOptions.howShort.map(({ value, label }) => (
+                  <SelectItem
+                    value={value}
+                    key={value}
+                    className="line-clamp-1"
+                  >
+                    {label}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <Separator orientation="vertical" className="h-[20px] bg-[#9A9EB5]" />
+        </>
+      )}
+      {!hideBedBath && formState.propertyType !== "land" && (
+        <>
+          <Select
+            value={formState.bedrooms}
+            onValueChange={(value) => updateFormState({ bedrooms: value })}
+          >
+            <SelectTrigger className="h-5 min-w-[150px] max-w-fit cursor-pointer rounded-none border-0 bg-transparent py-0 text-base font-medium shadow-none text-white focus:border-0 focus:ring-0 focus:ring-transparent">
+              <SelectValue placeholder="Beds" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem
+                  value="- Any -"
+                  key="default-beds"
+                  className="line-clamp-1"
+                >
+                  Bedrooms
+                </SelectItem>
+                {searchConfig.selectOptions.bedrooms.map(({ value, label }) => (
+                  <SelectItem
+                    value={value}
+                    key={value}
+                    className="line-clamp-1"
+                  >
+                    {label}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <Separator orientation="vertical" className="h-[20px] bg-[#9A9EB5]" />
+          <Select
+            value={formState.bathrooms}
+            onValueChange={(value) => updateFormState({ bathrooms: value })}
+          >
+            <SelectTrigger className="h-5 min-w-[150px] max-w-fit cursor-pointer rounded-none border-0 bg-transparent py-0 text-base font-medium shadow-none text-white focus:border-0 focus:ring-0 focus:ring-transparent">
+              <SelectValue placeholder="Baths" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem
+                  value="- Any -"
+                  key="default-baths"
+                  className="line-clamp-1"
+                >
+                  Bathrooms
+                </SelectItem>
+                {searchConfig.selectOptions.bathrooms.map(
+                  ({ value, label }) => (
+                    <SelectItem
+                      value={value}
+                      key={value}
+                      className="line-clamp-1"
+                    >
+                      {label}
+                    </SelectItem>
+                  ),
+                )}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <Separator orientation="vertical" className="h-[20px] bg-[#9A9EB5]" />
+        </>
+      )}
       <PriceInput
         title="Price range"
         unit="GH₵"
@@ -125,6 +178,23 @@ export function CommonFilters({
         onMinChange={(value) => updateFormState({ minPrice: value })}
         onMaxChange={(value) => updateFormState({ maxPrice: value })}
       />
+
+      {(showAreaRange || formState.propertyType === "land") && (
+        <>
+          <Separator orientation="vertical" className="h-[20px] bg-[#9A9EB5]" />
+          <PriceInput
+            title="Area range"
+            unit="m²"
+            placeholder={{ min: "Min.area", max: "Max.area" }}
+            range={searchConfig.priceRange}
+            className="h-[20px] border-none px-5 py-0 text-white"
+            minValue={formState.minArea}
+            maxValue={formState.maxArea}
+            onMinChange={(value) => updateFormState({ minArea: value })}
+            onMaxChange={(value) => updateFormState({ maxArea: value })}
+          />
+        </>
+      )}
 
       {showMoreFilters && (
         <>

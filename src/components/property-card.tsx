@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -73,7 +75,7 @@ export default function PropertyCard({
     <Card className="size-full rounded-xl p-0 relative gap-0 border-none shadow-none">
       <Link href={`/${formattedUrl}`} aria-label={title}>
         <CardHeader className="p-0 border-b border-b-gray-100 gap-0 rounded-xl shadow-elegant-sm">
-          <AspectRatio ratio={4 / 3}>
+          <AspectRatio ratio={4 / 3} className="relative">
             {!imgError ? (
               <Image
                 className={cn(

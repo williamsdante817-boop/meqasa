@@ -28,7 +28,7 @@ export default function LocationCard({
         role="article"
       >
         <CardHeader className="rounded-xl p-0">
-          <AspectRatio ratio={4 / 3}>
+          <AspectRatio ratio={4 / 3} className="relative">
             <Image
               alt={`${location} location image`}
               src={src}

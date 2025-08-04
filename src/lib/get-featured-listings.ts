@@ -6,6 +6,8 @@ type Listing = Pick<
   | "detailreq"
   | "image"
   | "streetaddress"
+  | "baths"
+  | "beds"
   | "garages"
   | "title"
   | "price"
@@ -15,18 +17,24 @@ type Listing = Pick<
   bedroomcount: string;
 };
 
+export interface FeaturedListingsResponse {
+  rentals: Listing[];
+  selling: Listing[];
+}
+
 /**
  * Fetches the featured listings from the MeQasa server.
  *
- * @returns A promise that resolves with an array of {@link Listing} objects,
- *          each containing details such as image, street address, number of
+ * @returns A promise that resolves with an object containing {@link FeaturedListingsResponse},
+ *          with rentals and selling arrays, each containing {@link Listing} objects
+ *          with details such as image, street address, number of
  *          bathrooms, bedrooms, garages, and title.
  * @throws An error if the request fails or the server returns an error.
  */
-export async function getFeaturedListings(): Promise<Listing[]> {
+export async function getFeaturedListings(): Promise<FeaturedListingsResponse> {
   const url = "https://meqasa.com/hp-7";
 
-  return await apiFetch<Listing[]>({
+  return await apiFetch<FeaturedListingsResponse>({
     url,
     method: "POST",
     params: {

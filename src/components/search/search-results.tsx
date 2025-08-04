@@ -2,7 +2,6 @@
 "use client";
 
 import { Breadcrumbs } from "@/components/bread-crumbs";
-import RealEstateAd from "@/components/search/ad";
 import { CarouselPlugin } from "@/components/search/carousel-plugin";
 import { FeaturedPropertyVariantCard } from "@/components/search/featured-property-variant";
 import { PremiumPlusPropertyCard } from "@/components/search/premium-plus-card";
@@ -108,7 +107,9 @@ export function SearchResults({ type }: SearchResultsProps) {
 
       setIsLoading(true);
       try {
-        const searchParamsObj = Object.fromEntries(searchParams.entries());
+        const searchParamsObj = searchParams
+          ? Object.fromEntries(searchParams.entries())
+          : {};
         const locality = searchParamsObj.q;
         const pageParam = searchParamsObj.page
           ? parseInt(searchParamsObj.page)
@@ -186,13 +187,15 @@ export function SearchResults({ type }: SearchResultsProps) {
     if (searchParams.toString()) {
       void fetchResults();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams, apiContract]);
 
   const handlePageChange = async (pageNumber: number) => {
     if (pageNumber === currentPage) return;
 
-    const searchParamsObj = Object.fromEntries(searchParams.entries());
+    const searchParamsObj = searchParams
+      ? Object.fromEntries(searchParams.entries())
+      : {};
     const urlSearchId = searchParamsObj.y ? parseInt(searchParamsObj.y) : null;
 
     if (!urlSearchId) {
@@ -467,9 +470,7 @@ export function SearchResults({ type }: SearchResultsProps) {
             </div>
             <div>
               <aside className="w-full items-center grid grid-cols-1 gap-4">
-                <RealEstateAd />
-                <RealEstateAd />
-                <RealEstateAd />
+                {/* Ad space - will be populated by parent component */}
               </aside>
             </div>
           </div>

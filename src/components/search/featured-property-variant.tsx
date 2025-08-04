@@ -1,35 +1,22 @@
 "use client";
 
-import React from "react";
+import { Dot } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { Dot } from "lucide-react";
+import { useState } from "react";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import type { MeqasaProject, MeqasaEmptyProject } from "@/types/meqasa";
+import { PlaceholderImage } from "@/components/placeholder-image";
+import { shimmer, toBase64 } from "@/lib/utils";
+import type { MeqasaEmptyProject, MeqasaProject } from "@/types/meqasa";
 
-// Add missing utility functions
-const shimmer = (w: number, h: number) => `
-<svg width="${w}" height="${h}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-  <defs>
-    <linearGradient id="g">
-      <stop stop-color="#f6f7f8" offset="0%" />
-      <stop stop-color="#edeef1" offset="20%" />
-      <stop stop-color="#f6f7f8" offset="40%" />
-      <stop stop-color="#f6f7f8" offset="70%" />
-    </linearGradient>
-  </defs>
-  <rect width="${w}" height="${h}" fill="#f6f7f8" />
-  <rect id="r" width="${w}" height="${h}" fill="url(#g)" />
-  <animate xlink:href="#r" attributeName="x" from="-${w}" to="${w}" dur="1s" repeatCount="indefinite"  />
-</svg>`;
-
-const toBase64 = (str: string) =>
-  typeof window === "undefined"
-    ? Buffer.from(str).toString("base64")
-    : window.btoa(str);
+// Type guard to check if project is not empty
+function isMeqasaProject(
+  project: MeqasaProject | MeqasaEmptyProject,
+): project is MeqasaProject {
+  return !(project as MeqasaEmptyProject).empty;
+}
 
 interface FeaturedPropertyVariantCardProps {
   project: MeqasaProject | MeqasaEmptyProject;
@@ -38,28 +25,42 @@ interface FeaturedPropertyVariantCardProps {
 export function FeaturedPropertyVariantCard({
   project,
 }: FeaturedPropertyVariantCardProps) {
-  // If project is empty, render nothing or a fallback
-  if ((project as MeqasaEmptyProject).empty) {
+  const [imgError, setImgError] = useState(false);
+  const [logoError, setLogoError] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // If project is empty, render nothing
+  if (!isMeqasaProject(project)) {
     return null;
   }
-  const p = project as MeqasaProject;
-  // Fallbacks for missing data
-  const mainImage =
-    p.photo ||
-    "https://images.unsplash.com/photo-1694032593958-2d018f015a47?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=3270&q=80";
-  const mainImageAlt = p.projectname || "Project image";
-  const projectTitle = p.projectname || "Unnamed Project";
-  const projectLink = `/developer/project/${p.projectid}`;
-  const location = p.name || "Unknown Location";
-  const city = p.city || "Unknown City";
-  const bedrooms = "1,2,3 Bedrooms"; 
-  const status = "Ongoing";
-  const badgeColor = "bg-brand-badge-ongoing";
-  const logoImage = p.logo || "";
-  const logoAlt = `${p.projectname} logo`;
+
+  // Destructure with proper fallbacks
+  const {
+    projectname = "Unnamed Project",
+    projectid = "unknown",
+    photo,
+    logo,
+    name: location = "Unknown Location",
+    city = "Unknown City",
+  } = project;
+
+  // Generate URLs with proper fallbacks
+  const mainImage = photo ? `https://meqasa.com/uploads/imgs/${photo}` : "";
+  const logoImage = logo
+    ? `https://dve7rykno93gs.cloudfront.net/uploads/imgs/${logo}`
+    : "";
+  const projectLink = `/development-projects/${projectid}`;
+
+  // Generate proper alt text
+  const mainImageAlt = `${projectname} project image`;
+  const logoAlt = `${projectname} logo`;
 
   return (
-    <Card className="relative mb-8 h-[321px] w-full p-0 overflow-hidden rounded-xl border-none text-brand-accent">
+    <Card
+      className="relative mb-8 h-[321px] w-full p-0 overflow-hidden rounded-lg border-none text-brand-accent"
+      role="article"
+      aria-labelledby={`project-title-${projectid}`}
+    >
       <div
         className="absolute inset-0 z-10"
         style={{
@@ -68,60 +69,85 @@ export function FeaturedPropertyVariantCard({
         aria-hidden="true"
       />
       <CardContent className="p-0">
-        <Image
-          className="h-[321px] rounded-2xl object-cover "
-          width={1028}
-          height={321}
-          src={mainImage}
-          alt={mainImageAlt}
-          placeholder="blur"
-          blurDataURL={`data:image/svg+xml;base64,${toBase64(
-            shimmer(728, 321),
-          )}`}
-          sizes="728px"
-          priority
-        />
+        {!imgError && mainImage ? (
+          <Image
+            className="h-[321px] rounded-lg object-cover"
+            width={1028}
+            height={321}
+            src={mainImage}
+            alt={mainImageAlt}
+            placeholder="blur"
+            blurDataURL={`data:image/svg+xml;base64,${toBase64(
+              shimmer(728, 321),
+            )}`}
+            sizes="728px"
+            onError={() => setImgError(true)}
+            onLoad={() => setIsLoading(false)}
+            priority
+          />
+        ) : (
+          <PlaceholderImage
+            className="h-[321px] rounded-lg"
+            aria-label="Project image placeholder"
+          />
+        )}
+
+        {isLoading && !imgError && (
+          <div
+            className="absolute inset-0 bg-gray-100 animate-pulse rounded-lg"
+            aria-hidden="true"
+          />
+        )}
 
         <div className="absolute inset-0 rounded-2xl">
-          <Badge
-            className={`absolute left-4 top-4 z-30 uppercase ${badgeColor}`}
-          >
-            {status}
-          </Badge>
-
           <div className="absolute inset-x-4 bottom-4 z-20">
             <div className="flex items-end justify-between">
               <div className="text-white">
-                <h2 className="font-bold md:text-xl">
-                  <Link href={projectLink} className="hover:underline">
-                    {projectTitle}
+                <h2
+                  id={`project-title-${projectid}`}
+                  className="font-bold md:text-xl"
+                >
+                  <Link
+                    href={projectLink}
+                    className="hover:underline focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-transparent rounded"
+                    aria-label={`View details for ${projectname}`}
+                  >
+                    {projectname}
                   </Link>
                 </h2>
 
-                <div className="flex items-center gap-1 pt-2 text-sm text-[#E4E5EA] md:text-base">
+                <div
+                  className="flex items-center gap-1 pt-2 text-sm text-[#E4E5EA] md:text-base"
+                  aria-label={`Location: ${location}, ${city}`}
+                >
                   <span>{location}</span>
-                  <Dot className="h-4 w-4" />
+                  <Dot className="h-4 w-4" aria-hidden="true" />
                   <span>{city}</span>
                 </div>
-                <div className="text-sm text-[#E4E5EA] md:text-base">
-                  <p>{bedrooms}</p>
-                </div>
-                <Button asChild className="mt-3 bg-brand-primary hover:bg-brand-primary">
-                  <Link href={projectLink} aria-label={`View ${projectTitle}`}>
+
+                <Button
+                  asChild
+                  className="mt-3 bg-brand-primary hover:bg-brand-primary focus:ring-2 focus:ring-white focus:ring-offset-2"
+                >
+                  <Link
+                    href={projectLink}
+                    aria-label={`View ${projectname} project details`}
+                  >
                     View project
                   </Link>
                 </Button>
               </div>
               <div className="flex items-end">
-                {logoImage && (
+                {logoImage && !logoError ? (
                   <Image
                     src={logoImage}
                     alt={logoAlt}
                     width={100}
                     height={100}
                     className="h-14 w-14 rounded-md md:h-auto md:w-auto"
+                    onError={() => setLogoError(true)}
                   />
-                )}
+                ) : null}
               </div>
             </div>
           </div>

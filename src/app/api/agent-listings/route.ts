@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import type { AgentListingsRequest, AgentListingsResponse } from "@/types/agent-listings";
+import type {
+  AgentListingsRequest,
+  AgentListingsResponse,
+  AgentListing,
+} from "@/types/agent-listings";
 
 const MEQASA_API_BASE = "https://meqasa.com";
 
@@ -51,11 +55,14 @@ export async function POST(request: NextRequest) {
       throw new Error(`Meqasa API error: ${response.statusText}`);
     }
 
-    const data = await response.json();
+    const data = (await response.json()) as {
+      listings?: AgentListing[];
+      activelistings?: number;
+    };
 
     // Extract listings and calculate pagination info
-    const listings = data.listings || [];
-    const totalCount = data.activelistings || listings.length;
+    const listings = data.listings ?? [];
+    const totalCount = data.activelistings ?? listings.length;
     const totalPages = Math.ceil(totalCount / limit);
     const hasMore = page < totalPages;
 
@@ -66,14 +73,6 @@ export async function POST(request: NextRequest) {
       totalPages,
       hasMore,
     };
-
-    console.log("Agent listings response:", {
-      listingsCount: listings.length,
-      totalCount,
-      currentPage: page,
-      totalPages,
-      hasMore,
-    });
 
     return NextResponse.json(result);
   } catch (error) {

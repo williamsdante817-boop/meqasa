@@ -4,6 +4,18 @@ export interface AdLink {
   src: string;
   href: string;
 }
+
+export interface PopupData {
+  src: string;
+  href: string;
+  alt: string;
+  title: string;
+}
+
+export interface PopupDataWithUrls extends PopupData {
+  imageUrl: string; // Full URL with cloudfront prefix
+  linkUrl: string; // Full URL with meqasa.com prefix
+}
 export interface NavItem {
   title: string;
   href?: string;

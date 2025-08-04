@@ -84,14 +84,14 @@ export function AgentInfo({ agent }: AgentInfoProps) {
             if (navigator.share) {
               try {
                 await navigator.share(shareData);
-              } catch (err) {
+              } catch {
                 // User cancelled or error
               }
             } else if (navigator.clipboard) {
               try {
                 await navigator.clipboard.writeText(shareUrl);
                 toast.success("Link copied to clipboard!");
-              } catch (err) {
+              } catch {
                 toast.error("Failed to copy link.");
               }
             } else {

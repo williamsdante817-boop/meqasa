@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { Checkbox } from "@/components/ui/checkbox";
@@ -45,11 +44,13 @@ export function MoreFiltersPopover({
             <SelectContent className="text-b-accent">
               <SelectGroup>
                 <SelectItem value="- Any -">Any Period</SelectItem>
-                {searchConfig.selectOptions.period.map(({ value, label }) => (
-                  <SelectItem value={value} key={value}>
-                    {label}
-                  </SelectItem>
-                ))}
+                {searchConfig.selectOptions.period.map(
+                  ({ value, label }, index) => (
+                    <SelectItem value={value} key={`${value}-${index}`}>
+                      {label}
+                    </SelectItem>
+                  ),
+                )}
               </SelectGroup>
             </SelectContent>
           </Select>

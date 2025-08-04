@@ -1,4 +1,4 @@
-import HeaderAd from "@/components/header-ad";
+import HeaderAdClient from "@/components/header-ad-client";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/layouts/site-header";
 import React from "react";
@@ -9,7 +9,7 @@ export default function LobbyLayout({
   return (
     <div className="relative flex min-h-screen flex-col">
       <SiteHeader />
-      <HeaderAd />
+      <HeaderAdClient />
       {children}
       <SiteFooter />
     </div>

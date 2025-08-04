@@ -68,7 +68,7 @@ export default function BlogCard({
         <div className="hidden lg:block lg:w-full lg:overflow-hidden lg:rounded-2xl">
           <Card className="overflow-hidden size-full p-0 border-none">
             <CardContent className="p-0 rounded-xl">
-              <AspectRatio ratio={4 / 3}>
+              <AspectRatio ratio={4 / 3} className="relative">
                 {!imgError ? (
                   <>
                     <Image

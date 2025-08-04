@@ -1,12 +1,12 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import { Breadcrumbs } from "@/components/bread-crumbs";
-import RealEstateAd from "@/components/search/ad";
 import { CarouselPlugin } from "@/components/search/carousel-plugin";
 import { FeaturedPropertyVariantCard } from "@/components/search/featured-property-variant";
 import { PremiumPlusPropertyCard } from "@/components/search/premium-plus-card";
 import { ResultsCard } from "@/components/search/results-card";
-import { ResultSearchFilter } from "@/components/search/results-search-filter";
+import SearchResultsSkeleton from "@/components/search/SearchResultsSkeleton";
+import { Button } from "@/components/ui/button";
 import {
   Pagination,
   PaginationContent,
@@ -16,32 +16,19 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import Shell from "@/layouts/shell";
-import type {
-  MeqasaListing,
-  MeqasaProject,
-  MeqasaSearchResponse,
-} from "@/types/meqasa";
-import Image from "next/image";
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import SearchResultsSkeleton from "@/components/search/SearchResultsSkeleton";
-import { Card } from "@/components/ui/card";
+import type { MeqasaListing, MeqasaSearchResponse } from "@/types/meqasa";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 
 interface SearchResultsProps {
   type: string;
+  location: string;
+  initialResults: MeqasaListing[];
+  initialTotal: number;
+  initialSearchId: number;
+  initialPage: number;
+  onSearchIdUpdate?: (searchId: number, page: number) => void;
 }
-
-const sampleProject: MeqasaProject = {
-  city: "Accra",
-  projectname: "The Lennox Development Project",
-  projectid: "2",
-  photo:
-    "https://images.unsplash.com/photo-1694032593958-2d018f015a47?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=3270&q=80",
-  logo: "https://dve7rykno93gs.cloudfront.net/fascimos/somics/1263632747",
-  name: "Airport Residential",
-};
 
 function getPaginationItems(current: number, total: number) {
   const pages = [];
@@ -63,38 +50,60 @@ function getPaginationItems(current: number, total: number) {
   return pages;
 }
 
-export function SearchResults({ type }: SearchResultsProps) {
+export function SearchResults({
+  type,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  location,
+  initialResults,
+  initialTotal,
+  initialSearchId,
+  initialPage,
+  onSearchIdUpdate,
+}: SearchResultsProps) {
+  const [mounted, setMounted] = useState(false);
   const searchParams = useSearchParams();
-  const router = useRouter();
-  const [searchResults, setSearchResults] = useState<MeqasaListing[]>([]);
-  const [totalResults, setTotalResults] = useState(0);
-  const [search, setSearch] = useState<MeqasaSearchResponse>();
-  const [searchId, setSearchId] = useState<number | null>(() => {
-    // Try to get searchId from URL parameters first, then sessionStorage
-    if (typeof window !== "undefined") {
-      const urlParams = new URLSearchParams(window.location.search);
-      const urlSearchId = urlParams.get("searchId");
-      if (urlSearchId) {
-        return parseInt(urlSearchId);
-      }
-      const stored = sessionStorage.getItem("meqasa_searchId");
-      return stored ? parseInt(stored) : null;
-    }
-    return null;
-  });
-  const [currentPage, setCurrentPage] = useState(() => {
-    // Try to get currentPage from URL parameters
-    if (typeof window !== "undefined") {
-      const urlParams = new URLSearchParams(window.location.search);
-      const pageParam = urlParams.get("page");
-      return pageParam ? parseInt(pageParam) : 1;
-    }
-    return 1;
-  });
-  const [isLoading, setIsLoading] = useState(true);
+  const [searchResults, setSearchResults] =
+    useState<MeqasaListing[]>(initialResults);
+  const [totalResults, setTotalResults] = useState(initialTotal);
+  // Create initial search state from the initial results
+  const initialSearchState: MeqasaSearchResponse = {
+    results: initialResults,
+    resultcount: initialTotal,
+    searchid: initialSearchId,
+    topads: [],
+    project1: { empty: true },
+    project2: { empty: true },
+    bottomads: [],
+    searchdesc: "",
+  };
 
-  console.log("Search Params:", Object.fromEntries(searchParams.entries()));
-  console.log("search", search);
+  const [search, setSearch] =
+    useState<MeqasaSearchResponse>(initialSearchState);
+  const [searchId, setSearchId] = useState<number | null>(initialSearchId);
+  const [currentPage, setCurrentPage] = useState(initialPage);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Helper function to detect if this is a short-let search
+  const isShortLetSearch = () => {
+    return type === "rent" && searchParams.get("frentperiod") === "shortrent";
+  };
+
+  // Ensure component is mounted before running client-side effects
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Prefetch next page
+  const [prefetchedNextPage, setPrefetchedNextPage] = useState<
+    MeqasaListing[] | null
+  >(null);
+  const [prefetchedTotal, setPrefetchedTotal] = useState<number | null>(null);
+  const [prefetchedSearch, setPrefetchedSearch] =
+    useState<MeqasaSearchResponse | null>(null);
+  const isPrefetching = useRef(false);
+
+  // Flag to prevent re-fetching initial server data
+  const hasProcessedInitialData = useRef(false);
 
   // Store searchId in sessionStorage whenever it changes (for backward compatibility)
   useEffect(() => {
@@ -110,26 +119,51 @@ export function SearchResults({ type }: SearchResultsProps) {
     }
   }, [isLoading]);
 
+  // Handle all search parameter changes
   useEffect(() => {
+    // Only run on client side after component is mounted
+    if (!mounted) return;
+
+    const urlPage = parseInt(searchParams.get("page") ?? "1");
+    const urlSearchId = searchParams.get("searchId")
+      ? parseInt(searchParams.get("searchId")!)
+      : null;
+
+    // Skip initial server data on first mount
+    if (
+      !hasProcessedInitialData.current &&
+      urlPage === initialPage &&
+      urlSearchId === initialSearchId
+    ) {
+      hasProcessedInitialData.current = true;
+      return;
+    }
+
+    // Skip if we already have the correct data (avoid unnecessary refetch)
+    if (
+      urlPage === currentPage &&
+      urlSearchId === searchId &&
+      searchId !== null
+    ) {
+      return;
+    }
+
     const fetchResults = async () => {
       setIsLoading(true);
       try {
-        const searchParamsObj = Object.fromEntries(searchParams.entries());
+        const searchParamsObj = searchParams
+          ? Object.fromEntries(searchParams.entries())
+          : {};
         const locality = searchParamsObj.q;
-        const pageParam = searchParamsObj.page
-          ? parseInt(searchParamsObj.page)
-          : 1;
-        const urlSearchId = searchParamsObj.searchId
-          ? parseInt(searchParamsObj.searchId)
-          : null;
+        const pageParam = urlPage;
+        const currentSearchId = urlSearchId ?? searchId;
 
         if (!locality) {
           console.error("Missing required parameter: locality");
           return;
         }
 
-        // If we have a searchId (from URL or state) and page param, fetch that specific page
-        const currentSearchId = urlSearchId ?? searchId;
+        // If we have a searchId and page param, fetch that specific page
         if (currentSearchId && pageParam > 1) {
           const response = await fetch("/api/properties", {
             method: "POST",
@@ -144,6 +178,14 @@ export function SearchResults({ type }: SearchResultsProps) {
                 locality,
                 propertyType: searchParamsObj.type ?? "",
                 app: "vercel",
+                // Add short-let specific parameters if this is a short-let search
+                ...(isShortLetSearch() && {
+                  frentperiod: "shortrent",
+                  ftype: "- Any -",
+                  ...(searchParamsObj.fhowshort && {
+                    fhowshort: searchParamsObj.fhowshort,
+                  }),
+                }),
               },
             }),
           });
@@ -156,10 +198,11 @@ export function SearchResults({ type }: SearchResultsProps) {
           setCurrentPage(pageParam);
           setSearchId(currentSearchId);
           setIsLoading(false);
+          // Note: URL is already updated by handlePageChange, no need to update again
           return;
         }
 
-        // Initial search
+        // Initial search - only if search parameters actually changed (not just page)
         const response = await fetch("/api/properties", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -171,18 +214,40 @@ export function SearchResults({ type }: SearchResultsProps) {
               locality,
               propertyType: searchParamsObj.type ?? "",
               app: "vercel",
+              // Add short-let specific parameters if this is a short-let search
+              ...(isShortLetSearch() && {
+                frentperiod: "shortrent",
+                ftype: "- Any -",
+                ...(searchParamsObj.fhowshort && {
+                  fhowshort: searchParamsObj.fhowshort,
+                }),
+              }),
             },
           }),
         });
 
         if (!response.ok) throw new Error("Failed to fetch properties");
         const data = (await response.json()) as MeqasaSearchResponse;
-        console.log(data);
         setSearchResults(data.results);
         setTotalResults(data.resultcount);
         setSearch(data);
-        setSearchId(data.searchid);
-        setCurrentPage(pageParam);
+
+        // When we get a new searchId from filter/location changes, reset to page 1
+        const newSearchId = data.searchid;
+        const isNewSearch = newSearchId !== searchId;
+
+        setSearchId(newSearchId);
+
+        if (isNewSearch) {
+          // Reset to page 1 for new searches
+          setCurrentPage(1);
+          // Update URL with new searchId via callback
+          onSearchIdUpdate?.(newSearchId, 1);
+        } else {
+          setCurrentPage(pageParam);
+          // Update URL with current searchId and page
+          onSearchIdUpdate?.(newSearchId, pageParam);
+        }
       } catch (error) {
         console.error("Error fetching properties:", error);
       } finally {
@@ -190,26 +255,163 @@ export function SearchResults({ type }: SearchResultsProps) {
       }
     };
 
+    // Only fetch if there are search parameters and it's not just initial load with correct data
     if (searchParams.toString()) {
       void fetchResults();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams, type]);
+  }, [
+    mounted,
+    searchParams.get("q"),
+    searchParams.get("ftype"),
+    searchParams.get("fbeds"),
+    searchParams.get("fbaths"),
+    searchParams.get("fmin"),
+    searchParams.get("fmax"),
+    searchParams.get("page"),
+    searchParams.get("frentperiod"), // Add short-let rent period
+    searchParams.get("fhowshort"), // Add short-let duration
+    type,
+  ]);
 
+  // Prefetch next page
+  useEffect(() => {
+    // Only run on client side after component is mounted
+    if (!mounted) return;
+
+    // Clear prefetched data when searchId changes (new search)
+    if (searchId !== initialSearchId) {
+      setPrefetchedNextPage(null);
+      setPrefetchedTotal(null);
+      setPrefetchedSearch(null);
+      isPrefetching.current = false;
+    }
+
+    // Add prefetch debug logging
+    // console.log("🔍 Prefetch check:", {
+    //   isLoading,
+    //   searchId,
+    //   currentPage,
+    //   totalResults,
+    //   maxPages: Math.ceil(totalResults / 20),
+    //   isPrefetching: isPrefetching.current,
+    //   hasPrefetchedData: !!prefetchedNextPage,
+    // });
+
+    if (
+      !isLoading &&
+      searchId && // Ensure we have a valid searchId
+      searchId > 0 && // Ensure valid searchId
+      currentPage > 0 && // Ensure valid page
+      totalResults > 0 && // Ensure we have results
+      currentPage < Math.ceil(totalResults / 20) &&
+      !isPrefetching.current
+    ) {
+      // console.log("🚀 Starting prefetch for page", currentPage + 1);
+      isPrefetching.current = true;
+      const nextPage = currentPage + 1;
+      const searchParamsObj = searchParams
+        ? Object.fromEntries(searchParams.entries())
+        : {};
+
+      fetch("/api/properties", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "loadMore",
+          params: {
+            y: searchId,
+            w: nextPage,
+            ...searchParamsObj,
+            contract: type,
+            locality: searchParamsObj.q,
+            propertyType: searchParamsObj.type ?? "",
+            app: "vercel",
+            // Add short-let specific parameters if this is a short-let search
+            ...(isShortLetSearch() && {
+              frentperiod: "shortrent",
+              ftype: "- Any -",
+              ...(searchParamsObj.fhowshort && {
+                fhowshort: searchParamsObj.fhowshort,
+              }),
+            }),
+          },
+        }),
+      })
+        .then((res) => res.json())
+        .then((data: MeqasaSearchResponse) => {
+          // console.log("✅ Prefetch success:", {
+          //   searchId: data.searchid,
+          //   expectedSearchId: searchId,
+          //   resultsCount: data.results.length,
+          // });
+          // Only set prefetched data if searchId hasn't changed
+          if (data.searchid == searchId) {
+            setPrefetchedNextPage(data.results);
+            setPrefetchedTotal(data.resultcount);
+            setPrefetchedSearch(data);
+            // console.log("✅ Prefetched data set for page", currentPage + 1);
+          } else {
+            // console.log("❌ Prefetch searchId mismatch, discarding data");
+          }
+          isPrefetching.current = false;
+        })
+        .catch((error) => {
+          console.error("❌ Prefetch failed:", error);
+          isPrefetching.current = false;
+        });
+    }
+  }, [mounted, isLoading, currentPage, totalResults, searchId, type]);
+
+  // When user clicks pagination, provide immediate feedback and update URL
   const handlePageChange = async (pageNumber: number) => {
-    if (!searchId || pageNumber === currentPage) return;
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (!mounted || !searchId || pageNumber === currentPage) return;
 
-    // Update URL with new page parameter and searchId
-    const searchParamsObj = Object.fromEntries(searchParams.entries());
-    const newSearchParams = new URLSearchParams(searchParamsObj);
-    newSearchParams.set("page", pageNumber.toString());
-    newSearchParams.set("searchId", searchId.toString());
+    // Check if we have prefetched data for instant navigation
+    if (
+      prefetchedNextPage &&
+      pageNumber === currentPage + 1 &&
+      prefetchedSearch &&
+      prefetchedSearch.searchid == searchId
+    ) {
+      // console.log("⚡ Using prefetched data for page", pageNumber);
+      // Instant navigation with prefetched data
+      setSearchResults(prefetchedNextPage);
+      setTotalResults(prefetchedTotal!);
+      setSearch(prefetchedSearch);
+      setCurrentPage(pageNumber);
 
-    // Update URL without page reload
-    router.push(`?${newSearchParams.toString()}`, { scroll: false });
+      // Clear prefetched data
+      setPrefetchedNextPage(null);
+      setPrefetchedTotal(null);
+      setPrefetchedSearch(null);
 
+      // Update URL via callback
+      onSearchIdUpdate?.(searchId, pageNumber);
+
+      return; // Exit early - no need for useEffect to handle this
+    }
+
+    // Provide immediate visual feedback for non-prefetched pages
+    setIsLoading(true);
+
+    // Update URL via callback
+    onSearchIdUpdate?.(searchId, pageNumber);
+
+    // The useEffect will handle fetching the data since page parameter changed
+  };
+
+  const handleLoadMore = async () => {
+    if (!mounted || !searchId) return;
+    const nextPage = currentPage + 1;
+
+    // Update URL via callback
+    onSearchIdUpdate?.(searchId, nextPage);
     setIsLoading(true);
     try {
+      const searchParamsObj = searchParams
+        ? Object.fromEntries(searchParams.entries())
+        : {};
       const response = await fetch("/api/properties", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -217,21 +419,33 @@ export function SearchResults({ type }: SearchResultsProps) {
           type: "loadMore",
           params: {
             y: searchId,
-            w: pageNumber,
+            w: nextPage,
             ...searchParamsObj,
             contract: type,
             locality: searchParamsObj.q,
             propertyType: searchParamsObj.type ?? "",
             app: "vercel",
+            // Add short-let specific parameters if this is a short-let search
+            ...(isShortLetSearch() && {
+              frentperiod: "shortrent",
+              ftype: "- Any -",
+              ...(searchParamsObj.fhowshort && {
+                fhowshort: searchParamsObj.fhowshort,
+              }),
+            }),
           },
         }),
       });
       if (!response.ok) throw new Error("Failed to fetch page");
       const data = (await response.json()) as MeqasaSearchResponse;
-      setSearchResults(data.results);
-      setTotalResults(data.resultcount);
-      setSearch(data);
-      setCurrentPage(pageNumber);
+
+      // Only update state if the response searchId matches our current searchId
+      if (Number(data.searchid) === Number(searchId)) {
+        setSearchResults((prev) => [...prev, ...data.results]);
+        setTotalResults(data.resultcount);
+        setSearch(data);
+        setCurrentPage(nextPage);
+      }
     } catch (error) {
       console.error("Error fetching page:", error);
     } finally {
@@ -239,309 +453,121 @@ export function SearchResults({ type }: SearchResultsProps) {
     }
   };
 
-  if (isLoading) {
+  // Only show skeleton when loading new data, not during initial mount
+  if (isLoading && mounted) {
     return <SearchResultsSkeleton />;
   }
 
   return (
-    <>
-      <div className="relative">
-        <div
-          className="hidden lg:block max-h-[280px] h-[280px] relative bg-contain bg-center"
-          style={{
-            backgroundImage: `url(https://dve7rykno93gs.cloudfront.net/pieoq/904309523`,
-          }}
-          role="img"
-          aria-label="Hero banner showcasing featured properties"
-        ></div>
-      </div>
-
-      <ResultSearchFilter />
-      <Shell className="mt-12 flex gap-8">
+    <div className="w-full">
+      <div className="">
         <div>
-          <aside className="hidden md:flex md:flex-col md:gap-3">
-            <div className="">
-              <ul className="w-max text-xs">
-                <li className="mb-2">
-                  <Link
-                    className="flex h-8 items-center rounded-sm bg-[#F0F6FF] px-2 text-[10px] font-bold uppercase text-slate-500 shadow-none"
-                    href="#"
-                  >
-                    House
-                  </Link>
-                </li>
-                <li className="mb-2">
-                  {" "}
-                  <Link
-                    className="flex h-8 items-center rounded-sm bg-[#F0F6FF] px-2 text-[10px] font-bold uppercase text-slate-500 shadow-none"
-                    href="#"
-                  >
-                    Apartments
-                  </Link>
-                </li>
-                <li className="mb-2">
-                  {" "}
-                  <Link
-                    className="flex h-8 items-center rounded-sm bg-[#F0F6FF] px-2 text-[10px] font-bold uppercase text-slate-500 shadow-none"
-                    href="#"
-                  >
-                    Office space
-                  </Link>
-                </li>
-                <li className="mb-2">
-                  {" "}
-                  <Link
-                    className="flex h-8 items-center rounded-sm bg-[#F0F6FF] px-2 text-[10px] font-bold uppercase text-slate-500 shadow-none"
-                    href="#"
-                  >
-                    Townhouses
-                  </Link>
-                </li>
-                <li className="mb-2">
-                  {" "}
-                  <Link
-                    className="flex h-8 items-center rounded-sm bg-[#F0F6FF] px-2 text-[10px] font-bold uppercase text-slate-500 shadow-none"
-                    href="#"
-                  >
-                    Warehouses
-                  </Link>
-                </li>
-                <li className="mb-2">
-                  {" "}
-                  <Link
-                    className="flex h-8 items-center rounded-sm bg-[#F0F6FF] px-2 text-[10px] font-bold uppercase text-slate-500 shadow-none"
-                    href="#"
-                  >
-                    Shops
-                  </Link>
-                </li>
-                <li className="mb-2">
-                  {" "}
-                  <Link
-                    className="flex h-8 items-center rounded-sm bg-[#F0F6FF] px-2 text-[10px] font-bold uppercase text-slate-500 shadow-none"
-                    href="#"
-                  >
-                    Commercial
-                  </Link>
-                </li>
-                <li className="mb-2">
-                  {" "}
-                  <Link
-                    className="flex h-8 items-center rounded-sm bg-[#F0F6FF] px-2 text-[10px] font-bold uppercase text-slate-500 shadow-none"
-                    href="#"
-                  >
-                    Retail
-                  </Link>
-                </li>
-                <li className="mb-2">
-                  {" "}
-                  <Link
-                    className="flex h-8 items-center rounded-sm bg-[#F0F6FF] px-2 text-[10px] font-bold uppercase text-slate-500 shadow-none"
-                    href="#"
-                  >
-                    Land
-                  </Link>
-                </li>
-                <li className="mb-2">
-                  {" "}
-                  <Link
-                    className="flex h-8 items-center rounded-sm bg-[#F0F6FF] px-2 text-[10px] font-bold uppercase text-slate-500 shadow-none"
-                    href="#"
-                  >
-                    Guest houses
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </aside>
-        </div>
-        {/* <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-semibold">Search Results</h2>
-          {searchResults.length > 0 && (
-            <Badge variant="secondary" className="text-sm">
-              {searchResults.length} of {totalResults} properties
-            </Badge>
+          {/* Main search results and cards */}
+
+          {search?.topads && search.topads.length > 0 ? (
+            <CarouselPlugin>
+              {search?.topads?.map((property) => (
+                <PremiumPlusPropertyCard
+                  key={property.listingid}
+                  data={property}
+                />
+              ))}
+            </CarouselPlugin>
+          ) : null}
+          {search?.project1 && !("empty" in search.project1) && (
+            <FeaturedPropertyVariantCard project={search.project1} />
           )}
-        </div> */}
-
-        <div>
-          <aside>
-            <Breadcrumbs
-              segments={[
-                { title: "Home", href: "/" },
-                { title: "search", href: "/1" },
-                { title: "results", href: "/2" },
-              ]}
-            />
-            <h1 className="mt-2 text-lg font-bold leading-6 text-brand-accent md:text-xl">
-              Property for sale in east legon
-            </h1>
-            <p className="mt-3 text-sm text-brand-muted">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam
-              adipisci ullam deserunt est dolorem impedit ratione, ut blanditiis
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam
-              adipisci ullam deserunt est dolorem impedit ratione, ut blanditiis
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam
-              adipisci ullam deserunt est dolorem impedit ratione, ut blanditiis
-            </p>
-          </aside>
-          <div className="mt-12 grid grid-cols-1 gap-8 px-4 md:grid-cols-[736px,1fr] md:px-0">
-            <div className="">
-              {search?.project1 && !("empty" in search.project1) && (
-                <div className="mb-8">
-                  <Card className="relative p-0 h-[200px] w-full overflow-hidden md:h-[330px]">
-                    <Link
-                      href={`/development-projects/538`}
-                      className="block h-full"
-                    >
-                      <div className="relative h-full">
-                        <Image
-                          alt={`${search.project1.projectname} project in ${search.project1.city}`}
-                          src={`https://meqasa.com//uploads/imgs/${search.project1.photo}`}
-                          fill
-                          sizes="(max-width: 768px) 100vw, 736px"
-                          className="object-cover"
-                          priority
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                        <div className="absolute bottom-4 left-4 right-4 text-white sr-only">
-                          <div className="flex items-center gap-3 mb-2">
-                            <div className="relative w-8 h-8 rounded-full overflow-hidden bg-white">
-                              <Image
-                                alt="Developer logo"
-                                src={`https://dve7rykno93gs.cloudfront.net/pieoq/${search.project1.logo}`}
-                                fill
-                                sizes="32px"
-                                className="object-cover"
-                              />
-                            </div>
-                            <span className="text-sm font-medium">
-                              {search.project1.name}
-                            </span>
-                          </div>
-                          <h3 className="text-xl font-bold mb-1">
-                            {search.project1.projectname}
-                          </h3>
-                          <p className="text-sm opacity-90">
-                            {search.project1.city}
-                          </p>
-                        </div>
-                      </div>
-                    </Link>
-                  </Card>
-                </div>
-              )}
-              {search?.topads && search.topads.length > 0 ? (
-                <CarouselPlugin>
-                  {search?.topads?.map((property) => (
-                    <PremiumPlusPropertyCard
-                      key={property.listingid}
-                      data={property}
-                    />
-                  ))}
-                </CarouselPlugin>
-              ) : null}
-              <FeaturedPropertyVariantCard project={sampleProject} />
-              <div className="grid grid-cols-1 gap-8">
-                {searchResults.map((property) => (
-                  <ResultsCard key={property.listingid} result={property} />
-                ))}
-              </div>
-
-              {searchResults.length > 0 && (
-                <div className="my-8 flex justify-center text-brand-accent">
-                  <Pagination>
-                    <PaginationContent>
-                      <PaginationItem>
-                        <PaginationPrevious
-                          href="#"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            if (!isLoading && currentPage > 1) {
-                              void handlePageChange(currentPage - 1);
-                            }
-                          }}
-                          aria-disabled={currentPage === 1 || isLoading}
-                        />
-                      </PaginationItem>
-                      {getPaginationItems(
-                        currentPage,
-                        Math.ceil(totalResults / 20),
-                      ).map((item, idx) => (
-                        <PaginationItem key={idx}>
-                          {item === "start-ellipsis" ||
-                          item === "end-ellipsis" ? (
-                            <PaginationEllipsis />
-                          ) : (
-                            <PaginationLink
-                              href="#"
-                              isActive={currentPage === item}
-                              onClick={(e) => {
-                                e.preventDefault();
-                                if (currentPage !== item) {
-                                  void handlePageChange(item as number);
-                                }
-                              }}
-                            >
-                              {item}
-                            </PaginationLink>
-                          )}
-                        </PaginationItem>
-                      ))}
-                      <PaginationItem>
-                        <PaginationNext
-                          href="#"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            if (
-                              !isLoading &&
-                              currentPage < Math.ceil(totalResults / 20)
-                            ) {
-                              void handlePageChange(currentPage + 1);
-                            }
-                          }}
-                          aria-disabled={
-                            currentPage === Math.ceil(totalResults / 20) ||
-                            isLoading
-                          }
-                        />
-                      </PaginationItem>
-                    </PaginationContent>
-                  </Pagination>
-                </div>
-              )}
-            </div>
-            <div>
-              <aside className="w-full items-center grid grid-cols-1 gap-4">
-                {/* <Card className="relative h-[450px] w-[225px] overflow-hidden">
-                  <Link
-                    href="https://meqasa.com/follow-ad-1883?u=https://oneelm.quaorealty.com"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <Image
-                      alt="Luxury Real Estate Property"
-                      src="https://dve7rykno93gs.cloudfront.net/pieoq/844216596"
-                      fill
-                      sizes=""
-                      className="object-contain"
-                      priority // Load this image with priority for faster rendering.
-                    />
-                  </Link>
-                </Card> */}
-                <RealEstateAd />
-                <RealEstateAd />
-                <RealEstateAd />
-              </aside>
-            </div>
+          <div className="grid grid-cols-1 gap-8">
+            {searchResults.map((property) => (
+              <ResultsCard key={property.listingid} result={property} />
+            ))}
           </div>
-          {searchResults.length === 0 && (
-            <div className="text-center py-12 text-gray-500">
-              No properties found. Try adjusting your search criteria.
-            </div>
+
+          {searchResults.length > 0 && (
+            <>
+              {/* Desktop/tablet pagination */}
+              <div className="my-8 text-brand-accent w-full overflow-x-auto hidden md:flex justify-center">
+                <Pagination>
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          if (!isLoading && currentPage > 1) {
+                            void handlePageChange(currentPage - 1);
+                          }
+                        }}
+                        aria-disabled={currentPage === 1 || isLoading}
+                      />
+                    </PaginationItem>
+                    {getPaginationItems(
+                      currentPage,
+                      Math.ceil(totalResults / 20),
+                    ).map((item, idx) => (
+                      <PaginationItem key={idx}>
+                        {item === "start-ellipsis" ||
+                        item === "end-ellipsis" ? (
+                          <PaginationEllipsis />
+                        ) : (
+                          <PaginationLink
+                            href="#"
+                            isActive={currentPage === item}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              if (currentPage !== item) {
+                                void handlePageChange(item as number);
+                              }
+                            }}
+                          >
+                            {item}
+                          </PaginationLink>
+                        )}
+                      </PaginationItem>
+                    ))}
+                    <PaginationItem>
+                      <PaginationNext
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          if (
+                            !isLoading &&
+                            currentPage < Math.ceil(totalResults / 20)
+                          ) {
+                            void handlePageChange(currentPage + 1);
+                          }
+                        }}
+                        aria-disabled={
+                          currentPage === Math.ceil(totalResults / 20) ||
+                          isLoading
+                        }
+                      />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </div>
+              {/* Mobile Load More button */}
+              <div className="my-8 block md:hidden w-full text-center">
+                {searchResults.length < totalResults && (
+                  <Button
+                    className="px-4 py-2 rounded text-brand-accent font-semibold"
+                    onClick={handleLoadMore}
+                    disabled={isLoading}
+                    variant="outline"
+                  >
+                    {isLoading ? "Loading..." : "Load More"}
+                  </Button>
+                )}
+              </div>
+            </>
           )}
         </div>
-      </Shell>
-    </>
+      </div>
+      {searchResults.length === 0 && (
+        <div className="text-center py-12 text-gray-500">
+          No properties found. Try adjusting your search criteria.
+        </div>
+      )}
+    </div>
   );
 }

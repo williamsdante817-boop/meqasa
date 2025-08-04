@@ -16,7 +16,11 @@ export async function searchProperties(
   locality: string,
   params: MeqasaSearchParams,
 ): Promise<MeqasaSearchResponse> {
-  const response = await fetch("/api/properties", {
+  const isServer = typeof window === "undefined";
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
+  const apiUrl = isServer ? `${baseUrl}/api/properties` : "/api/properties";
+
+  const response = await fetch(apiUrl, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -50,7 +54,11 @@ export async function loadMoreProperties(
   locality: string,
   params: MeqasaLoadMoreParams,
 ): Promise<MeqasaSearchResponse> {
-  const response = await fetch("/api/properties", {
+  const isServer = typeof window === "undefined";
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
+  const apiUrl = isServer ? `${baseUrl}/api/properties` : "/api/properties";
+
+  const response = await fetch(apiUrl, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

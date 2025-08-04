@@ -38,16 +38,9 @@ export function MainNav({ items }: MainNavProps) {
       >
         <Icons.logo className="size-7 text-[#f93a5d]" aria-hidden="true" />
         <span className="hidden text-lg font-bold lg:inline-block text-brand-accent">
-          {/* <Image
-            src="/meqasa-logo-minimize.png"
-            alt="logo"
-            width={30}
-            height={30}
-            className="object-contain"
-          /> */}
           {siteConfig.name}
         </span>
-        {/* <span className="h-1.5 w- rounded-full bg-[#f93a5d]"></span> */}
+
         <span className="sr-only">Home</span>
       </Link>
 
@@ -84,7 +77,11 @@ export function MainNav({ items }: MainNavProps) {
               ) : (
                 <nav>
                   <NavigationMenuLink
-                    href={`/${item.title.toLowerCase()}`}
+                    href={
+                      item.title === "Land"
+                        ? "/search/sale?q=ghana&ftype=land"
+                        : `/${item.title.toLowerCase()}`
+                    }
                     className={cn(
                       navigationMenuTriggerStyle(),
                       "font-semibold hover:text-brand-accent data-[state=open]:text-brand-accent",

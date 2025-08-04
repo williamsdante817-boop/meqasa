@@ -30,7 +30,6 @@ export default function FeaturedProjectsCarousel({
   delay: number;
 }) {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: "start",
@@ -39,13 +38,6 @@ export default function FeaturedProjectsCarousel({
   const plugin = useRef(
     Autoplay({ delay, stopOnInteraction: false, stopOnMouseEnter: true }),
   );
-
-  // Handle loading state
-  useEffect(() => {
-    if (properties.length > 0) {
-      setIsLoading(false);
-    }
-  }, [properties]);
 
   // Handle error state
   useEffect(() => {
@@ -76,14 +68,6 @@ export default function FeaturedProjectsCarousel({
     return (
       <div role="alert" className="text-brand-primary p-4">
         {error}
-      </div>
-    );
-  }
-
-  if (isLoading) {
-    return (
-      <div role="status" className="p-4">
-        Loading featured projects...
       </div>
     );
   }

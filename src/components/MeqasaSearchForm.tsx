@@ -88,7 +88,7 @@ export default function MeqasaSearchForm({
       // Build search params
       const searchParams = new URLSearchParams();
       searchParams.set("contract", contract);
-      searchParams.set("q", locality);
+      searchParams.set("q", locality.toLowerCase());
       searchParams.set("type", propertyType || "");
 
       // Add optional parameters

@@ -11,4 +11,5 @@ export interface FormState {
   sort: string;
   furnished: boolean;
   owner: boolean;
+  howShort?: string; // New field for short-let duration
 }
