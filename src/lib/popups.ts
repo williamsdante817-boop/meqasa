@@ -12,11 +12,10 @@ export type { ResultsPopupParams, PopupDataWithUrls };
  */
 export function isValidPopupData(popupData: PopupDataWithUrls): boolean {
   return !!(
-    popupData &&
-    popupData.imageUrl &&
-    popupData.linkUrl &&
-    popupData.title &&
-    popupData.alt
+    popupData?.imageUrl &&
+    popupData?.linkUrl &&
+    popupData?.title &&
+    popupData?.alt
   );
 }
 

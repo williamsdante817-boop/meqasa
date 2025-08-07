@@ -52,7 +52,12 @@ export default async function AgentDetailsPage({
           </div>
 
           <aside className="relative mb-5 pb-8 md:mb-0">
-            <ContactCard name={agent.name} image={agent.logo || ""} />
+            <ContactCard
+              name={agent.name}
+              image={agent.logo || ""}
+              listingId={agentId}
+              pageType="listing"
+            />
           </aside>
         </section>
       </Shell>

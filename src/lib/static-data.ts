@@ -128,9 +128,9 @@ export async function getStaticData(): Promise<StaticData> {
   ]);
 
   return {
-    agentLogos: agentLogos || [],
-    blogData: blogData || blog,
-    locationData: locationData || location,
-    seoText: seoText || "Discover the best properties in Ghana with MeQasa.",
+    agentLogos: agentLogos ?? [],
+    blogData: blogData ?? blog,
+    locationData: locationData ?? location,
+    seoText: seoText ?? "Discover the best properties in Ghana with MeQasa.",
   };
 }

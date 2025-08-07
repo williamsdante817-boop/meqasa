@@ -1,4 +1,4 @@
-import { apiFetch } from "./api-client";
+import { apiClient } from "./axios-client";
 import type { ListingDetails } from "@/types";
 
 type Listing = Pick<
@@ -29,14 +29,15 @@ type Listing = Pick<
 export async function getLatestListings(): Promise<Listing[]> {
   const url = "https://meqasa.com/hp-8";
 
-  return await apiFetch<Listing[]>({
+  return await apiClient.post<Listing[]>(
     url,
-    method: "POST",
-    params: {
+    {
       app: "vercel",
     },
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
+    {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
     },
-  });
+  );
 }

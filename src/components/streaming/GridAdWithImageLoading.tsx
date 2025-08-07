@@ -28,7 +28,9 @@ export function GridAdWithImageLoading({
       let match;
 
       while ((match = imgRegex.exec(html)) !== null) {
-        urls.push(match[1]);
+        if (match[1]) {
+          urls.push(match[1]);
+        }
       }
 
       return urls;

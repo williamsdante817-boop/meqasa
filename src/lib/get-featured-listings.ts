@@ -1,5 +1,5 @@
 import type { ListingDetails } from "@/types";
-import { apiFetch } from "./api-client";
+import { apiClient } from "./axios-client";
 
 type Listing = Pick<
   ListingDetails,
@@ -34,14 +34,15 @@ export interface FeaturedListingsResponse {
 export async function getFeaturedListings(): Promise<FeaturedListingsResponse> {
   const url = "https://meqasa.com/hp-7";
 
-  return await apiFetch<FeaturedListingsResponse>({
+  return await apiClient.post<FeaturedListingsResponse>(
     url,
-    method: "POST",
-    params: {
+    {
       app: "vercel",
     },
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
+    {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
     },
-  });
+  );
 }

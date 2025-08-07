@@ -319,6 +319,8 @@ export default async function DeveloperUnitPage({
               name={unitDetails.unit.companyname}
               image={unitDetails.unit.logo}
               src
+              projectId={unitDetails.unit.projectid.toString()}
+              pageType="project"
             />
           </aside>
         </div>
@@ -342,6 +344,8 @@ export default async function DeveloperUnitPage({
         name={unitDetails.unit.companyname}
         image={unitDetails.unit.logo}
         src
+        projectId={unitDetails.unit.projectid.toString()}
+        pageType="project"
       />
 
       {unitDetails.similarunits?.length > 0 ? (

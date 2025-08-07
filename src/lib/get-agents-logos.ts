@@ -1,4 +1,4 @@
-import { apiFetch } from "./api-client";
+import { apiClient } from "./axios-client";
 import type { BrokerDetail } from "@/types";
 
 /**
@@ -9,14 +9,15 @@ import type { BrokerDetail } from "@/types";
 export async function getAgentLogos(): Promise<BrokerDetail[]> {
   const url = "https://meqasa.com/hp-9";
 
-  return await apiFetch<BrokerDetail[]>({
+  return await apiClient.post<BrokerDetail[]>(
     url,
-    method: "POST",
-    params: {
+    {
       app: "vercel",
     },
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
+    {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
     },
-  });
+  );
 }

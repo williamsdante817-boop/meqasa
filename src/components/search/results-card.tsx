@@ -246,6 +246,8 @@ export function ResultsCard({ result }: { result: ResultData }) {
                     name={result.owner.name || "Agent"}
                     image={result.owner.image || ""}
                     src
+                    listingId={result.listingid}
+                    pageType="listing"
                   />
                 </div>
               </DialogContent>

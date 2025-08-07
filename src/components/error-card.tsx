@@ -7,7 +7,6 @@ import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { cn } from "@/lib/utils";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
-// import { ClientButton } from "@/components/client-button";
 
 interface ErrorCardProps extends React.ComponentPropsWithoutRef<typeof Card> {
   icon?: React.ComponentType<{ className?: string }>;
@@ -53,7 +52,7 @@ export function ErrorCard({
           href={retryLink}
           className={cn(
             buttonVariants({
-              variant: "ghost",
+              variant: "default"
             }),
           )}
         >
@@ -62,9 +61,6 @@ export function ErrorCard({
         </Link>
       ) : null}
       {reset ? (
-        // <ClientButton aria-label="Retry" variant="ghost" onClick={reset}>
-        //   Retry
-        // </ClientButton>
         <Button aria-label="Retry" variant="ghost" onClick={reset}>
           Retry
         </Button>

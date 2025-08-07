@@ -36,7 +36,7 @@ export function Breadcrumbs({
         const isLastSegment = index === segments.length - 1;
 
         return (
-          <React.Fragment key={segment.key || `${index}-${segment.href}`}>
+          <React.Fragment key={segment.key ?? `${index}-${segment.href}`}>
             <Link
               aria-current={isLastSegment ? "page" : undefined}
               href={segment.href}

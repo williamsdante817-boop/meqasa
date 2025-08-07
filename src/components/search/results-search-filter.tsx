@@ -617,7 +617,7 @@ export function ResultSearchFilter() {
         {/* Short-let Duration Selector - Only shown for short-let searches */}
         {isShortLetSearch() && (
           <Select
-            value={formState.howShort || "- Any -"}
+            value={formState.howShort ?? "- Any -"}
             onValueChange={(value) => updateFormState({ howShort: value })}
           >
             <SelectTrigger className="h-12 w-40 text-brand-accent bg-white border-gray-200 hover:bg-gray-50">
@@ -628,15 +628,17 @@ export function ResultSearchFilter() {
                 <SelectItem value="- Any -" className="text-brand-accent">
                   Any Duration
                 </SelectItem>
-                {searchConfig.selectOptions.howShort.map(({ value, label }) => (
-                  <SelectItem
-                    value={value}
-                    key={value}
-                    className="text-brand-accent"
-                  >
-                    {label}
-                  </SelectItem>
-                ))}
+                {searchConfig?.selectOptions?.howShort?.map(
+                  ({ value, label }) => (
+                    <SelectItem
+                      value={value}
+                      key={value}
+                      className="text-brand-accent"
+                    >
+                      {label}
+                    </SelectItem>
+                  ),
+                ) || []}
               </SelectGroup>
             </SelectContent>
           </Select>
@@ -656,15 +658,17 @@ export function ResultSearchFilter() {
                 <SelectItem value="- Any -" className="text-brand-accent">
                   Any Beds
                 </SelectItem>
-                {siteConfig.selectOptions.bedrooms.map(({ value, label }) => (
-                  <SelectItem
-                    value={value}
-                    key={value}
-                    className="text-brand-accent"
-                  >
-                    {label}
-                  </SelectItem>
-                ))}
+                {siteConfig?.selectOptions?.bedrooms?.map(
+                  ({ value, label }) => (
+                    <SelectItem
+                      value={value}
+                      key={value}
+                      className="text-brand-accent"
+                    >
+                      {label}
+                    </SelectItem>
+                  ),
+                ) || []}
               </SelectGroup>
             </SelectContent>
           </Select>
@@ -684,15 +688,17 @@ export function ResultSearchFilter() {
                 <SelectItem value="- Any -" className="text-brand-accent">
                   Any Baths
                 </SelectItem>
-                {siteConfig.selectOptions.bathrooms.map(({ value, label }) => (
-                  <SelectItem
-                    value={value}
-                    key={value}
-                    className="text-brand-accent"
-                  >
-                    {label}
-                  </SelectItem>
-                ))}
+                {siteConfig?.selectOptions?.bathrooms?.map(
+                  ({ value, label }) => (
+                    <SelectItem
+                      value={value}
+                      key={value}
+                      className="text-brand-accent"
+                    >
+                      {label}
+                    </SelectItem>
+                  ),
+                ) || []}
               </SelectGroup>
             </SelectContent>
           </Select>
@@ -704,7 +710,9 @@ export function ResultSearchFilter() {
           maxValue={formState.maxPrice}
           onMinChange={(value) => updateFormState({ minPrice: value })}
           onMaxChange={(value) => updateFormState({ maxPrice: value })}
-          priceRange={searchConfig.priceRange}
+          priceRange={
+            searchConfig?.priceRange || { min: 0, max: 1000000, step: 10000 }
+          }
         />
 
         {/* More Filters */}

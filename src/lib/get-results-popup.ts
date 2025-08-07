@@ -1,4 +1,4 @@
-import { apiFetch } from "./api-client";
+import { apiClient } from "./axios-client";
 import type { PopupData, PopupDataWithUrls } from "@/types";
 
 export interface ResultsPopupParams {
@@ -19,18 +19,19 @@ export async function getResultsPopup(
 ): Promise<PopupDataWithUrls> {
   const url = "https://meqasa.com/rp-11";
 
-  const popupData = await apiFetch<PopupData>({
+  const popupData = await apiClient.post<PopupData>(
     url,
-    method: "POST",
-    params: {
+    {
       type: params.type,
       contract: params.contract,
       app: "vercel",
     },
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
+    {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
     },
-  });
+  );
 
   // Transform the data to include full URLs
   return {

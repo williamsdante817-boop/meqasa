@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { getResultsPopup } from "@/lib/popups";
 
 export async function GET(request: NextRequest) {

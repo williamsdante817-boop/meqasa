@@ -92,6 +92,7 @@ export function PremiumPlusPropertyCard({
   data,
 }: PremiumPlusPropertyCardProps) {
   const [isOpen, setIsOpen] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [imageError, setImageError] = useState(false);
   const [avatarError, setAvatarError] = useState(false);
 
@@ -256,6 +257,8 @@ export function PremiumPlusPropertyCard({
                     name={ownerName}
                     image={data.owner?.image || ""}
                     src
+                    listingId={data.listingid}
+                    pageType="listing"
                   />
                 </div>
               </DialogContent>

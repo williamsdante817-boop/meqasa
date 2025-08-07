@@ -1,4 +1,4 @@
-import { apiFetch } from "./api-client";
+import { apiClient } from "./axios-client";
 
 interface UnitPhoto {
   unitid: string;
@@ -108,13 +108,10 @@ export interface UnitDetails {
   similarunits: SimilarUnit[];
 }
 
-
 export async function getUnitDetails(unitId: string): Promise<UnitDetails> {
   try {
     const url = `https://meqasa.com/developer-units/details/${unitId}?app=vercel`;
-    const data = await apiFetch<UnitDetails>({
-      url,
-      method: "GET",
+    const data = await apiClient.get<UnitDetails>(url, {
       headers: {
         Accept: "application/json",
       },

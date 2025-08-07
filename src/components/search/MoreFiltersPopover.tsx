@@ -23,10 +23,29 @@ interface MoreFiltersPopoverProps {
   updateFormState: (updates: Partial<FormState>) => void;
 }
 
+// Fallback options for MoreFiltersPopover
+const fallbackMoreOptions = {
+  period: [
+    { value: "shortrent", label: "Daily" },
+    { value: "shortrent", label: "Weekly" },
+    { value: "longrent", label: "Up to 6 months" },
+    { value: "longrent", label: "12 months plus" },
+  ],
+  sort: [
+    { value: "date", label: "New to old" },
+    { value: "date2", label: "Old to new" },
+    { value: "price", label: "Lower to higher" },
+    { value: "price2", label: "Higher to lower" },
+  ],
+};
+
 export function MoreFiltersPopover({
   formState,
   updateFormState,
 }: MoreFiltersPopoverProps) {
+  // Safety check to ensure searchConfig is available
+  const config = searchConfig?.selectOptions || fallbackMoreOptions;
+
   return (
     <Popover>
       <PopoverTrigger className="flex min-w-[150px] h-5 max-w-[150px] cursor-pointer items-center rounded-lg text-base font-medium text-white">
@@ -44,7 +63,7 @@ export function MoreFiltersPopover({
             <SelectContent className="text-b-accent">
               <SelectGroup>
                 <SelectItem value="- Any -">Any Period</SelectItem>
-                {searchConfig.selectOptions.period.map(
+                {(config.period || fallbackMoreOptions.period).map(
                   ({ value, label }, index) => (
                     <SelectItem value={value} key={`${value}-${index}`}>
                       {label}
@@ -64,11 +83,13 @@ export function MoreFiltersPopover({
             <SelectContent className="border-none text-b-accent shadow-spread">
               <SelectGroup>
                 <SelectItem value="- Any -">Any Sort</SelectItem>
-                {searchConfig.selectOptions.sort.map(({ value, label }) => (
-                  <SelectItem value={value} key={value + label}>
-                    {label}
-                  </SelectItem>
-                ))}
+                {(config.sort || fallbackMoreOptions.sort).map(
+                  ({ value, label }) => (
+                    <SelectItem value={value} key={value + label}>
+                      {label}
+                    </SelectItem>
+                  ),
+                )}
               </SelectGroup>
             </SelectContent>
           </Select>

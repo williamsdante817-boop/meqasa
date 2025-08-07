@@ -1,4 +1,4 @@
-import { apiFetch } from "./api-client";
+import { apiClient } from "./axios-client";
 import type { DeveloperDetails } from "@/types";
 
 /**
@@ -17,9 +17,7 @@ export async function getDeveloperProfile(
   console.log(url);
   console.log(developerId);
 
-  return await apiFetch<DeveloperDetails>({
-    url,
-    method: "GET",
+  return await apiClient.get<DeveloperDetails>(url, {
     headers: {
       "Content-Type": "application/x-www-form-urlencoded", // Set content type to x-www-form-urlencoded
     },

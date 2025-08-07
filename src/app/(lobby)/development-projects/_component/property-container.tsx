@@ -239,6 +239,8 @@ export default function PropertyContainer({
               src
               name={projectData.project.companyname}
               image={projectData.project.logo}
+              projectId={projectData.project.projectid.toString()}
+              pageType="project"
             />
           </aside>
         </div>
@@ -285,6 +287,8 @@ export default function PropertyContainer({
         name={projectData.project.companyname}
         image={projectData.project.logo}
         src
+        projectId={projectData.project.projectid.toString()}
+        pageType="project"
       />
       {/* <Shell> */}
       <div

@@ -24,6 +24,37 @@ interface CommonFiltersProps {
   updateFormState: (updates: Partial<FormState>) => void;
 }
 
+// Fallback options in case searchConfig is not loaded
+const fallbackOptions = {
+  propertyType: [
+    { value: "house", label: "House" },
+    { value: "apartment", label: "Apartment" },
+    { value: "office", label: "Office" },
+    { value: "land", label: "Land" },
+  ],
+  bedrooms: [
+    { value: "1", label: "1 Bedroom" },
+    { value: "2", label: "2 Bedrooms" },
+    { value: "3", label: "3 Bedrooms" },
+    { value: "4", label: "4 Bedrooms" },
+    { value: "5", label: "5+ Bedrooms" },
+  ],
+  bathrooms: [
+    { value: "1", label: "1 Bathroom" },
+    { value: "2", label: "2 Bathrooms" },
+    { value: "3", label: "3 Bathrooms" },
+    { value: "4", label: "4 Bathrooms" },
+    { value: "5", label: "5+ Bathrooms" },
+  ],
+  howShort: [
+    { value: "day", label: "Daily" },
+    { value: "week", label: "Weekly" },
+    { value: "month", label: "Monthly" },
+    { value: "month3", label: "3 Months" },
+    { value: "month6", label: "6 Months" },
+  ],
+};
+
 export function CommonFilters({
   showMoreFilters = false,
   hidePropertyType = false,
@@ -33,6 +64,9 @@ export function CommonFilters({
   formState,
   updateFormState,
 }: CommonFiltersProps) {
+  // Safety check to ensure searchConfig is available
+  const config = searchConfig?.selectOptions || fallbackOptions;
+
   return (
     <div className="relative mx-auto mt-3 hidden max-w-max items-end justify-center gap-2 py-1 lg:flex">
       {!hidePropertyType && (
@@ -53,7 +87,7 @@ export function CommonFilters({
                 >
                   Property Type
                 </SelectItem>
-                {searchConfig.selectOptions.propertyType.map(
+                {(config.propertyType || fallbackOptions.propertyType).map(
                   ({ value, label }) => (
                     <SelectItem
                       value={value}
@@ -73,7 +107,7 @@ export function CommonFilters({
       {isShortLet && (
         <>
           <Select
-            value={formState.howShort || "- Any -"}
+            value={formState.howShort ?? "- Any -"}
             onValueChange={(value) => updateFormState({ howShort: value })}
           >
             <SelectTrigger className="h-5 min-w-[150px] max-w-[150px] cursor-pointer rounded-none border-0 bg-transparent py-0 text-base font-medium shadow-none text-white focus:border-0 focus:ring-0 focus:ring-transparent">
@@ -88,15 +122,17 @@ export function CommonFilters({
                 >
                   Duration
                 </SelectItem>
-                {searchConfig.selectOptions.howShort.map(({ value, label }) => (
-                  <SelectItem
-                    value={value}
-                    key={value}
-                    className="line-clamp-1"
-                  >
-                    {label}
-                  </SelectItem>
-                ))}
+                {(config.howShort || fallbackOptions.howShort).map(
+                  ({ value, label }) => (
+                    <SelectItem
+                      value={value}
+                      key={value}
+                      className="line-clamp-1"
+                    >
+                      {label}
+                    </SelectItem>
+                  ),
+                )}
               </SelectGroup>
             </SelectContent>
           </Select>
@@ -121,15 +157,17 @@ export function CommonFilters({
                 >
                   Bedrooms
                 </SelectItem>
-                {searchConfig.selectOptions.bedrooms.map(({ value, label }) => (
-                  <SelectItem
-                    value={value}
-                    key={value}
-                    className="line-clamp-1"
-                  >
-                    {label}
-                  </SelectItem>
-                ))}
+                {(config.bedrooms || fallbackOptions.bedrooms).map(
+                  ({ value, label }) => (
+                    <SelectItem
+                      value={value}
+                      key={value}
+                      className="line-clamp-1"
+                    >
+                      {label}
+                    </SelectItem>
+                  ),
+                )}
               </SelectGroup>
             </SelectContent>
           </Select>
@@ -150,7 +188,7 @@ export function CommonFilters({
                 >
                   Bathrooms
                 </SelectItem>
-                {searchConfig.selectOptions.bathrooms.map(
+                {(config.bathrooms || fallbackOptions.bathrooms).map(
                   ({ value, label }) => (
                     <SelectItem
                       value={value}
@@ -171,7 +209,9 @@ export function CommonFilters({
         title="Price range"
         unit="GH₵"
         placeholder={{ min: "Min.price", max: "Max.price" }}
-        range={searchConfig.priceRange}
+        range={
+          searchConfig?.priceRange || { min: 0, max: 1000000, step: 10000 }
+        }
         className="h-[20px] border-none px-5 py-0 text-white"
         minValue={formState.minPrice}
         maxValue={formState.maxPrice}
@@ -186,7 +226,9 @@ export function CommonFilters({
             title="Area range"
             unit="m²"
             placeholder={{ min: "Min.area", max: "Max.area" }}
-            range={searchConfig.priceRange}
+            range={
+              searchConfig?.priceRange || { min: 0, max: 1000000, step: 10000 }
+            }
             className="h-[20px] border-none px-5 py-0 text-white"
             minValue={formState.minArea}
             maxValue={formState.maxArea}

@@ -12,6 +12,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { Badge } from "@/components/ui/badge";
 import { ImageCarouselModal } from "@/components/image-carousel-modal";
 import { AddFavoriteButton } from "@/components/add-favorite-button";
 
@@ -256,11 +257,13 @@ export function DynamicCarousel({
             )}
           />
         </Carousel>
-        <div
-          className="absolute inset-x-2 bottom-2 z-20 py-2 text-center text-sm text-white"
-          aria-hidden="true"
-        >
-          Slide {current} of {count}
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20">
+          <Badge
+            variant="secondary"
+            className="bg-black/70 text-white border-0"
+          >
+            Slide {current} of {count}
+          </Badge>
         </div>
       </div>
 

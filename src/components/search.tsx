@@ -163,7 +163,13 @@ export function SearchFilter() {
                   title="Price range"
                   unit="GH₵"
                   placeholder={{ min: "Min.price", max: "Max.price" }}
-                  range={searchConfig.priceRange}
+                  range={
+                    searchConfig?.priceRange || {
+                      min: 0,
+                      max: 1000000,
+                      step: 10000,
+                    }
+                  }
                   className="h-[20px] border-none px-5 py-0 text-white"
                   minValue={formState.minPrice}
                   maxValue={formState.maxPrice}
@@ -178,7 +184,13 @@ export function SearchFilter() {
                   title="Area range"
                   unit="m²"
                   placeholder={{ min: "Min.area", max: "Max.area" }}
-                  range={searchConfig.priceRange}
+                  range={
+                    searchConfig?.priceRange || {
+                      min: 0,
+                      max: 1000000,
+                      step: 10000,
+                    }
+                  }
                   className="h-[20px] border-none px-5 py-0 text-white"
                   minValue={formState.minArea}
                   maxValue={formState.maxArea}

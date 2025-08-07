@@ -31,6 +31,7 @@ import {
   HeroBannerSkeleton,
   LatestListingsSkeleton,
 } from "@/components/streaming/LoadingSkeletons";
+import { StreamingErrorBoundary } from "@/components/streaming/StreamingErrorBoundary";
 
 interface LobbyProps {
   // Fresh data promises (always fetched)
@@ -63,9 +64,9 @@ async function LobbyContent({
     <main>
       {/* Hero Banner - Streamed */}
       <div className="relative">
-        <FreshContentWrapper fallback={<HeroBannerSkeleton />}>
+        <StreamingErrorBoundary fallback={<HeroBannerSkeleton />}>
           <StreamingHeroBanner heroBannerPromise={heroBannerPromise} />
-        </FreshContentWrapper>
+        </StreamingErrorBoundary>
 
         <MobilePageHeader />
         <SearchFilter />
@@ -76,34 +77,30 @@ async function LobbyContent({
 
       <div className="w-full lg:p-4">
         {/* Grid Banner - Streamed */}
-        <FreshContentWrapper fallback={<GridBannerSkeleton />}>
-          <GridBannerSkeleton />
+        <StreamingErrorBoundary fallback={<GridBannerSkeleton />}>
           <StreamingGridBanner flexiBannerPromise={flexiBannerPromise} />
-        </FreshContentWrapper>
+        </StreamingErrorBoundary>
 
         {/* Featured Projects - Streamed */}
-        <FreshContentWrapper fallback={<FeaturedProjectsSkeleton />}>
-          <FeaturedProjectsSkeleton />
+        <StreamingErrorBoundary fallback={<FeaturedProjectsSkeleton />}>
           <StreamingFeaturedProjects
             featuredProjectsPromise={featuredProjectsPromise}
           />
-        </FreshContentWrapper>
+        </StreamingErrorBoundary>
 
         {/* Latest Listings - Streamed */}
-        <FreshContentWrapper fallback={<LatestListingsSkeleton />}>
-          <LatestListingsSkeleton />
+        <StreamingErrorBoundary fallback={<LatestListingsSkeleton />}>
           <StreamingLatestListings
             latestListingsPromise={latestListingsPromise}
           />
-        </FreshContentWrapper>
+        </StreamingErrorBoundary>
 
         {/* Featured Listings - Streamed */}
-        <FreshContentWrapper fallback={<FeaturedListingsSkeleton />}>
-          <FeaturedListingsSkeleton />
+        <StreamingErrorBoundary fallback={<FeaturedListingsSkeleton />}>
           <StreamingFeaturedListings
             featuredListingsPromise={featuredListingsPromise}
           />
-        </FreshContentWrapper>
+        </StreamingErrorBoundary>
 
         {/* Static Content - Rendered Immediately */}
         <Shell>
@@ -125,6 +122,7 @@ export default async function Lobby({
   staticData,
   featuredProjectsPromise,
   featuredListingsPromise,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   featuredUnitsPromise,
   latestListingsPromise,
   heroBannerPromise,

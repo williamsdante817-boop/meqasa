@@ -1,4 +1,4 @@
-import { apiFetch } from "./api-client";
+import { apiClient } from "./axios-client";
 import type { ListingDetails } from "@/types";
 
 export interface SimilarListings extends ListingDetails {
@@ -17,15 +17,25 @@ export interface SimilarListings extends ListingDetails {
 export async function getListingDetails(id: string): Promise<SimilarListings> {
   const url = "https://meqasa.com/mqrouter/ref";
 
-  return await apiFetch<SimilarListings>({
+  const response = await apiClient.post<
+    SimilarListings | { status: string; msg?: string }
+  >(
     url,
-    method: "POST",
-    params: {
+    {
       refref: id,
       app: "vercel",
     },
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
+    {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
     },
-  });
+  );
+
+  // Check if the API returned a fail status (even with 200 HTTP status)
+  if ("status" in response && response.status === "fail") {
+    throw new Error(response.msg ?? "Listing not available");
+  }
+
+  return response as SimilarListings;
 }

@@ -1,4 +1,4 @@
-import { apiFetch } from "./api-client";
+import { apiClient } from "./axios-client";
 
 interface LeaderboardBanner {
   html: string;
@@ -13,16 +13,17 @@ interface LeaderboardBanner {
 export async function getLeaderboardBanner(): Promise<LeaderboardBanner[]> {
   const url = "https://meqasa.com/hp-6";
 
-  const response = await apiFetch<LeaderboardBanner[]>({
+  const response = await apiClient.post<LeaderboardBanner[]>(
     url,
-    method: "POST",
-    params: {
+    {
       app: "vercel",
     },
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
+    {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
     },
-  });
+  );
 
   return response || [];
 }

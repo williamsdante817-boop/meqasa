@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { apiFetch } from "./api-client";
+import { apiClient } from "./axios-client";
 
 export interface AgentDetails {
   name: string;
@@ -68,16 +67,9 @@ export async function getAgentDetails(
 ): Promise<AgentDetails> {
   const url = `https://meqasa.com/properties-listed-by-${encodeURIComponent(agentName)}?g=${encodeURIComponent(agentId)}&app=vercel`;
 
-  const response = await fetch(url, {
-    method: "GET",
+  return await apiClient.get<AgentDetails>(url, {
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
     },
   });
-
-  if (!response.ok) {
-    throw new Error(`Request failed with status: ${response.status}`);
-  }
-
-  return (await response.json()) as AgentDetails;
 }

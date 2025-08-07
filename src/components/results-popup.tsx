@@ -32,7 +32,7 @@ export function ResultsPopup({ type }: ResultsPopupProps) {
     const fetchPopup = async () => {
       try {
         // Check if user has already seen the popup for this specific search
-        const contract = searchParams.get("contract") || "sale"; // Default to sale if not specified
+        const contract = searchParams.get("contract") ?? "sale"; // Default to sale if not specified
         const popupKey = `results-popup-seen-${type}-${contract}`;
         const hasSeenPopup = localStorage.getItem(popupKey);
 
@@ -46,9 +46,9 @@ export function ResultsPopup({ type }: ResultsPopupProps) {
         );
 
         if (response.ok) {
-          const data = await response.json();
+          const data = (await response.json()) as PopupDataWithUrls;
 
-          if (data && data.imageUrl && data.linkUrl) {
+          if (data?.imageUrl && data?.linkUrl) {
             setPopupData(data);
             setIsOpen(true);
             // Mark popup as seen for this specific search
@@ -63,7 +63,7 @@ export function ResultsPopup({ type }: ResultsPopupProps) {
     };
 
     // Add a small delay to ensure the page is fully loaded
-    const timer = setTimeout(fetchPopup, 1000);
+    const timer = setTimeout(() => void fetchPopup(), 1000);
     return () => clearTimeout(timer);
   }, [type, searchParams]);
 

@@ -16,9 +16,7 @@ import { useState } from "react";
 import ContactCard from "@/components/contact-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card
-} from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { cn, formatNumber } from "@/lib/utils";
 
@@ -45,7 +43,7 @@ interface AgentCardProps {
 export function AgentCard({
   description,
   id,
-  
+
   isVerified,
   listings,
   location,
@@ -185,7 +183,13 @@ export function AgentCard({
               aria-label={`Contact ${name} dialog`}
             >
               <div className="h-full">
-                <ContactCard name={name} image={logoUrl} src />
+                <ContactCard
+                  name={name}
+                  image={logoUrl}
+                  src
+                  listingId={id}
+                  pageType="listing"
+                />
               </div>
             </DialogContent>
           </Dialog>

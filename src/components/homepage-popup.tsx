@@ -35,9 +35,9 @@ export function HomepagePopup() {
         const response = await fetch("/api/popup/homepage");
 
         if (response.ok) {
-          const data = await response.json();
+          const data = (await response.json()) as PopupDataWithUrls;
 
-          if (data && data.imageUrl && data.linkUrl) {
+          if (data?.imageUrl && data?.linkUrl) {
             setPopupData(data);
             setIsOpen(true);
             // Mark popup as seen
@@ -52,7 +52,7 @@ export function HomepagePopup() {
     };
 
     // Add a small delay to ensure the page is fully loaded
-    const timer = setTimeout(fetchPopup, 1000);
+    const timer = setTimeout(() => void fetchPopup(), 1000);
     return () => clearTimeout(timer);
   }, []);
 

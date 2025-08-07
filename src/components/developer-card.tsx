@@ -175,6 +175,8 @@ export function DeveloperCard({ developer, className }: DeveloperCardProps) {
                   name={developer.companyname}
                   image={developer.logo}
                   src
+                  projectId={developer.developerid}
+                  pageType="project"
                 />
               </div>
             </DialogContent>

@@ -1,4 +1,4 @@
-import { apiFetch } from "./api-client";
+import { apiClient } from "./axios-client";
 import type { PopupData, PopupDataWithUrls } from "@/types";
 
 /**
@@ -9,16 +9,17 @@ import type { PopupData, PopupDataWithUrls } from "@/types";
 export async function getHomepagePopup(): Promise<PopupDataWithUrls> {
   const url = "https://meqasa.com/hp-11";
 
-  const popupData = await apiFetch<PopupData>({
+  const popupData = await apiClient.post<PopupData>(
     url,
-    method: "POST",
-    params: {
+    {
       app: "vercel",
     },
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
+    {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
     },
-  });
+  );
 
   // Transform the data to include full URLs
   return {

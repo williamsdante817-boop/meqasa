@@ -1,4 +1,4 @@
-import { apiFetch } from "./api-client";
+import { apiClient } from "./axios-client";
 import type { FeaturedProject } from "@/types";
 
 /**
@@ -11,14 +11,15 @@ import type { FeaturedProject } from "@/types";
 export async function getFeaturedProjects(): Promise<FeaturedProject[]> {
   const url = "https://meqasa.com/hp-1";
 
-  return await apiFetch<FeaturedProject[]>({
+  return await apiClient.post<FeaturedProject[]>(
     url,
-    method: "POST",
-    params: {
+    {
       app: "vercel",
     },
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
+    {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
     },
-  });
+  );
 }

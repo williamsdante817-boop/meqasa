@@ -1,4 +1,4 @@
-import { apiFetch } from "./api-client";
+import { apiClient } from "./axios-client";
 import type { AdLink } from "@/types";
 
 /**
@@ -9,14 +9,15 @@ import type { AdLink } from "@/types";
 export async function getHeroBanner(): Promise<AdLink> {
   const url = "https://meqasa.com/hp-0";
 
-  return await apiFetch<AdLink>({
+  return await apiClient.post<AdLink>(
     url,
-    method: "POST",
-    params: {
+    {
       app: "vercel",
     },
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
+    {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
     },
-  });
+  );
 }

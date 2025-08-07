@@ -6,6 +6,8 @@ import LocationCard from "@/components/location-card";
 import SeoText from "@/components/seo-text";
 import AppPromotion from "@/components/app-promotion";
 import Shell from "@/layouts/shell";
+import { AgentLogosSkeleton } from "@/components/skeletons/agent-logos-skeleton";
+import { AgentLogosErrorBoundary } from "@/components/error-boundaries/agent-logos-error-boundary";
 import type { StaticData } from "@/lib/static-data";
 
 interface StaticContentProps {
@@ -13,19 +15,25 @@ interface StaticContentProps {
 }
 
 export function StaticAgentLogos({ staticData }: StaticContentProps) {
+  // Show skeleton if agent logos are not available
+  if (!staticData.agentLogos || staticData.agentLogos.length === 0) {
+    return <AgentLogosSkeleton />;
+  }
+
   return (
-    <div
-      className="mt-[180px] hidden lg:flex"
-      role="complementary"
-      aria-label="Partner logos"
-    >
-      <InfiniteMovingCards
-        items={staticData.agentLogos}
-        direction="left"
-        speed="normal"
-        className="relative -z-50"
-      />
-    </div>
+    <AgentLogosErrorBoundary>
+      <div
+        className="mt-[180px] hidden lg:flex overflow-hidden"
+        role="complementary"
+        aria-label="Partner logos"
+      >
+        <InfiniteMovingCards
+          items={staticData.agentLogos}
+          direction="left"
+          speed="normal"
+        />
+      </div>
+    </AgentLogosErrorBoundary>
   );
 }
 

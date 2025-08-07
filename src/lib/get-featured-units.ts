@@ -1,4 +1,4 @@
-import { apiFetch } from "./api-client";
+import { apiClient } from "./axios-client";
 import type { Unit } from "@/types";
 
 /**
@@ -11,14 +11,15 @@ import type { Unit } from "@/types";
 export async function getFeaturedUnits(): Promise<Unit[]> {
   const url = "https://meqasa.com/hp-3";
 
-  return await apiFetch<Unit[]>({
+  return await apiClient.post<Unit[]>(
     url,
-    method: "POST",
-    params: {
+    {
       app: "vercel",
     },
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
+    {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
     },
-  });
+  );
 }

@@ -1,15 +1,15 @@
 "use client";
 
 import Image from "next/image";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import Link from "next/link";
 
 // item type
 type Item = {
@@ -33,6 +33,7 @@ type Item = {
 
 export const InfiniteMovingCards = ({
   items,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   direction = "left",
   speed = "fast",
   pauseOnHover = true,
@@ -45,33 +46,42 @@ export const InfiniteMovingCards = ({
   className?: string;
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const scrollerRef = useRef<HTMLUListElement>(null);
-  const [isPaused, setIsPaused] = React.useState(false);
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const [isPaused, setIsPaused] = useState(false);
 
-  const addAnimation = React.useCallback(() => {
-    if (containerRef.current) {
-      containerRef.current.style.setProperty(
-        "--animation-direction",
-        direction === "left" ? "forwards" : "reverse",
-      );
-      containerRef.current.style.setProperty(
-        "--animation-duration",
-        speed === "fast" ? "30s" : speed === "normal" ? "60s" : "70s",
-      );
-    }
-  }, [direction, speed]);
-
-  const handlePause = React.useCallback(() => {
-    setIsPaused(true);
-  }, []);
-
-  const handleResume = React.useCallback(() => {
-    setIsPaused(false);
-  }, []);
-
+  // Set animation duration
   useEffect(() => {
-    addAnimation();
-  }, [addAnimation]);
+    if (scrollerRef.current) {
+      const duration =
+        speed === "fast" ? "30s" : speed === "normal" ? "60s" : "70s";
+      scrollerRef.current.style.animationDuration = duration;
+    }
+  }, [speed]);
+
+  // Handle pause/resume
+  useEffect(() => {
+    if (scrollerRef.current) {
+      scrollerRef.current.style.animationPlayState = isPaused
+        ? "paused"
+        : "running";
+    }
+  }, [isPaused]);
+
+  const handleMouseEnter = () => {
+    if (pauseOnHover) {
+      setIsPaused(true);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (pauseOnHover) {
+      setIsPaused(false);
+    }
+  };
+
+  const handleCardClick = (_item: Item) => {
+    // The Link should handle navigation automatically
+  };
 
   if (!items || items.length === 0) {
     return <p>No items available</p>;
@@ -80,82 +90,147 @@ export const InfiniteMovingCards = ({
   return (
     <div
       ref={containerRef}
-      className={cn(
-        "scroller max-w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,white_20%,white_80%,transparent)]",
-        className,
-      )}
-      role="region"
-      aria-label="Scrolling content"
-      onMouseEnter={pauseOnHover ? handlePause : undefined}
-      onMouseLeave={pauseOnHover ? handleResume : undefined}
+      className={cn("relative w-full overflow-hidden", className)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      style={{
+        minHeight: "200px",
+        zIndex: 10, // Ensure it's above other elements
+      }}
     >
-      <ul
+      {/* Scrolling container */}
+      <div
         ref={scrollerRef}
-        className={cn(
-          "flex w-max min-w-full shrink-0 flex-nowrap gap-4 py-8",
-          "animate-marquee",
-          isPaused && "hover:[animation-play-state:paused]",
-        )}
-        role="list"
+        className="flex gap-4 py-8 animate-marquee"
+        style={{
+          width: "max-content",
+          minWidth: "100%",
+          // Fallback animation if Tailwind doesn't work
+          animation:
+            scrollerRef.current?.style.animation ??
+            "marquee 60s linear infinite",
+        }}
       >
-        {items.map((item) => {
+        {/* Duplicate items for seamless loop */}
+        {[...items, ...items].map((item, index) => {
           const imageUrl = item.imbroker
             ? `https://dve7rykno93gs.cloudfront.net/fascimos/somics/${item.imbroker}`
             : "/default-image.jpg";
 
           return (
             <div
-              className="rounded-lg border border-gray-100 shadow-elegant-sm flex items-center aspect-square"
-              key={item.first}
+              key={`${item.first}-${index}`}
+              className="flex-shrink-0 w-[120px] h-[120px] rounded-lg border border-gray-100 shadow-elegant-sm bg-white"
             >
-              <Link
-                href={`/${item.first}`}
-                className="block focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                aria-label={`View details for ${item.name}`}
-                tabIndex={0}
-              >
-                <div className="flex min-w-[120px] max-w-[120px] items-center justify-center overflow-hidden p-4">
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger
-                        aria-describedby={`tooltip-${item.first}`}
-                        className="focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                      >
-                        <Image
-                          alt={item.name}
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Link
+                      href={`/agents/${item.first}`}
+                      className="block w-full h-full p-4 hover:bg-gray-50 transition-colors"
+                      aria-label={`View details for ${item.name}`}
+                      onClick={() => {
+                        handleCardClick(item);
+                      }}
+                    >
+                      <div className="w-full h-full flex items-center justify-center">
+                        <OptimizedAgentLogo
                           src={imageUrl}
-                          width={100}
-                          height={50}
-                          className="h-full w-full object-contain"
-                          onError={(e) => {
-                            const target = e.target as HTMLImageElement;
-                            target.src = "/default-image.jpg";
-                          }}
+                          alt={item.name}
+                          fallbackSrc="/default-image.jpg"
                         />
-                      </TooltipTrigger>
-                      <TooltipContent
-                        id={`tooltip-${item.first}`}
-                        className="z-50"
-                      >
-                        <p>{item.name}</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </div>
-              </Link>
+                      </div>
+                    </Link>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{item.name}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
           );
         })}
-      </ul>
-      {pauseOnHover && (
-        <button
-          className="absolute bottom-2 right-2 rounded-full bg-white p-2 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-          onClick={isPaused ? handleResume : handlePause}
-          aria-label={isPaused ? "Resume scrolling" : "Pause scrolling"}
-        >
-          {isPaused ? "▶" : "⏸"}
-        </button>
+      </div>
+    </div>
+  );
+};
+
+// Optimized Agent Logo Component
+interface OptimizedAgentLogoProps {
+  src: string;
+  alt: string;
+  fallbackSrc: string;
+}
+
+const OptimizedAgentLogo: React.FC<OptimizedAgentLogoProps> = ({
+  src,
+  alt,
+  fallbackSrc,
+}) => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
+  const [currentSrc, setCurrentSrc] = useState(src);
+
+  const handleLoad = () => {
+    setIsLoading(false);
+    setHasError(false);
+  };
+
+  const handleError = () => {
+    if (currentSrc !== fallbackSrc) {
+      setCurrentSrc(fallbackSrc);
+      setHasError(false);
+      setIsLoading(true);
+    } else {
+      setHasError(true);
+      setIsLoading(false);
+    }
+  };
+
+  // Reset state when src changes
+  React.useEffect(() => {
+    setCurrentSrc(src);
+    setIsLoading(true);
+    setHasError(false);
+  }, [src]);
+
+  return (
+    <div className="relative w-full h-full">
+      {/* Loading skeleton */}
+      {isLoading && (
+        <div className="absolute inset-0 bg-gray-100 animate-pulse rounded-md" />
       )}
+
+      {/* Error state */}
+      {hasError && (
+        <div className="absolute inset-0 bg-gray-100 rounded-md flex items-center justify-center">
+          <div className="text-gray-400 text-xs text-center">
+            <div className="w-8 h-8 mx-auto mb-1 bg-gray-200 rounded-md flex items-center justify-center">
+              <span className="text-gray-400">?</span>
+            </div>
+            <span>Logo unavailable</span>
+          </div>
+        </div>
+      )}
+
+      {/* Optimized image */}
+      <Image
+        src={currentSrc}
+        alt={alt}
+        width={100}
+        height={50}
+        className={cn(
+          "h-full w-full object-contain transition-opacity duration-300",
+          isLoading ? "opacity-0" : "opacity-100",
+        )}
+        onLoad={handleLoad}
+        onError={handleError}
+        priority={false}
+        sizes="120px"
+        quality={85}
+        placeholder="blur"
+        blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxAAPwCdABmX/9k="
+      />
     </div>
   );
 };

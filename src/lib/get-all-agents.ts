@@ -1,4 +1,4 @@
-import { apiFetch } from "./api-client";
+import { apiClient } from "./axios-client";
 
 interface BrokerSocials {
   linkedin: string | null;
@@ -34,11 +34,13 @@ interface AgentsResponse {
 export async function getAllAgents(): Promise<AgentsResponse> {
   const url = "https://meqasa.com/real-estate-agents?app=vercel";
 
-  return await apiFetch({
+  return await apiClient.post<AgentsResponse>(
     url,
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
+    {},
+    {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
     },
-  });
+  );
 }

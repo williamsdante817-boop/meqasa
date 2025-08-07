@@ -139,6 +139,8 @@ export default async function DeveloperProfilePage({
                 name={developer.developer.companyname}
                 image={developer.developer.logo}
                 src
+                projectId={developerId}
+                pageType="project"
               />
             </aside>
           </div>
