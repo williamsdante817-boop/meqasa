@@ -1,27 +1,23 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { AlertCard } from "@/components/alert-card";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogClose,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
-import { User, Mail, MessageSquare } from "lucide-react";
+import { generateContextKey, useContactState } from "@/hooks/use-contact-state";
+import { parsePhoneNumber } from "libphonenumber-js";
+import { Mail, MessageSquare, User } from "lucide-react";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
-import { useContactState, generateContextKey } from "@/hooks/use-contact-state";
-import { formatNumber, parsePhoneNumber } from "libphonenumber-js";
 
 interface ContactCardProps {
   name: string;
@@ -64,15 +60,6 @@ const setStoredContactInfo = (name: string, phone: string): void => {
     );
   } catch (error) {
     console.error("Error writing to localStorage:", error);
-  }
-};
-
-const clearStoredContactInfo = (): void => {
-  if (typeof window === "undefined") return;
-  try {
-    localStorage.removeItem("meqasa_contact_info");
-  } catch (error) {
-    console.error("Error clearing localStorage:", error);
   }
 };
 

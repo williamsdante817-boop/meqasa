@@ -26,7 +26,7 @@ export default function Loading() {
 
       <Shell className="mt-12 flex gap-8 md:px-0">
         <PropertyTypeLinks />
-        <div className="w-full border">
+        <div className="w-full">
           <Breadcrumbs className="capitalize" segments={segments} />
 
           {/* Header Skeleton */}
@@ -35,7 +35,7 @@ export default function Loading() {
             <Skeleton className="h-4 w-32" />
           </header>
 
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-[736px,300px] md:px-0 border">
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-[736px,300px] md:px-0">
             <div>
               <SearchResultsSkeleton />
             </div>
