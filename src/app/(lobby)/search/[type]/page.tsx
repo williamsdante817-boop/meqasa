@@ -28,7 +28,7 @@ export default async function SearchPage({
 
   // Load critical data on server: hero banner and search results
   const [heroBanner, searchData] = await Promise.all([
-    getResultsHeroBanner(),
+    getResultsHeroBanner().catch(() => null),
     (async () => {
       const currentPage = parseInt(resolvedSearchParams.page ?? "1");
       const urlSearchId = resolvedSearchParams.searchId
@@ -49,10 +49,12 @@ export default async function SearchPage({
         }
       } catch (error) {
         console.error("Error fetching search data:", error);
-        return await searchProperties(type, location, {
-          ...resolvedSearchParams,
-          app: "vercel",
-        });
+        // Return a fallback response instead of throwing
+        return {
+          results: [],
+          resultcount: 0,
+          searchid: null,
+        };
       }
     })(),
   ]);
