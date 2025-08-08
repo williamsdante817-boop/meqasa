@@ -103,7 +103,7 @@ export function ResultsCard({ result }: { result: ResultData }) {
               {!imgError ? (
                 <Image
                   className={cn(
-                    "object-cover rounded-xl transition-opacity duration-300 h-[202px] w-full",
+                    "object-cover rounded-t-lg md:rounded-lg transition-opacity duration-300 h-[202px] w-full",
                     isLoading ? "opacity-0" : "opacity-100",
                   )}
                   src={result.image}

@@ -134,7 +134,7 @@ export function PremiumPlusPropertyCard({
   return (
     <Card className="mb-8 flex p-0 h-fit flex-col gap-4 rounded-lg border-none text-brand-accent shadow w-full md:min-w-[256px]">
       <CardHeader className="p-0">
-        <div className="relative w-full rounded-lg md:min-h-[279px] md:min-w-[256px]">
+        <div className="relative w-full rounded-lg min-h-[230px] md:min-h-[279px] md:min-w-[256px]">
           <Link
             href={detailsLink}
             className="absolute inset-0 z-10"

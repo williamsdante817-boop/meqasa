@@ -57,7 +57,7 @@ export function FeaturedPropertyVariantCard({
 
   return (
     <Card
-      className="relative mb-8 h-[321px] w-full p-0 overflow-hidden rounded-lg border-none text-brand-accent"
+      className="relative mb-8 h-[230px] md:h-[321px] w-full p-0 overflow-hidden rounded-lg border-none text-brand-accent"
       role="article"
       aria-labelledby={`project-title-${projectid}`}
     >

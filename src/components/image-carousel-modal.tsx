@@ -2,7 +2,7 @@
 
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, X, ImageIcon } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, ImageIcon, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import { cn } from "@/lib/utils";
@@ -59,6 +59,7 @@ export function ImageCarouselModal({
   const [isAnimating, setIsAnimating] = useState(false);
   const thumbnailStripRef = useRef<HTMLDivElement>(null);
   const mainImageRef = useRef<HTMLDivElement>(null);
+  const [thumbnailSpacerWidth, setThumbnailSpacerWidth] = useState(0);
 
   // Memoize filtered images to prevent unnecessary re-renders
   const validImages = useMemo(
@@ -69,7 +70,11 @@ export function ImageCarouselModal({
   // Reset states when modal opens with a new initial index or images change
   useEffect(() => {
     if (isOpen) {
-      const safeInitialIndex = Math.min(initialIndex, validImages.length - 1);
+      const initial = Number.isFinite(initialIndex) ? initialIndex : 0;
+      const safeInitialIndex = Math.max(
+        0,
+        Math.min(initial, validImages.length - 1),
+      );
       setCurrentIndex(safeInitialIndex);
       setIsLoading(true);
       setImgErrors({}); // Clear error states when switching image sets
@@ -89,25 +94,58 @@ export function ImageCarouselModal({
     }
   }, [isOpen]);
 
-  // Debounced thumbnail scrolling to prevent excessive DOM operations
+  // Compute leading/trailing spacers so first/last thumbnails can center fully
   useEffect(() => {
-    if (!thumbnailStripRef.current) return;
+    const container = thumbnailStripRef.current;
+    if (!container) return;
+
+    const computeSpacer = () => {
+      const spacer = Math.max(
+        0,
+        container.clientWidth / 2 - THUMBNAIL_WIDTH / 2,
+      );
+      setThumbnailSpacerWidth(spacer);
+    };
+
+    computeSpacer();
+
+    const resizeObserver = new ResizeObserver(() => computeSpacer());
+    resizeObserver.observe(container);
+    return () => resizeObserver.disconnect();
+  }, [isOpen]);
+
+  // Debounced thumbnail scrolling with manual centering and clamping
+  useEffect(() => {
+    const container = thumbnailStripRef.current;
+    if (!container) return;
 
     const timeoutId = setTimeout(() => {
-      const activeThumb = thumbnailStripRef.current?.querySelector(
+      const activeThumb = container.querySelector<HTMLElement>(
         `[data-thumb-index='${currentIndex}']`,
       );
-      if (activeThumb) {
-        activeThumb.scrollIntoView({
-          behavior: "smooth",
-          inline: "center",
-          block: "nearest",
-        });
-      }
-    }, 100); // Small delay to prevent rapid scrolling
+      if (!activeThumb) return;
+
+      const containerRect = container.getBoundingClientRect();
+      const thumbRect = activeThumb.getBoundingClientRect();
+
+      const thumbCenterInContent =
+        thumbRect.left -
+        containerRect.left +
+        container.scrollLeft +
+        thumbRect.width / 2;
+
+      let targetScrollLeft = thumbCenterInContent - container.clientWidth / 2;
+
+      // Clamp within scrollable range
+      const maxScrollLeft = container.scrollWidth - container.clientWidth;
+      if (targetScrollLeft < 0) targetScrollLeft = 0;
+      if (targetScrollLeft > maxScrollLeft) targetScrollLeft = maxScrollLeft;
+
+      container.scrollTo({ left: targetScrollLeft, behavior: "smooth" });
+    }, 100);
 
     return () => clearTimeout(timeoutId);
-  }, [currentIndex]);
+  }, [currentIndex, isOpen]);
 
   // Memoized navigation handlers to prevent unnecessary re-renders
   const handlePrevious = useCallback(() => {
@@ -225,10 +263,15 @@ export function ImageCarouselModal({
   const hasError = (imgErrors[currentIndex] ?? false) || !currentImage;
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) onClose();
+      }}
+    >
       <DialogContent
         className={cn(
-          "fixed inset-0 w-screen h-screen max-w-none max-h-none p-0 m-0 bg-black border-none flex flex-col rounded-none translate-x-0 translate-y-0 left-0 top-0",
+          "fixed inset-0 w-screen h-screen max-w-none max-h-none p-0 m-0 bg-black border-none flex flex-col  translate-x-0 translate-y-0 left-0 top-0 !rounded-none",
           "transition-all duration-300 ease-out",
           isAnimating ? "opacity-0 scale-95" : "opacity-100 scale-100",
         )}
@@ -236,8 +279,9 @@ export function ImageCarouselModal({
         role="dialog"
         aria-modal="true"
         aria-label="Image gallery"
+        hideCloseButton
       >
-        <div className="relative w-full h-full flex flex-col items-center justify-center">
+        <div className="relative w-full h-full flex flex-col items-center justify-center gap-3 px-4 md:px-6">
           {/* Photo count at top left */}
           <div
             className={cn(
@@ -256,7 +300,7 @@ export function ImageCarouselModal({
             variant="ghost"
             size="icon"
             className={cn(
-              "absolute top-4 right-4 z-50 text-white hover:bg-white/10",
+              "absolute top-4 right-4 z-50 text-white hover:bg-white hover:text-brand-accent",
               "transition-all duration-300 ease-out",
               isAnimating
                 ? "opacity-0 translate-y-2"
@@ -270,10 +314,10 @@ export function ImageCarouselModal({
 
           {/* Previous button - hidden on mobile */}
           <Button
-            variant="ghost"
+            variant="outline"
             size="icon"
             className={cn(
-              "absolute left-4 top-1/2 -translate-y-1/2 z-50 text-white hover:bg-white/10 hidden md:flex",
+              "absolute left-6 top-1/2 -translate-y-1/2 z-50 h-11 w-11 rounded-full bg-white text-accent-foreground shadow-md hidden md:flex",
               "transition-all duration-300 ease-out",
               isAnimating
                 ? "opacity-0 translate-x-2"
@@ -283,19 +327,21 @@ export function ImageCarouselModal({
             aria-label="Previous image"
             disabled={validImages.length <= 1}
           >
-            <ChevronLeft className="h-8 w-8" />
+            <ChevronLeft className="h-4 w-4" />
           </Button>
 
           {/* Main Image with touch events for mobile swipe */}
           <div
             ref={mainImageRef}
             className={cn(
-              "relative w-full flex-1 flex items-center justify-center pb-4 touch-pan-y",
+              "relative flex items-center justify-center touch-pan-y overflow-hidden rounded-xl bg-black",
               "transition-all duration-300 ease-out",
               isAnimating ? "opacity-0 scale-95" : "opacity-100 scale-100",
             )}
+            style={{ width: "min(800px, 100%)", aspectRatio: "800 / 530" }}
             tabIndex={0}
             role="img"
+            aria-roledescription="carousel"
             aria-label={`Property image ${currentIndex + 1} of ${validImages.length}`}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
@@ -306,30 +352,49 @@ export function ImageCarouselModal({
                 <ImagePlaceholder className="rounded-xl" />
               </div>
             ) : (
-              <Image
-                src={getImageUrlWithFallback(currentImage)}
-                alt={`Property image ${currentIndex + 1}`}
-                fill
-                className={cn(
-                  "object-contain transition-opacity duration-300 rounded-xl bg-black",
-                  isLoading ? "opacity-0" : "opacity-100",
+              <>
+                {/* Loading spinner overlay */}
+                {isLoading && (
+                  <div
+                    className="absolute inset-0 flex items-center justify-center bg-black/20 z-10"
+                    aria-live="polite"
+                    aria-atomic="true"
+                  >
+                    <div className="flex flex-col items-center gap-3">
+                      <Loader2 className="h-8 w-8 animate-spin text-white" />
+                      <span className="text-white text-sm font-medium">
+                        Loading image...
+                      </span>
+                    </div>
+                  </div>
                 )}
-                priority
-                placeholder="blur"
-                blurDataURL={PLACEHOLDER_BLUR}
-                onLoadingComplete={handleImageLoad}
-                onError={() => handleImageError(currentIndex)}
-                draggable={false}
-              />
+
+                <Image
+                  src={getImageUrlWithFallback(currentImage)}
+                  alt={`Property image ${currentIndex + 1}`}
+                  fill
+                  className={cn(
+                    "object-contain transition-opacity duration-300",
+                    isLoading ? "opacity-0" : "opacity-100",
+                  )}
+                  priority
+                  placeholder="blur"
+                  blurDataURL={PLACEHOLDER_BLUR}
+                  onLoadingComplete={handleImageLoad}
+                  onError={() => handleImageError(currentIndex)}
+                  draggable={false}
+                  sizes="(max-width: 820px) 100vw, 800px"
+                />
+              </>
             )}
           </div>
 
           {/* Next button - hidden on mobile */}
           <Button
-            variant="ghost"
+            variant="outline"
             size="icon"
             className={cn(
-              "absolute right-4 top-1/2 -translate-y-1/2 z-50 text-white hover:bg-white/10 hidden md:flex",
+              "absolute right-6 top-1/2 -translate-y-1/2 z-50 h-11 w-11 rounded-full bg-white text-accent-foreground shadow-md hidden md:flex",
               "transition-all duration-300 ease-out",
               isAnimating
                 ? "opacity-0 -translate-x-2"
@@ -339,7 +404,7 @@ export function ImageCarouselModal({
             aria-label="Next image"
             disabled={validImages.length <= 1}
           >
-            <ChevronRight className="h-8 w-8" />
+            <ChevronRight className="h-4 w-4" />
           </Button>
 
           {/* Thumbnail strip */}
@@ -347,23 +412,33 @@ export function ImageCarouselModal({
             <div
               ref={thumbnailStripRef}
               className={cn(
-                "w-full overflow-x-auto bg-black/80 py-3 px-2 flex gap-2 items-center justify-center border-t border-black/40",
+                "overflow-x-auto bg-black/80 py-3 px-0 flex gap-2 items-center justify-start border-t border-black/40",
                 "transition-all duration-300 ease-out",
                 isAnimating
                   ? "opacity-0 translate-y-4"
                   : "opacity-100 translate-y-0",
               )}
-              style={{ minHeight: THUMBNAIL_STRIP_HEIGHT }}
+              style={{
+                minHeight: THUMBNAIL_STRIP_HEIGHT,
+                width: "min(800px, 100%)",
+              }}
               role="tablist"
               aria-label="Image thumbnails"
             >
+              <div
+                aria-hidden
+                style={{
+                  flex: "0 0 auto",
+                  width: Math.ceil(thumbnailSpacerWidth),
+                }}
+              />
               {validImages.map((img, idx) => (
                 <button
                   key={`${img}-${idx}`}
                   data-thumb-index={idx}
                   onClick={() => handleThumbnailClick(idx)}
                   className={cn(
-                    "relative flex-shrink-0 rounded-md overflow-hidden border-2 transition-all",
+                    "relative flex-shrink-0 rounded-md overflow-hidden border-2 transition-all origin-center",
                     idx === currentIndex
                       ? "border-brand-blue shadow-lg scale-110 z-10"
                       : "border-transparent opacity-70 hover:opacity-100",
@@ -394,6 +469,13 @@ export function ImageCarouselModal({
                   )}
                 </button>
               ))}
+              <div
+                aria-hidden
+                style={{
+                  flex: "0 0 auto",
+                  width: Math.ceil(thumbnailSpacerWidth),
+                }}
+              />
             </div>
           )}
         </div>
