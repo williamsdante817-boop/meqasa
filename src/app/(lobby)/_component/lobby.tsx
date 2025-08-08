@@ -8,8 +8,15 @@ import {
   StaticLocationSection,
   StaticMarketNews,
 } from "@/components/static/StaticContent";
-import { FreshContentWrapper } from "@/components/streaming/FreshContentWrapper";
 
+import {
+  FeaturedListingsSkeleton,
+  FeaturedProjectsSkeleton,
+  GridBannerSkeleton,
+  HeroBannerSkeleton,
+  LatestListingsSkeleton,
+} from "@/components/streaming/LoadingSkeletons";
+import { StreamingErrorBoundary } from "@/components/streaming/StreamingErrorBoundary";
 import { StreamingFeaturedListings } from "@/components/streaming/StreamingFeaturedListings";
 import { StreamingFeaturedProjects } from "@/components/streaming/StreamingFeaturedProjects";
 import { StreamingGridBanner } from "@/components/streaming/StreamingGridBanner";
@@ -24,14 +31,6 @@ import type { getHeroBanner } from "@/lib/get-hero-banner";
 import type { getLatestListings } from "@/lib/get-latest-listing";
 import type { StaticData } from "@/lib/static-data";
 import MobilePageHeader from "./mobile-page-header";
-import {
-  FeaturedListingsSkeleton,
-  FeaturedProjectsSkeleton,
-  GridBannerSkeleton,
-  HeroBannerSkeleton,
-  LatestListingsSkeleton,
-} from "@/components/streaming/LoadingSkeletons";
-import { StreamingErrorBoundary } from "@/components/streaming/StreamingErrorBoundary";
 
 interface LobbyProps {
   // Fresh data promises (always fetched)

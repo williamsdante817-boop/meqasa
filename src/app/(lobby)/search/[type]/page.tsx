@@ -108,7 +108,7 @@ export default async function SearchPage({
                 location={location}
                 initialResults={searchData.results}
                 initialTotal={searchData.resultcount}
-                initialSearchId={searchData.searchid}
+                initialSearchId={searchData.searchid ?? 0}
                 initialPage={parseInt(resolvedSearchParams.page ?? "1")}
               />
             </div>
