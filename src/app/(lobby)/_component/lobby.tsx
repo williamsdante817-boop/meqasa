@@ -88,7 +88,7 @@ async function LobbyContent({
         </StreamingErrorBoundary>
 
         {/* Latest Listings - Streamed */}
-        <StreamingErrorBoundary fallback={<LatestListingsSkeleton />}>
+        <StreamingErrorBoundary fallback={<FeaturedListingsSkeleton />}>
           <StreamingLatestListings
             latestListingsPromise={latestListingsPromise}
           />

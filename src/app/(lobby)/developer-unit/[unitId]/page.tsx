@@ -18,7 +18,7 @@ import SafetyTipsCard from "@/components/safety-tip";
 import { Badge } from "@/components/ui/badge";
 import Shell from "@/layouts/shell";
 import { getUnitDetails } from "@/lib/get-unit-details";
-import { cn, formatNumber } from "@/lib/utils";
+import { cn, formatNumber, slugify } from "@/lib/utils";
 import { BathIcon, BedIcon, ParkingSquare, Square } from "lucide-react";
 import Link from "next/link";
 import ProjectVideo from "../../development-projects/_component/project-video";
@@ -89,6 +89,30 @@ export default async function DeveloperUnitPage({
 
   console.log("unitDetails", unitDetails.similarunits);
 
+  // Construct developer-aware hrefs similar to listings page
+  const contract = unitDetails.unit.terms?.toLowerCase() ?? "";
+  const location = unitDetails.unit.city?.toLowerCase() ?? "";
+  const type = unitDetails.unit.unittypename?.toLowerCase() ?? "";
+
+  const searchParams = new URLSearchParams({
+    q: location || "ghana",
+    page: "1",
+  });
+  if (type) searchParams.set("ftype", type);
+  if (typeof unitDetails.unit.beds === "number" && unitDetails.unit.beds > 0) {
+    searchParams.set("fbeds", String(unitDetails.unit.beds));
+  }
+  if (
+    typeof unitDetails.unit.baths === "number" &&
+    unitDetails.unit.baths > 0
+  ) {
+    searchParams.set("fbaths", String(unitDetails.unit.baths));
+  }
+  const similarSearchHref = `/search/${contract}?${searchParams.toString()}`;
+
+  const developerSlug = slugify(unitDetails.unit.companyname || "developer");
+  const developerHref = `/projects-by-developer/${developerSlug}-${unitDetails.unit.developerid}`;
+
   return (
     <main>
       <Shell>
@@ -99,15 +123,15 @@ export default async function DeveloperUnitPage({
               { title: "Home", href: "/" },
               {
                 title: `For ${unitDetails.unit.terms}`,
-                href: `/properties?contract=${unitDetails.unit.terms}`,
+                href: `/search/${contract}?q=ghana&page=1`,
               },
               {
                 title: `${unitDetails.unit.unittypename}`,
-                href: `/properties?type=${unitDetails.unit.unittypename}`,
+                href: `/search/${contract}?q=ghana&ftype=${type}&page=1`,
               },
               {
                 title: `${unitDetails.unit.city}`,
-                href: `/properties?location=${unitDetails.unit.city}`,
+                href: `/search/${contract}?q=${location}&page=1`,
               },
             ]}
             aria-label="Developer unit navigation"
@@ -251,7 +275,7 @@ export default async function DeveloperUnitPage({
               <span className="block text-gray-500 mt-4">
                 Listed by:{" "}
                 <Link
-                  href={`/developer/${unitDetails.unit.developerid}`}
+                  href={developerHref}
                   className="decoration-dashed underline underline-offset-2"
                 >
                   {unitDetails.unit.companyname}
@@ -352,7 +376,7 @@ export default async function DeveloperUnitPage({
         <ContentSection
           title="Similar Units"
           description=""
-          href="/developer-units"
+          href={similarSearchHref}
           className={cn(
             unitDetails.similarunits.length !== 0 ? "px-0 mb-6" : "px-4",
             "pt-14 md:pt-20 lg:pt-24  md:block lg:max-w-7xl lg:mx-auto [&_p]:px-4 [&_h2]:px-4",

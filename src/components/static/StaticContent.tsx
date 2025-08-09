@@ -15,6 +15,8 @@ interface StaticContentProps {
 }
 
 export function StaticAgentLogos({ staticData }: StaticContentProps) {
+  console.log("staticData", staticData);
+
   // Show skeleton if agent logos are not available
   if (!staticData.agentLogos || staticData.agentLogos.length === 0) {
     return <AgentLogosSkeleton />;
@@ -23,7 +25,7 @@ export function StaticAgentLogos({ staticData }: StaticContentProps) {
   return (
     <AgentLogosErrorBoundary>
       <div
-        className="mt-[180px] hidden lg:flex overflow-hidden"
+        className="mt-[125px] hidden lg:flex overflow-hidden"
         role="complementary"
         aria-label="Partner logos"
       >

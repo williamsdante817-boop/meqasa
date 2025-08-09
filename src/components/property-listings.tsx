@@ -8,12 +8,13 @@ import {
   CarouselPrevious,
   type CarouselApi,
 } from "@/components/ui/carousel";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { Listing } from "./property-card";
 import PropertyCard from "./property-card";
 import UnitCard from "./unit-card";
 import type { ListingDetails } from "@/types";
 import type { SimilarUnit } from "@/lib/get-unit-details";
+import { AlertCard } from "@/components/alert-card";
 
 export default function PropertyListings({
   listings,
@@ -45,28 +46,36 @@ export default function PropertyListings({
 
     return () => {
       api.off("select", onSelect);
+      api.off("reInit", onSelect);
     };
   }, [api]);
 
   // console.log('Testing Property Listings',listings);
 
-  const transformedListings = listings.map((listing) => {
-    if ("unitid" in listing) return listing;
-    if ("baths" in listing) {
-      return {
-        ...listing,
-        bathroomcount: listing.baths,
-        bedroomcount: listing.beds,
-      };
-    }
-    return listing;
-  });
+  const transformedListings = useMemo(() => {
+    if (!listings || listings.length === 0)
+      return [] as Array<Listing | SimilarUnit>;
+    return listings.map((listing) => {
+      if ("unitid" in listing) return listing;
+      if ("baths" in listing) {
+        // Cast to align with PropertyCard's expected Listing shape
+        return {
+          ...listing,
+          bathroomcount: listing.baths,
+          bedroomcount: listing.beds,
+        } as unknown as Listing;
+      }
+      return listing as unknown as Listing;
+    });
+  }, [listings]);
 
   if (!listings || listings.length === 0) {
     return (
-      <div role="status" className="text-center py-8 text-brand-muted">
-        No properties available at the moment.
-      </div>
+      <AlertCard
+        title="No properties available at the moment"
+        description="Try adjusting your filters or check back later."
+        ariaLabel="No properties available"
+      />
     );
   }
 
@@ -86,23 +95,34 @@ export default function PropertyListings({
           role="list"
           aria-label="Property listings"
         >
-          {transformedListings.map((listing, i) => (
-            <CarouselItem
-              key={i}
-              className="basis-[220px] md:basis-[256px]"
-              role="listitem"
-              aria-label={`Property ${i + 1} of ${listings.length}`}
-            >
-              {"unitid" in listing ? (
-                <UnitCard unit={listing} />
-              ) : (
-                <PropertyCard
-                  listing={listing}
-                  parentContract={parentContract}
-                />
-              )}
-            </CarouselItem>
-          ))}
+          {transformedListings.map((listing, i) => {
+            const key =
+              "unitid" in listing
+                ? `unit-${listing.unitid}`
+                : "detailreq" in (listing as Record<string, unknown>)
+                  ? (listing as unknown as { detailreq: string }).detailreq
+                  : "listingid" in (listing as Record<string, unknown>)
+                    ? `listing-${(listing as unknown as { listingid: string }).listingid}`
+                    : `idx-${i}`;
+
+            return (
+              <CarouselItem
+                key={key}
+                className="basis-[220px] md:basis-[256px]"
+                role="listitem"
+                aria-label={`Property ${i + 1} of ${transformedListings.length}`}
+              >
+                {"unitid" in listing ? (
+                  <UnitCard unit={listing} />
+                ) : (
+                  <PropertyCard
+                    listing={listing as unknown as Listing}
+                    parentContract={parentContract}
+                  />
+                )}
+              </CarouselItem>
+            );
+          })}
         </CarouselContent>
         {canScrollPrev && (
           <CarouselPrevious

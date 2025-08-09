@@ -48,7 +48,7 @@ export function AgentInfo({ agent }: AgentInfoProps) {
     <div className="text-brand-accent">
       <div className="flex flex-col items-start gap-3 md:flex-row md:justify-between md:gap-0">
         <div>
-          <h1 className="flex items-center text-[23px] font-bold leading-5 text-brand-accent md:leading-8">
+          <h1 className="flex items-center text-[23px] capitalize font-bold leading-5 text-brand-accent md:leading-8">
             {agent.name}
             {agent.verified && (
               <Badge className="ml-2 bg-green-500 uppercase text-white">
@@ -56,10 +56,12 @@ export function AgentInfo({ agent }: AgentInfoProps) {
               </Badge>
             )}
           </h1>
-          <p className="text-l mt-2 flex items-center gap-2 text-brand-muted">
-            <MapPin className="h-5 w-5 text-brand-primary" strokeWidth="1.3" />
-            {agent.locality}
-          </p>
+          {agent.locality ? (
+            <p className="text-l mt-2 flex items-center gap-2 text-brand-muted">
+              <MapPin className="h-5 w-5 text-brand-primary" strokeWidth="1.3" />
+              {agent.locality}
+            </p>
+          ) : null}
           {agent.company ? (
             <p className="text-l mt-2 flex items-center gap-2 text-brand-muted">
               <Building
@@ -188,7 +190,7 @@ export function AgentInfo({ agent }: AgentInfoProps) {
       </div>
 
       <div className="mb-10">
-        <h2 className="mb-4 text-xl font-semibold">
+        <h2 className="mb-4 text-xl capitalize font-semibold">
           About {agent.name.split(" ")[0]}
         </h2>
         <p className="text-brand-muted">{agent.about}</p>
@@ -206,7 +208,7 @@ export function AgentInfo({ agent }: AgentInfoProps) {
       )}
 
       <div className="mb-6 flex items-center gap-3">
-        <h2 className="text-2xl font-bold text-brand-accent">
+        <h2 className="text-2xl font-bold capitalize text-brand-accent">
           Listings By {agent.name}
         </h2>
         <Badge className="bg-brand-primary text-white font-semibold">

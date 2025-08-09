@@ -126,7 +126,7 @@ export const InfiniteMovingCards = ({
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Link
-                      href={`/agents/${item.first}`}
+                      href={`/agents/${item.name}?g=${item.first}`}
                       className="block w-full h-full p-4 hover:bg-gray-50 transition-colors"
                       aria-label={`View details for ${item.name}`}
                       onClick={() => {

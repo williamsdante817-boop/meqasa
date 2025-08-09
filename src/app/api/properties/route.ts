@@ -182,6 +182,10 @@ export async function POST(request: NextRequest) {
           postParams.set("ftype", searchParams.ftype);
         }
       }
+      // Ensure default ftype for non–short-let when not explicitly provided
+      if (!isShortLet && !postParams.has("ftype")) {
+        postParams.set("ftype", "- Any -");
+      }
 
       console.log("Search API call:", {
         url: finalUrl,
@@ -282,9 +286,11 @@ export async function POST(request: NextRequest) {
         : url;
 
       // Add all the same filter parameters from the original search
+      // Do not forward regular ftype if short-let; short-let forces ftype="- Any -" below
       if (
         loadMoreParams.ftype &&
-        VALID_PROPERTY_TYPES.includes(loadMoreParams.ftype)
+        VALID_PROPERTY_TYPES.includes(loadMoreParams.ftype) &&
+        !isShortLet
       ) {
         postParams.set("ftype", loadMoreParams.ftype);
       }
@@ -352,6 +358,10 @@ export async function POST(request: NextRequest) {
         ) {
           postParams.set("fhowshort", loadMoreParams.fhowshort);
         }
+      }
+      // Ensure default ftype for non–short-let when not explicitly provided
+      if (!isShortLet && !postParams.has("ftype")) {
+        postParams.set("ftype", "- Any -");
       }
 
       console.log("LoadMore API call:", {

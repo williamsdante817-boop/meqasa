@@ -94,6 +94,36 @@ export default async function DetailsPage({
       );
     }
 
+    // Build Similar Listings search href based on current listing details
+    const contract = listingDetail.contract.toLowerCase();
+    const location = listingDetail.location.toLowerCase();
+    const type = listingDetail.type.toLowerCase();
+    const params = new URLSearchParams({ q: location, page: "1", ftype: type });
+    const numBeds = Number.parseInt(listingDetail.beds, 10);
+    const numBaths = Number.parseInt(listingDetail.baths, 10);
+    if (!Number.isNaN(numBeds) && numBeds > 0)
+      params.set("fbeds", String(numBeds));
+    if (!Number.isNaN(numBaths) && numBaths > 0)
+      params.set("fbaths", String(numBaths));
+    const similarSearchHref = `/search/${contract}?${params.toString()}`;
+
+    // Construct internal agent link `/agents/{name}?g={id}` using owner.page as source of id
+    const agentNameEncoded = encodeURIComponent(listingDetail.owner.name);
+    const ownerPageUrl = listingDetail.owner.page;
+    let agentIdFromPage = "";
+    const qMarkIndex = ownerPageUrl.indexOf("?");
+    if (qMarkIndex !== -1) {
+      const queryString = ownerPageUrl.slice(qMarkIndex + 1);
+      const sp = new URLSearchParams(queryString);
+      agentIdFromPage = sp.get("g") ?? "";
+    } else {
+      const execResult = /[?&]g=([^&]+)/.exec(ownerPageUrl);
+      agentIdFromPage = execResult?.[1] ?? "";
+    }
+    const agentHref = agentIdFromPage
+      ? `/agents/${agentNameEncoded}?g=${encodeURIComponent(agentIdFromPage)}`
+      : `/agents/${agentNameEncoded}`;
+
     const propertyDetails = [
       { title: "Type", value: listingDetail.type || "Not specified" },
       { title: "Contract", value: listingDetail.contract || "Not specified" },
@@ -292,14 +322,14 @@ export default async function DetailsPage({
                       // categoryData.categories?.map((cat) => (
                       <div>
                         <Link
-                          href={listingDetail.parentlink}
+                          href={`/search/${listingDetail.contract.toLowerCase()}?q=ghana&ftype=${listingDetail.type.toLowerCase()}&page=1`}
                           className="block text-sm text-blue-500"
                           key={listingDetail.parenttext}
                         >
                           {listingDetail.parenttext}
                         </Link>
                         <Link
-                          href={listingDetail.categorylink}
+                          href={`/search/${listingDetail.contract.toLowerCase()}?q=${listingDetail.location.toLowerCase()}&ftype=${listingDetail.type.toLowerCase()}&page=1`}
                           className="block text-sm text-blue-500"
                           key={listingDetail.categorytext}
                         >
@@ -330,7 +360,7 @@ export default async function DetailsPage({
                     <span className="block text-gray-500 mt-4">
                       Listed by:{" "}
                       <Link
-                        href={listingDetail.owner.page}
+                        href={agentHref}
                         className="decoration-dashed underline underline-offset-2"
                       >
                         {listingDetail.owner.name}
@@ -435,7 +465,7 @@ export default async function DetailsPage({
           <ContentSection
             title="Similar Listings"
             description=""
-            href="/listings"
+            href={similarSearchHref}
             className={cn(
               listingDetail.similars.length > 0 ? "px-0 mb-6" : "px-4",
               "pt-14 md:pt-20 lg:pt-24  md:block lg:max-w-7xl lg:mx-auto [&_p]:px-4 [&_h2]:px-4",

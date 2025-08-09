@@ -12,15 +12,28 @@ import { getAgentDetails } from "@/lib/get-agent-details";
 
 interface AgentDetailsPageProps {
   params: Promise<{ agentId: string }>;
+  searchParams: Promise<Record<string, string>>;
 }
 
 export default async function AgentDetailsPage({
   params,
+  searchParams,
 }: AgentDetailsPageProps) {
-  const { agentId } = await params;
-  const agent = await getAgentDetails(1071249313, agentId);
+  const { agentId: agentNameParam } = await params;
+  const resolvedSearchParams = await searchParams;
+  const agentIdFromQuery = resolvedSearchParams.g;
+
+  if (!agentNameParam || !agentIdFromQuery) {
+    notFound();
+  }
+
+  const agentName = decodeURIComponent(agentNameParam);
+  const agent = await getAgentDetails(agentIdFromQuery, agentName);
   const CDN_PREFIX = "https://dve7rykno93gs.cloudfront.net";
   const logoUrl = agent.logo ? `${CDN_PREFIX}${agent.logo}` : undefined;
+
+  console.log("agentIdFromQuery", agentIdFromQuery);
+  console.log("agentName", agentName);
 
   if (!agent) {
     notFound();
@@ -55,7 +68,7 @@ export default async function AgentDetailsPage({
             <ContactCard
               name={agent.name}
               image={agent.logo || ""}
-              listingId={agentId}
+              listingId={agentIdFromQuery}
               pageType="listing"
             />
           </aside>

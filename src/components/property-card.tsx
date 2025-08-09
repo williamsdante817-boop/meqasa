@@ -16,19 +16,15 @@ import { AddFavoriteButton } from "./add-favorite-button";
 
 export type Listing = Pick<
   ListingDetails,
-  | "detailreq"
-  | "image"
-  | "streetaddress"
-  | "garages"
-  | "title"
-  | "price"
-  | "contract"
+  "detailreq" | "image" | "streetaddress" | "garages" | "title"
 > & {
   summary?: string;
   pricepart1?: string;
   pricepart2?: string;
   bathroomcount: string;
   bedroomcount: string;
+  price?: string;
+  contract?: string;
 };
 
 export default function PropertyCard({

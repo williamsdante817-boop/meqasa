@@ -192,7 +192,7 @@ export function ResultsCard({ result }: { result: ResultData }) {
                 </>
               )}
             </div>
-            {!result.istopad ? (
+            {result.istopad ? (
               <Badge className="bg-transparent uppercase text-brand-accent border border-orange-400">
                 {" "}
                 top ad

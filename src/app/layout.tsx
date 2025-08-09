@@ -4,6 +4,8 @@ import { cn } from "@/lib/utils";
 import { type Metadata, type Viewport } from "next";
 import { fontSans } from "@/lib/fonts";
 import { Toaster } from "@/components/ui/toast";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/react";
 
 export const metadata: Metadata = {
   title: "Meqasa ",
@@ -31,6 +33,8 @@ export default function RootLayout({
       >
         {children}
         <Toaster />
+        <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   );
