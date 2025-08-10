@@ -1,11 +1,10 @@
 "use client";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import type { ListingDetails } from "@/types";
 import PropertyListings from "./property-listings";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
+import { AlertCard } from "@/components/alert-card";
 
 export type Listing = Pick<
   ListingDetails,
@@ -28,7 +27,6 @@ export function LatestListingsTab({
   saleListings,
   onTabChange,
 }: LatestListingsTabProps) {
-  const [activeTab, setActiveTab] = useState<string>("rent");
   const tabs = useMemo(
     () => [
       { value: "rent", label: "For Rent", listings: rentListings },
@@ -42,7 +40,6 @@ export function LatestListingsTab({
       defaultValue="rent"
       className="w-full"
       onValueChange={(value) => {
-        setActiveTab(value);
         onTabChange?.(value);
       }}
     >
@@ -62,18 +59,6 @@ export function LatestListingsTab({
             </TabsTrigger>
           ))}
         </TabsList>
-        <Button
-          variant="ghost"
-          className="hidden lg:flex text-brand-blue font-semibold hover:text-brand-blue focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2"
-          asChild
-        >
-          <Link
-            href={`/search/${activeTab}?q=ghana&page=1`}
-            aria-label={`See All for ${activeTab === "rent" ? "For Rent" : "For Sale"}`}
-          >
-            See All
-          </Link>
-        </Button>
       </div>
       {tabs.map((tab) => (
         <TabsContent
@@ -88,10 +73,11 @@ export function LatestListingsTab({
               parentContract={tab.value}
             />
           ) : (
-            <p role="status" aria-live="polite">
-              No properties currently available for {tab.label.toLowerCase()}.
-              Please check back later.
-            </p>
+            <AlertCard
+              title={`No properties currently available for ${tab.label.toLowerCase()}.`}
+              description="Please check back later."
+              className="mt-4"
+            />
           )}
         </TabsContent>
       ))}

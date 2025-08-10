@@ -14,7 +14,6 @@ import {
   FeaturedProjectsSkeleton,
   GridBannerSkeleton,
   HeroBannerSkeleton,
-  LatestListingsSkeleton,
 } from "@/components/streaming/LoadingSkeletons";
 import { StreamingErrorBoundary } from "@/components/streaming/StreamingErrorBoundary";
 import { StreamingFeaturedListings } from "@/components/streaming/StreamingFeaturedListings";
