@@ -5,23 +5,31 @@ interface ContactState {
   whatsappNumber: string;
   showNumber: boolean;
   isLoading: boolean;
-  contextKey: string | null; // Changed from listingId to contextKey
+  contextKey: string;
 }
 
-// Global state to share between components
-let globalContactState: ContactState = {
-  phoneNumber: "",
-  whatsappNumber: "",
-  showNumber: false,
-  isLoading: false,
-  contextKey: null,
-};
+// Per-context global state map so multiple contexts can coexist
+let contactStateByContext: Record<string, ContactState> = {};
 
-// Listeners for state changes
-const listeners = new Set<(state: ContactState) => void>();
+// Listeners for any state change
+const listeners = new Set<() => void>();
 
 const notifyListeners = () => {
-  listeners.forEach((listener) => listener(globalContactState));
+  listeners.forEach((listener) => listener());
+};
+
+const getOrCreateState = (contextKey: string): ContactState => {
+  const existing = contactStateByContext[contextKey];
+  if (existing) return existing;
+  const initial: ContactState = {
+    phoneNumber: "",
+    whatsappNumber: "",
+    showNumber: false,
+    isLoading: false,
+    contextKey,
+  };
+  contactStateByContext[contextKey] = initial;
+  return initial;
 };
 
 /**
@@ -51,40 +59,22 @@ export const generateContextKey = (
  * 4. Different page types (listings vs projects) have separate states
  */
 export const useContactState = (contextKey: string) => {
-  const [state, setState] = useState<ContactState>(globalContactState);
+  const [state, setState] = useState<ContactState>(() =>
+    getOrCreateState(contextKey),
+  );
 
   useEffect(() => {
-    const listener = (newState: ContactState) => {
-      setState(newState);
+    // Ensure this context has an initialized state
+    getOrCreateState(contextKey);
+
+    const listener = () => {
+      // Update only from this context's state
+      setState(getOrCreateState(contextKey));
     };
 
     listeners.add(listener);
-
-    // Reset state if contextKey has changed (different page or different listing/project)
-    if (globalContactState.contextKey !== contextKey) {
-      console.log("🔄 [useContactState] Context changed, resetting state:", {
-        oldContextKey: globalContactState.contextKey,
-        newContextKey: contextKey,
-      });
-
-      // Reset global state for new context
-      globalContactState = {
-        phoneNumber: "",
-        whatsappNumber: "",
-        showNumber: false,
-        isLoading: false,
-        contextKey: contextKey,
-      };
-
-      // Update local state
-      setState(globalContactState);
-
-      // Notify all listeners of the reset
-      notifyListeners();
-    } else if (globalContactState.contextKey === contextKey) {
-      // Initialize with current global state if it matches the context
-      setState(globalContactState);
-    }
+    // Initialize local state
+    setState(getOrCreateState(contextKey));
 
     return () => {
       listeners.delete(listener);
@@ -92,13 +82,15 @@ export const useContactState = (contextKey: string) => {
   }, [contextKey]);
 
   const updateContactState = (updates: Partial<ContactState>) => {
-    const newState = { ...globalContactState, ...updates, contextKey };
+    const prev = getOrCreateState(contextKey);
+    const newState: ContactState = { ...prev, ...updates, contextKey };
     console.log("🔄 [useContactState] Updating state:", {
-      oldState: globalContactState,
+      contextKey,
+      oldState: prev,
       updates,
       newState,
     });
-    globalContactState = newState;
+    contactStateByContext[contextKey] = newState;
     notifyListeners();
   };
 
@@ -107,7 +99,6 @@ export const useContactState = (contextKey: string) => {
       phone,
       whatsapp,
       contextKey,
-      currentGlobalContextKey: globalContactState.contextKey,
     });
     updateContactState({
       phoneNumber: phone,

@@ -12,12 +12,19 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { generateContextKey, useContactState } from "@/hooks/use-contact-state";
-import { parsePhoneNumber } from "libphonenumber-js";
+import { parsePhoneNumber, isValidPhoneNumber } from "libphonenumber-js";
+import type { CountryCode } from "libphonenumber-js";
 import { Mail, MessageSquare, User } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, useReducer } from "react";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
+import { getStoredNumbers, setStoredNumbers } from "@/lib/contact-cache";
+import { viewNumber } from "@/lib/contact-api";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Textarea } from "@/components/ui/textarea";
 
 interface ContactCardProps {
   name: string;
@@ -29,7 +36,13 @@ interface ContactCardProps {
 }
 
 // LocalStorage utility functions
-const getStoredContactInfo = (): { name: string; phone: string } | null => {
+type StoredContactInfo = {
+  name: string;
+  phone: string;
+  countryIso?: CountryCode;
+};
+
+const getStoredContactInfo = (): StoredContactInfo | null => {
   if (typeof window === "undefined") return null;
   try {
     const stored = localStorage.getItem("meqasa_contact_info");
@@ -42,7 +55,13 @@ const getStoredContactInfo = (): { name: string; phone: string } | null => {
       "name" in parsed &&
       "phone" in parsed
     ) {
-      return parsed as { name: string; phone: string };
+      const obj = parsed as Record<string, unknown>;
+      const iso = (obj.countryIso as string | undefined)?.toUpperCase();
+      return {
+        name: obj.name as string,
+        phone: obj.phone as string,
+        countryIso: (iso as CountryCode | undefined) ?? undefined,
+      };
     }
     return null;
   } catch (error) {
@@ -51,71 +70,94 @@ const getStoredContactInfo = (): { name: string; phone: string } | null => {
   }
 };
 
-const setStoredContactInfo = (name: string, phone: string): void => {
+const setStoredContactInfo = (
+  name: string,
+  phone: string,
+  countryIso?: CountryCode,
+): void => {
   if (typeof window === "undefined") return;
   try {
     localStorage.setItem(
       "meqasa_contact_info",
-      JSON.stringify({ name, phone }),
+      JSON.stringify({ name, phone, countryIso: countryIso?.toUpperCase() }),
     );
   } catch (error) {
     console.error("Error writing to localStorage:", error);
   }
 };
 
-// Helper function to format phone numbers using libphonenumber-js
-const formatPhoneNumber = (phone: string): string => {
-  console.log("🔍 [formatPhoneNumber] Input phone:", phone);
-
-  if (!phone || phone.trim() === "") {
-    return phone;
-  }
-
+const clearStoredContactInfo = (): void => {
+  if (typeof window === "undefined") return;
   try {
-    // Handle different phone number formats
-    let phoneToParse = phone;
-
-    // If it already starts with +, use as is
-    if (phone.startsWith("+")) {
-      phoneToParse = phone;
-    }
-    // If it starts with 00, replace with +
-    else if (phone.startsWith("00")) {
-      phoneToParse = "+" + phone.substring(2);
-    }
-    // If it starts with 233 (Ghana country code), add +
-    else if (phone.startsWith("233")) {
-      phoneToParse = "+" + phone;
-    }
-    // If it starts with 0 (local Ghana format), replace with +233
-    else if (phone.startsWith("0")) {
-      phoneToParse = "+233" + phone.substring(1);
-    }
-    // Otherwise, assume it's a Ghana number and add +233
-    else {
-      phoneToParse = "+233" + phone;
-    }
-
-    console.log("🔍 [formatPhoneNumber] Phone to parse:", phoneToParse);
-
-    // Parse and format the phone number
-    const parsedNumber = parsePhoneNumber(phoneToParse);
-    console.log("🔍 [formatPhoneNumber] Parsed number:", parsedNumber);
-
-    if (parsedNumber) {
-      const formatted = parsedNumber.formatInternational();
-      console.log("🔍 [formatPhoneNumber] Formatted result:", formatted);
-      return formatted;
-    } else {
-      console.log("🔍 [formatPhoneNumber] Could not parse, returning original");
-      return phone;
-    }
+    localStorage.removeItem("meqasa_contact_info");
   } catch (error) {
-    console.error("❌ [formatPhoneNumber] Error formatting:", error);
-    // Fallback: return as is if formatting fails
-    return phone;
+    console.error("Error clearing localStorage:", error);
   }
 };
+
+// Display-friendly international format (E.164 with '+'), fallback to digits with '+'
+const toInternationalDisplay = (phone: string, iso?: CountryCode): string => {
+  if (!phone || phone.trim() === "") return phone;
+  try {
+    const parsed = phone.startsWith("+")
+      ? parsePhoneNumber(phone)
+      : iso
+        ? parsePhoneNumber(phone, iso)
+        : undefined;
+    if (parsed) return parsed.number;
+  } catch {
+    // ignore
+  }
+  const digits = phone.replace(/\D/g, "");
+  return digits ? `+${digits}` : digits;
+};
+
+type ErrorMap = {
+  phone?: string;
+  name?: string;
+};
+
+type LocalState = {
+  modalOpen: boolean;
+  activeModal: "number" | "whatsapp" | null;
+  formSubmitted: boolean;
+  showNumberLoading: boolean;
+  whatsAppLoading: boolean;
+  userName: string;
+  userPhone: string;
+  userCountryIso?: CountryCode;
+  errors: ErrorMap;
+};
+
+type Action =
+  | { type: "setField"; field: keyof LocalState; value: unknown }
+  | { type: "setErrors"; errors: ErrorMap }
+  | { type: "resetErrors" };
+
+const initialState: LocalState = {
+  modalOpen: false,
+  activeModal: null,
+  formSubmitted: false,
+  showNumberLoading: false,
+  whatsAppLoading: false,
+  userName: "",
+  userPhone: "",
+  userCountryIso: undefined,
+  errors: {},
+};
+
+function reducer(state: LocalState, action: Action): LocalState {
+  switch (action.type) {
+    case "setField":
+      return { ...state, [action.field]: action.value } as LocalState;
+    case "setErrors":
+      return { ...state, errors: action.errors };
+    case "resetErrors":
+      return { ...state, errors: {} };
+    default:
+      return state;
+  }
+}
 
 export default function ContactCard({
   name,
@@ -125,12 +167,7 @@ export default function ContactCard({
   projectId,
   pageType = "listing",
 }: ContactCardProps) {
-  const [modalOpen, setModalOpen] = useState(false);
-  const [formSubmitted, setFormSubmitted] = useState(false);
-  const [userName, setUserName] = useState("");
-  const [userPhone, setUserPhone] = useState("");
-  const [phoneError, setPhoneError] = useState("");
-  const [nameError, setNameError] = useState("");
+  const [state, dispatch] = useReducer(reducer, initialState);
   const [emailModalOpen, setEmailModalOpen] = useState(false);
   const [emailFormSubmitted, setEmailFormSubmitted] = useState(false);
   const [userEmail, setUserEmail] = useState("");
@@ -143,52 +180,66 @@ export default function ContactCard({
   const [emailLoading, setEmailLoading] = useState(false);
   const maskedNumber = "+233 xx xxx xxxx";
   const [imageError, setImageError] = useState(false);
-  const [isWhatsAppModal, setIsWhatsAppModal] = useState(false);
+  // reducer-managed: modalOpen, activeModal, formSubmitted, userName, userPhone,
+  // userCountryIso, showNumberLoading, whatsAppLoading, errors
 
   // Generate context key based on page type and ID
   const entityId = pageType === "listing" ? listingId : projectId;
   const contextKey = generateContextKey(pageType, entityId ?? "");
 
   // Use shared contact state
-  const {
-    phoneNumber,
-    whatsappNumber,
-    showNumber,
-    isLoading,
-    setPhoneNumbers,
-    setLoading,
-  } = useContactState(contextKey);
+  const { phoneNumber, whatsappNumber, showNumber, setPhoneNumbers } =
+    useContactState(contextKey);
 
   // Load saved contact information on component mount
+  const hydratedKeyRef = useRef<string | null>(null);
   useEffect(() => {
-    const savedInfo = getStoredContactInfo();
+    if (hydratedKeyRef.current === contextKey) return;
 
+    const savedInfo = getStoredContactInfo();
     if (savedInfo) {
-      console.log("🔍 [ContactCard] Found saved contact info:", savedInfo);
-      setUserName(savedInfo.name);
-      setUserPhone(savedInfo.phone);
-      setFormSubmitted(true);
+      dispatch({ type: "setField", field: "userName", value: savedInfo.name });
+      dispatch({
+        type: "setField",
+        field: "userPhone",
+        value: savedInfo.phone,
+      });
+      if (savedInfo.countryIso)
+        dispatch({
+          type: "setField",
+          field: "userCountryIso",
+          value: savedInfo.countryIso,
+        });
+      dispatch({ type: "setField", field: "formSubmitted", value: true });
     }
-  }, []);
+
+    if (entityId) {
+      const cached = getStoredNumbers(contextKey);
+      if (cached?.stph2 && cached?.stph3) {
+        setPhoneNumbers(cached.stph2, cached.stph3);
+      }
+    }
+
+    hydratedKeyRef.current = contextKey;
+  }, [contextKey, entityId, setPhoneNumbers]);
 
   // Function to handle button clicks for viewing number
   const handleViewNumberClick = () => {
     const savedInfo = getStoredContactInfo();
 
     if (savedInfo) {
-      // User has saved contact info, fetch number directly
-      console.log(
-        "🔍 [ContactCard] User has saved contact info, fetching number directly",
-      );
-      setUserName(savedInfo.name);
-      setUserPhone(savedInfo.phone);
-      setFormSubmitted(true);
-      setLoading(true);
+      dispatch({ type: "setField", field: "userName", value: savedInfo.name });
+      dispatch({
+        type: "setField",
+        field: "userPhone",
+        value: savedInfo.phone,
+      });
+      dispatch({ type: "setField", field: "formSubmitted", value: true });
+      dispatch({ type: "setField", field: "showNumberLoading", value: true });
       void handleGetNumberWithSavedInfo();
     } else {
-      // User needs to enter contact info, show modal
-      console.log("🔍 [ContactCard] No saved contact info, showing modal");
-      setModalOpen(true);
+      dispatch({ type: "setField", field: "activeModal", value: "number" });
+      dispatch({ type: "setField", field: "modalOpen", value: true });
     }
   };
 
@@ -197,221 +248,156 @@ export default function ContactCard({
     const savedInfo = getStoredContactInfo();
 
     if (savedInfo) {
-      // Returning user: use stored data to get agent number and open WhatsApp
-      console.log(
-        "🔍 [ContactCard] Returning user, using stored data for WhatsApp",
-      );
       void handleGetNumberForWhatsApp(savedInfo.name, savedInfo.phone);
     } else {
-      // New user: show modal to collect contact info
-      console.log("🔍 [ContactCard] New user, showing modal for WhatsApp");
-      setIsWhatsAppModal(true);
-      setModalOpen(true);
+      dispatch({ type: "setField", field: "activeModal", value: "whatsapp" });
+      dispatch({ type: "setField", field: "modalOpen", value: true });
     }
   };
 
   // Function to handle getting number for WhatsApp
   const handleGetNumberForWhatsApp = async (name?: string, phone?: string) => {
-    const userNameToUse = name ?? userName;
-    const userPhoneToUse = phone ?? userPhone;
+    const userNameToUse = name ?? state.userName;
+    const userPhoneToUse = phone ?? state.userPhone;
 
     if (!userNameToUse || !userPhoneToUse || !entityId) {
       console.error("❌ [ContactCard] No contact info or entity ID available");
       return;
     }
 
-    console.log("🔍 [ContactCard] Getting number for WhatsApp");
-    setLoading(true);
+    dispatch({ type: "setField", field: "whatsAppLoading", value: true });
     try {
-      const formData = new FormData();
-      formData.append("rfifromph", userPhoneToUse);
-      formData.append("nurfiname", userNameToUse);
-      formData.append("rfilid", entityId);
-      formData.append("rfisrc", "3");
-      formData.append("reqid", "-1");
-      formData.append("app", "vercel");
-
-      const response = await fetch("/api/contact/view-number", {
-        method: "POST",
-        body: formData,
+      const res = await viewNumber({
+        name: userNameToUse,
+        phone: userPhoneToUse,
+        entityId,
       });
-
-      const data = (await response.json()) as {
-        stph2?: string;
-        stph3?: string;
-      };
-
-      if (data.stph2 && data.stph3) {
-        console.log("✅ [ContactCard] Success - opening WhatsApp chat");
-        console.log("🔍 [ContactCard] Raw phone numbers from API:", {
-          stph2: data.stph2,
-          stph3: data.stph3,
-        });
-
-        // Open WhatsApp chat with the WhatsApp number (don't update phone display)
-        const whatsappNumber = data.stph3.replace(/\D/g, ""); // Remove non-digits
-        const whatsappUrl = `https://wa.me/${whatsappNumber}`;
-        console.log("🔍 [ContactCard] Opening WhatsApp URL:", whatsappUrl);
-        window.open(whatsappUrl, "_blank");
-      } else {
-        setPhoneError("Failed to get phone number. Please try again.");
-      }
-    } catch (error) {
-      console.error("❌ [ContactCard] Error in fetch:", error);
-      setPhoneError("Failed to get phone number. Please try again.");
+      const whatsappDigits = res.whatsappNumber.replace(/\D/g, "");
+      window.open(`https://wa.me/${whatsappDigits}`, "_blank");
+      if (entityId)
+        setStoredNumbers(contextKey, res.displayNumber, res.whatsappNumber);
+    } catch {
+      dispatch({
+        type: "setErrors",
+        errors: {
+          ...state.errors,
+          phone: "Failed to get phone number. Please try again.",
+        },
+      });
     } finally {
-      setLoading(false);
+      dispatch({ type: "setField", field: "whatsAppLoading", value: false });
     }
   };
 
   // Function to handle getting number with saved contact info
   const handleGetNumberWithSavedInfo = async () => {
-    if (!userName || !userPhone || !entityId) {
+    if (!state.userName || !state.userPhone || !entityId) {
       console.error(
         "❌ [ContactCard] No saved contact info or entity ID available",
       );
       return;
     }
 
-    console.log("🔍 [ContactCard] Getting number with saved contact info");
-    setLoading(true);
+    dispatch({ type: "setField", field: "showNumberLoading", value: true });
     try {
-      const formData = new FormData();
-      formData.append("rfifromph", userPhone);
-      formData.append("nurfiname", userName);
-      formData.append("rfilid", entityId);
-      formData.append("rfisrc", "3");
-      formData.append("reqid", "-1");
-      formData.append("app", "vercel");
-
-      const response = await fetch("/api/contact/view-number", {
-        method: "POST",
-        body: formData,
+      const res = await viewNumber({
+        name: state.userName,
+        phone: state.userPhone,
+        entityId,
       });
-
-      const data = (await response.json()) as {
-        stph2?: string;
-        stph3?: string;
-      };
-
-      if (data.stph2 && data.stph3) {
-        setPhoneNumbers(data.stph2, data.stph3);
-      } else {
-        setPhoneError("Failed to get phone number. Please try again.");
-      }
-    } catch (error) {
-      console.error("❌ [ContactCard] Error in fetch:", error);
-      setPhoneError("Failed to get phone number. Please try again.");
+      setPhoneNumbers(res.displayNumber, res.whatsappNumber);
+      if (entityId)
+        setStoredNumbers(contextKey, res.displayNumber, res.whatsappNumber);
+    } catch {
+      dispatch({
+        type: "setErrors",
+        errors: {
+          ...state.errors,
+          phone: "Failed to get phone number. Please try again.",
+        },
+      });
     } finally {
-      setLoading(false);
+      dispatch({ type: "setField", field: "showNumberLoading", value: false });
     }
   };
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    console.log("�� [ContactCard] Form submission started");
     e.preventDefault();
-    console.log("🔍 [ContactCard] Form prevented default");
 
     let valid = true;
-    setPhoneError("");
-    setNameError("");
+    dispatch({ type: "resetErrors" });
 
-    console.log("🔍 [ContactCard] Form data:", {
-      userPhone,
-      userName,
-      listingId,
-    });
-
-    if (!userPhone || userPhone.length < 6) {
-      console.log("❌ [ContactCard] Phone validation failed:", userPhone);
-      setPhoneError("Valid phone number is required");
+    const validPhone = state.userPhone
+      ? state.userPhone.startsWith("+")
+        ? isValidPhoneNumber(state.userPhone)
+        : isValidPhoneNumber(state.userPhone, state.userCountryIso)
+      : false;
+    if (!validPhone) {
+      dispatch({
+        type: "setErrors",
+        errors: { ...state.errors, phone: "Valid phone number is required" },
+      });
       valid = false;
     }
-    if (!userName) {
-      console.log("❌ [ContactCard] Name validation failed:", userName);
-      setNameError("Name is required");
+    if (!state.userName) {
+      dispatch({
+        type: "setErrors",
+        errors: { ...state.errors, name: "Name is required" },
+      });
       valid = false;
     }
-
-    console.log("🔍 [ContactCard] Validation result:", valid);
 
     if (valid && entityId) {
-      console.log("🔍 [ContactCard] Starting API call");
-      setLoading(true);
+      if (state.activeModal === "whatsapp") {
+        dispatch({ type: "setField", field: "whatsAppLoading", value: true });
+      } else {
+        dispatch({ type: "setField", field: "showNumberLoading", value: true });
+      }
       try {
-        const formData = new FormData();
-        formData.append("rfifromph", userPhone);
-        formData.append("nurfiname", userName);
-        formData.append("rfilid", entityId);
-        formData.append("rfisrc", "3");
-        formData.append("reqid", "-1");
-        formData.append("app", "vercel");
-
-        console.log("🔍 [ContactCard] FormData created:", {
-          rfifromph: userPhone,
-          nurfiname: userName,
-          rfilid: listingId,
-          rfisrc: "3",
-          reqid: "-1",
-          app: "vercel",
+        const res = await viewNumber({
+          name: state.userName,
+          phone: state.userPhone,
+          entityId,
         });
-
-        console.log(
-          "🔍 [ContactCard] Making fetch request to /api/contact/view-number",
+        // Save contact information to localStorage for future use
+        setStoredContactInfo(
+          state.userName,
+          state.userPhone,
+          state.userCountryIso,
         );
-
-        const response = await fetch("/api/contact/view-number", {
-          method: "POST",
-          body: formData,
-        });
-
-        console.log("🔍 [ContactCard] Response received:", response);
-        console.log("🔍 [ContactCard] Response status:", response.status);
-        console.log("🔍 [ContactCard] Response ok:", response.ok);
-
-        const data = (await response.json()) as {
-          stph2?: string;
-          stph3?: string;
-        };
-
-        console.log("🔍 [ContactCard] Response data:", data);
-
-        if (data.stph2 && data.stph3) {
-          console.log("✅ [ContactCard] Success - API call successful");
-          console.log("🔍 [ContactCard] Raw phone numbers from API:", {
-            stph2: data.stph2,
-            stph3: data.stph3,
-          });
-
-          // Save contact information to localStorage for future use
-          setStoredContactInfo(userName, userPhone);
-          console.log("💾 [ContactCard] Saved contact info to localStorage");
-
-          // If this was from WhatsApp modal, open WhatsApp chat and close modal
-          if (isWhatsAppModal) {
-            const whatsappNumber = data.stph3.replace(/\D/g, ""); // Remove non-digits
-            const whatsappUrl = `https://wa.me/${whatsappNumber}`;
-            console.log("🔍 [ContactCard] Opening WhatsApp URL:", whatsappUrl);
-            window.open(whatsappUrl, "_blank");
-            setIsWhatsAppModal(false);
-            setModalOpen(false);
-            // Don't update phone display or formSubmitted state for WhatsApp functionality
-          } else {
-            // Only update phone display for Show Number functionality
-            console.log("✅ [ContactCard] Setting phone numbers for display");
-            setPhoneNumbers(data.stph2, data.stph3);
-            setFormSubmitted(true);
-          }
+        if (state.activeModal === "whatsapp") {
+          const whatsappDigits = res.whatsappNumber.replace(/\D/g, "");
+          window.open(`https://wa.me/${whatsappDigits}`, "_blank");
+          dispatch({ type: "setField", field: "activeModal", value: null });
+          dispatch({ type: "setField", field: "modalOpen", value: false });
         } else {
-          console.log("❌ [ContactCard] No phone numbers in response");
-          setPhoneError("Failed to get phone number. Please try again.");
+          setPhoneNumbers(res.displayNumber, res.whatsappNumber);
+          dispatch({ type: "setField", field: "formSubmitted", value: true });
         }
-      } catch (error) {
-        console.error("❌ [ContactCard] Error in fetch:", error);
-        setPhoneError("Failed to get phone number. Please try again.");
+        if (entityId)
+          setStoredNumbers(contextKey, res.displayNumber, res.whatsappNumber);
+      } catch {
+        dispatch({
+          type: "setErrors",
+          errors: {
+            ...state.errors,
+            phone: "Failed to get phone number. Please try again.",
+          },
+        });
       } finally {
-        console.log("🔍 [ContactCard] Setting loading to false");
-        setLoading(false);
+        if (state.activeModal === "whatsapp") {
+          dispatch({
+            type: "setField",
+            field: "whatsAppLoading",
+            value: false,
+          });
+        } else {
+          dispatch({
+            type: "setField",
+            field: "showNumberLoading",
+            value: false,
+          });
+        }
       }
     }
   };
@@ -427,11 +413,16 @@ export default function ContactCard({
       setEmailError("Valid email is required");
       valid = false;
     }
-    if (!userPhone || userPhone.length < 6) {
+    const emailPhoneValid = state.userPhone
+      ? state.userPhone.startsWith("+")
+        ? isValidPhoneNumber(state.userPhone)
+        : isValidPhoneNumber(state.userPhone, state.userCountryIso)
+      : false;
+    if (!emailPhoneValid) {
       setEmailPhoneError("Valid phone number is required");
       valid = false;
     }
-    if (!userName) {
+    if (!state.userName) {
       setEmailNameError("Name is required");
       valid = false;
     }
@@ -445,8 +436,8 @@ export default function ContactCard({
         const formData = new FormData();
         formData.append("rfifrom", userEmail);
         formData.append("rfimessage", userMessage);
-        formData.append("rfifromph", userPhone);
-        formData.append("nurfiname", userName);
+        formData.append("rfifromph", state.userPhone);
+        formData.append("nurfiname", state.userName);
         formData.append("rfilid", entityId);
         formData.append("rfisrc", "3");
         formData.append("reqid", "-1");
@@ -506,126 +497,91 @@ export default function ContactCard({
             <div className="flex items-center gap-2 mb-6">
               {showNumber ? (
                 <span className="text-brand-blue">
-                  {phoneNumber ? formatPhoneNumber(phoneNumber) : ""}
+                  {phoneNumber
+                    ? toInternationalDisplay(phoneNumber, state.userCountryIso)
+                    : ""}
                 </span>
-              ) : formSubmitted && isLoading ? (
+              ) : state.formSubmitted && state.showNumberLoading ? (
                 <div className="flex items-center gap-2">
                   <div className="h-4 w-32 bg-gray-200 rounded animate-pulse"></div>
                   <div className="h-4 w-4 bg-gray-200 rounded animate-pulse"></div>
                 </div>
-              ) : formSubmitted ? (
+              ) : state.formSubmitted ? (
                 // User has saved contact info, show button without modal
                 <Button
                   variant="outline"
                   size="sm"
-                  className="h-7 text-sm text-brand-blue border-brand-blue hover:text-blue-50"
+                  className="h-7 text-sm text-brand-blue border-brand-blue hover:text-brand-blue hover:bg-blue-50"
                   onClick={handleViewNumberClick}
-                  disabled={isLoading}
+                  disabled={state.showNumberLoading}
                 >
-                  {isLoading ? "Loading..." : "Show Number"}
+                  {state.showNumberLoading ? "Loading..." : "Show Number"}
                 </Button>
               ) : (
                 // User needs to enter contact info, show modal
                 <>
                   <span className="text-brand-blue">{maskedNumber}</span>
-                  <Dialog open={modalOpen} onOpenChange={setModalOpen}>
-                    <DialogTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="h-7 text-sm text-brand-blue border-brand-blue hover:text-blue-50"
-                        onClick={() => setModalOpen(true)}
-                      >
-                        Show Number
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>Get Number</DialogTitle>
-                        <DialogDescription>
-                          To view number, first enter your contact info (Do this
-                          once only). If you are unable to reach the
-                          owner/broker, then they can reach you.
-                        </DialogDescription>
-                      </DialogHeader>
-                      <form
-                        onSubmit={handleFormSubmit}
-                        className="space-y-4 mt-2"
-                      >
-                        <div>
-                          <label className="block text-sm font-medium mb-1">
-                            Your Phone Number
-                          </label>
-                          <PhoneInput
-                            country={"gh"}
-                            value={userPhone}
-                            onChange={(phone) => setUserPhone(phone)}
-                            inputClass="w-full"
-                            inputStyle={{ width: "100%" }}
-                            containerStyle={{ width: "100%" }}
-                            inputProps={{
-                              name: "phone",
-                              required: true,
-                              autoFocus: true,
-                            }}
-                          />
-                          {phoneError && (
-                            <div className="text-red-500 text-xs mt-1">
-                              {phoneError}
-                            </div>
-                          )}
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium mb-1">
-                            Your Name
-                          </label>
-                          <input
-                            type="text"
-                            name="name"
-                            required
-                            className={`w-full px-2 py-2 border rounded outline-none ${nameError ? "border-red-400 bg-red-50" : ""}`}
-                            placeholder="Your Name"
-                            value={userName}
-                            onChange={(e) => setUserName(e.target.value)}
-                          />
-                          {nameError && (
-                            <div className="text-red-500 text-xs mt-1">
-                              {nameError}
-                            </div>
-                          )}
-                        </div>
-                        <Button
-                          type="submit"
-                          className="w-full bg-[#232335] text-white h-12 text-lg font-bold mt-2"
-                          disabled={isLoading}
-                        >
-                          {isLoading ? "Getting Number..." : "Get Number"}
-                        </Button>
-                      </form>
-                    </DialogContent>
-                  </Dialog>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-7 text-sm text-brand-blue border-brand-blue hover:text-brand-blue hover:bg-blue-50"
+                    onClick={() => {
+                      dispatch({
+                        type: "setField",
+                        field: "activeModal",
+                        value: "number",
+                      });
+                      dispatch({
+                        type: "setField",
+                        field: "modalOpen",
+                        value: true,
+                      });
+                    }}
+                  >
+                    Show Number
+                  </Button>
                 </>
               )}
             </div>
 
             <div className="flex gap-4 w-full max-w-md px-4">
-              {formSubmitted ? (
+              {state.formSubmitted ? (
                 // User has saved contact info, show button without modal
                 <Button
                   className="flex-1 bg-brand-badge-completed hover:bg-green-700 text-white h-12 gap-2"
                   onClick={handleWhatsAppClick}
-                  disabled={isLoading}
+                  disabled={state.whatsAppLoading}
                 >
                   <MessageSquare className="w-5 h-5" />
-                  {isLoading ? "Loading..." : "WhatsApp"}
+                  {state.whatsAppLoading ? "Opening..." : "WhatsApp"}
                 </Button>
               ) : (
                 // User needs to enter contact info, show modal
-                <Dialog open={modalOpen} onOpenChange={setModalOpen}>
+                <Dialog
+                  open={state.modalOpen}
+                  onOpenChange={(open) =>
+                    dispatch({
+                      type: "setField",
+                      field: "modalOpen",
+                      value: open,
+                    })
+                  }
+                >
                   <DialogTrigger asChild>
                     <Button
                       className="flex-1 bg-brand-badge-completed hover:bg-green-700 text-white h-12 gap-2"
-                      onClick={() => setModalOpen(true)}
+                      onClick={() => {
+                        dispatch({
+                          type: "setField",
+                          field: "activeModal",
+                          value: "whatsapp",
+                        });
+                        dispatch({
+                          type: "setField",
+                          field: "modalOpen",
+                          value: true,
+                        });
+                      }}
                     >
                       <MessageSquare className="w-5 h-5" />
                       WhatsApp
@@ -640,69 +596,174 @@ export default function ContactCard({
                         then they can reach you.
                       </DialogDescription>
                     </DialogHeader>
-                    {!formSubmitted ? (
+                    {!state.formSubmitted ? (
                       <form
                         onSubmit={handleFormSubmit}
                         className="space-y-4 mt-2"
                       >
-                        <div>
-                          <label className="block text-sm font-medium mb-1">
+                        <div className="space-y-2">
+                          <Label htmlFor="contact-phone">
                             Your Phone Number
-                          </label>
+                          </Label>
                           <PhoneInput
                             country={"gh"}
-                            value={userPhone}
-                            onChange={(phone) => setUserPhone(phone)}
-                            inputClass="w-full"
-                            inputStyle={{ width: "100%" }}
+                            value={state.userPhone}
+                            onChange={(phone: string, country: unknown) => {
+                              dispatch({
+                                type: "setField",
+                                field: "userPhone",
+                                value: phone,
+                              });
+                              let iso: CountryCode | undefined;
+                              if (
+                                country &&
+                                typeof country === "object" &&
+                                "countryCode" in country
+                              ) {
+                                const cc = (country as { countryCode?: string })
+                                  .countryCode;
+                                if (cc) iso = cc.toUpperCase() as CountryCode;
+                              }
+                              dispatch({
+                                type: "setField",
+                                field: "userCountryIso",
+                                value: iso,
+                              });
+                              // Live validate phone number
+                              const possible = phone
+                                ? phone.startsWith("+")
+                                  ? isValidPhoneNumber(phone)
+                                  : isValidPhoneNumber(phone, iso)
+                                : false;
+                              dispatch({
+                                type: "setErrors",
+                                errors: {
+                                  ...state.errors,
+                                  phone: possible
+                                    ? undefined
+                                    : "Valid phone number is required",
+                                },
+                              });
+                            }}
                             containerStyle={{ width: "100%" }}
+                            inputStyle={{ width: "100%" }}
+                            inputClass={`file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] ${state.errors.phone ? "aria-[invalid]:ring-destructive/20 aria-[invalid]:border-destructive" : ""}`}
                             inputProps={{
+                              id: "contact-phone",
                               name: "phone",
                               required: true,
                               autoFocus: true,
+                              "aria-invalid": Boolean(state.errors.phone),
                             }}
                           />
-                          {phoneError && (
-                            <div className="text-red-500 text-xs mt-1">
-                              {phoneError}
-                            </div>
+                          {state.errors.phone && (
+                            <p className="text-red-500 text-xs">
+                              {state.errors.phone}
+                            </p>
                           )}
                         </div>
-                        <div>
-                          <label className="block text-sm font-medium mb-1">
-                            Your Name
-                          </label>
-                          <input
+                        <div className="space-y-2">
+                          <Label htmlFor="contact-name">Your Name</Label>
+                          <Input
+                            id="contact-name"
                             type="text"
                             name="name"
                             required
-                            className={`w-full px-2 py-2 border rounded outline-none ${nameError ? "border-red-400 bg-red-50" : ""}`}
                             placeholder="Your Name"
-                            value={userName}
-                            onChange={(e) => setUserName(e.target.value)}
+                            value={state.userName}
+                            aria-invalid={Boolean(state.errors.name)}
+                            onChange={(e) =>
+                              dispatch({
+                                type: "setField",
+                                field: "userName",
+                                value: e.target.value,
+                              })
+                            }
                           />
-                          {nameError && (
-                            <div className="text-red-500 text-xs mt-1">
-                              {nameError}
-                            </div>
+                          {state.errors.name && (
+                            <p className="text-red-500 text-xs">
+                              {state.errors.name}
+                            </p>
                           )}
                         </div>
                         <Button
                           type="submit"
                           className="w-full bg-[#232335] text-white h-12 text-lg font-bold mt-2"
-                          disabled={isLoading}
+                          disabled={
+                            state.activeModal === "whatsapp"
+                              ? state.whatsAppLoading
+                              : state.showNumberLoading
+                          }
                         >
-                          {isLoading ? "Getting Number..." : "Get Number"}
+                          {state.activeModal === "whatsapp"
+                            ? state.whatsAppLoading
+                              ? "Opening..."
+                              : "Get Number"
+                            : state.showNumberLoading
+                              ? "Getting Number..."
+                              : "Get Number"}
                         </Button>
                       </form>
+                    ) : !showNumber ? (
+                      <div className="text-center py-6">
+                        <div className="text-lg font-semibold mb-2">
+                          Contact Info Saved
+                        </div>
+                        <div className="text-sm text-gray-600 mb-4">
+                          We&apos;ll use your saved contact info:{" "}
+                          {state.userName} ({state.userPhone})
+                        </div>
+                        <Button
+                          onClick={handleGetNumberWithSavedInfo}
+                          className="w-full bg-[#232335] text-white h-12 text-lg font-bold"
+                          disabled={state.showNumberLoading}
+                        >
+                          {state.showNumberLoading
+                            ? "Getting Number..."
+                            : "Get Number"}
+                        </Button>
+                        <Button
+                          variant="outline"
+                          onClick={() => {
+                            clearStoredContactInfo();
+                            dispatch({
+                              type: "setField",
+                              field: "formSubmitted",
+                              value: false,
+                            });
+                            dispatch({
+                              type: "setField",
+                              field: "userName",
+                              value: "",
+                            });
+                            dispatch({
+                              type: "setField",
+                              field: "userPhone",
+                              value: "",
+                            });
+                          }}
+                          className="w-full mt-2 text-sm"
+                        >
+                          Use Different Info
+                        </Button>
+                      </div>
                     ) : (
                       <div className="text-center py-6">
                         <div className="text-lg font-semibold mb-2">
-                          {phoneNumber ? formatPhoneNumber(phoneNumber) : ""}
+                          {phoneNumber
+                            ? toInternationalDisplay(
+                                phoneNumber,
+                                state.userCountryIso,
+                              )
+                            : ""}
                         </div>
                         {whatsappNumber && (
                           <div className="text-sm text-brand-muted mb-2">
-                            WhatsApp: {formatPhoneNumber(whatsappNumber)}
+                            WhatsApp:{" "}
+                            {toInternationalDisplay(
+                              whatsappNumber,
+                              state.userCountryIso,
+                            )}
                           </div>
                         )}
                         <div className="text-green-600">
@@ -740,100 +801,129 @@ export default function ContactCard({
                       onSubmit={handleEmailFormSubmit}
                       className="space-y-4 mt-2"
                     >
-                      <div>
-                        <label className="block text-sm font-medium mb-1">
-                          Your Email Address*
-                        </label>
-                        <input
+                      <div className="space-y-2">
+                        <Label htmlFor="email">Your Email Address*</Label>
+                        <Input
+                          id="email"
                           type="email"
                           name="email"
                           required
-                          className={`w-full px-2 py-2 border rounded outline-none ${emailError ? "border-red-400 bg-red-50" : ""}`}
                           placeholder="Your email address"
                           value={userEmail}
+                          aria-invalid={Boolean(emailError)}
                           onChange={(e) => setUserEmail(e.target.value)}
                         />
                         {emailError && (
-                          <div className="text-red-500 text-xs mt-1">
-                            {emailError}
-                          </div>
+                          <p className="text-red-500 text-xs">{emailError}</p>
                         )}
                       </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-1">
-                          Your Phone Number
-                        </label>
+                      <div className="space-y-2">
+                        <Label htmlFor="email-phone">Your Phone Number</Label>
                         <PhoneInput
                           country={"gh"}
-                          value={userPhone}
-                          onChange={(phone) => setUserPhone(phone)}
-                          inputClass="w-full"
-                          inputStyle={{ width: "100%" }}
+                          value={state.userPhone}
+                          onChange={(phone: string, country: unknown) => {
+                            dispatch({
+                              type: "setField",
+                              field: "userPhone",
+                              value: phone,
+                            });
+                            let iso: CountryCode | undefined;
+                            if (
+                              country &&
+                              typeof country === "object" &&
+                              "countryCode" in country
+                            ) {
+                              const cc = (country as { countryCode?: string })
+                                .countryCode;
+                              if (cc) iso = cc.toUpperCase() as CountryCode;
+                            }
+                            dispatch({
+                              type: "setField",
+                              field: "userCountryIso",
+                              value: iso,
+                            });
+                            // Live validate phone for email form
+                            const possible = phone
+                              ? phone.startsWith("+")
+                                ? isValidPhoneNumber(phone)
+                                : isValidPhoneNumber(phone, iso)
+                              : false;
+                            setEmailPhoneError(
+                              possible ? "" : "Valid phone number is required",
+                            );
+                          }}
                           containerStyle={{ width: "100%" }}
+                          inputStyle={{ width: "100%" }}
+                          inputClass={`file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] ${emailPhoneError ? "aria-[invalid]:ring-destructive/20 aria-[invalid]:border-destructive" : ""}`}
                           inputProps={{
+                            id: "email-phone",
                             name: "phone",
                             required: true,
+                            "aria-invalid": Boolean(emailPhoneError),
                           }}
                         />
                         {emailPhoneError && (
-                          <div className="text-red-500 text-xs mt-1">
+                          <p className="text-red-500 text-xs">
                             {emailPhoneError}
-                          </div>
+                          </p>
                         )}
                       </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-1">
-                          Your Name
-                        </label>
-                        <input
+                      <div className="space-y-2">
+                        <Label htmlFor="email-name">Your Name</Label>
+                        <Input
+                          id="email-name"
                           type="text"
                           name="name"
                           required
-                          className={`w-full px-2 py-2 border rounded outline-none ${emailNameError ? "border-red-400 bg-red-50" : ""}`}
                           placeholder="Your Name"
-                          value={userName}
-                          onChange={(e) => setUserName(e.target.value)}
+                          value={state.userName}
+                          aria-invalid={Boolean(emailNameError)}
+                          onChange={(e) =>
+                            dispatch({
+                              type: "setField",
+                              field: "userName",
+                              value: e.target.value,
+                            })
+                          }
                         />
                         {emailNameError && (
-                          <div className="text-red-500 text-xs mt-1">
+                          <p className="text-red-500 text-xs">
                             {emailNameError}
-                          </div>
+                          </p>
                         )}
                       </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-1">
-                          Your Message
-                        </label>
-                        <textarea
+                      <div className="space-y-2">
+                        <Label htmlFor="email-message">Your Message</Label>
+                        <Textarea
+                          id="email-message"
                           name="message"
                           required
-                          className={`w-full px-2 py-2 border rounded outline-none ${messageError ? "border-red-400 bg-red-50" : ""}`}
                           placeholder="Your Message"
                           value={userMessage}
+                          aria-invalid={Boolean(messageError)}
                           onChange={(e) => setUserMessage(e.target.value)}
                           rows={3}
                         />
                         {messageError && (
-                          <div className="text-red-500 text-xs mt-1">
-                            {messageError}
-                          </div>
+                          <p className="text-red-500 text-xs">{messageError}</p>
                         )}
                       </div>
-                      <div className="flex items-center">
-                        <input
-                          type="checkbox"
-                          checked={alertsChecked}
-                          onChange={(e) => setAlertsChecked(e.target.checked)}
-                          className="mr-2 accent-blue-600"
+                      <div className="flex items-center gap-2">
+                        <Checkbox
                           id="alertsCheckbox"
+                          checked={alertsChecked}
+                          onCheckedChange={(checked) =>
+                            setAlertsChecked(Boolean(checked))
+                          }
                         />
-                        <label
+                        <Label
                           htmlFor="alertsCheckbox"
-                          className="text-sm select-none"
+                          className="text-sm font-normal"
                         >
                           Send me alerts for offices for rent in East legon up
                           to $1,800/month
-                        </label>
+                        </Label>
                       </div>
                       <Button
                         type="submit"

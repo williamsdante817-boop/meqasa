@@ -1,4 +1,5 @@
 import { FeaturedListingsSection } from "@/components/featured-listings-section";
+import { AlertCard } from "@/components/alert-card";
 import type { getFeaturedListings } from "@/lib/get-featured-listings";
 
 interface StreamingFeaturedListingsProps {
@@ -13,9 +14,11 @@ export async function StreamingFeaturedListings({
 
     if (!featuredListings) {
       return (
-        <div className="text-center py-8 text-brand-muted">
-          No featured listings available at the moment.
-        </div>
+        <AlertCard
+          title="No featured listings available at the moment."
+          description="Please check back soon."
+          className="my-8"
+        />
       );
     }
 
@@ -25,12 +28,14 @@ export async function StreamingFeaturedListings({
         saleListings={featuredListings?.selling ?? []}
       />
     );
-  } catch (error) {
-    console.error("Failed to load featured listings:", error);
+  } catch{
     return (
-      <div className="text-center py-8 text-brand-muted">
-        Unable to load featured listings. Please try again later.
-      </div>
+      <AlertCard
+        variant="destructive"
+        title="Unable to load featured listings"
+        description="Please try again later."
+        className="my-8"
+      />
     );
   }
 }

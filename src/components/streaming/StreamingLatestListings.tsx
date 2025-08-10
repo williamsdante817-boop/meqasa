@@ -1,5 +1,5 @@
 import ContentSection from "@/components/content-section";
-import { LatestListingsTab } from "@/components/latest-listings-tab";
+import { LatestListingsSection } from "@/components/latest-listings-section";
 import type { Listing as TabListing } from "@/components/latest-listings-tab";
 import type { LatestListingsResponse } from "@/lib/get-latest-listing";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -63,15 +63,7 @@ export async function StreamingLatestListings({
     }
 
     return (
-      <ContentSection
-        title="Latest Listings"
-        description="View all recent property listings available."
-        href="/search/rent?q=ghana&page=1"
-        btnHidden
-        className="pt-14 md:pt-20 lg:pt-24 [&_p]:px-4 [&_h2]:px-4 w-full mx-auto md:max-w-[720px] lg:max-w-[960px] xl:max-w-[1140px] 2xl:max-w-[1320px]"
-      >
-        <LatestListingsTab rentListings={rentals} saleListings={selling} />
-      </ContentSection>
+      <LatestListingsSection rentListings={rentals} saleListings={selling} />
     );
   } catch (error: unknown) {
     console.error("Failed to load latest listings:", error);
