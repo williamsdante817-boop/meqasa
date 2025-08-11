@@ -10,6 +10,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Card } from "./ui/card";
 
 // item type
 type Item = {
@@ -118,9 +119,9 @@ export const InfiniteMovingCards = ({
             : "/default-image.jpg";
 
           return (
-            <div
+            <Card
               key={`${item.first}-${index}`}
-              className="flex-shrink-0 w-[120px] h-[120px] rounded-lg border border-gray-100 shadow-elegant-sm bg-white"
+              className="flex-shrink-0 w-[120px] h-[120px] rounded-lg overflow-hidden"
             >
               <TooltipProvider>
                 <Tooltip>
@@ -147,7 +148,7 @@ export const InfiniteMovingCards = ({
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
-            </div>
+            </Card>
           );
         })}
       </div>

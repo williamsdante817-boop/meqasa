@@ -6,9 +6,8 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-  type CarouselApi,
 } from "@/components/ui/carousel";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import type { Listing } from "./property-card";
 import PropertyCard from "./property-card";
 import UnitCard from "./unit-card";
@@ -23,36 +22,9 @@ export default function PropertyListings({
   listings: Listing[] | SimilarUnit[] | ListingDetails[];
   parentContract?: string;
 }) {
-  const [api, setApi] = useState<CarouselApi>();
-  const [canScrollPrev, setCanScrollPrev] = useState(false);
-  const [canScrollNext, setCanScrollNext] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [currentSlide, setCurrentSlide] = useState(0);
-
-  useEffect(() => {
-    if (!api) {
-      return;
-    }
-
-    const onSelect = () => {
-      setCanScrollPrev(api.canScrollPrev());
-      setCanScrollNext(api.canScrollNext());
-      setCurrentSlide(api.selectedScrollSnap());
-    };
-
-    onSelect();
-    api.on("select", onSelect);
-    api.on("reInit", onSelect);
-
-    return () => {
-      api.off("select", onSelect);
-      api.off("reInit", onSelect);
-    };
-  }, [api]);
-
   // console.log('Testing Property Listings',listings);
 
-  const transformedListings = useMemo(() => {
+  const transformedListings = useMemo<Array<Listing | SimilarUnit>>(() => {
     if (!listings || listings.length === 0)
       return [] as Array<Listing | SimilarUnit>;
     return listings.map((listing) => {
@@ -63,9 +35,9 @@ export default function PropertyListings({
           ...listing,
           bathroomcount: listing.baths,
           bedroomcount: listing.beds,
-        } as unknown as Listing;
+        } as Listing;
       }
-      return listing as unknown as Listing;
+      return listing;
     });
   }, [listings]);
 
@@ -87,7 +59,6 @@ export default function PropertyListings({
           loop: true,
           align: "start",
         }}
-        setApi={setApi}
         aria-label="Property listings carousel"
       >
         <CarouselContent
@@ -116,7 +87,7 @@ export default function PropertyListings({
                   <UnitCard unit={listing} />
                 ) : (
                   <PropertyCard
-                    listing={listing as unknown as Listing}
+                    listing={listing}
                     parentContract={parentContract}
                   />
                 )}
@@ -124,20 +95,14 @@ export default function PropertyListings({
             );
           })}
         </CarouselContent>
-        {canScrollPrev && (
-          <CarouselPrevious
-            className="left-6 hidden h-11 w-11 items-center justify-center bg-white text-accent-foreground shadow-md md:flex"
-            aria-label="Previous property"
-            tabIndex={0}
-          />
-        )}
-        {canScrollNext && (
-          <CarouselNext
-            className="right-6 hidden h-11 w-11 items-center justify-center bg-white text-accent-foreground shadow-md md:flex"
-            aria-label="Next property"
-            tabIndex={0}
-          />
-        )}
+        <CarouselPrevious
+          className="left-6 hidden h-11 w-11 items-center justify-center bg-white text-accent-foreground shadow-md md:flex"
+          aria-label="Previous property"
+        />
+        <CarouselNext
+          className="right-6 hidden h-11 w-11 items-center justify-center bg-white text-accent-foreground shadow-md md:flex"
+          aria-label="Next property"
+        />
       </Carousel>
     </div>
   );

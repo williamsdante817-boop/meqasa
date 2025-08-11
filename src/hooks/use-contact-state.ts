@@ -9,7 +9,7 @@ interface ContactState {
 }
 
 // Per-context global state map so multiple contexts can coexist
-let contactStateByContext: Record<string, ContactState> = {};
+const contactStateByContext: Record<string, ContactState> = {};
 
 // Listeners for any state change
 const listeners = new Set<() => void>();

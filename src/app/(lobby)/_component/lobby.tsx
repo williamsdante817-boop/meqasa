@@ -102,7 +102,7 @@ async function LobbyContent({
 
         {/* Static Content - Rendered Immediately */}
         <Shell>
-          <div className="lg:flex flex-col md:flex-row gap-6">
+          <div className="lg:flex flex-col md:flex-row gap-8">
             <StaticBlogSection staticData={staticData} />
             <StaticMarketNews staticData={staticData} />
           </div>

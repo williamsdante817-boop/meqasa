@@ -65,15 +65,13 @@ export function StaticBlogSection({ staticData }: StaticContentProps) {
 export function StaticMarketNews({ staticData }: StaticContentProps) {
   return (
     <aside className="hidden md:block flex-1 mt-28" aria-label="Market News">
-      <h3 className="text-xl font-bold leading-tight tracking-tighter text-brand-accent lg:mb-8 lg:text-[23px] lg:font-extrabold">
-        Market News
-      </h3>
+      <h3 className="text-2xl font-bold text-brand-accent mb-6">Market News</h3>
       <div role="list">
         {staticData.blogData.slice(0, 3).map((blog, index) => (
           <div key={index} role="listitem">
             <MarketNewsCard
               title={blog.title}
-              date="Jan 23,2023"
+              displayDate="Jan 23, 2023"
               index={index}
             />
           </div>

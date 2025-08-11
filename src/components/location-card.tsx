@@ -1,8 +1,9 @@
-import Image from "next/image";
-import Link from "next/link";
+"use client";
 
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { AspectRatio } from "./ui/aspect-ratio";
+import React from "react";
+import Link from "next/link";
+import { ImageWithFallback } from "./image-with-fallback";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export interface LocationCardProps {
   href: string;
@@ -19,42 +20,49 @@ export default function LocationCard({
   description,
   priority = false,
 }: LocationCardProps) {
+  const [imageLoading, setImageLoading] = React.useState(true);
+
   return (
-    <Card className="min-w-[170px] rounded-none lg:size-full p-0 overflow-hidden border-none shadow-none">
-      <Link
-        href={href}
-        className="space-y-1.5 block"
-        aria-label={`View properties in ${location}`}
-        role="article"
-      >
-        <CardHeader className="rounded-xl p-0">
-          <AspectRatio ratio={4 / 3} className="relative">
-            <Image
-              alt={`${location} location image`}
-              src={src}
-              sizes="(min-width: 1024px) 20vw, (min-width: 768px) 25vw, (min-width: 640px) 33vw, (min-width: 475px) 50vw, 100vw"
-              fill
-              loading={priority ? "eager" : "lazy"}
-              priority={priority}
-              quality={85}
-              className="rounded-xl object-cover"
-            />
-          </AspectRatio>
-        </CardHeader>
-        <CardContent className="p-0">
-          <h3 className="mt-3 line-clamp-2 text-sm font-bold capitalize text-brand-accent lg:text-lg">
-            {location}
-          </h3>
-          {description && (
-            <p
-              className="mt-1 text-sm text-gray-600 line-clamp-2"
-              aria-label={`Description for ${location}`}
-            >
-              {description}
-            </p>
-          )}
-        </CardContent>
-      </Link>
-    </Card>
+    <Link
+      href={href}
+      className="group block cursor-pointer transition-transform duration-300 hover:scale-[1.01]"
+      aria-label={`View properties in ${location}`}
+      role="article"
+    >
+      <div className="relative h-48 rounded-lg overflow-hidden shadow-sm bg-gray-100">
+        {imageLoading && (
+          <Skeleton className="absolute inset-0 w-full h-full rounded-lg" />
+        )}
+
+        <ImageWithFallback
+          src={src}
+          alt={`${location} location image`}
+          sizes="(min-width: 1024px) 20vw, (min-width: 768px) 25vw, (min-width: 640px) 33vw, (min-width: 475px) 50vw, 100vw"
+          fill
+          priority={priority}
+          className={`w-full h-full object-cover transition-all duration-500 group-hover:brightness-105 ${
+            imageLoading ? "opacity-0" : "opacity-100"
+          }`}
+          onLoad={() => setImageLoading(false)}
+          onError={() => setImageLoading(false)}
+        />
+
+        <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      </div>
+
+      <div className="mt-4">
+        <h3 className="text-gray-900 font-medium transition-colors duration-200 group-hover:text-blue-600 capitalize line-clamp-2 lg:text-lg">
+          {location}
+        </h3>
+        {description && (
+          <p
+            className="mt-1 text-sm text-gray-600 line-clamp-2"
+            aria-label={`Description for ${location}`}
+          >
+            {description}
+          </p>
+        )}
+      </div>
+    </Link>
   );
 }

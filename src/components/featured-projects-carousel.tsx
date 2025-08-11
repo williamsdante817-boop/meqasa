@@ -1,7 +1,6 @@
 "use client";
 
 import Autoplay from "embla-carousel-autoplay";
-import useEmblaCarousel from "embla-carousel-react";
 import { useEffect, useRef, useState } from "react";
 
 import {
@@ -10,18 +9,12 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
+  type CarouselApi,
 } from "@/components/ui/carousel";
 import type { FeaturedProject } from "@/types";
 import FeaturedPropertyCard from "./featured-property-variant";
+import { Card } from "./ui/card";
 
-/**
- * A carousel component that displays featured projects.
- *
- * @param properties - An array of featured projects
- * @param delay - The delay time in milliseconds between each slide
- *
- * @returns A JSX element
- */
 export default function FeaturedProjectsCarousel({
   properties,
   delay,
@@ -30,63 +23,64 @@ export default function FeaturedProjectsCarousel({
   delay: number;
 }) {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [error, setError] = useState<string | null>(null);
-  const [emblaRef, emblaApi] = useEmblaCarousel({
-    align: "start",
-    loop: true,
-  });
+  const [api, setApi] = useState<CarouselApi | null>(null);
+  const [shouldAutoplay, setShouldAutoplay] = useState(true);
   const plugin = useRef(
     Autoplay({ delay, stopOnInteraction: false, stopOnMouseEnter: true }),
   );
 
-  // Handle error state
+  // Respect reduced-motion preference
   useEffect(() => {
-    if (!Array.isArray(properties)) {
-      setError("Invalid properties data provided");
+    if (typeof window === "undefined") return;
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setShouldAutoplay(!media.matches);
+    update();
+    try {
+      media.addEventListener("change", update);
+      return () => media.removeEventListener("change", update);
+    } catch {
+      media.addListener(update);
+      return () => media.removeListener(update);
     }
-  }, [properties]);
+  }, []);
 
   // Handle slide changes
   useEffect(() => {
-    if (emblaApi) {
-      emblaApi.on("select", () => {
-        const index = emblaApi.selectedScrollSnap();
-        setCurrentSlide(index);
-        const slide = properties[index];
-        if (slide) {
-          const announcement = `Slide ${index + 1} of ${properties.length}: Featured Project`;
-          const liveRegion = document.getElementById("carousel-announcement");
-          if (liveRegion) {
-            liveRegion.textContent = announcement;
-          }
+    if (!api) return;
+
+    const onSelect = () => {
+      const index = api.selectedScrollSnap();
+      setCurrentSlide(index);
+      const slide = properties[index];
+      if (slide) {
+        const announcement = `Slide ${index + 1} of ${properties.length}: Featured Project`;
+        const liveRegion = document.getElementById("carousel-announcement");
+        if (liveRegion) {
+          liveRegion.textContent = announcement;
         }
-      });
-    }
-  }, [emblaApi, properties]);
+      }
+    };
 
-  if (error) {
-    return (
-      <div role="alert" className="text-brand-primary p-4">
-        {error}
-      </div>
-    );
-  }
-
-  if (properties.length === 0) {
-    return <p role="status">No featured projects available.</p>;
-  }
+    onSelect();
+    api.on("select", onSelect);
+    api.on("reInit", onSelect);
+    return () => {
+      api.off("select", onSelect);
+      api.off("reInit", onSelect);
+    };
+  }, [api, properties]);
 
   return (
-    <div className="mb-4 overflow-hidden">
+    <Card className="mb-4 border-0 md:border md:rounded-lg md:bg-gray-50 overflow-hidden">
       {/* Live region for screen reader announcements */}
       <div id="carousel-announcement" className="sr-only" aria-live="polite" />
 
       <Carousel
-        plugins={[plugin.current]}
-        ref={emblaRef}
-        className="w-full max-w-full rounded-lg md:border md:px-4 md:pb-6 md:pt-14 relative"
+        plugins={shouldAutoplay ? [plugin.current] : undefined}
+        setApi={setApi}
+        opts={{ align: "start", loop: true }}
+        className="w-full max-w-full md:px-4 md:pb-6 md:pt-14 relative"
         aria-label="Featured Projects Carousel"
-        role="region"
       >
         <CarouselContent
           className="-ml-1 p-1 lg:pt-4"
@@ -110,17 +104,17 @@ export default function FeaturedProjectsCarousel({
           aria-label="Carousel Navigation Controls"
         >
           <CarouselPrevious
-            className="h-11 w-11 text-accent-foreground hover:bg-accent focus:ring-2 focus:ring-offset-2 focus:ring-accent"
+            className="h-10 w-10 rounded-full shadow-none hover:shadow-sm cursor-pointer border-gray-200 transition-all duration-200 hover:bg-gray-50 focus:ring-2 focus:ring-offset-2 focus:ring-accent"
             aria-label={`Previous slide, currently viewing slide ${currentSlide + 1} of ${properties.length}`}
             tabIndex={0}
           />
           <CarouselNext
-            className="h-11 w-11 text-accent-foreground hover:bg-accent focus:ring-2 focus:ring-offset-2 focus:ring-accent"
+            className="h-10 w-10 rounded-full shadow-none hover:shadow-sm cursor-pointer border-gray-200 transition-all duration-200 hover:bg-gray-50 focus:ring-2 focus:ring-offset-2 focus:ring-accent"
             aria-label={`Next slide, currently viewing slide ${currentSlide + 1} of ${properties.length}`}
             tabIndex={0}
           />
         </div>
       </Carousel>
-    </div>
+    </Card>
   );
 }

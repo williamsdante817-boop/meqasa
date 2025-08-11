@@ -37,7 +37,7 @@ export function MainNav({ items }: MainNavProps) {
         aria-label="Home"
       >
         <Icons.logo className="size-7 text-[#f93a5d]" aria-hidden="true" />
-        <span className="hidden text-lg font-bold lg:inline-block text-brand-accent">
+        <span className="hidden text-xl font-bold lg:inline-block text-brand-accent">
           {siteConfig.name}
         </span>
 
@@ -51,7 +51,7 @@ export function MainNav({ items }: MainNavProps) {
               {item.items.length > 0 ? (
                 <>
                   <NavigationMenuTrigger
-                    className="font-semibold hover:text-brand-accent data-[state=open]:text-brand-accent"
+                    className="text-base font-semibold hover:text-brand-accent data-[state=open]:text-brand-accent"
                     aria-expanded="false"
                   >
                     {item.title}
@@ -84,7 +84,7 @@ export function MainNav({ items }: MainNavProps) {
                     }
                     className={cn(
                       navigationMenuTriggerStyle(),
-                      "font-semibold hover:text-brand-accent data-[state=open]:text-brand-accent",
+                      "text-base font-semibold hover:text-brand-accent data-[state=open]:text-brand-accent",
                     )}
                   >
                     {item.title}

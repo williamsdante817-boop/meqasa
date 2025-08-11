@@ -39,7 +39,7 @@ export function AuthDropdown({
   if (!user) {
     return (
       <div className="flex items-center gap-4">
-        <Button size="sm" variant="ghost">
+        <Button size="default" variant="ghost">
           <Link href="/signin">
             Sign In
             <span className="sr-only">Sign In</span>
@@ -47,7 +47,7 @@ export function AuthDropdown({
         </Button>
 
         <Button
-          size="sm"
+          size="default"
           className="bg-[#f93a5d] hover:bg-[#f93a5d]/9- cursor-pointer"
         >
           <Link href="/dashboard">

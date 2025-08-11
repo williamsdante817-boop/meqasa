@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { Card } from "./ui/card";
 
 interface GridAdProps {
   flexiBanner: string;
@@ -76,7 +77,7 @@ export default function GridAd({
         role="grid"
       >
         {/* First placeholder item */}
-        <div className="sm:col-span-3 sm:row-span-2 bg-gray-50 rounded-lg overflow-hidden h-60">
+        <Card className="sm:col-span-3 sm:row-span-2 overflow-hidden h-60 rounded-lg">
           <a
             href="https://www.thorpe-bedu.com/belton-residences/"
             target="_blank"
@@ -100,10 +101,10 @@ export default function GridAd({
               />
             </picture>
           </a>
-        </div>
+        </Card>
 
         {/* Flexi banner in the middle position */}
-        <div className="sm:col-span-3 sm:row-span-2 bg-white border border-gray-100 rounded-lg shadow-elegant-sm overflow-hidden h-60">
+        <Card className="sm:col-span-3 sm:row-span-2 overflow-hidden h-60 rounded-lg">
           <div className="w-full h-full [&>*]:w-full [&>*]:h-full [&>img]:object-cover [&>img]:w-full [&>img]:h-full">
             <a
               href="/follow-ad-2502?u=https://meqasa.com/1-bedroom-apartment-for-sale-in-nungua-unit-3222"
@@ -128,11 +129,11 @@ export default function GridAd({
               </picture>
             </a>
           </div>
-        </div>
+        </Card>
 
         {/* Last placeholder item */}
-        <div
-          className="sm:col-start-4 sm:col-span-3 sm:row-start-1 sm:row-span-4 bg-gray-50 rounded-lg overflow-hidden h-full"
+        <Card
+          className="sm:col-start-4 sm:col-span-3 sm:row-start-1 sm:row-span-4 overflow-hidden h-full rounded-lg"
           dangerouslySetInnerHTML={{ __html: flexiBanner }}
         />
       </div>
