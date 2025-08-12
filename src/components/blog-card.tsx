@@ -9,6 +9,7 @@ import { Calendar } from "lucide-react";
 import { PlaceholderImage } from "./placeholder-image";
 import { ImageWithFallback } from "@/components/image-with-fallback";
 import { cn } from "@/lib/utils";
+import { Skeleton } from "./ui/skeleton";
 
 export default function BlogCard({
   datePosted,
@@ -67,8 +68,8 @@ export default function BlogCard({
           </time>
         </div>
         <div className="hidden lg:block lg:w-full lg:overflow-hidden lg:rounded-2xl">
-          <Card className="overflow-hidden size-full p-0 border-none">
-            <CardContent className="p-0 rounded-xl">
+          <Card className="overflow-hidden size-full !p-0 border-none">
+            <CardContent className="!p-0 rounded-lg">
               <AspectRatio ratio={4 / 3} className="relative">
                 {hasPoster && !imgError ? (
                   <>
@@ -80,14 +81,14 @@ export default function BlogCard({
                       priority={priority}
                       loading={priority ? "eager" : undefined}
                       className={cn(
-                        "object-cover rounded-xl transition-opacity duration-300",
+                        "object-cover rounded-lg transition-opacity duration-300",
                         isLoading ? "opacity-0" : "opacity-100",
                       )}
                       onError={() => setImgError(true)}
                       onLoad={() => setIsLoading(false)}
                     />
                     {isLoading && (
-                      <div className="absolute inset-0 bg-gray-100 animate-pulse rounded-xl" />
+                      <Skeleton className="absolute inset-0 bg-gray-100 animate-pulse rounded-xl" />
                     )}
                   </>
                 ) : (

@@ -29,9 +29,9 @@ export default function LocationCard({
       aria-label={`View properties in ${location}`}
       role="article"
     >
-      <div className="relative h-48 rounded-lg overflow-hidden shadow-sm bg-gray-100">
+      <div className="relative h-48 rounded-lg overflow-hidden bg-gray-100">
         {imageLoading && (
-          <Skeleton className="absolute inset-0 w-full h-full rounded-lg" />
+          <Skeleton className="absolute inset-0 w-full h-full bg-gray-100 rounded-lg" />
         )}
 
         <ImageWithFallback
