@@ -2,10 +2,8 @@
 
 import { useState } from "react";
 import ContentSection from "@/components/content-section";
-import {
-  LatestListingsTab,
-  type Listing,
-} from "@/components/latest-listings-tab";
+import { LatestListingsTab } from "@/components/latest-listings-tab";
+import type { Listing } from "@/components/property-card";
 
 interface FeaturedListingsSectionProps {
   rentListings: Listing[];
