@@ -33,7 +33,7 @@ export function FeaturedProjectsSkeleton() {
       title="Featured Projects"
       description="View all featured properties"
       href="/developments"
-      className="pt-14 md:pt-20 lg:pt-24 w-full mx-auto [&_p]:px-4 [&_h2]:px-4 md:max-w-[720px] lg:max-w-[960px] xl:max-w-[1140px] 2xl:max-w-[1320px]"
+      className="pt-14 md:pt-20 lg:pt-24 w-full"
     >
       <div className="relative md:border md:rounded-lg md:p-6">
         <div className="w-full hidden md:flex items-center justify-end mb-4">
@@ -156,7 +156,7 @@ export function FeaturedListingsSkeleton() {
       title="Featured Listings"
       description="View all featured property listings available."
       href="/search/rent?q=ghana&page=1"
-      className="pt-14 md:pt-20 lg:pt-24 [&_p]:px-4 [&_h2]:px-4 w-full mx-auto md:max-w-[720px] lg:max-w-[960px] xl:max-w-[1140px] 2xl:max-w-[1320px]"
+      className="pt-14 md:pt-20 lg:pt-24 w-full"
     >
       <div className="space-y-8">
         <div>

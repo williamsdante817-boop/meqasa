@@ -1,21 +1,20 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { ListingDetails } from "@/types";
 import { Dot } from "lucide-react";
-import { PlaceholderImage } from "./placeholder-image";
 import { AspectRatio } from "./ui/aspect-ratio";
 import { Badge } from "./ui/badge";
-import { cn } from "@/lib/utils";
+import { buildInnerHtml, cn } from "@/lib/utils";
 import { AddFavoriteButton } from "./add-favorite-button";
+import { ImageWithFallback } from "./image-with-fallback";
 
 export type Listing = Pick<
   ListingDetails,
-  "detailreq" | "image" | "streetaddress" | "garages" | "title"
+  "detailreq" | "image" | "streetaddress" | "garages" | "title" | "listingid"
 > & {
   summary?: string;
   pricepart1?: string;
@@ -33,7 +32,6 @@ export default function PropertyCard({
   listing: Listing;
   parentContract?: string;
 }) {
-  const [imgError, setImgError] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
   // Generic lightweight blur placeholder for remote images
   const blurDataURL =
@@ -72,17 +70,24 @@ export default function PropertyCard({
     ? cleanPath
     : `listings/${cleanPath}`;
 
-  // Extract listing ID from detailreq for the favorite button
+  // Extract listing ID from detailreq for the favorite button, with fallback to prop
   const listingIdMatch = /-(\d+)$/.exec(cleanPath);
-  const listingId = parseInt(listingIdMatch?.[1] ?? "0", 10);
+  const listingId = (() => {
+    const fromPath = parseInt(listingIdMatch?.[1] ?? "0", 10);
+    if (Number.isFinite(fromPath) && fromPath > 0) return fromPath;
+    const fromProp = parseInt(String(listing.listingid ?? "0"), 10);
+    return Number.isFinite(fromProp) && fromProp > 0 ? fromProp : 0;
+  })();
 
   // Accessible alt text for the image
   const altTextBase = title?.trim() ?? summary?.trim() ?? "Property";
   const altParts: string[] = [];
-  if (bedroomcount)
-    altParts.push(`${bedroomcount} bed${bedroomcount === "1" ? "" : "s"}`);
-  if (bathroomcount)
-    altParts.push(`${bathroomcount} bath${bathroomcount === "1" ? "" : "s"}`);
+  const bedsNum = Number.parseInt(String(bedroomcount ?? ""), 10);
+  const bathsNum = Number.parseInt(String(bathroomcount ?? ""), 10);
+  if (Number.isFinite(bedsNum) && bedsNum > 0)
+    altParts.push(`${bedsNum} bed${bedsNum === 1 ? "" : "s"}`);
+  if (Number.isFinite(bathsNum) && bathsNum > 0)
+    altParts.push(`${bathsNum} bath${bathsNum === 1 ? "" : "s"}`);
   const locationPart = streetaddress ? `in ${streetaddress}` : "";
   const altText =
     `${altTextBase}${altParts.length ? ` – ${altParts.join(", ")}` : ""} ${locationPart} (${displayContract})`.trim();
@@ -95,29 +100,21 @@ export default function PropertyCard({
       >
         <CardHeader className="!p-0 border-b border-b-gray-100 gap-0 rounded-lg">
           <AspectRatio ratio={4 / 3} className="relative">
-            {Boolean(image) && !imgError ? (
-              <Image
-                className={cn(
-                  "object-cover rounded-lg transition-opacity duration-300",
-                  isLoading ? "opacity-0" : "opacity-100",
-                )}
-                src={image}
-                onError={() => setImgError(true)}
-                onLoad={() => setIsLoading(false)}
-                sizes="(min-width: 1024px) 20vw, (min-width: 768px) 25vw, (min-width: 640px) 33vw, (min-width: 475px) 50vw, 100vw"
-                fill
-                loading="lazy"
-                alt={altText}
-                placeholder="blur"
-                blurDataURL={blurDataURL}
-              />
-            ) : (
-              <PlaceholderImage
-                asChild
-                aria-label="Property image placeholder"
-              />
-            )}
-            {isLoading && !imgError && (
+            <ImageWithFallback
+              className={cn(
+                "object-cover rounded-lg transition-opacity duration-300",
+                isLoading ? "opacity-0" : "opacity-100",
+              )}
+              src={image || "/placeholder-image.png"}
+              onLoad={() => setIsLoading(false)}
+              sizes="256px"
+              fill
+              loading="lazy"
+              alt={altText}
+              placeholder="blur"
+              blurDataURL={blurDataURL}
+            />
+            {isLoading && (
               <div className="absolute inset-0 bg-gray-100 animate-pulse rounded-lg" />
             )}
           </AspectRatio>
@@ -142,24 +139,52 @@ export default function PropertyCard({
             {title}
           </CardTitle>
           <div>
-            <h3
-              className="mb-1.5 mt-[10px] text-base font-bold leading-[19px] text-brand-accent md:text-[19px]"
-              dangerouslySetInnerHTML={{
-                __html: summary
-                  ? (`${pricepart1 ?? ""} ${pricepart2 ?? ""}`.trim() ??
-                    "Price not available")
-                  : (price ?? "Price not available"),
-              }}
-            ></h3>
+            <div className="flex h-fit items-center gap-2 mb-1.5 mt-[10px]">
+              {pricepart1 ? (
+                <span
+                  className="text-base font-bold leading-[19px] text-brand-accent md:text-[19px]"
+                  dangerouslySetInnerHTML={buildInnerHtml(pricepart1)}
+                />
+              ) : price ? (
+                <span
+                  className="text-base font-bold leading-[19px] text-brand-accent md:text-[19px]"
+                  dangerouslySetInnerHTML={buildInnerHtml(price)}
+                />
+              ) : (
+                <span className="text-base font-semibold text-brand-muted">
+                  Price not available
+                </span>
+              )}
+              {pricepart2 && (
+                <span className="text-sm font-normal text-brand-muted">
+                  {pricepart2}
+                </span>
+              )}
+            </div>
             <span className="text-base capitalize mb-1 text-brand-muted line-clamp-1">
               {streetaddress}
             </span>
             <div className="mt-1 flex items-center text-base text-brand-muted">
-              {bedroomcount} Beds{" "}
-              <Dot className="h-[12px] w-[12px] text-brand-accent" />{" "}
-              {bathroomcount} Baths{" "}
-              <Dot className="h-[12px] w-[12px] text-brand-accent" /> {garages}{" "}
-              Parking
+              {Number.isFinite(bedsNum) && bedsNum > 0 && (
+                <>
+                  <span>{bedsNum} Beds</span>
+                  {(Number.isFinite(bathsNum) && bathsNum > 0) ||
+                  (Number.isFinite(Number(garages)) && Number(garages) > 0) ? (
+                    <Dot className="h-[12px] w-[12px] text-brand-accent" />
+                  ) : null}
+                </>
+              )}
+              {Number.isFinite(bathsNum) && bathsNum > 0 && (
+                <>
+                  <span>{bathsNum} Baths</span>
+                  {Number.isFinite(Number(garages)) && Number(garages) > 0 ? (
+                    <Dot className="h-[12px] w-[12px] text-brand-accent" />
+                  ) : null}
+                </>
+              )}
+              {Number.isFinite(Number(garages)) && Number(garages) > 0 && (
+                <span>{garages} Parking</span>
+              )}
             </div>
           </div>
         </CardContent>

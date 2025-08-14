@@ -9,7 +9,7 @@ import PropertyListings from "@/components/property-listings";
 import PropertyShowcase from "@/components/property-showcase";
 import { Badge } from "@/components/ui/badge";
 import Shell from "@/layouts/shell";
-import { cn, formatPrice } from "@/lib/utils";
+import { buildInnerHtml, cn, formatPrice } from "@/lib/utils";
 import type { DeveloperProject } from "@/types";
 import { Dot, MapPin } from "lucide-react";
 import { useRef } from "react";
@@ -23,7 +23,7 @@ export default function PropertyContainer({
 }: {
   projectData: DeveloperProject;
 }) {
-  const markup = { __html: projectData.project.aboutproject };
+  const markup = buildInnerHtml(projectData.project.aboutproject ?? "");
   const unityTypes = projectData.unittypes.map(
     (unitType) => unitType.type + " ",
   );
@@ -189,7 +189,7 @@ export default function PropertyContainer({
                   className="pt-14 md:pt-20 hidden md:block"
                   btnHidden
                 >
-                  <PropertyShowcase images={images} src />
+                  <PropertyShowcase images={images} />
                 </ContentSection>
 
                 <ContentSection

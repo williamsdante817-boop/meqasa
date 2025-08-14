@@ -24,7 +24,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
+import { buildInnerHtml, cn } from "@/lib/utils";
 import ContactCard from "../contact-card";
 
 export interface ResultData {
@@ -150,9 +150,7 @@ export function ResultsCard({ result }: { result: ResultData }) {
           <div className="flex h-fit items-center gap-2 pt-3">
             <span
               className="text-base font-semibold"
-              dangerouslySetInnerHTML={{
-                __html: result.pricepart1,
-              }}
+              dangerouslySetInnerHTML={buildInnerHtml(result.pricepart1)}
             />
             <span className="text-sm font-normal text-brand-muted">
               {result.pricepart2}
@@ -160,9 +158,7 @@ export function ResultsCard({ result }: { result: ResultData }) {
           </div>
           <p
             className="line-clamp-2 pt-3 text-sm text-brand-muted"
-            dangerouslySetInnerHTML={{
-              __html: result.description ?? "",
-            }}
+            dangerouslySetInnerHTML={buildInnerHtml(result.description ?? "")}
           />
           <div className="flex items-center justify-between gap-1 pt-2 text-sm">
             <div className="flex items-center gap-1">

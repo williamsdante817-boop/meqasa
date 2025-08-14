@@ -115,9 +115,16 @@ export default async function DeveloperProfilePage({
                 btnHidden
               >
                 <div
-                  dangerouslySetInnerHTML={{
-                    __html: developer.developer.about,
-                  }}
+                  dangerouslySetInnerHTML={(() => {
+                    try {
+                      const { buildInnerHtml } = require("@/lib/utils");
+                      return buildInnerHtml(developer.developer.about ?? "");
+                    } catch {
+                      return { __html: developer.developer.about ?? "" } as {
+                        __html: string;
+                      };
+                    }
+                  })()}
                   className="prose prose-sm max-w-none text-brand-muted"
                 />
               </ContentSection>

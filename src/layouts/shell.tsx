@@ -8,12 +8,7 @@ interface ShellProps {
 
 export default function Shell({ children, className }: Readonly<ShellProps>) {
   return (
-    <section
-      className={cn(
-        "w-full mx-auto px-4 md:max-w-[736px] lg:max-w-[960px] xl:max-w-[1140px] 2xl:max-w-[1320px]",
-        className,
-      )}
-    >
+    <section className={cn("w-full mx-auto px-4 max-w-[1120px]", className)}>
       {children}
     </section>
   );

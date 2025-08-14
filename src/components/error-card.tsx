@@ -33,17 +33,17 @@ export function ErrorCard({
       aria-live="assertive"
       aria-atomic="true"
       className={cn(
-        "flex w-full min-w-0 flex-col items-center justify-center overflow-hidden p-10",
+        "flex w-full min-w-0 text-brand-accent rounded-lg flex-col items-center justify-center overflow-hidden p-10",
         className,
       )}
       {...props}
     >
       <div className="grid place-items-center rounded-full border border-dashed border-rose-300/75 p-6">
-        <Icon className="size-10 text-rose-500/75" aria-hidden="true" />
+        <Icon className="size-8 text-rose-500/75" aria-hidden="true" />
       </div>
       <div className="flex flex-col items-center justify-center space-y-1.5 py-14 text-center">
-        <CardTitle className="text-2xl">{title}</CardTitle>
-        <CardDescription className="line-clamp-4">
+        <CardTitle className="text-xl font-semibold">{title}</CardTitle>
+        <CardDescription className="line-clamp-4 text-brand-muted capitalize">
           {description}
         </CardDescription>
       </div>
@@ -54,6 +54,7 @@ export function ErrorCard({
             buttonVariants({
               variant: "default"
             }),
+            'bg-brand-accent text-white'
           )}
         >
           {retryLinkText}
@@ -61,7 +62,12 @@ export function ErrorCard({
         </Link>
       ) : null}
       {reset ? (
-        <Button aria-label="Retry" variant="ghost" onClick={reset}>
+        <Button
+          aria-label="Retry"
+          variant="ghost"
+          onClick={reset}
+        
+        >
           Retry
         </Button>
       ) : null}

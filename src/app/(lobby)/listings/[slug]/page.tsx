@@ -19,10 +19,11 @@ import SafetyTipsCard from "@/components/safety-tip";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { getListingDetails } from "@/lib/get-listing-detail";
-import { cn, formatNumber } from "@/lib/utils";
+import { cn, formatNumber, sanitizeHtmlString } from "@/lib/utils";
 import { BathIcon, BedIcon, ParkingSquare, Square } from "lucide-react";
 import Link from "next/link";
 import ProjectVideo from "../../development-projects/_component/project-video";
+import { ErrorCard } from "@/components/error-card";
 
 // Constants for better maintainability
 const CONTRACT_TYPES = {
@@ -40,9 +41,16 @@ const VERIFICATION_STATUSES = {
   APPROVED2: "approved2",
 } as const;
 
-// Helper function to extract numeric price from price string
+// Helper function to extract the first currency amount (e.g., GH₵ 3,687,912) from HTML/text and return digits
 const extractNumericPrice = (priceString: string): string => {
-  return priceString.replace(/[^\d]/g, "") || "0";
+  if (!priceString) return "0";
+  const text = priceString.replace(/<[^>]*>/g, " ");
+  const currencyRegex =
+    /(?:GH\s*₵|GHS|GH₵)?\s*([0-9]{1,3}(?:,[0-9]{3})*(?:\.[0-9]+)?)/i;
+  const match = currencyRegex.exec(text);
+  if (match?.[1]) return match[1].replace(/,/g, "");
+  const digitsOnly = text.replace(/[^\d]/g, "");
+  return digitsOnly || "0";
 };
 
 export default async function DetailsPage({
@@ -75,7 +83,6 @@ export default async function DetailsPage({
 
   try {
     const listingDetail = await getListingDetails(listingId);
-    console.log(listingDetail);
 
     if (!listingDetail) {
       return (
@@ -98,14 +105,18 @@ export default async function DetailsPage({
     const contract = listingDetail.contract.toLowerCase();
     const location = listingDetail.location.toLowerCase();
     const type = listingDetail.type.toLowerCase();
-    const params = new URLSearchParams({ q: location, page: "1", ftype: type });
+    const searchParams = new URLSearchParams({
+      q: location,
+      page: "1",
+      ftype: type,
+    });
     const numBeds = Number.parseInt(listingDetail.beds, 10);
     const numBaths = Number.parseInt(listingDetail.baths, 10);
     if (!Number.isNaN(numBeds) && numBeds > 0)
-      params.set("fbeds", String(numBeds));
+      searchParams.set("fbeds", String(numBeds));
     if (!Number.isNaN(numBaths) && numBaths > 0)
-      params.set("fbaths", String(numBaths));
-    const similarSearchHref = `/search/${contract}?${params.toString()}`;
+      searchParams.set("fbaths", String(numBaths));
+    const similarSearchHref = `/search/${contract}?${searchParams.toString()}`;
 
     // Construct internal agent link `/agents/{name}?g={id}` using owner.page as source of id
     const agentNameEncoded = encodeURIComponent(listingDetail.owner.name);
@@ -123,6 +134,22 @@ export default async function DetailsPage({
     const agentHref = agentIdFromPage
       ? `/agents/${agentNameEncoded}?g=${encodeURIComponent(agentIdFromPage)}`
       : `/agents/${agentNameEncoded}`;
+
+    const isFurnished =
+      typeof listingDetail.isfurnished === "boolean"
+        ? listingDetail.isfurnished
+        : typeof listingDetail.isfurnished === "string"
+          ? ["1", "true", "yes", "y"].includes(
+              listingDetail.isfurnished.toLowerCase(),
+            )
+          : false;
+
+    const safePriceHtml = {
+      __html: sanitizeHtmlString(listingDetail.price ?? ""),
+    } satisfies { __html: string };
+    const safeDescriptionHtml = {
+      __html: sanitizeHtmlString(listingDetail.description ?? ""),
+    } satisfies { __html: string };
 
     const propertyDetails = [
       { title: "Type", value: listingDetail.type || "Not specified" },
@@ -193,14 +220,14 @@ export default async function DetailsPage({
           <DynamicCarousel images={listingDetail.imagelist} />
         </section>
         <Shell>
-          <div className="grid grid-cols-1 text-brand-accent w-full mt-4 md:grid-cols-[2fr,1fr] lg:gap-8 lg:px-0">
+          <div className="grid grid-cols-1 text-brand-accent w-full mt-4 lg:grid-cols-[2fr_1fr] lg:gap-8 lg:px-0">
             <div>
               <div className="flex items-center gap-4">
                 <div className="flex items-center">
                   <h2
                     className="text-2xl font-extrabold text-brand-accent lg:text-3xl"
-                    dangerouslySetInnerHTML={{ __html: listingDetail.price }}
-                  ></h2>
+                    dangerouslySetInnerHTML={safePriceHtml}
+                  />
                   <span className="text-brand-muted font-light text-sm md:text-xl">
                     {listingDetail.leaseunit}
                   </span>
@@ -221,7 +248,7 @@ export default async function DetailsPage({
                   )}
                 </span>
               </div>
-              <div className="flex items-center gap-4 py-2">
+              <div className="flex items-center gap-4 py-3">
                 <div
                   className="flex items-center gap-1.5 md:gap-4 flex-wrap"
                   role="list"
@@ -279,9 +306,7 @@ export default async function DetailsPage({
               </div>
               <div className="flex items-center gap-4 mb-6">
                 <Badge className="uppercase text-xs text-blue-500 bg-blue-100/60">
-                  {listingDetail.isfurnished !== ""
-                    ? "Furnished"
-                    : "Unfurnished"}
+                  {isFurnished ? "Furnished" : "Unfurnished"}
                 </Badge>
                 <Badge className="uppercase text-xs text-blue-500 bg-blue-100/60 max-w-[280px] md:max-w-full">
                   <p className="truncate w-full">{listingDetail.location}</p>
@@ -289,7 +314,7 @@ export default async function DetailsPage({
               </div>
               <aside className="mb-6">
                 {listingDetail.owner.listingscount !== "0" && (
-                  <div className="flex items-center gap-8 border-y text-sm py-4 lg:py-10 lg:text-base">
+                  <div className="flex items-center gap-4 md:gap-8 border-y text-sm py-4 lg:py-10 lg:text-base">
                     <div>
                       <Icons.trend />
                     </div>
@@ -309,7 +334,7 @@ export default async function DetailsPage({
                 )}
               </aside>
               <aside className="mb-6">
-                <Card className="flex items-start justify-between gap-5 rounded-lg border-orange-200 px-4 text-brand-accent lg:flex-row lg:w-fit lg:px-6 lg:py-4">
+                <Card className="flex items-start justify-between gap-5 rounded-lg border-orange-200 px-4 text-brand-accent lg:flex-row lg:w-fit lg:px-6 py-4">
                   <Badge className="bg-orange-500 uppercase">
                     {listingDetail.owner.type !== "Agent"
                       ? "Project name"
@@ -345,23 +370,21 @@ export default async function DetailsPage({
                 title="Description"
                 description=""
                 href="/listings"
-                className="pt-14 md:pt-20 pb-10 md:pb-0"
+                className="pt-14 md:pt-20 px-0 pb-10 md:pb-0"
                 btnHidden
               >
                 {listingDetail?.description &&
                 listingDetail.description.trim() !== "" ? (
                   <>
                     <p
-                      dangerouslySetInnerHTML={{
-                        __html: listingDetail.description,
-                      }}
+                      dangerouslySetInnerHTML={safeDescriptionHtml}
                       className="text-brand-muted"
                     />
                     <span className="block text-gray-500 mt-4">
                       Listed by:{" "}
                       <Link
                         href={agentHref}
-                        className="decoration-dashed underline underline-offset-2"
+                        className="decoration-dashed hover:text-blue-500 underline underline-offset-2"
                       >
                         {listingDetail.owner.name}
                       </Link>
@@ -379,7 +402,7 @@ export default async function DetailsPage({
                 title="Explore More"
                 description=""
                 href="/listings"
-                className="pt-14 md:pt-20"
+                className="pt-14 px-0 md:pt-20"
                 btnHidden
               >
                 <PropertyShowcase images={listingDetail?.imagelist} />
@@ -433,7 +456,7 @@ export default async function DetailsPage({
             <aside className="hidden lg:block">
               <ContactCard
                 name={listingDetail.owner.name}
-                image={listingDetail.owner.logo}
+                image={`${listingDetail.owner.logo !== "" ? listingDetail.owner.logo : listingDetail.owner.profilepic}`}
                 listingId={listingDetail.listingid}
               />
             </aside>
@@ -450,6 +473,7 @@ export default async function DetailsPage({
                 btnHidden
               >
                 <MortgageCalculator
+                  key={listingDetail.listingid}
                   price={extractNumericPrice(listingDetail.price)}
                 />
               </ContentSection>
@@ -458,7 +482,7 @@ export default async function DetailsPage({
 
         <ContactSection
           name={listingDetail.owner.name}
-          image={listingDetail.owner.logo}
+          image={`${listingDetail.owner.logo !== "" ? listingDetail.owner.logo : listingDetail.owner.profilepic}`}
           listingId={listingDetail.listingid}
         />
         {listingDetail.similars.length > 0 ? (
@@ -467,8 +491,8 @@ export default async function DetailsPage({
             description=""
             href={similarSearchHref}
             className={cn(
-              listingDetail.similars.length > 0 ? "px-0 mb-6" : "px-4",
-              "pt-14 md:pt-20 lg:pt-24  md:block lg:max-w-7xl lg:mx-auto [&_p]:px-4 [&_h2]:px-4",
+              "w-full mx-auto",
+              "pt-14 md:pt-20 lg:pt-24 md:block mb-6",
             )}
           >
             <PropertyListings
@@ -484,8 +508,6 @@ export default async function DetailsPage({
       </main>
     );
   } catch (error: unknown) {
-    console.error("Error fetching listing details:", error);
-
     // Check if it's a specific "listing not published" error
     if (
       error instanceof Error &&
@@ -514,17 +536,37 @@ export default async function DetailsPage({
       );
     }
 
+    // Handle explicit "listing not found" coming from backend
+    if (
+      error instanceof Error &&
+      error.message.toLowerCase().includes("listing not found")
+    ) {
+      return (
+        <main>
+          <Shell>
+            <div className="max-w-md mx-auto my-20">
+              <ErrorCard
+                title="Property listing not found"
+                description={error.message}
+                retryLink="/"
+                retryLinkText="Go to Home"
+              />
+            </div>
+          </Shell>
+        </main>
+      );
+    }
+
     return (
       <main>
         <Shell>
-          <div className="text-center py-10">
-            <h1 className="text-2xl font-bold text-brand-accent">
-              Error Loading Listing
-            </h1>
-            <p className="text-brand-muted mt-2">
-              Sorry, we encountered an error while loading this property
-              listing. Please try again later.
-            </p>
+          <div className="max-w-md mx-auto my-20">
+            <ErrorCard
+              title="Error Loading Page"
+              description="Sorry, we encountered an error while loading this property listing. Please try again later."
+              retryLink="/"
+              retryLinkText="Go to Home"
+            />
           </div>
         </Shell>
       </main>

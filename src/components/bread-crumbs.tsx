@@ -37,18 +37,27 @@ export function Breadcrumbs({
 
         return (
           <React.Fragment key={segment.key ?? `${index}-${segment.href}`}>
-            <Link
-              aria-current={isLastSegment ? "page" : undefined}
-              href={segment.href}
-              className={cn(
-                "truncate transition-colors hover:text-brand-accent",
-                isLastSegment ? "text-brand-accent" : "text-brand-muted",
-              )}
-            >
-              {truncationLength > 0 && segment.title
-                ? truncate(segment.title, truncationLength)
-                : segment.title}
-            </Link>
+            {isLastSegment ? (
+              <span
+                aria-current="page"
+                className={cn("truncate text-brand-accent")}
+              >
+                {truncationLength > 0 && segment.title
+                  ? truncate(segment.title, truncationLength)
+                  : segment.title}
+              </span>
+            ) : (
+              <Link
+                href={segment.href}
+                className={cn(
+                  "truncate transition-colors hover:text-brand-accent text-brand-muted",
+                )}
+              >
+                {truncationLength > 0 && segment.title
+                  ? truncate(segment.title, truncationLength)
+                  : segment.title}
+              </Link>
+            )}
             {!isLastSegment && (
               <SeparatorIcon className="mx-2 h-4 w-4" aria-hidden="true" />
             )}

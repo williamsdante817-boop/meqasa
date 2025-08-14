@@ -49,7 +49,7 @@ export async function StreamingLatestListings({
           title="Latest Listings"
           description="View all recent property listings available."
           href="/search/rent?q=ghana&page=1"
-          className="pt-14 md:pt-20 lg:pt-24 [&_p]:px-4 [&_h2]:px-4 w-full mx-auto md:max-w-[720px] lg:max-w-[960px] xl:max-w-[1140px] 2xl:max-w-[1320px]"
+          className="pt-14 md:pt-20 lg:pt-24 [&_p]:px-4 [&_h2]:px-4 w-full"
         >
           <Alert className="mx-auto max-w-md">
             <AlertTitle>No latest listings available</AlertTitle>

@@ -210,24 +210,40 @@ export async function POST(request: NextRequest) {
         throw new Error(`Meqasa API error: ${response.statusText}`);
       }
 
-      const data = (await response.json()) as MeqasaSearchResponse;
+      const raw = (await response.json()) as MeqasaSearchResponse & {
+        resultcount?: number | string | null;
+      };
+      // Normalize result count in case the upstream API returns a string or 0 while results exist
+      const normalized: MeqasaSearchResponse = {
+        ...raw,
+        resultcount: (() => {
+          const count =
+            typeof raw.resultcount === "string"
+              ? parseInt(raw.resultcount, 10)
+              : raw.resultcount;
+          if (Number.isFinite(count) && (count as number) > 0)
+            return count as number;
+          return Array.isArray(raw.results) ? raw.results.length : 0;
+        })(),
+      };
+
       console.log("Search response:", {
-        searchId: data.searchid,
-        resultCount: data.resultcount,
-        resultsLength: data.results.length,
-        searchDesc: data.searchdesc,
+        searchId: normalized.searchid,
+        resultCount: normalized.resultcount,
+        resultsLength: normalized.results.length,
+        searchDesc: normalized.searchdesc,
         // Log first few results to see what type of properties are returned
-        firstResult: data.results[0]
+        firstResult: normalized.results[0]
           ? {
-              listingid: data.results[0].listingid,
-              summary: data.results[0].summary,
-              pricepart1: data.results[0].pricepart1,
-              pricepart2: data.results[0].pricepart2,
+              listingid: normalized.results[0].listingid,
+              summary: normalized.results[0].summary,
+              pricepart1: normalized.results[0].pricepart1,
+              pricepart2: normalized.results[0].pricepart2,
             }
           : null,
       });
 
-      return NextResponse.json(data);
+      return NextResponse.json(normalized);
     } else if (type === "loadMore") {
       const {
         contract,
@@ -387,15 +403,29 @@ export async function POST(request: NextRequest) {
         throw new Error(`Meqasa API error: ${response.statusText}`);
       }
 
-      const data = (await response.json()) as MeqasaSearchResponse;
+      const raw = (await response.json()) as MeqasaSearchResponse & {
+        resultcount?: number | string | null;
+      };
+      const normalized: MeqasaSearchResponse = {
+        ...raw,
+        resultcount: (() => {
+          const count =
+            typeof raw.resultcount === "string"
+              ? parseInt(raw.resultcount, 10)
+              : raw.resultcount;
+          if (Number.isFinite(count) && (count as number) > 0)
+            return count as number;
+          return Array.isArray(raw.results) ? raw.results.length : 0;
+        })(),
+      };
       console.log("LoadMore response:", {
-        searchId: data.searchid,
-        resultCount: data.resultcount,
-        resultsLength: data.results.length,
-        data,
+        searchId: normalized.searchid,
+        resultCount: normalized.resultcount,
+        resultsLength: normalized.results.length,
+        data: normalized,
       });
 
-      return NextResponse.json(data);
+      return NextResponse.json(normalized);
     } else {
       return NextResponse.json(
         { error: "Invalid request type. Must be 'search' or 'loadMore'" },

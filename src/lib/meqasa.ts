@@ -17,8 +17,20 @@ export async function searchProperties(
   params: MeqasaSearchParams,
 ): Promise<MeqasaSearchResponse> {
   const isServer = typeof window === "undefined";
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
-  const apiUrl = isServer ? `${baseUrl}/api/properties` : "/api/properties";
+  const resolveBaseUrl = (): string => {
+    // Prefer explicitly configured public site URL
+    if (process.env.NEXT_PUBLIC_BASE_URL)
+      return process.env.NEXT_PUBLIC_BASE_URL;
+    if (process.env.NEXT_PUBLIC_SITE_URL)
+      return process.env.NEXT_PUBLIC_SITE_URL;
+    // Vercel provides VERCEL_URL without protocol
+    if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
+    // Fallback for local dev
+    return "http://localhost:3000";
+  };
+  const apiUrl = isServer
+    ? `${resolveBaseUrl()}/api/properties`
+    : "/api/properties";
 
   const response = await fetch(apiUrl, {
     method: "POST",
@@ -55,8 +67,17 @@ export async function loadMoreProperties(
   params: MeqasaLoadMoreParams,
 ): Promise<MeqasaSearchResponse> {
   const isServer = typeof window === "undefined";
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
-  const apiUrl = isServer ? `${baseUrl}/api/properties` : "/api/properties";
+  const resolveBaseUrl = (): string => {
+    if (process.env.NEXT_PUBLIC_BASE_URL)
+      return process.env.NEXT_PUBLIC_BASE_URL;
+    if (process.env.NEXT_PUBLIC_SITE_URL)
+      return process.env.NEXT_PUBLIC_SITE_URL;
+    if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
+    return "http://localhost:3000";
+  };
+  const apiUrl = isServer
+    ? `${resolveBaseUrl()}/api/properties`
+    : "/api/properties";
 
   const response = await fetch(apiUrl, {
     method: "POST",

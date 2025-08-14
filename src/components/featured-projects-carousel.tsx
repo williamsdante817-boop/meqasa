@@ -71,7 +71,7 @@ export default function FeaturedProjectsCarousel({
   }, [api, properties]);
 
   return (
-    <Card className="mb-4 border-0 md:border md:rounded-lg md:bg-gray-50 overflow-hidden">
+    <Card className="mb-4 rounded-none border-0 bg-transparent md:border md:rounded-lg md:bg-gray-50 overflow-hidden">
       {/* Live region for screen reader announcements */}
       <div id="carousel-announcement" className="sr-only" aria-live="polite" />
 
@@ -83,18 +83,18 @@ export default function FeaturedProjectsCarousel({
         aria-label="Featured Projects Carousel"
       >
         <CarouselContent
-          className="-ml-1 p-1 lg:pt-4"
+          className="-ml-4 lg:pt-4"
           role="list"
           aria-label="Featured Projects List"
         >
           {properties.map((item, index) => (
             <CarouselItem
               key={item.projectid}
-              className="basis-[350px] md:basis-[500px]  pl-4"
+              className="basis-[88%] md:basis-[44%] pl-4"
               role="listitem"
               aria-label={`Featured Project ${index + 1} of ${properties.length}`}
             >
-              <FeaturedPropertyCard item={item} />
+              <FeaturedPropertyCard item={item} priority={index === 0} />
             </CarouselItem>
           ))}
         </CarouselContent>

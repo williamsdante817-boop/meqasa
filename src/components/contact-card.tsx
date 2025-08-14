@@ -25,6 +25,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
+import { AlertCard } from "@/components/alert-card";
 
 interface ContactCardProps {
   name: string;
@@ -36,6 +37,7 @@ interface ContactCardProps {
 }
 
 // LocalStorage utility functions
+const DEFAULT_REGION: CountryCode = "GH";
 type StoredContactInfo = {
   name: string;
   phone: string;
@@ -178,6 +180,8 @@ export default function ContactCard({
   const [emailPhoneError, setEmailPhoneError] = useState("");
   const [alertsChecked, setAlertsChecked] = useState(true);
   const [emailLoading, setEmailLoading] = useState(false);
+  const [bannerError, setBannerError] = useState("");
+  const [emailBannerError, setEmailBannerError] = useState("");
   const maskedNumber = "+233 xx xxx xxxx";
   const [imageError, setImageError] = useState(false);
   // reducer-managed: modalOpen, activeModal, formSubmitted, userName, userPhone,
@@ -265,6 +269,7 @@ export default function ContactCard({
       return;
     }
 
+    setBannerError("");
     dispatch({ type: "setField", field: "whatsAppLoading", value: true });
     try {
       const res = await viewNumber({
@@ -277,6 +282,7 @@ export default function ContactCard({
       if (entityId)
         setStoredNumbers(contextKey, res.displayNumber, res.whatsappNumber);
     } catch {
+      setBannerError("Failed to get phone number. Please try again.");
       dispatch({
         type: "setErrors",
         errors: {
@@ -298,6 +304,7 @@ export default function ContactCard({
       return;
     }
 
+    setBannerError("");
     dispatch({ type: "setField", field: "showNumberLoading", value: true });
     try {
       const res = await viewNumber({
@@ -309,6 +316,7 @@ export default function ContactCard({
       if (entityId)
         setStoredNumbers(contextKey, res.displayNumber, res.whatsappNumber);
     } catch {
+      setBannerError("Failed to get phone number. Please try again.");
       dispatch({
         type: "setErrors",
         errors: {
@@ -327,10 +335,11 @@ export default function ContactCard({
     let valid = true;
     dispatch({ type: "resetErrors" });
 
+    const defaultRegion = state.userCountryIso ?? DEFAULT_REGION;
     const validPhone = state.userPhone
       ? state.userPhone.startsWith("+")
         ? isValidPhoneNumber(state.userPhone)
-        : isValidPhoneNumber(state.userPhone, state.userCountryIso)
+        : isValidPhoneNumber(state.userPhone, defaultRegion)
       : false;
     if (!validPhone) {
       dispatch({
@@ -353,6 +362,7 @@ export default function ContactCard({
       } else {
         dispatch({ type: "setField", field: "showNumberLoading", value: true });
       }
+      setBannerError("");
       try {
         const res = await viewNumber({
           name: state.userName,
@@ -377,6 +387,7 @@ export default function ContactCard({
         if (entityId)
           setStoredNumbers(contextKey, res.displayNumber, res.whatsappNumber);
       } catch {
+        setBannerError("Failed to get phone number. Please try again.");
         dispatch({
           type: "setErrors",
           errors: {
@@ -443,6 +454,7 @@ export default function ContactCard({
         formData.append("reqid", "-1");
         formData.append("app", "vercel");
 
+        setEmailBannerError("");
         const response = await fetch("/api/contact/send-message", {
           method: "POST",
           body: formData,
@@ -453,10 +465,12 @@ export default function ContactCard({
         if (data.mess === "sent") {
           setEmailFormSubmitted(true);
         } else {
+          setEmailBannerError("Failed to send message. Please try again.");
           setMessageError("Failed to send message. Please try again.");
         }
       } catch (error) {
         console.error("Error sending message:", error);
+        setEmailBannerError("Failed to send message. Please try again.");
         setMessageError("Failed to send message. Please try again.");
       } finally {
         setEmailLoading(false);
@@ -466,7 +480,7 @@ export default function ContactCard({
 
   return (
     <>
-      <Card className="max-w-md mx-auto sticky top-36">
+      <Card className="max-w-md py-6 mx-auto sticky top-36">
         <CardContent>
           <div className="flex flex-col items-center">
             <div className="w-20 h-20 rounded-full overflow-hidden border border-gray-200 mb-4">
@@ -596,6 +610,13 @@ export default function ContactCard({
                         then they can reach you.
                       </DialogDescription>
                     </DialogHeader>
+                    {bannerError && (
+                      <AlertCard
+                        title="Could not fetch number"
+                        description={bannerError}
+                        className="mb-2"
+                      />
+                    )}
                     {!state.formSubmitted ? (
                       <form
                         onSubmit={handleFormSubmit}
@@ -630,10 +651,11 @@ export default function ContactCard({
                                 value: iso,
                               });
                               // Live validate phone number
+                              const region = iso ?? DEFAULT_REGION;
                               const possible = phone
                                 ? phone.startsWith("+")
                                   ? isValidPhoneNumber(phone)
-                                  : isValidPhoneNumber(phone, iso)
+                                  : isValidPhoneNumber(phone, region)
                                 : false;
                               dispatch({
                                 type: "setErrors",
@@ -796,6 +818,13 @@ export default function ContactCard({
                       to you soon.
                     </DialogDescription>
                   </DialogHeader>
+                  {emailBannerError && (
+                    <AlertCard
+                      title="Could not send message"
+                      description={emailBannerError}
+                      className="mb-2"
+                    />
+                  )}
                   {!emailFormSubmitted ? (
                     <form
                       onSubmit={handleEmailFormSubmit}
@@ -844,10 +873,11 @@ export default function ContactCard({
                               value: iso,
                             });
                             // Live validate phone for email form
+                            const region = iso ?? DEFAULT_REGION;
                             const possible = phone
                               ? phone.startsWith("+")
                                 ? isValidPhoneNumber(phone)
-                                : isValidPhoneNumber(phone, iso)
+                                : isValidPhoneNumber(phone, region)
                               : false;
                             setEmailPhoneError(
                               possible ? "" : "Valid phone number is required",

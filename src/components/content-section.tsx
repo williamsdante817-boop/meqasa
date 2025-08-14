@@ -59,7 +59,7 @@ export default function ContentSection({
 
   return (
     <section
-      className={cn("space-y-6", className)}
+      className={cn("space-y-6 w-full mx-auto px-4 max-w-[1120px]", className)}
       aria-labelledby={`${uniqueId}-title`}
       {...props}
     >

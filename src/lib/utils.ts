@@ -1,5 +1,6 @@
 // import type { User } from "@clerk/nextjs/server"
 import { clsx, type ClassValue } from "clsx";
+import sanitizeHtml from "sanitize-html";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -175,4 +176,79 @@ export function toBase64(str: string) {
   return typeof window === "undefined"
     ? Buffer.from(str).toString("base64")
     : window.btoa(str);
+}
+
+// Sanitize HTML to prevent XSS in server/client rendering contexts
+export function sanitizeHtmlString(html: string): string {
+  if (!html) return "";
+  return sanitizeHtml(html, {
+    allowedTags: [
+      "b",
+      "i",
+      "em",
+      "strong",
+      "span",
+      "small",
+      "sup",
+      "sub",
+      "u",
+      "s",
+    ],
+    allowedAttributes: {
+      span: ["class"],
+    },
+    allowedSchemes: [],
+    allowProtocolRelative: false,
+    disallowedTagsMode: "discard",
+  });
+}
+
+// Build a React dangerouslySetInnerHTML payload with sanitized content
+export function toInnerHtml(html: string): { __html: string } {
+  return { __html: sanitizeHtmlString(html) };
+}
+
+// Rich HTML sanitizer for ad/banner markup that may contain images and links
+export function sanitizeRichHtmlString(html: string): string {
+  if (!html) return "";
+  return sanitizeHtml(html, {
+    allowedTags: [
+      "div",
+      "p",
+      "span",
+      "a",
+      "img",
+      "picture",
+      "source",
+      "b",
+      "strong",
+      "em",
+      "br",
+      "ul",
+      "ol",
+      "li",
+    ],
+    allowedAttributes: {
+      a: ["href", "target", "rel"],
+      img: ["src", "alt", "loading", "width", "height"],
+      source: ["srcset", "type"],
+      div: ["class"],
+      p: ["class"],
+      span: ["class"],
+      picture: ["class"],
+    },
+    allowedSchemes: ["http", "https", "data"],
+    allowProtocolRelative: false,
+    transformTags: {
+      a: sanitizeHtml.simpleTransform("a", { rel: "noopener noreferrer" }),
+    },
+  });
+}
+
+export function buildInnerHtml(html: string): { __html: string } {
+  return { __html: sanitizeHtmlString(html) };
+}
+
+export function buildRichInnerHtml(html: string): { __html: string } {
+  return { __html: sanitizeRichHtmlString(html) };
 }

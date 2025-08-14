@@ -467,7 +467,7 @@ export default function ContactSection({
   };
 
   return (
-    <div className="bg-gray-50 py-16 flex flex-col items-center mt-10">
+    <div className="bg-gray-50 border-t border-b py-16 flex flex-col items-center mt-10">
       <div className="w-20 h-20 rounded-full overflow-hidden border border-gray-200 mb-4">
         {imageError ? (
           <div className="w-full h-full flex items-center justify-center">

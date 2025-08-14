@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Card } from "./ui/card";
+import { buildRichInnerHtml } from "@/lib/utils";
 
 interface GridAdProps {
   flexiBanner: string;
@@ -134,7 +135,7 @@ export default function GridAd({
         {/* Last placeholder item */}
         <Card
           className="sm:col-start-4 sm:col-span-3 sm:row-start-1 sm:row-span-4 overflow-hidden h-full rounded-lg"
-          dangerouslySetInnerHTML={{ __html: flexiBanner }}
+          dangerouslySetInnerHTML={buildRichInnerHtml(flexiBanner)}
         />
       </div>
     </section>

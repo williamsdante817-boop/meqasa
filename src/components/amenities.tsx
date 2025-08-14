@@ -7,22 +7,14 @@ interface AmenitiesProps {
   amenities?: string[];
 }
 
-export default function Amenities({
-  amenities = [
-    "Air conditioning",
-    "Cooker",
-    "Microwave",
-    "Security service",
-    "Water reservoir",
-  ],
-}: AmenitiesProps) {
+export default function Amenities({ amenities = [] }: AmenitiesProps) {
   if (!amenities.length) {
     return null;
   }
 
   return (
     <Card
-      className="w-full p-0 border-none shadow-none"
+      className="w-full p-0 border-none bg-transparent shadow-none"
       role="region"
       aria-label="Amenities"
     >
@@ -35,7 +27,7 @@ export default function Amenities({
           {amenities.map((amenity, index) => (
             <div
               key={`amenity-${amenity}-${index}`}
-              className="flex items-center gap-3 rounded-lg border p-3"
+              className="flex items-center gap-3 rounded-lg border bg-white p-3"
               role="listitem"
             >
               <div

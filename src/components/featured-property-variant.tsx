@@ -10,10 +10,12 @@ import { ImageWithFallback } from "./image-with-fallback";
 
 interface FeaturedPropertyCardProps {
   item: FeaturedProject;
+  priority?: boolean;
 }
 
 export default function FeaturedPropertyCard({
   item,
+  priority,
 }: FeaturedPropertyCardProps) {
   // Destructure properties from the item object with proper fallbacks
   const {
@@ -47,7 +49,7 @@ export default function FeaturedPropertyCard({
 
   return (
     <Card
-      className="relative h-full overflow-hidden rounded-lg p-0 gap-0 flex flex-col"
+      className="relative h-full overflow-hidden md:rounded-lg p-0 gap-0 flex flex-col"
       role="article"
       aria-labelledby={`project-title-${projectid}`}
     >
@@ -63,7 +65,9 @@ export default function FeaturedPropertyCard({
               src={photoUrl}
               alt={`${projectname} property image`}
               fill
-              sizes="(min-width: 1024px) 20vw, (min-width: 768px) 25vw, (min-width: 640px) 33vw, (min-width: 475px) 50vw, 100vw"
+              sizes="(min-width: 1280px) 45vw, (min-width: 1024px) 45vw, (min-width: 768px) 48vw, (min-width: 640px) 60vw, 90vw"
+              quality={90}
+              priority={priority}
               className={cn("object-cover")}
               placeholder="blur"
               // 1x1 transparent PNG as a safe minimal LQIP; can be replaced with real blurDataURL from API

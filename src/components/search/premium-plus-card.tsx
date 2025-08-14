@@ -21,7 +21,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
+import { buildInnerHtml, cn } from "@/lib/utils";
 import { useState } from "react";
 import ContactCard from "../contact-card";
 
@@ -196,9 +196,7 @@ export function PremiumPlusPropertyCard({
         <div className="flex h-fit items-center gap-2 pt-3">
           <p
             className="text-base font-bold"
-            dangerouslySetInnerHTML={{
-              __html: pricePart1,
-            }}
+            dangerouslySetInnerHTML={buildInnerHtml(pricePart1)}
           ></p>
           <p className="text-base font-bold">
             <span className="text-sm font-normal text-brand-muted">

@@ -18,7 +18,7 @@ import SafetyTipsCard from "@/components/safety-tip";
 import { Badge } from "@/components/ui/badge";
 import Shell from "@/layouts/shell";
 import { getUnitDetails } from "@/lib/get-unit-details";
-import { cn, formatNumber, slugify } from "@/lib/utils";
+import { buildInnerHtml, cn, formatNumber, slugify } from "@/lib/utils";
 import { BathIcon, BedIcon, ParkingSquare, Square } from "lucide-react";
 import Link from "next/link";
 import ProjectVideo from "../../development-projects/_component/project-video";
@@ -164,7 +164,7 @@ export default async function DeveloperUnitPage({
         />
       </section>
       <Shell>
-        <div className="grid grid-cols-1 text-brand-accent w-full mt-4 md:grid-cols-[2fr,1fr] lg:gap-8 lg:px-0">
+        <div className="grid grid-cols-1 text-brand-accent w-full mt-4 lg:grid-cols-[2fr_1fr] lg:gap-8 lg:px-0">
           <div>
             <div className="flex items-center gap-4">
               <div className="flex items-center">
@@ -267,9 +267,9 @@ export default async function DeveloperUnitPage({
               btnHidden
             >
               <p
-                dangerouslySetInnerHTML={{
-                  __html: unitDetails.unit.description,
-                }}
+                dangerouslySetInnerHTML={buildInnerHtml(
+                  unitDetails.unit.description,
+                )}
                 className="text-brand-muted"
               />
               <span className="block text-gray-500 mt-4">
@@ -298,7 +298,10 @@ export default async function DeveloperUnitPage({
               propertyType="listing"
             />
 
-            <ProjectVideo videoUrl="" />
+            {unitDetails.unit.tourvideo &&
+              unitDetails.unit.tourvideo.trim() !== "" && (
+                <ProjectVideo videoUrl={unitDetails.unit.tourvideo} />
+              )}
 
             <ContentSection
               title="Project Details"
@@ -350,19 +353,22 @@ export default async function DeveloperUnitPage({
         </div>
       </Shell>
 
-      <Shell>
-        <ContentSection
-          title="Mortgage Calculator"
-          description=""
-          href=""
-          className="pt-14 md:pt-20"
-          btnHidden
-        >
-          <MortgageCalculator
-            price={unitDetails.unit.sellingprice.toString()}
-          />
-        </ContentSection>
-      </Shell>
+      {unitDetails.unit.terms === "sale" && (
+        <Shell>
+          <ContentSection
+            title="Mortgage Calculator"
+            description=""
+            href=""
+            className="pt-14 md:pt-20"
+            btnHidden
+          >
+            <MortgageCalculator
+              key={String(unitDetails.unit.unitid)}
+              price={unitDetails.unit.sellingprice.toString()}
+            />
+          </ContentSection>
+        </Shell>
+      )}
 
       <ContactSection
         name={unitDetails.unit.companyname}

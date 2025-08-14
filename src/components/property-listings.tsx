@@ -70,11 +70,9 @@ export default function PropertyListings({
             const key =
               "unitid" in listing
                 ? `unit-${listing.unitid}`
-                : "detailreq" in (listing as Record<string, unknown>)
-                  ? (listing as unknown as { detailreq: string }).detailreq
-                  : "listingid" in (listing as Record<string, unknown>)
-                    ? `listing-${(listing as unknown as { listingid: string }).listingid}`
-                    : `idx-${i}`;
+                : "detailreq" in listing
+                  ? listing.detailreq
+                  : `idx-${i}`;
 
             return (
               <CarouselItem

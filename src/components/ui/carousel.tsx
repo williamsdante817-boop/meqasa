@@ -202,7 +202,12 @@ const CarouselPrevious = React.forwardRef<
   HTMLButtonElement,
   React.ComponentProps<typeof Button>
 >(({ className, variant = "outline", size = "icon", ...props }, ref) => {
-  const { orientation, scrollPrev, canScrollPrev, controlsId } = useCarousel();
+  const { orientation, scrollPrev, canScrollPrev, canScrollNext, controlsId } =
+    useCarousel();
+
+  if (!canScrollPrev && !canScrollNext) {
+    return null;
+  }
 
   return (
     <Button
@@ -221,7 +226,7 @@ const CarouselPrevious = React.forwardRef<
       aria-controls={controlsId}
       {...props}
     >
-      <ChevronLeft   className="h-4 w-4" />
+      <ChevronLeft className="h-4 w-4" />
       <span className="sr-only">Previous slide</span>
     </Button>
   );
@@ -232,7 +237,12 @@ const CarouselNext = React.forwardRef<
   HTMLButtonElement,
   React.ComponentProps<typeof Button>
 >(({ className, variant = "outline", size = "icon", ...props }, ref) => {
-  const { orientation, scrollNext, canScrollNext, controlsId } = useCarousel();
+  const { orientation, scrollNext, canScrollNext, canScrollPrev, controlsId } =
+    useCarousel();
+
+  if (!canScrollPrev && !canScrollNext) {
+    return null;
+  }
 
   return (
     <Button
