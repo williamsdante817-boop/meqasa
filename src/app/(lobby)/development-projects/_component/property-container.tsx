@@ -311,6 +311,7 @@ export default function PropertyContainer({
                 ...unit,
                 image: unit.coverphoto,
                 detailreq: `/developer-unit/${unit.unitid}`,
+                listingid: String(unit.unitid),
                 streetaddress: unit.address,
                 contract: unit.terms,
                 title: unit.title || unit.unitname,

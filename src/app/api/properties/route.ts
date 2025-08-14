@@ -221,8 +221,8 @@ export async function POST(request: NextRequest) {
             typeof raw.resultcount === "string"
               ? parseInt(raw.resultcount, 10)
               : raw.resultcount;
-          if (Number.isFinite(count) && (count as number) > 0)
-            return count as number;
+          if (typeof count === "number" && Number.isFinite(count) && count > 0)
+            return count;
           return Array.isArray(raw.results) ? raw.results.length : 0;
         })(),
       };
@@ -413,8 +413,8 @@ export async function POST(request: NextRequest) {
             typeof raw.resultcount === "string"
               ? parseInt(raw.resultcount, 10)
               : raw.resultcount;
-          if (Number.isFinite(count) && (count as number) > 0)
-            return count as number;
+          if (typeof count === "number" && Number.isFinite(count) && count > 0)
+            return count;
           return Array.isArray(raw.results) ? raw.results.length : 0;
         })(),
       };

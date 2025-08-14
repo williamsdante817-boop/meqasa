@@ -2,6 +2,7 @@ import { Breadcrumbs } from "@/components/bread-crumbs";
 import ContactCard from "@/components/contact-card";
 import ContentSection from "@/components/content-section";
 import Shell from "@/layouts/shell";
+import { buildInnerHtml } from "@/lib/utils";
 import { getDeveloperProfile } from "@/lib/get-developer-profile";
 import { CheckCircle, MapPin } from "lucide-react";
 import Image from "next/image";
@@ -115,16 +116,9 @@ export default async function DeveloperProfilePage({
                 btnHidden
               >
                 <div
-                  dangerouslySetInnerHTML={(() => {
-                    try {
-                      const { buildInnerHtml } = require("@/lib/utils");
-                      return buildInnerHtml(developer.developer.about ?? "");
-                    } catch {
-                      return { __html: developer.developer.about ?? "" } as {
-                        __html: string;
-                      };
-                    }
-                  })()}
+                  dangerouslySetInnerHTML={buildInnerHtml(
+                    developer.developer.about ?? "",
+                  )}
                   className="prose prose-sm max-w-none text-brand-muted"
                 />
               </ContentSection>
