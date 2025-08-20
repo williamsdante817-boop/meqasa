@@ -14,8 +14,8 @@ import {
 import { generateContextKey, useContactState } from "@/hooks/use-contact-state";
 import { parsePhoneNumber, isValidPhoneNumber } from "libphonenumber-js";
 import type { CountryCode } from "libphonenumber-js";
-import { Mail, MessageSquare, User } from "lucide-react";
-import Image from "next/image";
+import { Mail, MessageSquare } from "lucide-react";
+import { ImageWithFallback } from "@/components/image-with-fallback";
 import { useEffect, useRef, useState, useReducer } from "react";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
@@ -183,7 +183,6 @@ export default function ContactCard({
   const [bannerError, setBannerError] = useState("");
   const [emailBannerError, setEmailBannerError] = useState("");
   const maskedNumber = "+233 xx xxx xxxx";
-  const [imageError, setImageError] = useState(false);
   // reducer-managed: modalOpen, activeModal, formSubmitted, userName, userPhone,
   // userCountryIso, showNumberLoading, whatsAppLoading, errors
 
@@ -480,28 +479,22 @@ export default function ContactCard({
 
   return (
     <>
-      <Card className="max-w-md py-6 mx-auto sticky top-36">
+      <Card className="max-w-md py-6 rounded-lg mx-auto sticky top-36">
         <CardContent>
           <div className="flex flex-col items-center">
             <div className="w-20 h-20 rounded-full overflow-hidden border border-gray-200 mb-4">
-              {imageError ? (
-                <div className="w-full h-full flex items-center justify-center">
-                  <User className="w-12 h-12 text-gray-400" />
-                </div>
-              ) : (
-                <Image
-                  src={
-                    src
-                      ? `https://meqasa.com/uploads/imgs/${image}`
-                      : `https://dve7rykno93gs.cloudfront.net${image}`
-                  }
-                  alt={name}
-                  width={80}
-                  height={80}
-                  className="object-contain w-full h-full"
-                  onError={() => setImageError(true)}
-                />
-              )}
+              <ImageWithFallback
+                src={
+                  src
+                    ? `https://meqasa.com/uploads/imgs/${image}`
+                    : `https://dve7rykno93gs.cloudfront.net${image}`
+                }
+                alt={name}
+                width={80}
+                height={80}
+                className="object-contain w-full h-full"
+                fallbackAlt={name}
+              />
             </div>
 
             <h2 className="text-xl font-bold text-brand-accent mb-2 text-center">

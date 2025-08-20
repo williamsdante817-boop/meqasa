@@ -77,7 +77,7 @@ export default function PropertyListings({
             return (
               <CarouselItem
                 key={key}
-                className="basis-[220px] md:basis-[256px]"
+                className="basis-[220px] py-1 bg-transparent md:basis-[256px]"
                 role="listitem"
                 aria-label={`Property ${i + 1} of ${transformedListings.length}`}
               >

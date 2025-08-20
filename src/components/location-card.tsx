@@ -37,7 +37,7 @@ export default function LocationCard({
         <ImageWithFallback
           src={src}
           alt={`${location} location image`}
-          sizes="(min-width: 1024px) 20vw, (min-width: 768px) 25vw, (min-width: 640px) 33vw, (min-width: 475px) 50vw, 100vw"
+          sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw, 20vw"
           fill
           priority={priority}
           className={`w-full h-full object-cover transition-all duration-500 group-hover:brightness-105 ${
@@ -45,6 +45,7 @@ export default function LocationCard({
           }`}
           onLoad={() => setImageLoading(false)}
           onError={() => setImageLoading(false)}
+          quality={90}
         />
 
         <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />

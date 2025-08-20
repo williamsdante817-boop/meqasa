@@ -13,7 +13,7 @@ export function HeroBanner({
   alt = "Hero banner",
 }: HeroBannerProps) {
   return (
-    <Card className="hidden lg:block max-h-[305px] rounded-none border-t border-b h-[305px] relative">
+    <Card className="hidden lg:block max-h-[305px] rounded-none border-t-0 border-b h-[305px] relative">
       <a
         href={href}
         target="_blank"

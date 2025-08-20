@@ -214,7 +214,7 @@ const SearchInput = ({
           onKeyDown={handleKeyDown}
           onFocus={() => searchValue && setShowSuggestions(true)}
           onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-          className="h-12 pl-10 bg-white border-gray-200 text-brand-accent focus:border-blue-500 focus:ring-blue-500"
+          className="h-12 pl-10 bg-white border-gray-200 text-brand-accent focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary focus-visible:outline-none"
         />
       </div>
 

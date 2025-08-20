@@ -1,58 +1,67 @@
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
+import { ImageWithFallback } from "@/components/image-with-fallback";
 
 export function ProjectCard({
   name,
   src,
   status,
-  url
+  url,
 }: {
   name: string;
   src: string;
   status: string;
-  url:string
+  url: string;
 }) {
-
-  console.log("ProjectCard rendered with URL:", url);
   return (
-    <Card className="group relative overflow-hidden rounded-lg border-0 bg-transparent p-0">
-      <Link href={url} className="inline-block">
-        <AspectRatio ratio={16/9}>
-          <Image
-            alt="test"
-            src={src}
-            width={200}
-            height={200}
-            className="h-[180px] w-full rounded-lg object-cover transition lg:h-[254px] lg:group-hover:scale-105"
-          />
-        </AspectRatio>
-        <span className="absolute bottom-3 left-3 z-20 lg:bottom-4 lg:left-4">
-          <Badge
-            className={cn(
-              status === "completed"
-                ? "bg-green-500"
-                : "bg-amber-500 text-white",
-              "uppercase ",
-            )}
-          >
-            {status}
-          </Badge>
-          <h4 className="mt-1 line-clamp-1 font-bold text-white lg:text-xl">
-            {name}
-          </h4>
-        </span>
-        {/* overlay */}
-        <div
-          className="absolute inset-0 z-10 overflow-hidden rounded-lg transition group-hover:scale-105"
-          style={{
-            backgroundImage:
-              "linear-gradient(180deg,rgba(0,0,0,.14),rgba(0,0,0,.18) 16.31%,transparent 37.79%),linear-gradient(1turn,rgba(0,0,0,.5),transparent 79.49%)",
-          }}
-        />
+    <Card className="group relative h-full overflow-hidden rounded-lg border-0 bg-transparent p-0 shadow-none hover:shadow-md transition-shadow duration-200">
+      <Link href={url} className="block h-full">
+        <CardHeader className="p-0 gap-0">
+          <AspectRatio ratio={16 / 9} className="relative">
+            <ImageWithFallback
+              src={src}
+              alt={`${name} project image`}
+              fill
+              sizes="(max-width: 640px) 100vw, (max-width: 768px) 256px, (max-width: 1024px) 300px, 256px"
+              quality={90}
+              className="h-[180px] w-full rounded-lg object-cover transition-transform duration-300 lg:h-[254px] lg:group-hover:scale-105"
+              placeholder="blur"
+              blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/duYy7cAAAAASUVORK5CYII="
+              fallbackAlt="Project image not available"
+            />
+
+            {/* Status Badge */}
+            <div className="absolute bottom-3 left-3 z-20 lg:bottom-4 lg:left-4">
+              <Badge
+                className={cn(
+                  "uppercase rounded-sm",
+                  status?.toLowerCase() === "completed"
+                    ? "bg-brand-badge-completed text-white"
+                    : status?.toLowerCase() === "ongoing"
+                      ? "bg-brand-badge-ongoing text-white"
+                      : "bg-brand-badge-muted text-white",
+                )}
+              >
+                {status}
+              </Badge>
+
+              {/* Project Name */}
+              <h4 className="mt-2 line-clamp-1 font-bold text-white lg:text-xl leading-tight">
+                {name}
+              </h4>
+            </div>
+
+            {/* Gradient Overlay */}
+            <div
+              className="absolute inset-0 z-10 rounded-lg bg-gradient-to-b from-transparent via-transparent to-slate-900/60"
+              aria-hidden="true"
+            />
+          </AspectRatio>
+        </CardHeader>
       </Link>
     </Card>
   );

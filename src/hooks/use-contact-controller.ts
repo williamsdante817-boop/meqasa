@@ -1,3 +1,5 @@
+"use client";
+
 import { useRef, useEffect, useReducer, useCallback } from "react";
 import { useContactState } from "@/hooks/use-contact-state";
 import { getStoredNumbers, setStoredNumbers } from "@/lib/contact-cache";

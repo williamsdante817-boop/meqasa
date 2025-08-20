@@ -76,7 +76,7 @@ export default function BlogCard({
                     <ImageWithFallback
                       src={poster}
                       alt={`Featured image for blog post: ${title}`}
-                      sizes="(min-width: 1024px) 192px, 100vw"
+                      sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 192px, 192px"
                       fill
                       priority={priority}
                       loading={priority ? "eager" : undefined}
@@ -86,6 +86,7 @@ export default function BlogCard({
                       )}
                       onError={() => setImgError(true)}
                       onLoad={() => setIsLoading(false)}
+                      quality={90}
                     />
                     {isLoading && (
                       <Skeleton className="absolute inset-0 bg-gray-100 animate-pulse rounded-xl" />

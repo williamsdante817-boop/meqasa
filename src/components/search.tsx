@@ -20,25 +20,75 @@ import { CommonFilters } from "./search/CommonFilters";
 import { PriceInput } from "./search/PriceInput";
 import { SearchForm } from "./search/SearchForm";
 
-export function SearchFilter() {
-  const [formState, setFormState] = useState<FormState>({
-    search: "",
-    propertyType: "all",
-    bedrooms: "- Any -",
-    bathrooms: "- Any -",
-    minPrice: "",
-    maxPrice: "",
-    minArea: "",
-    maxArea: "",
-    period: "",
-    sort: "",
-    furnished: false,
-    owner: false,
-    howShort: "- Any -", // Initialize short-let duration
-  });
+// Default form state for each tab
+const getDefaultFormState = (): FormState => ({
+  search: "",
+  propertyType: "all",
+  bedrooms: "- Any -",
+  bathrooms: "- Any -",
+  minPrice: "",
+  maxPrice: "",
+  minArea: "",
+  maxArea: "",
+  period: "",
+  sort: "",
+  furnished: false,
+  owner: false,
+  howShort: "- Any -",
+});
 
-  const updateFormState = (updates: Partial<FormState>) => {
-    setFormState((prev) => ({ ...prev, ...updates }));
+export function SearchFilter() {
+  // Separate form states for each tab
+  const [rentFormState, setRentFormState] = useState<FormState>(
+    getDefaultFormState(),
+  );
+  const [buyFormState, setBuyFormState] = useState<FormState>(
+    getDefaultFormState(),
+  );
+  const [landFormState, setLandFormState] = useState<FormState>({
+    ...getDefaultFormState(),
+    propertyType: "land",
+  });
+  const [shortLetFormState, setShortLetFormState] = useState<FormState>(
+    getDefaultFormState(),
+  );
+
+  // Helper function to get current form state based on active tab
+  const getCurrentFormState = (tab: string): FormState => {
+    switch (tab) {
+      case "rent":
+        return rentFormState;
+      case "buy":
+        return buyFormState;
+      case "land":
+        return landFormState;
+      case "short-let":
+        return shortLetFormState;
+      default:
+        return rentFormState;
+    }
+  };
+
+  // Helper function to get current update function based on active tab
+  const getCurrentUpdateFunction = (tab: string) => {
+    switch (tab) {
+      case "rent":
+        return setRentFormState;
+      case "buy":
+        return setBuyFormState;
+      case "land":
+        return setLandFormState;
+      case "short-let":
+        return setShortLetFormState;
+      default:
+        return setRentFormState;
+    }
+  };
+
+  // Update function that works with the current active tab
+  const updateFormState = (tab: string, updates: Partial<FormState>) => {
+    const updateFn = getCurrentUpdateFunction(tab);
+    updateFn((prev) => ({ ...prev, ...updates }));
   };
 
   return (
@@ -100,8 +150,10 @@ export function SearchFilter() {
                 </DialogHeader>
                 <SearchForm
                   type="rent"
-                  formState={formState}
-                  updateFormState={updateFormState}
+                  formState={rentFormState}
+                  updateFormState={(updates) =>
+                    updateFormState("rent", updates)
+                  }
                 >
                   <div className="space-y-4">
                     <Button type="submit" className="w-full">
@@ -111,8 +163,10 @@ export function SearchFilter() {
                 </SearchForm>
                 <SearchForm
                   type="rent"
-                  formState={formState}
-                  updateFormState={updateFormState}
+                  formState={rentFormState}
+                  updateFormState={(updates) =>
+                    updateFormState("rent", updates)
+                  }
                 >
                   <div className="space-y-4">
                     <Button type="submit" className="w-full">
@@ -127,36 +181,33 @@ export function SearchFilter() {
           <TabsContent value="buy">
             <SearchForm
               type="buy"
-              formState={formState}
-              updateFormState={updateFormState}
+              formState={buyFormState}
+              updateFormState={(updates) => updateFormState("buy", updates)}
             >
               <CommonFilters
-                formState={formState}
-                updateFormState={updateFormState}
+                formState={buyFormState}
+                updateFormState={(updates) => updateFormState("buy", updates)}
               />
             </SearchForm>
           </TabsContent>
           <TabsContent value="rent">
             <SearchForm
               type="rent"
-              formState={formState}
-              updateFormState={updateFormState}
+              formState={rentFormState}
+              updateFormState={(updates) => updateFormState("rent", updates)}
             >
               <CommonFilters
                 showMoreFilters
-                formState={formState}
-                updateFormState={updateFormState}
+                formState={rentFormState}
+                updateFormState={(updates) => updateFormState("rent", updates)}
               />
             </SearchForm>
           </TabsContent>
           <TabsContent value="land">
             <SearchForm
               type="buy"
-              formState={{
-                ...formState,
-                propertyType: "land",
-              }}
-              updateFormState={updateFormState}
+              formState={landFormState}
+              updateFormState={(updates) => updateFormState("land", updates)}
             >
               <div className="relative mx-auto mt-3 hidden max-w-max items-end justify-center gap-2 py-1 lg:flex">
                 <PriceInput
@@ -171,10 +222,14 @@ export function SearchFilter() {
                     }
                   }
                   className="h-[20px] border-none px-5 py-0 text-white"
-                  minValue={formState.minPrice}
-                  maxValue={formState.maxPrice}
-                  onMinChange={(value) => updateFormState({ minPrice: value })}
-                  onMaxChange={(value) => updateFormState({ maxPrice: value })}
+                  minValue={landFormState.minPrice}
+                  maxValue={landFormState.maxPrice}
+                  onMinChange={(value) =>
+                    updateFormState("land", { minPrice: value })
+                  }
+                  onMaxChange={(value) =>
+                    updateFormState("land", { maxPrice: value })
+                  }
                 />
                 <Separator
                   orientation="vertical"
@@ -192,10 +247,14 @@ export function SearchFilter() {
                     }
                   }
                   className="h-[20px] border-none px-5 py-0 text-white"
-                  minValue={formState.minArea}
-                  maxValue={formState.maxArea}
-                  onMinChange={(value) => updateFormState({ minArea: value })}
-                  onMaxChange={(value) => updateFormState({ maxArea: value })}
+                  minValue={landFormState.minArea}
+                  maxValue={landFormState.maxArea}
+                  onMinChange={(value) =>
+                    updateFormState("land", { minArea: value })
+                  }
+                  onMaxChange={(value) =>
+                    updateFormState("land", { maxArea: value })
+                  }
                 />
               </div>
             </SearchForm>
@@ -203,15 +262,19 @@ export function SearchFilter() {
           <TabsContent value="short-let">
             <SearchForm
               type="short-let"
-              formState={formState}
-              updateFormState={updateFormState}
+              formState={shortLetFormState}
+              updateFormState={(updates) =>
+                updateFormState("short-let", updates)
+              }
             >
               <CommonFilters
                 showMoreFilters
                 hidePropertyType
                 isShortLet
-                formState={formState}
-                updateFormState={updateFormState}
+                formState={shortLetFormState}
+                updateFormState={(updates) =>
+                  updateFormState("short-let", updates)
+                }
               />
             </SearchForm>
           </TabsContent>

@@ -97,7 +97,7 @@ const CarouselSlide = ({
             )}
             <button
               onClick={onImageClick}
-              className="w-full h-full "
+              className="w-full h-full cursor-pointer"
               aria-label={`View image ${index + 1} in full screen`}
             >
               <ImageWithFallback
@@ -109,11 +109,12 @@ const CarouselSlide = ({
                   "h-full w-full cursor-pointer object-cover transition-opacity duration-300",
                   isLoading ? "opacity-0" : "opacity-100",
                 )}
-                sizes="(max-width: 768px) 100vw, 400px"
+                sizes="(max-width: 640px) 100vw, (max-width: 768px) 100vw, (max-width: 1024px) 50vw, 400px"
                 priority={index === 0}
                 onLoad={handleImageLoad}
                 onError={handleImageError}
                 loading={index === 0 ? "eager" : "lazy"}
+                quality={90}
               />
             </button>
           </CardContent>
@@ -237,14 +238,14 @@ export function DynamicCarousel({
           <CarouselPrevious
             aria-label="Previous slide"
             className={cn(
-              "absolute left-6 top-1/2 -translate-y-1/2 z-10 h-11 w-11 items-center justify-center bg-white text-accent-foreground shadow-md cursor-pointer",
+              "absolute left-6 top-1/2 -translate-y-1/2 z-10 h-11 w-11 items-center justify-center bg-white text-accent-foreground shadow-md cursor-pointer focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary focus-visible:outline-none",
               "hidden md:flex",
             )}
           />
           <CarouselNext
             aria-label="Next slide"
             className={cn(
-              "absolute right-6 top-1/2 -translate-y-1/2 z-10 h-11 w-11 items-center justify-center bg-white text-accent-foreground shadow-sm cursor-pointer hidden md:flex",
+              "absolute right-6 top-1/2 -translate-y-1/2 z-10 h-11 w-11 items-center justify-center bg-white text-accent-foreground shadow-sm cursor-pointer focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary focus-visible:outline-none hidden md:flex",
             )}
           />
         </Carousel>

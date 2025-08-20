@@ -14,8 +14,6 @@ export async function getDeveloperProfile(
   developerId: number,
 ): Promise<DeveloperDetails> {
   const url = `https://meqasa.com/developer-developer/${developerId}?app=vercel`;
-  console.log(url);
-  console.log(developerId);
 
   return await apiClient.get<DeveloperDetails>(url, {
     headers: {

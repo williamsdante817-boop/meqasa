@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect, useCallback } from "react";
 import type { LocationState, Coordinates } from "@/types/location";
 import { locationData } from "@/data/locationData";

@@ -104,12 +104,12 @@ export default function FeaturedProjectsCarousel({
           aria-label="Carousel Navigation Controls"
         >
           <CarouselPrevious
-            className="h-10 w-10 rounded-full shadow-none hover:shadow-sm cursor-pointer border-gray-200 transition-all duration-200 hover:bg-gray-50 focus:ring-2 focus:ring-offset-2 focus:ring-accent"
+            className="h-10 w-10 rounded-full shadow-none hover:shadow-sm cursor-pointer border-gray-200 transition-all duration-200 hover:bg-gray-50 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary focus-visible:outline-none"
             aria-label={`Previous slide, currently viewing slide ${currentSlide + 1} of ${properties.length}`}
             tabIndex={0}
           />
           <CarouselNext
-            className="h-10 w-10 rounded-full shadow-none hover:shadow-sm cursor-pointer border-gray-200 transition-all duration-200 hover:bg-gray-50 focus:ring-2 focus:ring-offset-2 focus:ring-accent"
+            className="h-10 w-10 rounded-full shadow-none hover:shadow-sm cursor-pointer border-gray-200 transition-all duration-200 hover:bg-gray-50 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary focus-visible:outline-none"
             aria-label={`Next slide, currently viewing slide ${currentSlide + 1} of ${properties.length}`}
             tabIndex={0}
           />

@@ -12,7 +12,6 @@ interface AddFavoriteButtonProps {
 }
 
 export function AddFavoriteButton({
-  
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   listingId,
   className,
@@ -49,7 +48,7 @@ export function AddFavoriteButton({
       variant="outline"
       onClick={toggleFavorite}
       className={cn(
-        "p-2 h-auto w-auto rounded-full bg-white/80 backdrop-blur-sm hover:bg-white shadow-md",
+        "p-2 h-auto w-auto rounded-full bg-white/80 backdrop-blur-sm hover:bg-white shadow-md focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary focus-visible:outline-none",
         isFavorite &&
           "bg-white text-brand-primary hover:text-brand-primary hover:bg-white",
         className,

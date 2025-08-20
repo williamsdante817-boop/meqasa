@@ -248,3 +248,89 @@
 html {
   font-size: var(--font-size);
 }
+
+/* Hide scrollbar while maintaining scroll functionality */
+.scrollbar-hide {
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none; /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}
+
+/* Enhanced mobile scrollbar hiding */
+@media (max-width: 768px) {
+  .scrollbar-hide {
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    background: transparent;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar-thumb {
+    background: transparent;
+  }
+}
+
+/* Prevent mobile zoom on input focus */
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="password"],
+input[type="search"],
+input[type="url"],
+textarea,
+select {
+  font-size: 16px !important; /* Minimum font size to prevent iOS zoom */
+}
+
+/* Ensure PhoneInput component also has proper font size */
+.react-tel-input input {
+  font-size: 16px !important;
+}
+
+/* Additional PhoneInput styling to prevent zoom */
+.react-tel-input input[type="tel"] {
+  font-size: 16px !important;
+}
+
+/* Ensure all form inputs have minimum font size on mobile */
+@media (max-width: 767px) {
+  input,
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+
+  .react-tel-input input {
+    font-size: 16px !important;
+  }
+}
+
+/* Media query for larger screens where we can use smaller fonts */
+@media (min-width: 768px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="password"],
+  input[type="search"],
+  input[type="url"],
+  textarea,
+  select {
+    font-size: 14px !important; /* Smaller font on desktop */
+  }
+
+  .react-tel-input input {
+    font-size: 14px !important;
+  }
+}

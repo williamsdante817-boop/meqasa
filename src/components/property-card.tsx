@@ -93,11 +93,12 @@ export default function PropertyCard({
     `${altTextBase}${altParts.length ? ` – ${altParts.join(", ")}` : ""} ${locationPart} (${displayContract})`.trim();
 
   return (
-    <Card className="size-full rounded-lg bg-transparent !p-0 relative gap-0 border-none shadow-none">
-      <Link
-        href={`/${formattedUrl}`}
-        aria-label={`View property: ${title ?? streetaddress ?? "details"}`}
-      >
+    <Link
+      href={`/${formattedUrl}`}
+      aria-label={`View property: ${title ?? streetaddress ?? "details"}`}
+      className="block"
+    >
+      <Card className="size-full rounded-lg bg-transparent !p-0 relative gap-0 border-none shadow-none hover:shadow-md transition-shadow duration-200 cursor-pointer">
         <CardHeader className="!p-0 border-b border-b-gray-100 gap-0 rounded-lg">
           <AspectRatio ratio={4 / 3} className="relative">
             <ImageWithFallback
@@ -107,12 +108,13 @@ export default function PropertyCard({
               )}
               src={image || "/placeholder-image.png"}
               onLoad={() => setIsLoading(false)}
-              sizes="256px"
+              sizes="(max-width: 640px) 100vw, (max-width: 768px) 256px, (max-width: 1024px) 300px, 256px"
               fill
               loading="lazy"
               alt={altText}
               placeholder="blur"
               blurDataURL={blurDataURL}
+              quality={90}
             />
             {isLoading && (
               <div className="absolute inset-0 bg-gray-100 animate-pulse rounded-lg" />
@@ -129,11 +131,7 @@ export default function PropertyCard({
             </div>
           )}
         </CardHeader>
-      </Link>
-      <Link
-        href={`/${formattedUrl}`}
-        aria-label={`View property: ${title ?? streetaddress ?? "details"}`}
-      >
+
         <CardContent className="px-0 pb-0 space-y-1">
           <CardTitle className="line-clamp-1 mb-3 leading-relaxed font-bold text-brand-primary text-sm pt-2 capitalize">
             {title}
@@ -188,7 +186,7 @@ export default function PropertyCard({
             </div>
           </div>
         </CardContent>
-      </Link>
-    </Card>
+      </Card>
+    </Link>
   );
 }
