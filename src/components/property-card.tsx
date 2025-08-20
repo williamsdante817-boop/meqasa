@@ -98,7 +98,7 @@ export default function PropertyCard({
       aria-label={`View property: ${title ?? streetaddress ?? "details"}`}
       className="block"
     >
-      <Card className="size-full rounded-lg bg-transparent !p-0 relative gap-0 border-none shadow-none hover:shadow-md transition-shadow duration-200 cursor-pointer">
+      <Card className="size-full rounded-lg bg-transparent !p-0 relative gap-0 border-none shadow-none  transition-shadow duration-200 cursor-pointer">
         <CardHeader className="!p-0 border-b border-b-gray-100 gap-0 rounded-lg">
           <AspectRatio ratio={4 / 3} className="relative">
             <ImageWithFallback
