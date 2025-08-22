@@ -17,20 +17,23 @@ export async function searchProperties(
   params: MeqasaSearchParams,
 ): Promise<MeqasaSearchResponse> {
   const isServer = typeof window === "undefined";
+
+  // For server-side rendering, we need absolute URLs
+  // For client-side, relative URLs work fine
   const resolveBaseUrl = (): string => {
-    // Prefer explicitly configured public site URL
-    if (process.env.NEXT_PUBLIC_BASE_URL)
-      return process.env.NEXT_PUBLIC_BASE_URL;
-    if (process.env.NEXT_PUBLIC_SITE_URL)
-      return process.env.NEXT_PUBLIC_SITE_URL;
-    // Vercel provides VERCEL_URL without protocol
-    if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
-    // Fallback for local dev
-    return "http://localhost:3000";
+    if (isServer) {
+      // In development, use localhost
+      if (process.env.NODE_ENV === "development") {
+        return "http://localhost:3000";
+      }
+      // In production, use relative URL to avoid circular references
+      return "";
+    }
+    // Client-side always uses relative URLs
+    return "";
   };
-  const apiUrl = isServer
-    ? `${resolveBaseUrl()}/api/properties`
-    : "/api/properties";
+
+  const apiUrl = `${resolveBaseUrl()}/api/properties`;
 
   const response = await fetch(apiUrl, {
     method: "POST",
@@ -67,17 +70,23 @@ export async function loadMoreProperties(
   params: MeqasaLoadMoreParams,
 ): Promise<MeqasaSearchResponse> {
   const isServer = typeof window === "undefined";
+
+  // For server-side rendering, we need absolute URLs
+  // For client-side, relative URLs work fine
   const resolveBaseUrl = (): string => {
-    if (process.env.NEXT_PUBLIC_BASE_URL)
-      return process.env.NEXT_PUBLIC_BASE_URL;
-    if (process.env.NEXT_PUBLIC_SITE_URL)
-      return process.env.NEXT_PUBLIC_SITE_URL;
-    if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
-    return "http://localhost:3000";
+    if (isServer) {
+      // In development, use localhost
+      if (process.env.NODE_ENV === "development") {
+        return "http://localhost:3000";
+      }
+      // In production, use relative URL to avoid circular references
+      return "";
+    }
+    // Client-side always uses relative URLs
+    return "";
   };
-  const apiUrl = isServer
-    ? `${resolveBaseUrl()}/api/properties`
-    : "/api/properties";
+
+  const apiUrl = `${resolveBaseUrl()}/api/properties`;
 
   const response = await fetch(apiUrl, {
     method: "POST",

@@ -265,7 +265,7 @@ const SearchInput = ({
               setSelectedIndex(-1);
             }, 200);
           }}
-          className="h-12 pl-10 bg-white border-gray-200 text-brand-accent focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary focus-visible:outline-none"
+          className="h-12 pl-10 bg-white shadow-none border-gray-200 text-brand-accent focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary focus-visible:outline-none"
         />
       </div>
 
