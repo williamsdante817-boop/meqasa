@@ -4,7 +4,7 @@ import { useState } from "react";
 import ContentSection from "@/components/content-section";
 import { LatestListingsTab } from "@/components/latest-listings-tab";
 import type { Listing as TabListing } from "@/components/property-card";
-
+        
 interface LatestListingsSectionProps {
   rentListings: TabListing[];
   saleListings: TabListing[];

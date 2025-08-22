@@ -38,6 +38,7 @@ interface ContactCardProps {
 
 // LocalStorage utility functions
 const DEFAULT_REGION: CountryCode = "GH";
+
 type StoredContactInfo = {
   name: string;
   phone: string;
@@ -183,6 +184,7 @@ export default function ContactCard({
   const [bannerError, setBannerError] = useState("");
   const [emailBannerError, setEmailBannerError] = useState("");
   const maskedNumber = "+233 xx xxx xxxx";
+
   // reducer-managed: modalOpen, activeModal, formSubmitted, userName, userPhone,
   // userCountryIso, showNumberLoading, whatsAppLoading, errors
 
@@ -267,6 +269,7 @@ export default function ContactCard({
       console.error("❌ [ContactCard] No contact info or entity ID available");
       return;
     }
+
 
     setBannerError("");
     dispatch({ type: "setField", field: "whatsAppLoading", value: true });
@@ -610,6 +613,7 @@ export default function ContactCard({
                         className="mb-2"
                       />
                     )}
+
                     {!state.formSubmitted ? (
                       <form
                         onSubmit={handleFormSubmit}

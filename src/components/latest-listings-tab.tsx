@@ -1,7 +1,6 @@
 "use client";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
 import PropertyListings from "./property-listings";
 import { useMemo } from "react";
 import { AlertCard } from "@/components/alert-card";

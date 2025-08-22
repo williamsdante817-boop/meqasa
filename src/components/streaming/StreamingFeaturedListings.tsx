@@ -6,6 +6,7 @@ import type {
 } from "@/lib/get-featured-listings";
 import type { Listing as CardListing } from "@/components/property-card";
 
+
 interface StreamingFeaturedListingsProps {
   featuredListingsPromise: ReturnType<typeof getFeaturedListings>;
 }
