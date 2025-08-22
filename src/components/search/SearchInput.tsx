@@ -148,7 +148,7 @@ export function SearchInput({
           onKeyDown={handleKeyDown}
           onFocus={handleInputFocus}
           onBlur={handleInputBlur}
-          className="h-full rounded-xl border-none py-4 pl-[52px] pr-4 text-base font-light text-b-accent shadow-none focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0 lg:rounded-l-xl lg:rounded-r-none"
+          className="h-full rounded-xl border-none py-4 pl-[52px] pr-4 text-base font-light text-b-accent shadow-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary focus-visible:outline-none lg:rounded-l-xl lg:rounded-r-none"
         />
         <Button
           type="submit"

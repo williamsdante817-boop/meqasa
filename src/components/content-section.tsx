@@ -59,7 +59,7 @@ export default function ContentSection({
 
   return (
     <section
-      className={cn("space-y-6", className)}
+      className={cn("space-y-6 w-full mx-auto px-4 max-w-[1120px]", className)}
       aria-labelledby={`${uniqueId}-title`}
       {...props}
     >
@@ -73,7 +73,7 @@ export default function ContentSection({
           <h2
             id={`${uniqueId}-title`}
             className={cn(
-              " font-bold leading-tight tracking-tighter text-brand-accent text-xl lg:text-[28px]",
+              "leading-tight tracking-tighter text-brand-accent text-2xl lg:text-3xl font-bold mb-1",
               !btnHidden && "lg:font-extrabold",
             )}
           >
@@ -91,7 +91,7 @@ export default function ContentSection({
         {!btnHidden && (
           <Button
             variant="ghost"
-            className="hidden lg:flex text-brand-blue font-semibold hover:text-brand-blue focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2"
+            className="hidden lg:flex text-brand-blue text-base font-semibold hover:text-brand-blue focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2"
             asChild
           >
             <Link href={href} aria-label={`${linkText} for ${title}`}>

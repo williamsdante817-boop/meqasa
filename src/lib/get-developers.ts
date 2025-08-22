@@ -33,16 +33,46 @@ export interface DevelopersResponse {
 export async function getDevelopers(): Promise<DevelopersResponse> {
   const url = "https://meqasa.com/real-estate-developers?app=vercel";
 
-  const response = await fetch(url, {
-    method: "GET",
-    headers: {
-      Accept: "application/json",
-    },
-  });
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
 
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+      },
+      signal: controller.signal,
+    });
+
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = (await response.json()) as unknown;
+
+    // Validate the response structure
+    if (
+      !data ||
+      typeof data !== "object" ||
+      !Array.isArray((data as Record<string, unknown>).developers)
+    ) {
+      throw new Error("Invalid response format from server");
+    }
+
+    return data as DevelopersResponse;
+  } catch (error) {
+    clearTimeout(timeoutId);
+
+    if (error instanceof Error) {
+      if (error.name === "AbortError") {
+        throw new Error("Request timed out. Please try again.");
+      }
+      throw error;
+    }
+
+    throw new Error("Failed to fetch developers. Please try again later.");
   }
-
-  return response.json() as Promise<DevelopersResponse>;
 }

@@ -15,7 +15,7 @@ export function SiteHeader() {
       className="sticky top-0 z-[100] w-full border-b bg-background flex justify-center"
       role="banner"
     >
-      <div className="container flex h-16 items-center px-4 lg:px-6">
+      <div className="flex container h-16 px-4 lg:px-6">
         <MainNav items={siteConfig.mainNav} />
         <MobileNav items={siteConfig.mainNav} />
         <div className="flex flex-1 items-center justify-end space-x-4">

@@ -1,26 +1,22 @@
 "use client";
-
 import { cn } from "@/lib/utils";
 import type { FeaturedProject } from "@/types";
 import { Dot } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { AspectRatio } from "./ui/aspect-ratio";
 import { Badge } from "./ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import React from "react";
-import { PlaceholderImage } from "./placeholder-image";
+import { ImageWithFallback } from "./image-with-fallback";
 
 interface FeaturedPropertyCardProps {
   item: FeaturedProject;
+  priority?: boolean;
 }
 
 export default function FeaturedPropertyCard({
   item,
+  priority,
 }: FeaturedPropertyCardProps) {
-  const [imgError, setImgError] = React.useState(false);
-  const [isLoading, setIsLoading] = React.useState(true);
-
   // Destructure properties from the item object with proper fallbacks
   const {
     projectname = "Unknown Project",
@@ -53,7 +49,7 @@ export default function FeaturedPropertyCard({
 
   return (
     <Card
-      className="relative size-full overflow-hidden rounded-xl p-0 gap-0"
+      className="relative h-full overflow-hidden md:rounded-lg p-0 gap-0 flex flex-col"
       role="article"
       aria-labelledby={`project-title-${projectid}`}
     >
@@ -65,36 +61,21 @@ export default function FeaturedPropertyCard({
       >
         <CardHeader className="p-0 gap-0">
           <AspectRatio ratio={16 / 9} className="relative">
-            {!imgError ? (
-              <>
-                <Image
-                  src={photoUrl}
-                  alt={`${projectname} property image`}
-                  fill
-                  sizes="(min-width: 1024px) 20vw, (min-width: 768px) 25vw, (min-width: 640px) 33vw, (min-width: 475px) 50vw, 100vw"
-                  className={cn(
-                    "object-cover transition-opacity duration-300",
-                    isLoading ? "opacity-0" : "opacity-100",
-                  )}
-                  onError={() => setImgError(true)}
-                  onLoad={() => setIsLoading(false)}
-                  priority
-                />
-                {isLoading && (
-                  <div
-                    className="absolute inset-0 bg-gray-100 animate-pulse rounded-xl"
-                    aria-hidden="true"
-                  />
-                )}
-              </>
-            ) : (
-              <PlaceholderImage
-                asChild
-                aria-label="Placeholder image for property"
-              />
-            )}
+            <ImageWithFallback
+              src={photoUrl}
+              alt={`${projectname} property image`}
+              fill
+              sizes="(min-width: 1280px) 45vw, (min-width: 1024px) 45vw, (min-width: 768px) 48vw, (min-width: 640px) 60vw, 90vw"
+              quality={90}
+              priority={priority}
+              className={cn("object-cover")}
+              placeholder="blur"
+              // 1x1 transparent PNG as a safe minimal LQIP; can be replaced with real blurDataURL from API
+              blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/duYy7cAAAAASUVORK5CYII="
+              fallbackAlt="Property image not available"
+            />
             <div
-              className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-slate-900/90"
+              className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-slate-900/50"
               aria-hidden="true"
             />
           </AspectRatio>
@@ -102,87 +83,65 @@ export default function FeaturedPropertyCard({
       </Link>
 
       {/* Card content */}
-      <CardContent className="w-full p-4">
+      <CardContent className="p-4 md:p-8 h-full relative gap-0 flex flex-col grow">
         <Link
           href={url}
           aria-label={`View details for ${projectname}`}
           className="block"
         >
-          <div className="grid grid-cols-[minmax(0,1fr)_max-content] lg:gap-3">
-            <div>
-              {/* Project name */}
-              <CardTitle
-                id={`project-title-${projectid}`}
-                className="text-base font-bold line-clamp-1 leading-5 text-brand-accent lg:text-[23px] lg:leading-8"
-              >
-                {projectname}
-              </CardTitle>
-
-              {/* City and location */}
-              <div
-                className="flex items-center gap-[5px] text-xs font-medium leading-6 text-brand-muted lg:text-sm lg:leading-8"
-                aria-label={`Location: ${city}`}
-              >
-                <span className="line-clamp-1">{city}</span>
-              </div>
-
-              {/* Status and bedrooms */}
-              <div
-                className="mt-1 flex items-center gap-[5px] font-medium leading-5 text-brand-muted"
-                aria-label={`Project status: ${status}, Available unit types: ${unittypes || "Not specified"}`}
-              >
-                <Badge
-                  className={cn(
-                    "uppercase rounded-sm",
-                    status?.toLowerCase() === "completed"
-                      ? "bg-green-500/90 text-white"
-                      : status?.toLowerCase() === "ongoing"
-                        ? "bg-yellow-500/90 text-white"
-                        : "bg-gray-500/90 text-white",
-                  )}
-                >
-                  {status}
-                </Badge>
-                <Dot
-                  className="h-[16px] w-[16px] text-brand-accent"
-                  aria-hidden="true"
+          <div className="absolute top-8 right-8">
+            <div className="flex items-center gap-3">
+              {/* Company Logo Icon */}
+              <div className="flex items-center justify-center w-20 h-20 rounded-lg">
+                <ImageWithFallback
+                  src={logoUrl}
+                  alt={`${projectname} logo`}
+                  width={50}
+                  height={50}
+                  className="h-full w-full object-contain rounded-sm"
+                  fallbackAlt={`${projectname} logo not available`}
                 />
-                <span className="text-sm text-brand-accent lg:text-base">
-                  <span className="line-clamp-1">
-                    {unittypes ? `${unittypes}` : "No Units Available"}
-                  </span>
-                </span>
               </div>
-
-              {/* Description */}
-              <div className="relative mt-2 hidden lg:grid lg:grid-cols-[minmax(0,1fr)_max-content]">
-                <p
-                  className="mt-2 line-clamp-2 w-full text-brand-muted"
-                  aria-label={`Project description: ${text}`}
-                >
-                  {text}
-                </p>
-              </div>
-            </div>
-
-            {/* Logo */}
-            <div
-              className="max-w-[90px] max-h-[90px]"
-              aria-label={`${projectname} logo`}
-            >
-              <Image
-                src={logoUrl}
-                alt={`${projectname} logo`}
-                width={50}
-                height={50}
-                className="h-full w-full object-contain rounded-sm"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.src = "/default-logo.jpg";
-                }}
-              />
             </div>
           </div>
+          <CardTitle
+            id={`project-title-${projectid}`}
+            className="text-lg font-bold line-clamp-1 leading-5 text-brand-accent lg:text-[20px] lg:leading-8"
+          >
+            {projectname}
+          </CardTitle>
+          <p className="text-base text-brand-muted line-clamp-1 !pl-0 mb-6">
+            {city}
+          </p>
+          <div className="flex items-center gap-2 mb-6 min-w-0">
+            {/* Status Badge */}
+            <Badge
+              className={cn(
+                "uppercase rounded-sm",
+                status?.toLowerCase() === "completed"
+                  ? "bg-green-500/90 text-white"
+                  : status?.toLowerCase() === "ongoing"
+                    ? "bg-yellow-500/90 text-white"
+                    : "bg-gray-500/90 text-white",
+              )}
+            >
+              {status}
+            </Badge>
+
+            {/* Bullet separator */}
+            <Dot
+              className="h-[16px] w-[16px] text-brand-accent"
+              aria-hidden="true"
+            />
+
+            {/* Property Type */}
+            <span className="text-brand-accent font-medium text-base truncate w-32 md:w-full">
+              {unittypes}
+            </span>
+          </div>
+          <p className="text-brand-muted line-clamp-2 !pl-0 text-base leading-relaxed pr-32">
+            {text}
+          </p>
         </Link>
       </CardContent>
     </Card>

@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
+import { buildRichInnerHtml } from "@/lib/utils";
 
 export default function HeaderAdClient() {
   const pathname = usePathname();
@@ -13,6 +14,8 @@ export default function HeaderAdClient() {
   const [leaderboardBanner, setLeaderboardBanner] = React.useState<string[]>(
     [],
   );
+
+  console.log("leaderboardBanner", leaderboardBanner);
 
   React.useEffect(() => {
     const fetchBanner = async () => {
@@ -33,7 +36,7 @@ export default function HeaderAdClient() {
 
   return (
     <div
-      className="border-b py-[10px] hidden lg:flex"
+      className="py-[10px] border-b hidden lg:flex"
       role="banner"
       aria-label="Header advertisement"
     >
@@ -58,7 +61,11 @@ export default function HeaderAdClient() {
             role="complementary"
             aria-label="Advertisement"
           >
-            <div dangerouslySetInnerHTML={{ __html: leaderboardBanner }}></div>
+            <div
+              dangerouslySetInnerHTML={buildRichInnerHtml(
+                String(leaderboardBanner),
+              )}
+            ></div>
           </Card>
         )}
       </div>

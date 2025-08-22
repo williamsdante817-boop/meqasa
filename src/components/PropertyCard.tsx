@@ -43,10 +43,12 @@ export default function PropertyCard({ property }: PropertyCardProps) {
           {property.summary}
         </h3>
 
-        <div className="text-[#cf007a] font-bold text-xl mb-2">
-          {formatPrice(Number(property.pricepart1))}
+        <div className="text-[#cf007a] text-xl mb-2">
+          <span className="font-bold">
+            {formatPrice(Number(property.pricepart1))}
+          </span>
           {property.contract === "rent" && (
-            <span className="text-sm text-gray-500 ml-1">
+            <span className="text-sm text-gray-500 ml-1 font-normal">
               /{property.pricepart2}
             </span>
           )}

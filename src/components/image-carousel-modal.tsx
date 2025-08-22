@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, X, ImageIcon, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
+import { isImagePreloaded, preloadImages } from "@/lib/image-preload";
 import { cn } from "@/lib/utils";
 
 // Constants for better maintainability
@@ -28,15 +29,14 @@ function ImagePlaceholder({ className }: { className?: string }) {
 
 // Light gray base64 placeholder (1x1 pixel)
 const PLACEHOLDER_BLUR =
-  "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDABQODxIPDRQSEBIXFRQdHx4eHRoaHSQtJSEkMjU1LS0yMi4qLjgyPj4+Oj4+Oj4+Oj4+Oj4+Oj4+Oj4+Oj7/2wBDAR4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAb/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=";
+  "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDABQODxIPDRQSEBIXFRQdHx4eHRoaHSQtJSEkMjU1LS0yMi4qLjgyPj4+Oj4+Oj4+Oj4+Oj4+Oj4+Oj4+Oj7/2wBDAR4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAb/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=";
 
 interface ImageCarouselModalProps {
   images: (string | undefined)[];
   isOpen: boolean;
   onClose: () => void;
   initialIndex?: number;
-  getImageUrl: (imagePath: string, src?: boolean) => string;
-  src?: boolean;
+  getImageUrl: (imagePath: string) => string;
 }
 
 export function ImageCarouselModal({
@@ -45,7 +45,6 @@ export function ImageCarouselModal({
   onClose,
   initialIndex = 0,
   getImageUrl,
-  src = false,
 }: ImageCarouselModalProps) {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [isLoading, setIsLoading] = useState(true);
@@ -67,6 +66,12 @@ export function ImageCarouselModal({
     [images],
   );
 
+  // Compute full URLs early so cache checks are available to effects below
+  const imageUrls = useMemo(
+    () => validImages.map((img) => getImageUrl(img)),
+    [validImages, getImageUrl],
+  );
+
   // Reset states when modal opens with a new initial index or images change
   useEffect(() => {
     if (isOpen) {
@@ -76,15 +81,25 @@ export function ImageCarouselModal({
         Math.min(initial, validImages.length - 1),
       );
       setCurrentIndex(safeInitialIndex);
-      setIsLoading(true);
-      setImgErrors({}); // Clear error states when switching image sets
+      setImgErrors({});
       setIsAnimating(true);
 
-      // Reset animation state after animation completes
+      // Set loading based on cache status of the initial image
+      const initialUrl = imageUrls[safeInitialIndex];
+      setIsLoading(!isImagePreloaded(initialUrl));
+
+      // Preload a small window around the initial index
+      const toPreload: string[] = [];
+      for (let offset = -2; offset <= 2; offset++) {
+        const idx = safeInitialIndex + offset;
+        if (idx >= 0 && idx < imageUrls.length) toPreload.push(imageUrls[idx]!);
+      }
+      void preloadImages(toPreload);
+
       const timer = setTimeout(() => setIsAnimating(false), 300);
       return () => clearTimeout(timer);
     }
-  }, [isOpen, initialIndex, validImages.length]);
+  }, [isOpen, initialIndex, validImages.length, imageUrls]);
 
   // Focus management for accessibility
   useEffect(() => {
@@ -149,19 +164,26 @@ export function ImageCarouselModal({
 
   // Memoized navigation handlers to prevent unnecessary re-renders
   const handlePrevious = useCallback(() => {
-    setCurrentIndex((prev) => (prev === 0 ? validImages.length - 1 : prev - 1));
-    setIsLoading(true);
-  }, [validImages.length]);
+    const nextIndex =
+      currentIndex === 0 ? validImages.length - 1 : currentIndex - 1;
+    setCurrentIndex(nextIndex);
+    setIsLoading(!isImagePreloaded(imageUrls[nextIndex]));
+  }, [currentIndex, validImages.length, imageUrls]);
 
   const handleNext = useCallback(() => {
-    setCurrentIndex((prev) => (prev === validImages.length - 1 ? 0 : prev + 1));
-    setIsLoading(true);
-  }, [validImages.length]);
+    const nextIndex =
+      currentIndex === validImages.length - 1 ? 0 : currentIndex + 1;
+    setCurrentIndex(nextIndex);
+    setIsLoading(!isImagePreloaded(imageUrls[nextIndex]));
+  }, [currentIndex, validImages.length, imageUrls]);
 
-  const handleThumbnailClick = useCallback((index: number) => {
-    setCurrentIndex(index);
-    setIsLoading(true);
-  }, []);
+  const handleThumbnailClick = useCallback(
+    (index: number) => {
+      setCurrentIndex(index);
+      setIsLoading(!isImagePreloaded(imageUrls[index]));
+    },
+    [imageUrls],
+  );
 
   // Touch event handlers for mobile swipe
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
@@ -223,25 +245,27 @@ export function ImageCarouselModal({
         case "Home":
           e.preventDefault();
           setCurrentIndex(0);
-          setIsLoading(true);
+          setIsLoading(!isImagePreloaded(imageUrls[0]));
           break;
         case "End":
           e.preventDefault();
           setCurrentIndex(validImages.length - 1);
-          setIsLoading(true);
+          setIsLoading(!isImagePreloaded(imageUrls[validImages.length - 1]));
           break;
       }
     },
-    [handlePrevious, handleNext, onClose, validImages.length],
+    [handlePrevious, handleNext, onClose, validImages.length, imageUrls],
   );
 
   const getImageUrlWithFallback = useCallback(
     (imagePath: string | undefined) => {
       if (!imagePath) return "";
-      return getImageUrl(imagePath, src);
+      return getImageUrl(imagePath);
     },
-    [getImageUrl, src],
+    [getImageUrl],
   );
+
+  // Keep convenience helper for rendering paths that may be empty
 
   // Handle image loading completion
   const handleImageLoad = useCallback(() => {
@@ -253,6 +277,17 @@ export function ImageCarouselModal({
     setIsLoading(false);
     setImgErrors((prev) => ({ ...prev, [index]: true }));
   }, []);
+
+  // Always keep a small buffer of preloaded neighbors as the user navigates
+  useEffect(() => {
+    if (!isOpen || imageUrls.length === 0) return;
+    const toPreload: string[] = [];
+    for (let offset = -2; offset <= 2; offset++) {
+      const idx = currentIndex + offset;
+      if (idx >= 0 && idx < imageUrls.length) toPreload.push(imageUrls[idx]!);
+    }
+    void preloadImages(toPreload);
+  }, [currentIndex, imageUrls, isOpen]);
 
   // Early return if no valid images
   if (validImages.length === 0) {
@@ -297,10 +332,10 @@ export function ImageCarouselModal({
 
           {/* Close button */}
           <Button
-            variant="ghost"
+            variant="outline"
             size="icon"
             className={cn(
-              "absolute top-4 right-4 z-50 text-white hover:bg-white hover:text-brand-accent",
+              "absolute right-6 top-6 z-50 h-11 w-11 rounded-full bg-white text-accent-foreground shadow-md cursor-pointer",
               "transition-all duration-300 ease-out",
               isAnimating
                 ? "opacity-0 translate-y-2"
@@ -317,7 +352,7 @@ export function ImageCarouselModal({
             variant="outline"
             size="icon"
             className={cn(
-              "absolute left-6 top-1/2 -translate-y-1/2 z-50 h-11 w-11 rounded-full bg-white text-accent-foreground shadow-md hidden md:flex",
+              "absolute left-6 top-1/2 -translate-y-1/2 z-50 h-11 w-11 rounded-full bg-white text-accent-foreground shadow-md cursor-pointer hidden md:flex focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary focus-visible:outline-none",
               "transition-all duration-300 ease-out",
               isAnimating
                 ? "opacity-0 translate-x-2"
@@ -377,7 +412,6 @@ export function ImageCarouselModal({
                     "object-contain transition-opacity duration-300",
                     isLoading ? "opacity-0" : "opacity-100",
                   )}
-                  priority
                   placeholder="blur"
                   blurDataURL={PLACEHOLDER_BLUR}
                   onLoadingComplete={handleImageLoad}
@@ -394,7 +428,7 @@ export function ImageCarouselModal({
             variant="outline"
             size="icon"
             className={cn(
-              "absolute right-6 top-1/2 -translate-y-1/2 z-50 h-11 w-11 rounded-full bg-white text-accent-foreground shadow-md hidden md:flex",
+              "absolute right-6 top-1/2 -translate-y-1/2 z-50 h-11 w-11 rounded-full bg-white text-accent-foreground shadow-md cursor-pointer hidden md:flex focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary focus-visible:outline-none",
               "transition-all duration-300 ease-out",
               isAnimating
                 ? "opacity-0 -translate-x-2"
@@ -438,14 +472,15 @@ export function ImageCarouselModal({
                   data-thumb-index={idx}
                   onClick={() => handleThumbnailClick(idx)}
                   className={cn(
-                    "relative flex-shrink-0 rounded-md overflow-hidden border-2 transition-all origin-center",
+                    "relative flex-shrink-0 rounded-md overflow-hidden transition-all origin-center outline-none",
                     idx === currentIndex
-                      ? "border-brand-blue shadow-lg scale-110 z-10"
-                      : "border-transparent opacity-70 hover:opacity-100",
+                      ? "ring-2 ring-brand-blue ring-offset-2 ring-offset-black z-10"
+                      : "opacity-70 hover:opacity-100 focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2 focus-visible:ring-offset-black",
                   )}
                   style={{ width: THUMBNAIL_WIDTH, height: THUMBNAIL_HEIGHT }}
                   aria-label={`Show image ${idx + 1}`}
                   aria-selected={idx === currentIndex}
+                  aria-current={idx === currentIndex}
                   role="tab"
                 >
                   {imgErrors[idx] ? (
@@ -463,10 +498,7 @@ export function ImageCarouselModal({
                       draggable={false}
                     />
                   )}
-                  {/* Highlight overlay for active thumbnail */}
-                  {idx === currentIndex && (
-                    <span className="absolute inset-0 border-2 border-brand-blue rounded-md pointer-events-none"></span>
-                  )}
+                  {/* Active state is styled like focus ring; no extra overlay needed */}
                 </button>
               ))}
               <div

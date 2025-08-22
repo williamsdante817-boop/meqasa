@@ -1,20 +1,10 @@
 "use client";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import type { ListingDetails } from "@/types";
 import PropertyListings from "./property-listings";
 import { useMemo } from "react";
 import { AlertCard } from "@/components/alert-card";
-
-export type Listing = Pick<
-  ListingDetails,
-  "detailreq" | "image" | "streetaddress" | "garages" | "title"
-> & {
-  bathroomcount: string;
-  bedroomcount: string;
-  contract?: string;
-  price?: string;
-};
+import type { Listing } from "./property-card";
 
 interface LatestListingsTabProps {
   rentListings: Listing[];

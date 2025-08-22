@@ -87,12 +87,12 @@ export default function PropertyDetailsTable({
             <th scope="col">Value</th>
           </tr>
         </thead>
-        <tbody className="bg-white">
+        <tbody className="bg-transparent">
           {filteredDetails.map((detail, index) => (
             <tr
               key={`${detail.title}-${index}`}
               className={`flex items-center justify-between border-b first-of-type:border-t 
-                  bg-white`}
+                  bg-transparent`}
             >
               <td
                 className="py-6 whitespace-nowrap text-brand-accent font-semibold"

@@ -1,16 +1,7 @@
 import Link from "next/link";
 import React from "react";
 
-/**
- * A component that renders SEO text on the homepage.
- *
- * It contains paragraphs of text that are relevant to search engines and help
- * improve the site's search engine optimization.
- *
- * The component is rendered on the homepage and is not visible to users.
- *
- * @returns A <aside> element with SEO-optimized content
- */
+
 export default function SeoText() {
   return (
     <aside

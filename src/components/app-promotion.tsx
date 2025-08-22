@@ -1,60 +1,90 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import AppStoreButtons from "./app-store-btn";
 
 export default function AppPromotion() {
   const [isHovering, setIsHovering] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const sectionRef = useRef<HTMLElement | null>(null);
 
   // Use Intersection Observer to detect when component is in viewport
   useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (!sectionRef.current) return;
+    if (!("IntersectionObserver" in window)) return;
+
+    const element = sectionRef.current;
     const observer = new IntersectionObserver(
       (entries) => {
         const entry = entries[0];
-        if (entry) {
-          setIsVisible(entry.isIntersecting);
-        }
+        if (entry) setIsVisible(entry.isIntersecting);
       },
       { threshold: 0.1 },
     );
 
-    const element = document.getElementById("app-promotion");
-    if (element) {
-      observer.observe(element);
-    }
+    observer.observe(element);
 
     return () => {
-      if (element) {
+      try {
         observer.unobserve(element);
+      } catch {
+        // noop
+      }
+      observer.disconnect();
+    };
+  }, []);
+
+  // Respect user's reduced-motion preference
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setPrefersReducedMotion(mediaQuery.matches);
+    const onChange = (event: MediaQueryListEvent) => {
+      setPrefersReducedMotion(event.matches);
+    };
+    if (typeof mediaQuery.addEventListener === "function") {
+      mediaQuery.addEventListener("change", onChange);
+    } else if (typeof mediaQuery.addListener === "function") {
+      // Deprecated in modern browsers, kept for older browsers
+      mediaQuery.addListener(onChange);
+    }
+    return () => {
+      if (typeof mediaQuery.removeEventListener === "function") {
+        mediaQuery.removeEventListener("change", onChange);
+      } else if (typeof mediaQuery.removeListener === "function") {
+        // Deprecated in modern browsers, kept for older browsers
+        mediaQuery.removeListener(onChange);
       }
     };
   }, []);
 
-  // Only animate when component is visible and not being hovered
+  // Only animate when visible, not hovered, and motion is allowed
   useEffect(() => {
-    if (!isVisible || isHovering) return;
+    if (!isVisible || isHovering || prefersReducedMotion) return;
 
     const interval = setInterval(() => {
       setIsHovering((prev) => !prev);
     }, 3000);
 
     return () => clearInterval(interval);
-  }, [isVisible, isHovering]);
+  }, [isVisible, isHovering, prefersReducedMotion]);
 
   const handleMouseEnter = useCallback(() => setIsHovering(true), []);
   const handleMouseLeave = useCallback(() => setIsHovering(false), []);
 
   return (
     <section
+      ref={sectionRef}
       id="app-promotion"
-      className="bg-[#f0f5ff] border border-brand-blue lg:border-none rounded-xl overflow-visible relative my-16 lg:my-32 py-10 px-4 md:px-8 lg:px-12"
+      className="bg-[#f0f5ff] max-w-6xl mx-auto border border-brand-blue lg:border-none rounded-xl overflow-visible relative my-16 lg:my-32 py-10 px-4 md:px-8 lg:px-12"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       role="region"
       aria-label="Mobile app promotion"
     >
-      <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-8 items-center">
+      <div className="grid md:grid-cols-2 items-center">
         <div className="max-w-lg space-y-1 lg:space-y-3">
           <h2 className="text-xl md:text-3xl font-bold text-brand-accent">
             Do more on the app.
@@ -76,7 +106,7 @@ export default function AppPromotion() {
         >
           {/* Featured Properties Phone */}
           <div
-            className={`absolute right-10 lg:right-[-20px] top-[-30px] transform -rotate-6 z-10 transition-all duration-700 ease-in-out ${isHovering ? "translate-y-[-10px]" : "translate-y-[0px]"}`}
+            className={`absolute right-10 lg:right-[-20px] top-[-30px] transform -rotate-6 z-10 transition-all duration-700 ease-in-out motion-reduce:transform-none motion-reduce:transition-none ${isHovering ? "translate-y-[-10px]" : "translate-y-[0px]"}`}
             style={{ transformStyle: "preserve-3d", perspective: "1000px" }}
           >
             <div
@@ -113,14 +143,14 @@ export default function AppPromotion() {
             </div>
             {/* Phone reflection/shadow effect */}
             <div
-              className="absolute bottom-[-15px] left-[10px] right-[10px] h-[20px] bg-black opacity-20 blur-md rounded-full transform -rotate-6"
+              className="absolute bottom-[-15px] left-[10px] right-[10px] h-[20px] bg-black opacity-20 blur-md rounded-full transform -rotate-6 motion-reduce:transform-none"
               aria-hidden="true"
             ></div>
           </div>
 
           {/* Search Interface Phone */}
           <div
-            className={`absolute right-[100px] top-[20px] transform rotate-6 z-0 transition-all duration-700 ease-in-out ${isHovering ? "translate-y-[-10px] delay-300" : "translate-y-[0px]"}`}
+            className={`absolute right-[100px] top-[20px] transform rotate-6 z-0 transition-all duration-700 ease-in-out motion-reduce:transform-none motion-reduce:transition-none ${isHovering ? "translate-y-[-10px] delay-300" : "translate-y-[0px]"}`}
             style={{ transformStyle: "preserve-3d", perspective: "1000px" }}
           >
             <div
@@ -159,7 +189,7 @@ export default function AppPromotion() {
             </div>
             {/* Phone reflection/shadow effect */}
             <div
-              className="absolute bottom-[-15px] left-[10px] right-[10px] h-[20px] bg-black opacity-20 blur-md rounded-full transform rotate-6"
+              className="absolute bottom-[-15px] left-[10px] right-[10px] h-[20px] bg-black opacity-20 blur-md rounded-full transform rotate-6 motion-reduce:transform-none"
               aria-hidden="true"
             ></div>
           </div>

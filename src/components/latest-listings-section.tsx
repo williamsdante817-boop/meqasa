@@ -2,11 +2,9 @@
 
 import { useState } from "react";
 import ContentSection from "@/components/content-section";
-import {
-  LatestListingsTab,
-  type Listing as TabListing,
-} from "@/components/latest-listings-tab";
-
+import { LatestListingsTab } from "@/components/latest-listings-tab";
+import type { Listing as TabListing } from "@/components/property-card";
+        
 interface LatestListingsSectionProps {
   rentListings: TabListing[];
   saleListings: TabListing[];
@@ -28,7 +26,7 @@ export function LatestListingsSection({
       title="Latest Listings"
       description="View all recent property listings available."
       href={href}
-      className="pt-14 md:pt-20 lg:pt-24 [&_p]:px-4 [&_h2]:px-4 w-full mx-auto md:max-w-[720px] lg:max-w-[960px] xl:max-w-[1140px] 2xl:max-w-[1320px]"
+      className="pt-14 md:pt-20 lg:pt-24 w-full"
     >
       <LatestListingsTab
         rentListings={rentListings}

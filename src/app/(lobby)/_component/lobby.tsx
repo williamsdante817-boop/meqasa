@@ -101,8 +101,8 @@ async function LobbyContent({
         </StreamingErrorBoundary>
 
         {/* Static Content - Rendered Immediately */}
-        <Shell>
-          <div className="lg:flex flex-col md:flex-row gap-6">
+        <Shell className="!px-0">
+          <div className="lg:flex flex-col md:flex-row gap-8">
             <StaticBlogSection staticData={staticData} />
             <StaticMarketNews staticData={staticData} />
           </div>

@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { InfoIcon } from "lucide-react";
+//
 
 interface MortgageBreakdown {
   loanAmount: number;
@@ -16,8 +17,13 @@ interface MortgageBreakdown {
 }
 
 export default function MortgageCalculator({ price }: { price: string }) {
+  const DEFAULT_DOWN_PAYMENT_RATIO = 0.2;
   const [propertyPrice, setPropertyPrice] = useState<number>(+price);
-  const [downPayment, setDownPayment] = useState<number>(0);
+  const [downPayment, setDownPayment] = useState<number>(() => {
+    const p = Number(price) || 0;
+    return Math.round(p * DEFAULT_DOWN_PAYMENT_RATIO);
+  });
+  const hasUserChangedDownPaymentRef = useRef(false);
   const [tenure, setTenure] = useState<number>(10);
   const [interestRate, setInterestRate] = useState<number>(18);
   const [breakdown, setBreakdown] = useState<MortgageBreakdown>({
@@ -44,7 +50,7 @@ export default function MortgageCalculator({ price }: { price: string }) {
 
     // Calculate principal and interest components correctly
     const interestPayment = loan * monthlyRate;
-    const principalPayment = monthlyPayment - interestPayment;
+    const principalPayment = Math.max(0, monthlyPayment - interestPayment);
 
     setBreakdown({
       loanAmount: loan,
@@ -59,18 +65,41 @@ export default function MortgageCalculator({ price }: { price: string }) {
     calculateMortgage();
   }, [calculateMortgage]);
 
+  // Keep local price in sync with prop to reflect actual property data
+  // Always reset default down payment to 20% when property changes
+  useEffect(() => {
+    const numericPrice = Number(price) || 0;
+    if (numericPrice !== propertyPrice) {
+      setPropertyPrice(numericPrice);
+      const suggested = Math.round(numericPrice * DEFAULT_DOWN_PAYMENT_RATIO);
+      setDownPayment(Math.min(numericPrice, suggested));
+      hasUserChangedDownPaymentRef.current = false;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [price]);
+
+  // Ensure down payment never exceeds property price when price decreases
+  useEffect(() => {
+    if (downPayment > propertyPrice) {
+      setDownPayment(propertyPrice);
+    }
+  }, [propertyPrice, downPayment]);
+
   const handlePropertyPriceChange = (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const value = parseFloat(e.target.value) || 0;
-    setPropertyPrice(value);
+    // Prevent negative values
+    setPropertyPrice(Math.max(0, value));
   };
 
   const handleDownPaymentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseFloat(e.target.value) || 0;
     // Ensure down payment doesn't exceed property price
-    const maxDownPayment = Math.min(value, propertyPrice);
+    const sanitizedValue = Math.max(0, value);
+    const maxDownPayment = Math.min(sanitizedValue, propertyPrice);
     setDownPayment(maxDownPayment);
+    hasUserChangedDownPaymentRef.current = true;
   };
 
   const handleTenureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -91,238 +120,268 @@ export default function MortgageCalculator({ price }: { price: string }) {
     return `GH₵${Math.round(value).toLocaleString()}`;
   };
 
+  // Safe derived values to prevent NaN/Infinity in UI rendering
+  const monthlyTotal = Number.isFinite(breakdown.monthlyPayment)
+    ? breakdown.monthlyPayment
+    : 0;
+  const safeMonthly = monthlyTotal > 0 ? monthlyTotal : 0;
+  const interestPortion = safeMonthly
+    ? Math.min(1, Math.max(0, breakdown.interestPayment / safeMonthly))
+    : 0;
+  const principalPortion = safeMonthly
+    ? Math.min(1, Math.max(0, breakdown.principalPayment / safeMonthly))
+    : 0;
+  const circumference = 264; // ~ 2 * Math.PI * r, with r=42
+  const downPaymentPercent =
+    propertyPrice > 0
+      ? Math.min(100, Math.max(0, (downPayment / propertyPrice) * 100))
+      : 0;
+  const loanPortion =
+    propertyPrice > 0 ? breakdown.loanAmount / propertyPrice : 0;
+  const loanPercent = Math.min(100, Math.max(0, loanPortion * 100));
+
   return (
-    <div className="container max-w-6xl">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Left Column - Inputs */}
-        <Card className="shadow-sm">
-          <CardContent className="pt-0 px-3 h-full">
-            <div className="flex flex-col justify-between h-full ">
-              <div className="space-y-6">
-                <div className="space-y-2">
-                  <Label htmlFor="propertyPrice" className="text-brand-accent">
-                    Property Price
-                  </Label>
-                  <div className="flex">
-                    <span className="inline-flex items-center px-3 bg-gray-100 border border-r-0 border-gray-300 rounded-l-md text-brand-muted">
-                      GH₵
-                    </span>
-                    <Input
-                      id="propertyPrice"
-                      type="number"
-                      value={propertyPrice}
-                      onChange={handlePropertyPriceChange}
-                      className="rounded-l-none text-brand-accent"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="downPayment" className="text-brand-accent">
-                    Down Payment
-                  </Label>
-                  <div className="flex">
-                    <span className="inline-flex items-center px-3 bg-gray-100 border border-r-0 border-gray-300 rounded-l-md text-brand-muted">
-                      GH₵
-                    </span>
-                    <Input
-                      id="downPayment"
-                      type="number"
-                      value={downPayment}
-                      onChange={handleDownPaymentChange}
-                      className="rounded-l-none text-brand-accent"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <Label htmlFor="tenure" className="text-brand-accent">
-                      Tenure (yrs)
-                    </Label>
-                    <div className="flex items-center">
-                      <Input
-                        id="tenureInput"
-                        type="number"
-                        value={tenure}
-                        onChange={handleTenureChange}
-                        className="w-20 h-8 mr-2 text-brand-accent"
-                        min={1}
-                        max={30}
-                      />
-                      <span className="text-sm bg-gray-100 px-3 py-1 rounded-md text-brand-muted">
-                        yrs
-                      </span>
-                    </div>
-                  </div>
-                  <Slider
-                    id="tenure"
-                    min={1}
-                    max={30}
-                    step={1}
-                    value={[tenure]}
-                    onValueChange={(value) => setTenure(value[0] ?? tenure)}
-                    className="my-4"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <Label htmlFor="interest" className="text-brand-accent">
-                      Interest (%)
-                    </Label>
-                    <div className="flex items-center">
-                      <Input
-                        id="interestInput"
-                        type="number"
-                        value={interestRate}
-                        onChange={handleInterestRateChange}
-                        className="w-20 h-8 mr-2 text-brand-accent"
-                        min={0}
-                        max={30}
-                        step={0.1}
-                      />
-                      <span className="text-sm bg-gray-100 px-3 py-1 rounded-md text-brand-muted">
-                        %
-                      </span>
-                    </div>
-                  </div>
-                  <Slider
-                    id="interest"
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Left Column - Inputs */}
+      <Card className="p-4">
+        <CardContent className="pt-0 px-3 h-full">
+          <div className="flex flex-col justify-between h-full ">
+            <div className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="propertyPrice" className="text-brand-accent">
+                  Property Price
+                </Label>
+                <div className="flex">
+                  <span className="inline-flex items-center px-3 bg-gray-100 border border-r-0 border-gray-300 rounded-l-md text-brand-muted">
+                    GH₵
+                  </span>
+                  <Input
+                    id="propertyPrice"
+                    type="number"
+                    value={propertyPrice}
+                    onChange={handlePropertyPriceChange}
                     min={0}
-                    max={30}
-                    step={0.1}
-                    value={[interestRate]}
-                    onValueChange={(value) =>
-                      setInterestRate(value[0] ?? interestRate)
-                    }
-                    className="my-4"
+                    className="rounded-l-none text-brand-accent"
                   />
                 </div>
               </div>
 
-              <div className="bg-blue-50 p-4 rounded-lg border border-blue-100 mt-4 flex gap-3">
-                <InfoIcon className="text-blue-500 h-5 w-5 flex-shrink-0 mt-0.5" />
-                <p className="text-xs md:text-sm text-brand-muted">
-                  Adjust the sliders to see how different loan terms and
-                  interest rates affect your monthly payments. The calculator
-                  helps you plan your mortgage by showing both principal and
-                  interest components.
-                </p>
+              <div className="space-y-2">
+                <Label htmlFor="downPayment" className="text-brand-accent">
+                  Down Payment
+                </Label>
+                <div className="flex">
+                  <span className="inline-flex items-center px-3 bg-gray-100 border border-r-0 border-gray-300 rounded-l-md text-brand-muted">
+                    GH₵
+                  </span>
+                  <Input
+                    id="downPayment"
+                    type="number"
+                    value={downPayment}
+                    onChange={handleDownPaymentChange}
+                    min={0}
+                    className="rounded-l-none text-brand-accent"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <Label htmlFor="tenure" className="text-brand-accent">
+                    Tenure (yrs)
+                  </Label>
+                  <div className="flex items-center">
+                    <Input
+                      id="tenureInput"
+                      type="number"
+                      value={tenure}
+                      onChange={handleTenureChange}
+                      className="w-20 h-8 mr-2 text-brand-accent"
+                      min={1}
+                      max={30}
+                    />
+                    <span className="text-sm bg-gray-100 px-3 py-1 rounded-md text-brand-muted">
+                      yrs
+                    </span>
+                  </div>
+                </div>
+                <Slider
+                  id="tenure"
+                  min={1}
+                  max={30}
+                  step={1}
+                  value={[tenure]}
+                  onValueChange={(value) => setTenure(value[0] ?? tenure)}
+                  className="my-4"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <Label htmlFor="interest" className="text-brand-accent">
+                    Interest (%)
+                  </Label>
+                  <div className="flex items-center">
+                    <Input
+                      id="interestInput"
+                      type="number"
+                      value={interestRate}
+                      onChange={handleInterestRateChange}
+                      className="w-20 h-8 mr-2 text-brand-accent"
+                      min={0}
+                      max={30}
+                      step={0.1}
+                    />
+                    <span className="text-sm bg-gray-100 px-3 py-1 rounded-md text-brand-muted">
+                      %
+                    </span>
+                  </div>
+                </div>
+                <Slider
+                  id="interest"
+                  min={0}
+                  max={30}
+                  step={0.1}
+                  value={[interestRate]}
+                  onValueChange={(value) =>
+                    setInterestRate(value[0] ?? interestRate)
+                  }
+                  className="my-4"
+                />
               </div>
             </div>
-          </CardContent>
-        </Card>
 
-        {/* Right Column - Results */}
-        <Card className="shadow-sm">
-          <CardContent className="pt-0 px-3">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-lg font-medium text-brand-accent">
-                Mortgage Breakdown
-              </h2>
+            <div className="bg-blue-50 p-4 rounded-lg border border-blue-100 mt-4 flex gap-3">
+              <InfoIcon className="text-blue-500 h-5 w-5 flex-shrink-0 mt-0.5" />
+              <p className="text-xs md:text-sm text-brand-muted">
+                Adjust the sliders to see how different loan terms and interest
+                rates affect your monthly payments. The calculator helps you
+                plan your mortgage by showing both principal and interest
+                components.
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Right Column - Results */}
+      <Card className="">
+        <CardContent className="p-4">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-lg font-medium text-brand-accent">
+              Mortgage Breakdown
+            </h2>
+            <span className="text-sm text-brand-muted">
+              at {interestRate.toFixed(1)}% interest rate
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="circle-chart relative">
+              <svg viewBox="0 0 100 100" className="w-full h-full">
+                <circle
+                  className="accent-circle"
+                  cx="50"
+                  cy="50"
+                  r="42"
+                  fill="none"
+                  stroke="#d8e5ff"
+                  strokeWidth="8"
+                />
+                <circle
+                  className="accent-circle"
+                  cx="50"
+                  cy="50"
+                  r="42"
+                  fill="none"
+                  stroke="#216AFF"
+                  strokeWidth="8"
+                  strokeDasharray={`${(loanPercent / 100) * circumference} ${circumference}`}
+                  transform="rotate(-90 50 50)"
+                />
+              </svg>
+              <div className="circle-chart-value absolute inset-0 flex flex-col items-center justify-center">
+                <div className="font-bold text-xl text-brand-accent">
+                  {formatCurrency(breakdown.loanAmount)}
+                </div>
+                <div className="text-xs text-brand-muted">
+                  Loan Amount ({loanPercent.toFixed(0)}%)
+                </div>
+              </div>
+            </div>
+
+            <div className="circle-chart relative">
+              <svg viewBox="0 0 100 100" className="w-full h-full">
+                <circle
+                  className="accent-circle interest-segment"
+                  cx="50"
+                  cy="50"
+                  r="42"
+                  fill="none"
+                  stroke="#216AFF"
+                  strokeWidth="8"
+                  strokeDasharray={`${interestPortion * circumference} ${circumference}`}
+                  transform="rotate(-90 50 50)"
+                />
+                <circle
+                  className="accent-circle principal-segment"
+                  cx="50"
+                  cy="50"
+                  r="42"
+                  fill="none"
+                  stroke="#ff609c"
+                  strokeWidth="8"
+                  strokeDasharray={`${principalPortion * circumference} ${circumference}`}
+                  transform={`rotate(${interestPortion * 360 - 90} 50 50)`}
+                />
+              </svg>
+              <div className="circle-chart-value absolute inset-0 flex flex-col items-center justify-center">
+                <div className="font-bold text-xl text-brand-accent">
+                  {formatCurrency(breakdown.monthlyPayment)}
+                </div>
+                <div className="text-xs text-brand-muted">/month</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-8">
+            <div className="flex justify-between items-center mb-2">
               <span className="text-sm text-brand-muted">
-                at {interestRate.toFixed(1)}% interest rate
+                Down Payment ({downPaymentPercent.toFixed(0)}%)
+              </span>
+              <span className="font-medium text-brand-accent">
+                {formatCurrency(downPayment)}
               </span>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="circle-chart relative">
-                <svg viewBox="0 0 100 100" className="w-full h-full">
-                  <circle
-                    className="accent-circle interest-segment"
-                    cx="50"
-                    cy="50"
-                    r="42"
-                    fill="none"
-                    stroke="#d8e5ff"
-                    strokeWidth="8"
-                  />
-                </svg>
-                <div className="circle-chart-value absolute inset-0 flex flex-col items-center justify-center">
-                  <div className="font-bold text-xl text-brand-accent">
-                    {formatCurrency(breakdown.loanAmount)}
+            <div className="mt-6">
+              <h3 className="text-base mb-3 text-brand-accent">
+                Monthly Payment
+              </h3>
+              <div className="bg-slate-50 rounded-lg p-4 border border-slate-100">
+                <div className="flex justify-between items-center space-x-2">
+                  <div className="flex items-center">
+                    <span className="h-3 w-3 rounded-full bg-[#ff99b6] mr-2"></span>
+                    <span className="text-brand-muted">Principal</span>
                   </div>
-                  <div className="text-xs text-brand-muted">
-                    Loan Amount (100%)
-                  </div>
+                  <span className="font-medium text-brand-accent">
+                    {formatCurrency(breakdown.principalPayment)}
+                  </span>
                 </div>
-              </div>
-
-              <div className="circle-chart relative">
-                <svg viewBox="0 0 100 100" className="w-full h-full">
-                  <circle
-                    className="accent-circle interest-segment"
-                    cx="50"
-                    cy="50"
-                    r="42"
-                    fill="none"
-                    stroke="#216AFF"
-                    strokeWidth="8"
-                    strokeDasharray={`${(breakdown.interestPayment / breakdown.monthlyPayment) * 264} 264`}
-                    transform="rotate(-90 50 50)"
-                  />
-                  <circle
-                    className="accent-circle principal-segment"
-                    cx="50"
-                    cy="50"
-                    r="42"
-                    fill="none"
-                    stroke="#ff609c"
-                    strokeWidth="8"
-                    strokeDasharray={`${(breakdown.principalPayment / breakdown.monthlyPayment) * 264} 264`}
-                    transform={`rotate(${(breakdown.interestPayment / breakdown.monthlyPayment) * 360 - 90} 50 50)`}
-                  />
-                </svg>
-                <div className="circle-chart-value absolute inset-0 flex flex-col items-center justify-center">
-                  <div className="font-bold text-xl text-brand-accent">
-                    {formatCurrency(breakdown.monthlyPayment)}
+                <div className="flex justify-between items-center mt-2 space-x-2">
+                  <div className="flex items-center">
+                    <span className="h-3 w-3 rounded-full bg-[#4361ee] mr-2"></span>
+                    <span className="text-brand-muted">Interest</span>
                   </div>
-                  <div className="text-xs text-brand-muted">/month</div>
+                  <span className="font-medium text-brand-accent">
+                    {formatCurrency(breakdown.interestPayment)}
+                  </span>
                 </div>
               </div>
             </div>
-
-            <div className="mt-8">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-sm text-brand-muted">
-                  Down Payment (
-                  {((downPayment / propertyPrice) * 100).toFixed(0)}%)
-                </span>
-                <span className="font-medium text-brand-accent">
-                  {formatCurrency(downPayment)}
-                </span>
-              </div>
-
-              <div className="mt-6">
-                <h3 className="text-base mb-3 text-brand-accent">
-                  Monthly Payment
-                </h3>
-                <div className="bg-slate-50 rounded-lg p-4 border border-slate-100">
-                  <div className="flex justify-between items-center space-x-2">
-                    <div className="flex items-center">
-                      <span className="h-3 w-3 rounded-full bg-[#ff99b6] mr-2"></span>
-                      <span className="text-brand-muted">Principal</span>
-                    </div>
-                    <span className="font-medium text-brand-accent">
-                      {formatCurrency(breakdown.principalPayment)}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center mt-2 space-x-2">
-                    <div className="flex items-center">
-                      <span className="h-3 w-3 rounded-full bg-[#4361ee] mr-2"></span>
-                      <span className="text-brand-muted">Interest</span>
-                    </div>
-                    <span className="font-medium text-brand-accent">
-                      {formatCurrency(breakdown.interestPayment)}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

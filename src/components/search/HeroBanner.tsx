@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { Card } from "../ui/card";
 
 interface HeroBannerProps {
   src: string;
@@ -12,7 +13,7 @@ export function HeroBanner({
   alt = "Hero banner",
 }: HeroBannerProps) {
   return (
-    <div className="hidden lg:block max-h-[305px] h-[305px] relative">
+    <Card className="hidden lg:block max-h-[305px] rounded-none border-t-0 border-b h-[305px] relative">
       <a
         href={href}
         target="_blank"
@@ -28,6 +29,6 @@ export function HeroBanner({
           sizes="100vw"
         />
       </a>
-    </div>
+    </Card>
   );
 }

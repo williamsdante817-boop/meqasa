@@ -28,7 +28,7 @@ export function CarouselPlugin({ children }: { children: React.ReactNode }) {
           stopOnMouseEnter: true,
         }),
       ]}
-      className="w-full"
+      className="w-full mb-8"
     >
       <CarouselContent>
         {childrenArray.map((child, index) => (

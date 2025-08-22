@@ -1,10 +1,9 @@
 "use client";
 
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { Tooltip } from "@radix-ui/react-tooltip";
 import { Dot, Phone } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 
 import { AddFavoriteButton } from "@/components/add-favorite-button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -17,34 +16,15 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import {
+  Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
-import { useState } from "react";
-import ContactCard from "../contact-card";
-
-// Add missing utility functions
-const shimmer = (w: number, h: number) => `
-<svg width="${w}" height="${h}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-  <defs>
-    <linearGradient id="g">
-      <stop stop-color="#f6f7f8" offset="0%" />
-      <stop stop-color="#edeef1" offset="20%" />
-      <stop stop-color="#f6f7f8" offset="40%" />
-      <stop stop-color="#f6f7f8" offset="70%" />
-    </linearGradient>
-  </defs>
-  <rect width="${w}" height="${h}" fill="#f6f7f8" />
-  <rect id="r" width="${w}" height="${h}" fill="url(#g)" />
-  <animate xlink:href="#r" attributeName="x" from="-${w}" to="${w}" dur="1s" repeatCount="indefinite"  />
-</svg>`;
-
-const toBase64 = (str: string) =>
-  typeof window === "undefined"
-    ? Buffer.from(str).toString("base64")
-    : window.btoa(str);
+import { Skeleton } from "@/components/ui/skeleton";
+import { buildInnerHtml, cn } from "@/lib/utils";
+import { DeveloperContactCard } from "@/components/developer-contact-card";
+import { ImageWithFallback } from "@/components/image-with-fallback";
 
 // TypeScript interfaces for the data structure
 interface Owner {
@@ -92,28 +72,14 @@ export function PremiumPlusPropertyCard({
   data,
 }: PremiumPlusPropertyCardProps) {
   const [isOpen, setIsOpen] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [imageError, setImageError] = useState(false);
   const [avatarError, setAvatarError] = useState(false);
 
-  // Compute details page link and cleanPath for listingId extraction
-  let detailsLink = "";
-  let cleanPath = "";
-  if (data.isunit) {
-    const citySlug =
-      data.locationstring?.split(" ").join("-").toLowerCase() || "";
-    const typeSlug = data.type?.toLowerCase().split(" ").join("-") || "";
-    detailsLink = `/developer-unit/${data.bedroomcount}-bedroom-${typeSlug}-for-${data.contract}-in-${citySlug}-unit-${data.listingid}`;
-    cleanPath = `-${data.listingid}`; // fallback for unit
-  } else {
-    cleanPath =
-      typeof data.detailreq === "string"
-        ? data.detailreq.replace(/^https?:\/\/[^/]+\//, "")
-        : "";
-    detailsLink = `/listings${cleanPath.startsWith("/") ? cleanPath : "/" + cleanPath}`;
-  }
+  // Compute details page link
+  const detailsLink = data.isunit
+    ? `/developer-unit/${data.bedroomcount}-bedroom-${data.type?.toLowerCase().split(" ").join("-")}-for-${data.contract}-in-${data.locationstring?.split(" ").join("-").toLowerCase()}-unit-${data.listingid}`
+    : `/listings${data.detailreq?.replace(/^https?:\/\/[^/]+\//, "") || ""}`;
 
-  // Defensive: Fallbacks for images and text
+  // Defensive: Fallbacks for data
   const ownerImage =
     avatarError || !data.owner?.image
       ? undefined
@@ -121,7 +87,7 @@ export function PremiumPlusPropertyCard({
   const ownerName = data.owner?.name || "Agent";
   const summary = data.summary || "Property Listing";
 
-  // Defensive: Parse numbers safely
+  // Parse numbers safely
   const listingId = Number(data.listingid) || 0;
   const bedroomCount = Number(data.bedroomcount) || 0;
   const bathroomCount = Number(data.bathroomcount) || 0;
@@ -131,151 +97,180 @@ export function PremiumPlusPropertyCard({
   const pricePart1 = data.pricepart1 || "";
   const pricePart2 = data.pricepart2 || "";
 
+  // Generate fallback avatar initials
+  const avatarInitials = ownerName
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .slice(0, 2);
+
   return (
-    <Card className="mb-8 flex p-0 h-fit flex-col gap-4 rounded-lg border-none text-brand-accent shadow w-full md:min-w-[256px]">
+    <Card className="group relative h-fit w-full overflow-hidden rounded-lg border border-gray-200 bg-white p-0 shadow-none transition-all duration-200 hover:shadow-elegant hover:border-brand-primary/20">
       <CardHeader className="p-0">
         <div className="relative w-full rounded-lg min-h-[230px] md:min-h-[279px] md:min-w-[256px]">
           <Link
             href={detailsLink}
             className="absolute inset-0 z-10"
             aria-label={`View details for ${summary}`}
-          ></Link>
-          <Image
-            className="h-[202px] w-full rounded-t-lg object-cover md:h-[279px] lg:rounded-none lg:rounded-t-lg"
-            src={data.image2}
+          />
+
+          {/* Loading Skeleton */}
+          <div className="absolute inset-0 z-0">
+            <Skeleton className="h-[202px] w-full rounded-t-lg md:h-[279px] lg:rounded-none lg:rounded-t-lg" />
+          </div>
+
+          <ImageWithFallback
+            className="relative z-10 h-[202px] w-full rounded-t-lg object-cover md:h-[279px] lg:rounded-none lg:rounded-t-lg transition-opacity duration-300"
+            src={data.image2 || "/placeholder-image.png"}
             alt={summary}
             placeholder="blur"
-            blurDataURL={`data:image/svg+xml;base64,${toBase64(shimmer(728, 279))}`}
-            sizes="728px"
-            onError={() => setImageError(true)}
+            blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzI4IiBoZWlnaHQ9IjI3OSIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciPjxzdG9wIHN0b3AtY29sb3I9IiNmNmY3ZjgiIG9mZnNldD0iMCUiLz48c3RvcCBzdG9wLWNvbG9yPSIjZWRlZWYxIiBvZmZzZXQ9IjIwJSIvPjxzdG9wIHN0b3AtY29sb3I9IiNmNmY3ZjgiIG9mZnNldD0iNDAlIi8+PHN0b3Agc3RvcC1jb2xvcj0iI2Y2ZjdmOCIgb2Zmc2V0PSI3MCUiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjZmN2Y4Ii8+PHJlY3QgaWQ9InIiIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZykiLz48YW5pbWF0ZSB4bGlua3M6aHJlZj0iI3IiIGF0dHJpYnV0ZU5hbWU9IngiIGZyb209Ii03MjgiIHRvPSI3MjgiIGR1cj0iMXMiIHJlcGVhdENvdW50PSJpbmZpbml0ZSIgLz48L3N2Zz4="
+            sizes="(max-width: 640px) 100vw, (max-width: 768px) 256px, (max-width: 1024px) 300px, 256px"
             priority
             fill
-            style={{ objectFit: "cover" }}
+            quality={90}
+            fallbackAlt={`${summary} - Image not available`}
           />
-          <div className=" absolute inset-0 rounded-lg ">
-            <Badge className="absolute left-4 top-4 z-20 bg-brand-primary uppercase">
-              Premium Plus
-            </Badge>
-            <div className="absolute right-4 top-4 z-30">
+
+          {/* Premium Plus Badge */}
+          <Badge className="absolute left-3 top-3 z-20 bg-brand-primary text-white uppercase tracking-wide">
+            Premium Plus
+          </Badge>
+
+          {/* Favorite Button */}
+          {listingId > 0 && (
+            <div className="absolute right-3 top-3 z-30">
               <AddFavoriteButton listingId={listingId} />
             </div>
-          </div>
+          )}
         </div>
       </CardHeader>
-      <CardContent className=" flex flex-col items-start p-0 px-4">
-        <h3 className="font-extrabold lg:text-lg ">
+
+      <CardContent className="space-y-3 p-4">
+        {/* Property Title */}
+        <h3 className="line-clamp-2 font-bold text-brand-primary transition-colors group-hover:text-brand-accent">
           <Link
             href={detailsLink}
             title={summary}
             aria-label={`View details for ${summary}`}
+            className="hover:underline"
           >
             {summary}
           </Link>
         </h3>
-        <div className="flex items-center pt-2 font-light">
-          {bedroomCount === 0 ? null : (
+
+        {/* Property Details */}
+        <div className="flex items-center gap-2 text-sm text-brand-muted">
+          {bedroomCount > 0 && (
             <>
               <span>{bedroomCount} Beds</span>
-              <Dot className="h-4 w-4" />
+              <Dot className="h-3 w-3 text-brand-accent" />
             </>
           )}
-          {bathroomCount === 0 ? null : (
+          {bathroomCount > 0 && (
             <>
               <span>{bathroomCount} Baths</span>
+              {garageCount > 0 && <Dot className="h-3 w-3 text-brand-accent" />}
             </>
           )}
-          {garageCount === 0 ? null : (
+          {garageCount > 0 && (
             <>
-              <Dot className="h-4 w-4" />
               <span>{garageCount} Parking</span>
-              <Dot className="h-4 w-4" />
+              <Dot className="h-3 w-3 text-brand-accent" />
               <span>{floorArea} m²</span>
             </>
           )}
         </div>
-        <div className="flex h-fit items-center gap-2 pt-3">
-          <p
-            className="text-base font-bold"
-            dangerouslySetInnerHTML={{
-              __html: pricePart1,
-            }}
-          ></p>
-          <p className="text-base font-bold">
+
+        {/* Price */}
+        <div className="flex items-center gap-2">
+          {pricePart1 && (
+            <span
+              className="text-lg font-bold text-brand-accent"
+              dangerouslySetInnerHTML={buildInnerHtml(pricePart1)}
+            />
+          )}
+          {pricePart2 && (
             <span className="text-sm font-normal text-brand-muted">
               {pricePart2}
             </span>
-          </p>
+          )}
         </div>
       </CardContent>
-      <CardFooter className="flex items-center gap-2 p-4">
-        <Avatar className="flex items-center rounded-full border text-brand-accent shadow">
+
+      <CardFooter className="flex items-center gap-3 border-t border-gray-100 p-4">
+        {/* Agent Avatar */}
+        <Avatar className="h-10 w-10 border border-gray-200 shadow-sm">
+          {/* Avatar Loading Skeleton */}
+          <div className="absolute inset-0 z-0">
+            <Skeleton className="h-10 w-10 rounded-full" />
+          </div>
+
           <AvatarImage
             src={ownerImage}
-            className="rounded-full object-contain"
             alt={ownerName}
             onError={() => setAvatarError(true)}
+            className="relative z-10 object-fit"
           />
-          <AvatarFallback className="flex items-center justify-center rounded-full border bg-slate-50 text-sm font-bold text-inherit">
-            {ownerName
-              .split(" ")
-              .map((n) => n[0])
-              .join("")}
+          <AvatarFallback className="relative z-10 bg-slate-50 text-sm font-semibold text-brand-accent">
+            {avatarInitials}
           </AvatarFallback>
         </Avatar>
 
-        <div className="hidden lg:block">
+        {/* Update Time */}
+        <div className="hidden lg:block flex-1">
           <TooltipProvider>
             <Tooltip>
-              <TooltipTrigger>
-                <span className="line-clamp-1 w-44 text-center text-xs text-brand-muted lg:text-sm">
+              <TooltipTrigger asChild>
+                <span className="line-clamp-1 text-xs text-brand-muted">
                   Updated {recency} ago
                 </span>
               </TooltipTrigger>
               <TooltipContent>
-                <p> Updated {recency} ago</p>
+                <p>Updated {recency} ago</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
         </div>
 
-        <div className="flex h-full grow justify-end">
-          <div className="flex items-center gap-2">
-            <Dialog open={isOpen} onOpenChange={setIsOpen}>
-              <DialogTrigger asChild>
-                <Button
-                  variant="secondary"
-                  size="icon"
-                  className="flex items-center gap-1.5  font-semibold text-brand-accent"
-                  aria-label={`Contact ${ownerName}`}
-                >
-                  <Phone className="h-4 w-5" />
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-4xl w-fit h-fit overflow-y-auto p-0">
-                <div className="h-full">
-                  <ContactCard
-                    name={ownerName}
-                    image={data.owner?.image || ""}
-                    src
-                    listingId={data.listingid}
-                    pageType="listing"
-                  />
-                </div>
-              </DialogContent>
-            </Dialog>
-            <div>
-              <Link
-                href={detailsLink}
-                className={cn(
-                  buttonVariants({ variant: "default" }),
-                  "w-32 font-semibold bg-brand-primary text-white hover:bg-brand-primary",
-                )}
-                aria-label={`View details for ${summary}`}
+        {/* Action Buttons */}
+        <div className="flex items-center gap-8">
+          <Dialog open={isOpen} onOpenChange={setIsOpen}>
+            <DialogTrigger asChild>
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-9 w-9 text-brand-accent"
+                aria-label={`Contact ${ownerName}`}
               >
-                View details
-              </Link>
-            </div>
-          </div>
+                <Phone className="h-4 w-4" />
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-lg w-full overflow-hidden p-4 sm:p-6">
+              <DeveloperContactCard
+                developerName={ownerName}
+                developerId={data.listingid}
+                logoSrc={
+                  data.owner?.image
+                    ? `https://meqasa.com/fascimos/somics/${data.owner.image}`
+                    : ""
+                }
+                fallbackImage="/placeholder-image.png"
+                onClose={() => setIsOpen(false)}
+              />
+            </DialogContent>
+          </Dialog>
+
+          <Link
+            href={detailsLink}
+            className={cn(
+              buttonVariants({ variant: "default" }),
+              "h-9 bg-brand-primary text-white hover:bg-brand-primary-dark font-semibold",
+            )}
+            aria-label={`View details for ${summary}`}
+          >
+            View details
+          </Link>
         </div>
       </CardFooter>
     </Card>

@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect } from "react";
 
 interface ContactState {
@@ -9,7 +11,7 @@ interface ContactState {
 }
 
 // Per-context global state map so multiple contexts can coexist
-let contactStateByContext: Record<string, ContactState> = {};
+const contactStateByContext: Record<string, ContactState> = {};
 
 // Listeners for any state change
 const listeners = new Set<() => void>();
@@ -84,22 +86,26 @@ export const useContactState = (contextKey: string) => {
   const updateContactState = (updates: Partial<ContactState>) => {
     const prev = getOrCreateState(contextKey);
     const newState: ContactState = { ...prev, ...updates, contextKey };
-    console.log("🔄 [useContactState] Updating state:", {
-      contextKey,
-      oldState: prev,
-      updates,
-      newState,
-    });
+    if (process.env.NODE_ENV !== "production") {
+      console.log("🔄 [useContactState] Updating state:", {
+        contextKey,
+        oldState: prev,
+        updates,
+        newState,
+      });
+    }
     contactStateByContext[contextKey] = newState;
     notifyListeners();
   };
 
   const setPhoneNumbers = (phone: string, whatsapp: string) => {
-    console.log("🔄 [useContactState] Setting phone numbers:", {
-      phone,
-      whatsapp,
-      contextKey,
-    });
+    if (process.env.NODE_ENV !== "production") {
+      console.log("🔄 [useContactState] Setting phone numbers:", {
+        phone,
+        whatsapp,
+        contextKey,
+      });
+    }
     updateContactState({
       phoneNumber: phone,
       whatsappNumber: whatsapp,
@@ -109,10 +115,12 @@ export const useContactState = (contextKey: string) => {
   };
 
   const setLoading = (loading: boolean) => {
-    console.log("🔄 [useContactState] Setting loading:", {
-      loading,
-      contextKey,
-    });
+    if (process.env.NODE_ENV !== "production") {
+      console.log("🔄 [useContactState] Setting loading:", {
+        loading,
+        contextKey,
+      });
+    }
     updateContactState({ isLoading: loading });
   };
 

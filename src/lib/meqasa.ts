@@ -17,8 +17,23 @@ export async function searchProperties(
   params: MeqasaSearchParams,
 ): Promise<MeqasaSearchResponse> {
   const isServer = typeof window === "undefined";
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
-  const apiUrl = isServer ? `${baseUrl}/api/properties` : "/api/properties";
+
+  // For server-side rendering, we need absolute URLs
+  // For client-side, relative URLs work fine
+  const resolveBaseUrl = (): string => {
+    if (isServer) {
+      // In development, use localhost
+      if (process.env.NODE_ENV === "development") {
+        return "http://localhost:3000";
+      }
+      // In production, use relative URL to avoid circular references
+      return "";
+    }
+    // Client-side always uses relative URLs
+    return "";
+  };
+
+  const apiUrl = `${resolveBaseUrl()}/api/properties`;
 
   const response = await fetch(apiUrl, {
     method: "POST",
@@ -55,8 +70,23 @@ export async function loadMoreProperties(
   params: MeqasaLoadMoreParams,
 ): Promise<MeqasaSearchResponse> {
   const isServer = typeof window === "undefined";
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
-  const apiUrl = isServer ? `${baseUrl}/api/properties` : "/api/properties";
+
+  // For server-side rendering, we need absolute URLs
+  // For client-side, relative URLs work fine
+  const resolveBaseUrl = (): string => {
+    if (isServer) {
+      // In development, use localhost
+      if (process.env.NODE_ENV === "development") {
+        return "http://localhost:3000";
+      }
+      // In production, use relative URL to avoid circular references
+      return "";
+    }
+    // Client-side always uses relative URLs
+    return "";
+  };
+
+  const apiUrl = `${resolveBaseUrl()}/api/properties`;
 
   const response = await fetch(apiUrl, {
     method: "POST",

@@ -65,15 +65,13 @@ export function StaticBlogSection({ staticData }: StaticContentProps) {
 export function StaticMarketNews({ staticData }: StaticContentProps) {
   return (
     <aside className="hidden md:block flex-1 mt-28" aria-label="Market News">
-      <h3 className="text-xl font-bold leading-tight tracking-tighter text-brand-accent lg:mb-8 lg:text-[23px] lg:font-extrabold">
-        Market News
-      </h3>
+      <h3 className="text-2xl font-bold text-brand-accent mb-6">Market News</h3>
       <div role="list">
         {staticData.blogData.slice(0, 3).map((blog, index) => (
           <div key={index} role="listitem">
             <MarketNewsCard
               title={blog.title}
-              date="Jan 23,2023"
+              displayDate="Jan 23, 2023"
               index={index}
             />
           </div>
@@ -89,13 +87,17 @@ export function StaticLocationSection({ staticData }: StaticContentProps) {
       title="Choice Neighborhoods"
       description="These neighborhoods are highly desirable for business, living, and pleasure. Find out why!"
       href="/"
-      className="pt-14 md:pt-20 lg:pt-24 flex-[2] [&_p]:px-4 [&_h2]:px-4 w-full mx-auto md:max-w-[720px] lg:max-w-[960px] xl:max-w-[1140px] 2xl:max-w-[1320px]"
+      className="pt-14 md:pt-20 lg:pt-24 flex-[2] w-full "
     >
-      <div className="overflow-x-auto" role="region" aria-label="Neighborhoods">
-        <div className="flex gap-3 lg:grid lg:grid-cols-4 lg:gap-8 overflow-x-auto pb-4">
+      <div
+        className="overflow-x-auto lg:overflow-visible"
+        role="region"
+        aria-label="Neighborhoods"
+      >
+        <div className="flex gap-3 lg:grid lg:grid-cols-4 lg:gap-8 pb-4 lg:pb-0">
           {staticData.locationData.map((item, i) => (
             <div
-              className={`w-[calc((100vw-48px)/2)] min-w-[280px] flex-none lg:w-auto h-full ${i === 0 ? "pl-4" : ""} ${i === staticData.locationData.length - 1 ? "pr-4" : ""}`}
+              className={`w-[calc((100vw-48px)/2)] min-w-[280px] flex-none h-full max-w-full lg:w-full lg:min-w-0 lg:flex-initial ${i === 0 ? "pl-4" : ""} ${i === staticData.locationData.length - 1 ? "pr-4" : ""} lg:pl-0 lg:pr-0`}
               key={i}
             >
               <div className="h-full">

@@ -2,10 +2,8 @@
 
 import { useState } from "react";
 import ContentSection from "@/components/content-section";
-import {
-  LatestListingsTab,
-  type Listing,
-} from "@/components/latest-listings-tab";
+import { LatestListingsTab } from "@/components/latest-listings-tab";
+import type { Listing } from "@/components/property-card";
 
 interface FeaturedListingsSectionProps {
   rentListings: Listing[];
@@ -28,7 +26,7 @@ export function FeaturedListingsSection({
       title="Featured Listings"
       description="View all featured property listings available."
       href={href}
-      className="pt-14 md:pt-20 lg:pt-24 [&_p]:px-4 [&_h2]:px-4 w-full mx-auto md:max-w-[720px] lg:max-w-[960px] xl:max-w-[1140px] 2xl:max-w-[1320px]"
+      className="pt-14 md:pt-20 lg:pt-24 w-full"
     >
       <LatestListingsTab
         rentListings={rentListings}

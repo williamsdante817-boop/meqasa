@@ -3,21 +3,83 @@ import { DeveloperCard } from "@/components/developer-card";
 import SearchInput from "@/components/search-input";
 import { getDevelopers } from "@/lib/get-developers";
 import { Breadcrumbs } from "@/components/bread-crumbs";
+import { Suspense } from "react";
+import { StreamingErrorBoundary } from "@/components/streaming/StreamingErrorBoundary";
+import { DevelopersSkeleton } from "@/components/developers/developers-skeleton";
+import { EmptyDevelopersState } from "@/components/developers/empty-developers-state";
+import { ErrorFallback } from "@/components/developers/error-fallback";
+import { analytics } from "@/lib/analytics";
 
 export const metadata = {
   title: "Real Estate Developers | Meqasa",
   description:
     "Browse through our list of trusted real estate developers in Ghana",
+  keywords:
+    "real estate developers, Ghana, property developers, construction companies",
+  openGraph: {
+    title: "Real Estate Developers | Meqasa",
+    description:
+      "Browse through our list of trusted real estate developers in Ghana",
+    type: "website",
+  },
 };
 
-export default async function DevelopersPage() {
-  const { developers } = await getDevelopers();
-  console.log("Developers Data:", developers);
+async function DevelopersContent() {
+  const startTime = performance.now();
 
+  try {
+    const { developers } = await getDevelopers();
+
+    // Track performance
+    const loadTime = performance.now() - startTime;
+    if (typeof window !== "undefined") {
+      analytics.trackPerformance("developers_load_time", loadTime);
+      analytics.trackEvent(
+        "developers_loaded",
+        "page_performance",
+        "developers_page",
+        developers.length,
+      );
+    }
+
+    if (!developers || developers.length === 0) {
+      return <EmptyDevelopersState />;
+    }
+
+    return (
+      <>
+        <div className="w-full mb-8">
+          <SearchInput
+            data={developers.map((dev) => ({
+              developerid: dev.developerid,
+              name: dev.companyname,
+            }))}
+            path="projects-by-developer"
+            triggerLabel="Search developers..."
+            inputPlaceholder="Search for developers..."
+          />
+        </div>
+        <div className="space-y-8">
+          {developers.map((developer) => (
+            <DeveloperCard key={developer.developerid} developer={developer} />
+          ))}
+        </div>
+      </>
+    );
+  } catch (error) {
+    // Track errors
+    if (typeof window !== "undefined" && error instanceof Error) {
+      analytics.trackError(error, "developers_content");
+    }
+    throw error;
+  }
+}
+
+export default function DevelopersPage() {
   return (
     <Shell>
       <div className="py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-[2fr,1fr] gap-8">
+        <div className="grid grid-cols-1 text-brand-accent w-full mt-4 lg:grid-cols-[2fr_1fr] lg:gap-8 lg:px-0">
           <div>
             <Breadcrumbs
               className="mb-6"
@@ -30,18 +92,16 @@ export default async function DevelopersPage() {
               <h1 className="mb-2 text-lg font-bold leading-tight tracking-tighter text-brand-accent md:text-xl">
                 Find a Developer
               </h1>
-              <div className="w-full">
-                <SearchInput data={developers} path="projects-by-developer" />
-              </div>
             </header>
-            <div className="space-y-8">
-              {developers.map((developer) => (
-                <DeveloperCard
-                  key={developer.developerid}
-                  developer={developer}
-                />
-              ))}
-            </div>
+
+            <StreamingErrorBoundary
+              fallback={<DevelopersSkeleton />}
+              errorFallback={<ErrorFallback />}
+            >
+              <Suspense fallback={<DevelopersSkeleton />}>
+                <DevelopersContent />
+              </Suspense>
+            </StreamingErrorBoundary>
           </div>
         </div>
       </div>

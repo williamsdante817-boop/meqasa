@@ -5,10 +5,20 @@ import Shell from "@/layouts/shell";
 import ScrollTotop from "./scroll-to-top";
 import PropertyAlertsForm from "./property-alerts-form";
 
+function isExternalHref(href: string): boolean {
+  return (
+    href.startsWith("http://") ||
+    href.startsWith("https://") ||
+    href.startsWith("//") ||
+    href.startsWith("mailto:") ||
+    href.startsWith("tel:")
+  );
+}
+
 export function SiteFooter() {
   return (
     <footer
-      className="w-full border-t bg-[#252535] text-white"
+      className="w-full bg-[#252535] text-white"
       aria-labelledby="footer-heading"
       role="contentinfo"
     >
@@ -26,19 +36,23 @@ export function SiteFooter() {
               <div key={item.title} className="space-y-3">
                 <h3 className="text-base font-medium">{item.title}</h3>
                 <ul className="space-y-0.5" role="list">
-                  {item.items.map((link) => (
-                    <li key={link.title}>
-                      <Link
-                        href={link.href}
-                        target={link?.external ? "_blank" : undefined}
-                        rel={link?.external ? "noreferrer" : undefined}
-                        className="text-sm text-[#d2d3dc] transition-colors hover:text-[#8d8e97]"
-                        aria-label={link.title}
-                      >
-                        {link.title}
-                      </Link>
-                    </li>
-                  ))}
+                  {item.items.map((link) => {
+                    const isExternal =
+                      link.external ?? isExternalHref(link.href);
+                    return (
+                      <li key={link.title}>
+                        <Link
+                          href={link.href}
+                          target={isExternal ? "_blank" : undefined}
+                          rel={isExternal ? "noreferrer noopener" : undefined}
+                          className="text-sm text-[#d2d3dc] transition-colors hover:text-[#8d8e97]"
+                          aria-label={link.title}
+                        >
+                          {link.title}
+                        </Link>
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
             ))}

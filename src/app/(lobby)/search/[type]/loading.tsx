@@ -35,7 +35,7 @@ export default function Loading() {
             <Skeleton className="h-4 w-32" />
           </header>
 
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-[736px,300px] md:px-0">
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-[736px,1fr] md:px-0">
             <div>
               <SearchResultsSkeleton />
             </div>

@@ -210,24 +210,57 @@ export async function POST(request: NextRequest) {
         throw new Error(`Meqasa API error: ${response.statusText}`);
       }
 
-      const data = (await response.json()) as MeqasaSearchResponse;
+      const raw = (await response.json()) as MeqasaSearchResponse & {
+        resultcount?: number | string | null;
+      };
+      // Normalize result count in case the upstream API returns a string or 0 while results exist
+      const normalized: MeqasaSearchResponse = {
+        ...raw,
+        resultcount: (() => {
+          // First, try to get the resultcount from the API response
+          let count = raw.resultcount;
+
+          // Convert string to number if needed
+          if (typeof count === "string") {
+            count = parseInt(count, 10);
+          }
+
+          // If we have a valid number (including 0), use it
+          if (typeof count === "number" && Number.isFinite(count)) {
+            return count;
+          }
+
+          // Fallback: if resultcount is missing/invalid, use the actual results length
+          // This handles cases where the API doesn't provide resultcount but has results
+          if (Array.isArray(raw.results)) {
+            return raw.results.length;
+          }
+
+          // Final fallback: no results
+          return 0;
+        })(),
+      };
+
       console.log("Search response:", {
-        searchId: data.searchid,
-        resultCount: data.resultcount,
-        resultsLength: data.results.length,
-        searchDesc: data.searchdesc,
+        searchId: normalized.searchid,
+        resultCount: normalized.resultcount,
+        resultsLength: normalized.results.length,
+        searchDesc: normalized.searchdesc,
+        // Log the raw resultcount from the API to debug production issues
+        rawResultCount: raw.resultcount,
+        rawResultCountType: typeof raw.resultcount,
         // Log first few results to see what type of properties are returned
-        firstResult: data.results[0]
+        firstResult: normalized.results[0]
           ? {
-              listingid: data.results[0].listingid,
-              summary: data.results[0].summary,
-              pricepart1: data.results[0].pricepart1,
-              pricepart2: data.results[0].pricepart2,
+              listingid: normalized.results[0].listingid,
+              summary: normalized.results[0].summary,
+              pricepart1: normalized.results[0].pricepart1,
+              pricepart2: normalized.results[0].pricepart2,
             }
           : null,
       });
 
-      return NextResponse.json(data);
+      return NextResponse.json(normalized);
     } else if (type === "loadMore") {
       const {
         contract,
@@ -387,15 +420,46 @@ export async function POST(request: NextRequest) {
         throw new Error(`Meqasa API error: ${response.statusText}`);
       }
 
-      const data = (await response.json()) as MeqasaSearchResponse;
+      const raw = (await response.json()) as MeqasaSearchResponse & {
+        resultcount?: number | string | null;
+      };
+      const normalized: MeqasaSearchResponse = {
+        ...raw,
+        resultcount: (() => {
+          // First, try to get the resultcount from the API response
+          let count = raw.resultcount;
+
+          // Convert string to number if needed
+          if (typeof count === "string") {
+            count = parseInt(count, 10);
+          }
+
+          // If we have a valid number (including 0), use it
+          if (typeof count === "number" && Number.isFinite(count)) {
+            return count;
+          }
+
+          // Fallback: if resultcount is missing/invalid, use the actual results length
+          // This handles cases where the API doesn't provide resultcount but has results
+          if (Array.isArray(raw.results)) {
+            return raw.results.length;
+          }
+
+          // Final fallback: no results
+          return 0;
+        })(),
+      };
       console.log("LoadMore response:", {
-        searchId: data.searchid,
-        resultCount: data.resultcount,
-        resultsLength: data.results.length,
-        data,
+        searchId: normalized.searchid,
+        resultCount: normalized.resultcount,
+        resultsLength: normalized.results.length,
+        // Log the raw resultcount from the API to debug production issues
+        rawResultCount: raw.resultcount,
+        rawResultCountType: typeof raw.resultcount,
+        data: normalized,
       });
 
-      return NextResponse.json(data);
+      return NextResponse.json(normalized);
     } else {
       return NextResponse.json(
         { error: "Invalid request type. Must be 'search' or 'loadMore'" },
