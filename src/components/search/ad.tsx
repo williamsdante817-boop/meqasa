@@ -13,7 +13,7 @@ const RealEstateAd = ({ src, href, alt = "Ad banner" }: RealEstateAdProps) => (
     rel="noopener noreferrer"
     className="block w-full group"
   >
-    <div className="relative w-full rounded-lg shadow-sm border p-4 overflow-hidden">
+    <div className="relative w-full rounded-lg border p-4 overflow-hidden">
       <div className="relative h-[450px] w-full overflow-hidden">
         <Image
           src={src}

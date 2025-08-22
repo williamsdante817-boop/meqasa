@@ -17,6 +17,7 @@ import { useRef, useMemo, Component, type ReactNode } from "react";
 // Import components directly for better performance and simpler code
 import FloorPlans from "./floor-plan";
 import NearbyLocation from "./nearest-establishements";
+import { NearestEstablishments } from "@/components/nearest-establishments";
 import ProjectVideo from "./project-video";
 import PropertyScrollNav from "./property-scroll-nav";
 
@@ -504,7 +505,18 @@ function PropertyContainerContent({
               btnHidden
               id="location-heading"
             >
-              <NearbyLocation />
+              <NearestEstablishments
+                className="mb-8"
+                projectLocation={{
+                  lat: projectData.project.lat || 5.56,
+                  lng: projectData.project.lng || -0.2057,
+                }}
+                projectName={projectData.project.projectname}
+                neighborhood={
+                  projectData.project.city || projectData.project.region
+                }
+              />
+              {/* <NearbyLocation /> */}
             </ContentSection>
           </section>
         </div>

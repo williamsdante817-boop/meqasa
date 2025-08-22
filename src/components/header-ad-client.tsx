@@ -15,6 +15,8 @@ export default function HeaderAdClient() {
     [],
   );
 
+  console.log("leaderboardBanner", leaderboardBanner);
+
   React.useEffect(() => {
     const fetchBanner = async () => {
       try {

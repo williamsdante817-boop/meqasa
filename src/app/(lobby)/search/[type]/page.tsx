@@ -148,6 +148,111 @@ export default async function SearchPage({
     { title: location, href: "#", key: `location-${location}` },
   ];
 
+  // Generate dynamic, contextual headings
+  const generateDynamicHeading = (
+    type: string,
+    location: string,
+    searchParams: Record<string, string>,
+    resultCount: number,
+  ): string => {
+    const typeDisplay =
+      type === "rent" ? "Rental" : type === "sale" ? "Sale" : type;
+    const locationDisplay = location === "ghana" ? "Ghana" : location;
+
+    // Check for specific filters to make heading more specific
+    const propertyType = searchParams.ftype;
+    const bedrooms = searchParams.fbeds;
+    const bathrooms = searchParams.fbaths;
+    const minPrice = searchParams.fmin;
+    const maxPrice = searchParams.fmax;
+    const furnished = searchParams.fisfurnished;
+    const owner = searchParams.ffsbo;
+    const period = searchParams.frentperiod;
+
+    // Build contextual heading
+    let heading = `${typeDisplay} Properties`;
+
+    if (propertyType && propertyType !== "all") {
+      const propertyTypeMap: Record<string, string> = {
+        house: "Houses",
+        apartment: "Apartments",
+        office: "Office Spaces",
+        land: "Land Plots",
+        shop: "Shop Spaces",
+        warehouse: "Warehouses",
+      };
+      heading = `${propertyTypeMap[propertyType] ?? propertyType} for ${typeDisplay}`;
+    }
+
+    if (bedrooms && bedrooms !== "- Any -") {
+      heading = `${bedrooms} Bedroom ${heading}`;
+    }
+
+    if (furnished === "1") {
+      heading = `Furnished ${heading}`;
+    }
+
+    if (owner === "1") {
+      heading = `Owner-Direct ${heading}`;
+    }
+
+    if (period === "shortrent") {
+      heading = `Short-term ${heading}`;
+    }
+
+    heading += ` in ${locationDisplay}`;
+
+    return heading;
+  };
+
+  const generateDynamicSubheading = (
+    type: string,
+    location: string,
+    resultCount: number,
+    searchParams: Record<string, string>,
+  ): string => {
+    const typeDisplay =
+      type === "rent" ? "rental" : type === "sale" ? "sale" : type;
+    const locationDisplay = location === "ghana" ? "Ghana" : location;
+
+    // Check for price filters
+    const minPrice = searchParams.fmin;
+    const maxPrice = searchParams.fmax;
+
+    let subheading = `${resultCount} ${resultCount === 1 ? "property" : "properties"} found`;
+
+    if (minPrice || maxPrice) {
+      if (minPrice && maxPrice) {
+        subheading += ` from GH₵${Number(minPrice).toLocaleString()} to GH₵${Number(maxPrice).toLocaleString()}`;
+      } else if (minPrice) {
+        subheading += ` from GH₵${Number(minPrice).toLocaleString()}+`;
+      } else if (maxPrice) {
+        subheading += ` up to GH₵${Number(maxPrice).toLocaleString()}`;
+      }
+    }
+
+    // Add location context
+    if (location !== "ghana") {
+      subheading += ` in ${locationDisplay}`;
+    }
+
+    // Add property type context
+    const propertyType = searchParams.ftype;
+    if (propertyType && propertyType !== "all") {
+      const propertyTypeMap: Record<string, string> = {
+        house: "houses",
+        apartment: "apartments",
+        office: "office spaces",
+        land: "land plots",
+        shop: "shop spaces",
+        warehouse: "warehouses",
+      };
+      subheading += ` • ${propertyTypeMap[propertyType] ?? propertyType}`;
+    }
+
+    return subheading;
+  };
+
   // Generate structured data for search results
   const structuredData = {
     "@context": "https://schema.org",
@@ -155,7 +260,7 @@ export default async function SearchPage({
     name: `Properties for ${type} in ${location}`,
     description: `Search results for properties available for ${type} in ${location}`,
     url: `${siteConfig.url}/search/${type}?q=${encodeURIComponent(location)}`,
-    numberOfItems: searchData.resultcount || 0,
+    numberOfItems: searchData.resultcount ?? 0,
     itemListElement:
       searchData.results?.map((property, index) => ({
         "@type": "ListItem",
@@ -185,7 +290,7 @@ export default async function SearchPage({
             addressCountry: "Ghana",
           },
         },
-      })) || [],
+      })) ?? [],
   };
 
   return (
@@ -207,7 +312,7 @@ export default async function SearchPage({
           <HeroBannerSkeleton />
         )}
 
-        <div className="hidden md:block sticky top-[64px] z-50 bg-white">
+        <div className="hidden md:block sticky top-[56px] z-50 bg-white">
           <ResultSearchFilter />
         </div>
         <Shell className="mt-12 flex gap-8 md:px-0">
@@ -216,13 +321,24 @@ export default async function SearchPage({
             <Breadcrumbs className="capitalize" segments={segments} />
             <header>
               <h1 className="mt-2 text-lg font-bold leading-6 text-brand-accent capitalize md:text-xl">
-                Property for {type} in {location}
+                {generateDynamicHeading(
+                  type,
+                  location,
+                  resolvedSearchParams,
+                  searchData.resultcount,
+                )}
               </h1>
               <p className="mt-3 text-sm text-brand-muted">
-                {searchData.resultcount} properties found
+                {generateDynamicSubheading(
+                  type,
+                  location,
+                  searchData.resultcount,
+                  resolvedSearchParams,
+                )}
               </p>
             </header>
-            <div className="grid grid-cols-1 gap-8 lg:grid-cols-[736px,300px] mt-8 md:px-0">
+
+            <div className="grid grid-cols-1 gap-8 mt-8 md:px-0 lg:grid-cols-[minmax(0,736px)_1fr] w-full">
               <div>
                 {/* Streaming Flexi Banner - non-critical, loads progressively */}
                 <StreamingFlexiBannerWrapper />
