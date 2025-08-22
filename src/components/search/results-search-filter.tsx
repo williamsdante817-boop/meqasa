@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 
@@ -149,6 +149,7 @@ const SearchInput = ({
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [isInputFocused, setIsInputFocused] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const debouncedSearch = useCallback(
     (searchQuery: string) => {
@@ -220,9 +221,25 @@ const SearchInput = ({
   };
 
   const selectSuggestion = (location: string) => {
+    console.log("Selecting suggestion:", location); // Debug log
+
+    // Update the search value
     onSearchChange(location);
+
+    // Close suggestions and reset selection
     setShowSuggestions(false);
     setSelectedIndex(-1);
+
+    // Ensure the input stays focused after selection
+    setIsInputFocused(true);
+
+    // Focus the input after a small delay to ensure state update
+    setTimeout(() => {
+      if (inputRef.current) {
+        inputRef.current.focus();
+      }
+      console.log("After update - search value should be:", location);
+    }, 100);
   };
 
   // Handle clicks outside the component to close suggestions
@@ -232,6 +249,7 @@ const SearchInput = ({
       if (!target.closest(".search-input-container")) {
         setShowSuggestions(false);
         setSelectedIndex(-1);
+        setIsInputFocused(false);
       }
     };
 
@@ -246,6 +264,7 @@ const SearchInput = ({
       <div className="relative">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-brand-accent" />
         <Input
+          ref={inputRef}
           placeholder="Search location"
           value={searchValue}
           onChange={handleInputChange}
@@ -258,12 +277,8 @@ const SearchInput = ({
             }
           }}
           onBlur={() => {
-            setIsInputFocused(false);
-            // Small delay to allow for suggestion click
-            setTimeout(() => {
-              setShowSuggestions(false);
-              setSelectedIndex(-1);
-            }, 200);
+            // Don't immediately set focused to false to allow for suggestion clicks
+            // The click outside handler will manage this properly
           }}
           className="h-12 pl-10 bg-white shadow-none border-gray-200 text-brand-accent focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary focus-visible:outline-none"
         />
@@ -280,7 +295,10 @@ const SearchInput = ({
                     ? "bg-blue-50 text-blue-600"
                     : "text-brand-accent"
                 }`}
-                onClick={() => selectSuggestion(location)}
+                onMouseDown={(e) => {
+                  e.preventDefault(); // Prevent blur from firing
+                  selectSuggestion(location);
+                }}
               >
                 <div className="flex items-center">
                   <Search className="w-4 h-4 mr-3 text-gray-400" />

@@ -217,13 +217,27 @@ export async function POST(request: NextRequest) {
       const normalized: MeqasaSearchResponse = {
         ...raw,
         resultcount: (() => {
-          const count =
-            typeof raw.resultcount === "string"
-              ? parseInt(raw.resultcount, 10)
-              : raw.resultcount;
-          if (typeof count === "number" && Number.isFinite(count) && count > 0)
+          // First, try to get the resultcount from the API response
+          let count = raw.resultcount;
+
+          // Convert string to number if needed
+          if (typeof count === "string") {
+            count = parseInt(count, 10);
+          }
+
+          // If we have a valid number (including 0), use it
+          if (typeof count === "number" && Number.isFinite(count)) {
             return count;
-          return Array.isArray(raw.results) ? raw.results.length : 0;
+          }
+
+          // Fallback: if resultcount is missing/invalid, use the actual results length
+          // This handles cases where the API doesn't provide resultcount but has results
+          if (Array.isArray(raw.results)) {
+            return raw.results.length;
+          }
+
+          // Final fallback: no results
+          return 0;
         })(),
       };
 
@@ -232,6 +246,9 @@ export async function POST(request: NextRequest) {
         resultCount: normalized.resultcount,
         resultsLength: normalized.results.length,
         searchDesc: normalized.searchdesc,
+        // Log the raw resultcount from the API to debug production issues
+        rawResultCount: raw.resultcount,
+        rawResultCountType: typeof raw.resultcount,
         // Log first few results to see what type of properties are returned
         firstResult: normalized.results[0]
           ? {
@@ -409,19 +426,36 @@ export async function POST(request: NextRequest) {
       const normalized: MeqasaSearchResponse = {
         ...raw,
         resultcount: (() => {
-          const count =
-            typeof raw.resultcount === "string"
-              ? parseInt(raw.resultcount, 10)
-              : raw.resultcount;
-          if (typeof count === "number" && Number.isFinite(count) && count > 0)
+          // First, try to get the resultcount from the API response
+          let count = raw.resultcount;
+
+          // Convert string to number if needed
+          if (typeof count === "string") {
+            count = parseInt(count, 10);
+          }
+
+          // If we have a valid number (including 0), use it
+          if (typeof count === "number" && Number.isFinite(count)) {
             return count;
-          return Array.isArray(raw.results) ? raw.results.length : 0;
+          }
+
+          // Fallback: if resultcount is missing/invalid, use the actual results length
+          // This handles cases where the API doesn't provide resultcount but has results
+          if (Array.isArray(raw.results)) {
+            return raw.results.length;
+          }
+
+          // Final fallback: no results
+          return 0;
         })(),
       };
       console.log("LoadMore response:", {
         searchId: normalized.searchid,
         resultCount: normalized.resultcount,
         resultsLength: normalized.results.length,
+        // Log the raw resultcount from the API to debug production issues
+        rawResultCount: raw.resultcount,
+        rawResultCountType: typeof raw.resultcount,
         data: normalized,
       });
 
