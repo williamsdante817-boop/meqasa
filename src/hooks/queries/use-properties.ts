@@ -2,8 +2,8 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { queryConfig, queryKeys } from "@/lib/query-config";
-import { getFeaturedListings, type FeaturedListingsResponse } from "@/lib/get-featured-listings";
-import { getLatestListings, type LatestListingsResponse } from "@/lib/get-latest-listing";
+import type { FeaturedListingsResponse } from "@/lib/get-featured-listings";
+import type { LatestListingsResponse } from "@/lib/get-latest-listing";
 
 /**
  * Hook for fetching featured property listings
@@ -12,7 +12,7 @@ import { getLatestListings, type LatestListingsResponse } from "@/lib/get-latest
 export function useFeaturedListings(initialData?: FeaturedListingsResponse) {
   return useQuery({
     queryKey: queryKeys.properties.featured(),
-    queryFn: getFeaturedListings,
+    queryFn: () => fetch("/api/homepage/featured-listings").then(r => r.json()),
     ...queryConfig.properties, // 2min stale time, 10min cache
     // Override for featured content - slightly more aggressive refresh
     staleTime: process.env.NODE_ENV === "development" ? 30 * 1000 : 90 * 1000, // 30s dev, 90s prod
@@ -27,7 +27,7 @@ export function useFeaturedListings(initialData?: FeaturedListingsResponse) {
 export function useLatestListings(initialData?: LatestListingsResponse) {
   return useQuery({
     queryKey: queryKeys.properties.latest(),
-    queryFn: getLatestListings,
+    queryFn: () => fetch("/api/homepage/latest-listings").then(r => r.json()),
     ...queryConfig.properties,
     // Latest listings need to be fresher
     staleTime: process.env.NODE_ENV === "development" ? 15 * 1000 : 60 * 1000, // 15s dev, 60s prod
