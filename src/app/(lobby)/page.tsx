@@ -11,6 +11,7 @@ import { getStaticData } from "@/lib/static-data";
 import { LobbySkeleton } from "./_component/lobby-skeleton";
 import type { Metadata } from "next";
 import { siteConfig } from "@/config/site";
+import { sanitizeStructuredData } from "@/lib/dom-sanitizer";
 
 // Generate metadata for SEO
 export async function generateMetadata(): Promise<Metadata> {
@@ -113,44 +114,42 @@ export default async function HomePage() {
       {/* Structured Data for SEO */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "RealEstateAgent",
-            name: "MeQasa",
+        dangerouslySetInnerHTML={sanitizeStructuredData({
+          "@context": "https://schema.org",
+          "@type": "RealEstateAgent",
+          name: "MeQasa",
+          description:
+            "Ghana's leading real estate marketplace for properties for rent and sale",
+          url: siteConfig.url,
+          logo: `${siteConfig.url}/logo.png`,
+          sameAs: [
+            siteConfig.socialLinks.facebook,
+            siteConfig.socialLinks.twitter,
+            siteConfig.socialLinks.instagram,
+            siteConfig.socialLinks.youtube,
+          ],
+          address: {
+            "@type": "PostalAddress",
+            addressCountry: "Ghana",
+            addressLocality: "Accra",
+          },
+          contactPoint: {
+            "@type": "ContactPoint",
+            telephone: "+233-xxx-xxx-xxx",
+            email: siteConfig.email,
+            contactType: "customer service",
+          },
+          areaServed: {
+            "@type": "Country",
+            name: "Ghana",
+          },
+          hasOfferCatalog: {
+            "@type": "OfferCatalog",
+            name: "Properties for Rent and Sale",
             description:
-              "Ghana's leading real estate marketplace for properties for rent and sale",
-            url: siteConfig.url,
-            logo: `${siteConfig.url}/logo.png`,
-            sameAs: [
-              siteConfig.socialLinks.facebook,
-              siteConfig.socialLinks.twitter,
-              siteConfig.socialLinks.instagram,
-              siteConfig.socialLinks.youtube,
-            ],
-            address: {
-              "@type": "PostalAddress",
-              addressCountry: "Ghana",
-              addressLocality: "Accra",
-            },
-            contactPoint: {
-              "@type": "ContactPoint",
-              telephone: "+233-xxx-xxx-xxx",
-              email: siteConfig.email,
-              contactType: "customer service",
-            },
-            areaServed: {
-              "@type": "Country",
-              name: "Ghana",
-            },
-            hasOfferCatalog: {
-              "@type": "OfferCatalog",
-              name: "Properties for Rent and Sale",
-              description:
-                "Comprehensive listing of properties available for rent and sale in Ghana",
-            },
-          }),
-        }}
+              "Comprehensive listing of properties available for rent and sale in Ghana",
+          },
+        })}
       />
       <React.Suspense fallback={<LobbySkeleton />}>
         <Lobby

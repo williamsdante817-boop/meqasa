@@ -15,7 +15,7 @@ import { generateContextKey, useContactState } from "@/hooks/use-contact-state";
 import { parsePhoneNumber, isValidPhoneNumber } from "libphonenumber-js";
 import type { CountryCode } from "libphonenumber-js";
 import { Mail, MessageSquare } from "lucide-react";
-import { ImageWithFallback } from "@/components/image-with-fallback";
+import { ImageWithFallback } from "@/components/common/image-with-fallback";
 import { useEffect, useRef, useState, useReducer } from "react";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
@@ -25,7 +25,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
-import { AlertCard } from "@/components/alert-card";
+import { AlertCard } from "@/components/common/alert-card";
 
 interface ContactCardProps {
   name: string;

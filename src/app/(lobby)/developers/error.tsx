@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { AlertCard } from "@/components/alert-card";
+import { AlertCard } from "@/components/common/alert-card";
 import Shell from "@/layouts/shell";
 
 export default function DevelopersError({

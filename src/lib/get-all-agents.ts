@@ -18,6 +18,7 @@ interface BrokerObject {
   type: string;
   verified: string;
   listings: string;
+  id: string;
   socials: BrokerSocials;
 }
 

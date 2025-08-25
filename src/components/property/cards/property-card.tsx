@@ -6,11 +6,11 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { ListingDetails } from "@/types";
 import { Dot } from "lucide-react";
-import { AspectRatio } from "./ui/aspect-ratio";
-import { Badge } from "./ui/badge";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { Badge } from "@/components/ui/badge";
 import { buildInnerHtml, cn } from "@/lib/utils";
-import { AddFavoriteButton } from "./add-favorite-button";
-import { ImageWithFallback } from "./image-with-fallback";
+import { AddFavoriteButton } from "@/components/add-favorite-button";
+import { ImageWithFallback } from "@/components/common/image-with-fallback";
 
 export type Listing = Pick<
   ListingDetails,
@@ -110,7 +110,7 @@ export default function PropertyCard({
               onLoad={() => setIsLoading(false)}
               sizes="(max-width: 640px) 100vw, (max-width: 768px) 256px, (max-width: 1024px) 300px, 256px"
               fill
-              loading="lazy"
+              priority
               alt={altText}
               placeholder="blur"
               blurDataURL={blurDataURL}
@@ -162,26 +162,26 @@ export default function PropertyCard({
             <span className="text-base capitalize mb-1 text-brand-muted line-clamp-1">
               {streetaddress}
             </span>
-            <div className="mt-1 flex items-center text-base text-brand-muted">
+            <div className="mt-1 flex items-center text-base text-brand-muted flex-nowrap overflow-hidden">
               {Number.isFinite(bedsNum) && bedsNum > 0 && (
                 <>
-                  <span>{bedsNum} Beds</span>
+                  <span className="truncate">{bedsNum} Beds</span>
                   {(Number.isFinite(bathsNum) && bathsNum > 0) ||
                   (Number.isFinite(Number(garages)) && Number(garages) > 0) ? (
-                    <Dot className="h-[12px] w-[12px] text-brand-accent" />
+                    <Dot className="h-[12px] w-[12px] text-brand-accent flex-shrink-0" />
                   ) : null}
                 </>
               )}
               {Number.isFinite(bathsNum) && bathsNum > 0 && (
                 <>
-                  <span>{bathsNum} Baths</span>
+                  <span className="truncate">{bathsNum} Baths</span>
                   {Number.isFinite(Number(garages)) && Number(garages) > 0 ? (
-                    <Dot className="h-[12px] w-[12px] text-brand-accent" />
+                    <Dot className="h-[12px] w-[12px] text-brand-accent flex-shrink-0" />
                   ) : null}
                 </>
               )}
               {Number.isFinite(Number(garages)) && Number(garages) > 0 && (
-                <span>{garages} Parking</span>
+                <span className="truncate">{garages} Parking</span>
               )}
             </div>
           </div>

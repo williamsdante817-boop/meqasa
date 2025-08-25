@@ -2,8 +2,8 @@ export const dynamic = "force-dynamic";
 
 import { notFound } from "next/navigation";
 
-import { Breadcrumbs } from "@/components/bread-crumbs";
-import ContactCard from "@/components/contact-card";
+import { Breadcrumbs } from "@/components/layout/bread-crumbs";
+import ContactCard from "@/components/common/contact-card";
 import { AgentHeader } from "../_components/agent-header";
 import { AgentInfo } from "../_components/agent-info";
 import { AgentListings } from "../_components/agent-listings";

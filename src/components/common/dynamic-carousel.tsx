@@ -14,7 +14,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { ImageCarouselModal } from "@/components/image-carousel-modal";
 import { AddFavoriteButton } from "@/components/add-favorite-button";
-import { ImageWithFallback } from "@/components/image-with-fallback";
+import { ImageWithFallback } from "@/components/common/image-with-fallback";
 
 interface CarouselProps {
   isDeveloper?: boolean;

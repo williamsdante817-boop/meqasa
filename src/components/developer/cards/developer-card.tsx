@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { analytics } from "@/lib/analytics";
 import Link from "next/link";
 
-import { ImageWithFallback } from "@/components/image-with-fallback";
+import { ImageWithFallback } from "@/components/common/image-with-fallback";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -20,7 +20,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { formatNumber } from "@/lib/utils";
-import { DeveloperContactCard } from "@/components/developer-contact-card";
+import { DeveloperContactCard } from "@/components/developer/cards/developer-contact-card";
 
 // Constants
 const DEFAULT_CDN_URL = "https://dve7rykno93gs.cloudfront.net/uploads/imgs";
@@ -71,7 +71,10 @@ function DeveloperCardComponent({ developer, className }: DeveloperCardProps) {
 
   const developerDetailUrl = `/projects-by-developer/${developer.companyname.toLowerCase().replace(/\s+/g, "-")}-${developer.developerid}`;
 
-  const handleContactDeveloper = () => {
+  const handleContactDeveloper = (e: MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
     // Track user interaction
     if (typeof window !== "undefined") {
       analytics.trackEvent(
@@ -115,8 +118,12 @@ function DeveloperCardComponent({ developer, className }: DeveloperCardProps) {
         <div className="p-4 md:p-8">
           {/* Header Section */}
           <div className="flex flex-col sm:flex-row gap-6 mb-6">
-            {/* Logo/Avatar Section */}
-            <div className="flex-shrink-0">
+            {/* Logo/Avatar Section - Clickable */}
+            <Link
+              href={developerDetailUrl}
+              className="flex-shrink-0 hover:opacity-80 transition-opacity"
+              aria-label={`View details for ${developerName}`}
+            >
               <div
                 className="relative w-16 h-16 rounded-md overflow-hidden bg-gray-100 border border-gray-200"
                 role="img"
@@ -143,10 +150,14 @@ function DeveloperCardComponent({ developer, className }: DeveloperCardProps) {
                   quality={IMAGE_QUALITY}
                 />
               </div>
-            </div>
+            </Link>
 
-            {/* Developer Info Section */}
-            <div className="flex-1 min-w-0">
+            {/* Developer Info Section - Clickable */}
+            <Link
+              href={developerDetailUrl}
+              className="flex-1 min-w-0 hover:opacity-80 transition-opacity"
+              aria-label={`View details for ${developerName}`}
+            >
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
@@ -155,9 +166,9 @@ function DeveloperCardComponent({ developer, className }: DeveloperCardProps) {
                     </h2>
                   </div>
 
-                  <div className="flex items-center gap-2 text-brand-muted mb-3">
+                  <div className="flex items-center gap-2 text-brand-muted mb-3 flex-nowrap overflow-hidden">
                     <MapPin className="h-4 w-4 flex-shrink-0 text-brand-muted" />
-                    <span className="text-sm line-clamp-1">
+                    <span className="text-sm truncate">
                       {developer.address || "Location not available"}
                     </span>
                   </div>
@@ -188,12 +199,16 @@ function DeveloperCardComponent({ developer, className }: DeveloperCardProps) {
                   </Button>
                 </div>
               </div>
-            </div>
+            </Link>
           </div>
 
-          {/* Hero Image Section */}
+          {/* Hero Image Section - Clickable */}
           {developer.hero && (
-            <div className="mb-6">
+            <Link
+              href={developerDetailUrl}
+              className="block mb-6 hover:opacity-80 transition-opacity"
+              aria-label={`View details for ${developerName}`}
+            >
               <div className="relative w-full h-48 rounded-md overflow-hidden border bg-gray-100">
                 {heroLoading && !heroError && (
                   <Skeleton
@@ -216,25 +231,24 @@ function DeveloperCardComponent({ developer, className }: DeveloperCardProps) {
                   quality={IMAGE_QUALITY}
                 />
               </div>
-            </div>
+            </Link>
           )}
 
-          {/* Description Section */}
+          {/* Description Section - Clickable */}
           {developer.about && (
-            <div className="space-y-4">
-              <div className="text-brand-muted leading-relaxed line-clamp-3">
-                {developer.about}
+            <Link
+              href={developerDetailUrl}
+              className="block hover:opacity-80 transition-opacity"
+              aria-label={`View details for ${developerName}`}
+            >
+              <div className="space-y-4">
+                <div className="text-brand-muted leading-relaxed line-clamp-3">
+                  {developer.about}
+                </div>
               </div>
-            </div>
+            </Link>
           )}
         </div>
-
-        {/* Clickable overlay for navigation - positioned above content but below button */}
-        <Link
-          href={developerDetailUrl}
-          className="absolute inset-0 z-0"
-          aria-label={`View details for ${developerName}`}
-        />
       </Card>
 
       {/* Contact Dialog */}

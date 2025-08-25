@@ -5,14 +5,14 @@ import React, { useMemo } from "react";
 import { Icons } from "@/components/icons";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dot } from "lucide-react";
-import { AspectRatio } from "./ui/aspect-ratio";
-import { Badge } from "./ui/badge";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { SimilarUnit } from "@/lib/get-unit-details";
 import type { Unit } from "@/types";
-import { AddFavoriteButton } from "./add-favorite-button";
-import { ImageWithFallback } from "./image-with-fallback";
-import { Skeleton } from "./ui/skeleton";
+import { AddFavoriteButton } from "@/components/add-favorite-button";
+import { ImageWithFallback } from "@/components/common/image-with-fallback";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function UnitCard({ unit }: { unit: SimilarUnit | Unit }) {
   const [imageLoading, setImageLoading] = React.useState(true);
@@ -53,8 +53,7 @@ export default function UnitCard({ unit }: { unit: SimilarUnit | Unit }) {
               src={`https://meqasa.com/uploads/imgs/${unit.coverphoto}`}
               sizes="(min-width: 1024px) 20vw, (min-width: 768px) 25vw, (min-width: 640px) 33vw, (min-width: 475px) 50vw, 100vw"
               fill
-              priority={false}
-              loading="lazy"
+              priority
               alt={imageAlt}
               fallbackAlt={`Image placeholder for ${unit.title}`}
               onLoad={() => setImageLoading(false)}
@@ -89,18 +88,18 @@ export default function UnitCard({ unit }: { unit: SimilarUnit | Unit }) {
             <span className="text-sm capitalize text-brand-muted line-clamp-1">
               {unit.address}, {unit.city}
             </span>
-            <div className="mt-1 flex items-center text-sm text-brand-muted">
-              <span>{unit.beds} Beds</span>
+            <div className="mt-1 flex items-center text-sm text-brand-muted flex-nowrap overflow-hidden">
+              <span className="truncate">{unit.beds} Beds</span>
               <Dot
-                className="h-[12px] w-[12px] text-brand-accent"
+                className="h-[12px] w-[12px] text-brand-accent flex-shrink-0"
                 aria-hidden="true"
               />
-              <span>{unit.baths} Baths</span>
+              <span className="truncate">{unit.baths} Baths</span>
               <Icons.dot
-                className="h-[12px] w-[12px] text-brand-accent"
+                className="h-[12px] w-[12px] text-brand-accent flex-shrink-0"
                 aria-hidden="true"
               />
-              <span>{unit.floorarea} m²</span>
+              <span className="truncate">{unit.floorarea} m²</span>
             </div>
           </div>
         </CardContent>

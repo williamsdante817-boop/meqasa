@@ -23,8 +23,8 @@ import {
 } from "@/components/ui/tooltip";
 import { Skeleton } from "@/components/ui/skeleton";
 import { buildInnerHtml, cn } from "@/lib/utils";
-import { DeveloperContactCard } from "@/components/developer-contact-card";
-import { ImageWithFallback } from "@/components/image-with-fallback";
+import { DeveloperContactCard } from "@/components/developer/cards/developer-contact-card";
+import { ImageWithFallback } from "@/components/common/image-with-fallback";
 
 // TypeScript interfaces for the data structure
 interface Owner {
@@ -146,7 +146,7 @@ export function PremiumPlusPropertyCard({
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-3 p-4">
+      <CardContent className="space-y-3">
         {/* Property Title */}
         <h3 className="line-clamp-2 font-bold text-brand-primary transition-colors group-hover:text-brand-accent">
           <Link
@@ -234,13 +234,13 @@ export function PremiumPlusPropertyCard({
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center gap-8">
+        <div className="flex items-center gap-4">
           <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
               <Button
                 variant="outline"
                 size="icon"
-                className="h-9 w-9 text-brand-accent"
+                className="h-9 w-9 text-brand-accent shadow-none"
                 aria-label={`Contact ${ownerName}`}
               >
                 <Phone className="h-4 w-4" />

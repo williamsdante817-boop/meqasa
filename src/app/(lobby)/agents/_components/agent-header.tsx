@@ -1,6 +1,6 @@
 "use client";
 
-import { ImageWithFallback } from "@/components/image-with-fallback";
+import { ImageWithFallback } from "@/components/common/image-with-fallback";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Building2, CheckCircle, MapPin, Share } from "lucide-react";

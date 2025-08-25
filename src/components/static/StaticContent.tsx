@@ -1,8 +1,8 @@
 import { InfiniteMovingCards } from "@/components/infinite-moving-card";
-import ContentSection from "@/components/content-section";
-import BlogCard from "@/components/blog-card";
+import ContentSection from "@/components/layout/content-section";
+import BlogCard from "@/components/common/blog-card";
 import MarketNewsCard from "@/components/market-news-card";
-import LocationCard from "@/components/location-card";
+import LocationCard from "@/components/common/location-card";
 import SeoText from "@/components/seo-text";
 import AppPromotion from "@/components/app-promotion";
 import Shell from "@/layouts/shell";
@@ -45,7 +45,7 @@ export function StaticBlogSection({ staticData }: StaticContentProps) {
       title="Property Guides & Insights"
       description="Read our blog"
       href="/blog"
-      className="pt-14 md:pt-20 lg:pt-24 flex-[2]"
+      className="pt-14 md:pt-20 lg:pt-24 flex-[2] px-4 md:px-0"
       border
     >
       {staticData.blogData.map((blog, index) => (
@@ -87,7 +87,7 @@ export function StaticLocationSection({ staticData }: StaticContentProps) {
       title="Choice Neighborhoods"
       description="These neighborhoods are highly desirable for business, living, and pleasure. Find out why!"
       href="/"
-      className="pt-14 md:pt-20 lg:pt-24 flex-[2] w-full "
+      className="pt-14 md:pt-20 lg:pt-24 flex-[2] w-full [&_p]:px-4 [&_h2]:px-4 md:[&_p]:px-0 md:[&_h2]:px-0"
     >
       <div
         className="overflow-x-auto lg:overflow-visible"

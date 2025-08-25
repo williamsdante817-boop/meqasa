@@ -30,6 +30,8 @@ export default function PropertyCard({ property }: PropertyCardProps) {
           alt={property.summary}
           fill
           className="object-cover rounded-t-lg"
+          sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 300px"
+          priority
         />
         {property.availability === "furnished" && (
           <span className="absolute top-2 right-2 bg-[#cf007a] text-white px-2 py-1 rounded text-sm">

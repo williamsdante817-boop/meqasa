@@ -12,8 +12,8 @@ import {
   type CarouselApi,
 } from "@/components/ui/carousel";
 import type { FeaturedProject } from "@/types";
-import FeaturedPropertyCard from "./featured-property-variant";
-import { Card } from "./ui/card";
+import FeaturedPropertyCard from "@/components/property/cards/featured-property-variant";
+import { Card } from "@/components/ui/card";
 
 export default function FeaturedProjectsCarousel({
   properties,
@@ -83,14 +83,14 @@ export default function FeaturedProjectsCarousel({
         aria-label="Featured Projects Carousel"
       >
         <CarouselContent
-          className="-ml-4 lg:pt-4"
+          className="-ml-1 lg:pt-4"
           role="list"
           aria-label="Featured Projects List"
         >
           {properties.map((item, index) => (
             <CarouselItem
               key={item.projectid}
-              className="basis-[88%] md:basis-[44%] pl-4"
+              className={`basis-[88%] md:basis-[44%] ${index === 0 ? "md:pl-0" : ""}`}
               role="listitem"
               aria-label={`Featured Project ${index + 1} of ${properties.length}`}
             >

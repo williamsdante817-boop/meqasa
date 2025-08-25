@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
-import { ImageCarouselModal } from "./image-carousel-modal";
+import { ImageCarouselModal } from "@/components/image-carousel-modal";
 import { ImageIcon } from "lucide-react";
 import { preloadImages } from "@/lib/image-preload";
 

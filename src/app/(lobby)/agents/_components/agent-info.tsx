@@ -57,18 +57,21 @@ export function AgentInfo({ agent }: AgentInfoProps) {
             )}
           </h1>
           {agent.locality ? (
-            <p className="text-l mt-2 flex items-center gap-2 text-brand-muted">
-              <MapPin className="h-5 w-5 text-brand-primary" strokeWidth="1.3" />
-              {agent.locality}
+            <p className="text-l mt-2 flex items-center gap-2 text-brand-muted flex-nowrap overflow-hidden">
+              <MapPin
+                className="h-5 w-5 text-brand-primary flex-shrink-0"
+                strokeWidth="1.3"
+              />
+              <span className="truncate">{agent.locality}</span>
             </p>
           ) : null}
           {agent.company ? (
-            <p className="text-l mt-2 flex items-center gap-2 text-brand-muted">
+            <p className="text-l mt-2 flex items-center gap-2 text-brand-muted flex-nowrap overflow-hidden">
               <Building
-                className="h-5 w-5 text-brand-primary"
+                className="h-5 w-5 text-brand-primary flex-shrink-0"
                 strokeWidth="1.3"
               />
-              {agent.company}
+              <span className="truncate">{agent.company}</span>
             </p>
           ) : null}
         </div>

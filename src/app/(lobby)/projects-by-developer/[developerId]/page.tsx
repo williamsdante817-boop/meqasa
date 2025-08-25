@@ -1,11 +1,11 @@
-import { Breadcrumbs } from "@/components/bread-crumbs";
-import ContactCard from "@/components/contact-card";
-import ContentSection from "@/components/content-section";
+import { Breadcrumbs } from "@/components/layout/bread-crumbs";
+import ContactCard from "@/components/common/contact-card";
+import ContentSection from "@/components/layout/content-section";
 import Shell from "@/layouts/shell";
 import { buildInnerHtml } from "@/lib/utils";
 import { getDeveloperProfile } from "@/lib/get-developer-profile";
 import { CheckCircle, MapPin } from "lucide-react";
-import { ImageWithFallback } from "@/components/image-with-fallback";
+import { ImageWithFallback } from "@/components/common/image-with-fallback";
 import { DeveloperTabs } from "../_component/developer-tabs";
 import ClientReviews from "../_component/client-reviews";
 import { notFound } from "next/navigation";

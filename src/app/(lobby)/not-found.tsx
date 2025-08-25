@@ -1,4 +1,4 @@
-import { ErrorCard } from "@/components/error-card";
+import { ErrorCard } from "@/components/common/error-card";
 import Shell from "@/layouts/shell";
 
 export default function NotFound() {

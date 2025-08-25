@@ -29,6 +29,7 @@ type Agent = {
   locality: string;
   type: string;
   verified: string;
+  id: string;
   listings: string;
   socials: AgentSocials;
 };
@@ -36,6 +37,7 @@ type Agent = {
 interface AgentsListProps {
   agents: Agent[];
 }
+
 
 const PAGE_SIZE = 16;
 const PAGINATION_THRESHOLD = 5;
@@ -62,34 +64,38 @@ function getPaginationItems(current: number, total: number) {
 
 export function AgentsList({ agents }: AgentsListProps) {
   const [currentPage, setCurrentPage] = useState(1);
-  const [isPaginationLoading, setIsPaginationLoading] = useState(false);
-  const paginationClickedRef = useRef(false);
   const agentsTopRef = useRef<HTMLDivElement>(null);
 
-  const totalPages = Math.ceil(agents.length / PAGE_SIZE);
+  // Ensure agents is an array and has content
+  const validAgents = Array.isArray(agents) ? agents : [];
+  const totalPages = Math.ceil(validAgents.length / PAGE_SIZE);
 
   const visibleAgents = useMemo(() => {
     const startIndex = (currentPage - 1) * PAGE_SIZE;
     const endIndex = startIndex + PAGE_SIZE;
-    return agents.slice(startIndex, endIndex);
-  }, [agents, currentPage]);
+    return validAgents.slice(startIndex, endIndex);
+  }, [validAgents, currentPage]);
+
+  console.log("AgentsListProps", agents);
+
+
+  // Reset to first page when agents data changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [validAgents]);
 
   // Scroll to top of agents section when pagination button is clicked
   useEffect(() => {
-    if (paginationClickedRef.current && agentsTopRef.current) {
+    if (agentsTopRef.current) {
       agentsTopRef.current.scrollIntoView({ behavior: "smooth" });
-      paginationClickedRef.current = false;
     }
   }, [currentPage]);
 
   const handlePageChange = useCallback(
     (pageNumber: number) => {
+      console.log("handlePageChange called with:", pageNumber);
       if (pageNumber >= 1 && pageNumber <= totalPages) {
-        paginationClickedRef.current = true;
-        setIsPaginationLoading(true);
         setCurrentPage(pageNumber);
-        // Reset loading state after a short delay to allow for smooth scrolling
-        setTimeout(() => setIsPaginationLoading(false), 100);
       }
     },
     [totalPages],
@@ -99,10 +105,10 @@ export function AgentsList({ agents }: AgentsListProps) {
   if (totalPages <= 1) {
     return (
       <div className="flex flex-col gap-6">
-        {visibleAgents.map((agent) => (
+        {visibleAgents.map((agent, index) => (
           <AgentCard
-            key={agent.name}
-            id={agent.photo}
+            key={`${agent.name}-${agent.photo}-${index}`}
+            id={agent.id}
             name={agent.name}
             logo={agent.logo}
             location={agent.locality}
@@ -122,10 +128,17 @@ export function AgentsList({ agents }: AgentsListProps) {
       {/* Reference point for scrolling to top */}
       <div ref={agentsTopRef} />
 
-      {visibleAgents.map((agent) => (
+      {/* Page info */}
+      <div className="text-sm text-muted-foreground text-center">
+        Showing {(currentPage - 1) * PAGE_SIZE + 1} to{" "}
+        {Math.min(currentPage * PAGE_SIZE, validAgents.length)} of{" "}
+        {validAgents.length} agents
+      </div>
+
+      {visibleAgents.map((agent, index) => (
         <AgentCard
-          key={agent.name}
-          id={agent.photo}
+          key={`${agent.name}-${agent.photo}-${currentPage}-${index}`}
+          id={agent.id}
           name={agent.name}
           logo={agent.logo}
           location={agent.locality}
@@ -138,45 +151,57 @@ export function AgentsList({ agents }: AgentsListProps) {
       ))}
 
       {/* Pagination */}
-      <div className="mt-6 flex justify-center">
-        <Pagination>
+      <div className="mt-6 flex justify-center relative z-10">
+        <Pagination className="isolate">
           <PaginationContent>
             <PaginationItem>
               <PaginationPrevious
-                href="#"
                 onClick={(e) => {
+                  console.log("Previous button clicked");
                   e.preventDefault();
-                  if (currentPage > 1 && !isPaginationLoading) {
+                  e.stopPropagation();
+                  if (currentPage > 1) {
                     handlePageChange(currentPage - 1);
                   }
                 }}
-                aria-disabled={currentPage === 1 || isPaginationLoading}
+                aria-disabled={currentPage === 1}
                 aria-label={`Go to previous page (${currentPage - 1})`}
-                className={
-                  currentPage === 1 || isPaginationLoading
-                    ? "opacity-50 cursor-not-allowed"
+                className={`cursor-pointer ${
+                  currentPage === 1
+                    ? "opacity-50 cursor-not-allowed pointer-events-none"
                     : ""
-                }
+                }`}
+                style={{
+                  pointerEvents: currentPage === 1 ? "none" : "auto",
+                  textDecoration: "none",
+                  userSelect: "none",
+                }}
               />
             </PaginationItem>
 
             {getPaginationItems(currentPage, totalPages).map((item, idx) => (
-              <PaginationItem key={idx}>
+              <PaginationItem key={`page-${item}-${idx}`}>
                 {item === "start-ellipsis" || item === "end-ellipsis" ? (
                   <PaginationEllipsis />
                 ) : (
                   <PaginationLink
-                    href="#"
-                    isActive={currentPage === item}
                     onClick={(e) => {
+                      console.log("Page number clicked:", item);
                       e.preventDefault();
-                      if (currentPage !== item && !isPaginationLoading) {
+                      e.stopPropagation();
+                      if (currentPage !== item) {
                         handlePageChange(item as number);
                       }
                     }}
-                    className="text-brand-accent shadow-none"
+                    isActive={currentPage === item}
+                    className="text-brand-accent shadow-none cursor-pointer"
                     aria-label={`Go to page ${item}`}
                     aria-current={currentPage === item ? "page" : undefined}
+                    style={{
+                      pointerEvents: "auto",
+                      textDecoration: "none",
+                      userSelect: "none",
+                    }}
                   >
                     {item}
                   </PaginationLink>
@@ -186,22 +211,26 @@ export function AgentsList({ agents }: AgentsListProps) {
 
             <PaginationItem>
               <PaginationNext
-                href="#"
                 onClick={(e) => {
+                  console.log("Next button clicked");
                   e.preventDefault();
-                  if (currentPage < totalPages && !isPaginationLoading) {
+                  e.stopPropagation();
+                  if (currentPage < totalPages) {
                     handlePageChange(currentPage + 1);
                   }
                 }}
-                aria-disabled={
-                  currentPage === totalPages || isPaginationLoading
-                }
+                aria-disabled={currentPage === totalPages}
                 aria-label={`Go to next page (${currentPage + 1})`}
-                className={
-                  currentPage === totalPages || isPaginationLoading
-                    ? "opacity-50 cursor-not-allowed"
+                className={`cursor-pointer ${
+                  currentPage === totalPages
+                    ? "opacity-50 cursor-not-allowed pointer-events-none"
                     : ""
-                }
+                }`}
+                style={{
+                  pointerEvents: currentPage === totalPages ? "none" : "auto",
+                  textDecoration: "none",
+                  userSelect: "none",
+                }}
               />
             </PaginationItem>
           </PaginationContent>

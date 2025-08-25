@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { Slot } from "@radix-ui/react-slot";
 import React from "react";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 interface ContentSectionProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -59,7 +59,7 @@ export default function ContentSection({
 
   return (
     <section
-      className={cn("space-y-6 w-full mx-auto px-4 max-w-[1120px]", className)}
+      className={cn("space-y-6 w-full mx-auto max-w-[1120px]", className)}
       aria-labelledby={`${uniqueId}-title`}
       {...props}
     >

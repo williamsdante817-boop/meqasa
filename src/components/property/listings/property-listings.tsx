@@ -8,12 +8,12 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { useMemo } from "react";
-import type { Listing } from "./property-card";
-import PropertyCard from "./property-card";
-import UnitCard from "./unit-card";
+import type { Listing } from "../cards/property-card";
+import PropertyCard from "../cards/property-card";
+import UnitCard from "../cards/unit-card";
 import type { ListingDetails } from "@/types";
 import type { SimilarUnit } from "@/lib/get-unit-details";
-import { AlertCard } from "@/components/alert-card";
+import { AlertCard } from "@/components/common/alert-card";
 
 export default function PropertyListings({
   listings,
@@ -62,7 +62,7 @@ export default function PropertyListings({
         aria-label="Property listings carousel"
       >
         <CarouselContent
-          className="-ml-1"
+          className="-ml-1" 
           role="list"
           aria-label="Property listings"
         >

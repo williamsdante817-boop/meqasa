@@ -2,7 +2,7 @@
 
 import { MessageSquare, Phone, Mail, CheckCircle, Copy } from "lucide-react";
 import { useState, useEffect } from "react";
-import { ImageWithFallback } from "@/components/image-with-fallback";
+import { ImageWithFallback } from "@/components/common/image-with-fallback";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

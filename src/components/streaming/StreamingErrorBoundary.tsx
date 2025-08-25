@@ -1,7 +1,7 @@
 "use client";
 
 import React, { Suspense } from "react";
-import { AlertCard } from "@/components/alert-card";
+import { AlertCard } from "@/components/common/alert-card";
 import { AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import Shell from "@/layouts/shell";

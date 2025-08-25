@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { RectangleBannerSkeleton } from "./BannerSkeleton";
 import RealEstateAd from "./ad";
+import { sanitizeRichHtmlToInnerHtml } from "@/lib/dom-sanitizer";
 
 // Streaming Rectangle Banners Component
 async function StreamingRectangleBanners() {
@@ -34,7 +35,7 @@ async function StreamingFlexiBanner() {
       className="mb-8 border border-orange-300 rounded-lg shadow-sm overflow-hidden"
       role="banner"
       aria-label="Flexi banner showcasing featured projects"
-      dangerouslySetInnerHTML={{ __html: flexiBanner }}
+      dangerouslySetInnerHTML={sanitizeRichHtmlToInnerHtml(flexiBanner)}
     />
   );
 }

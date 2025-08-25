@@ -7,7 +7,7 @@ import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { PlaceholderImage } from "@/components/placeholder-image";
+import { PlaceholderImage } from "@/components/common/placeholder-image";
 import { shimmer, toBase64 } from "@/lib/utils";
 import type { MeqasaEmptyProject, MeqasaProject } from "@/types/meqasa";
 

@@ -2,8 +2,8 @@ import Link from "next/link";
 import { siteConfig } from "@/config/site";
 import type { SiteConfig } from "@/types";
 import Shell from "@/layouts/shell";
-import ScrollTotop from "./scroll-to-top";
-import PropertyAlertsForm from "./property-alerts-form";
+import ScrollTotop from "@/components/scroll-to-top";
+import PropertyAlertsForm from "@/components/property/forms/property-alerts-form";
 
 function isExternalHref(href: string): boolean {
   return (

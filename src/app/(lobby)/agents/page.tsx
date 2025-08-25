@@ -1,7 +1,7 @@
 import { getAllAgents } from "@/lib/get-all-agents";
 
 import Shell from "@/layouts/shell";
-import { Breadcrumbs } from "@/components/bread-crumbs";
+import { Breadcrumbs } from "@/components/layout/bread-crumbs";
 import AgentSearch from "./_components/agent-search";
 import { AgentsFAQ } from "./_components/agent-faqs";
 import { AgentsList } from "./_components/agents-list";
@@ -75,6 +75,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function AgentsPage() {
   const { list: agents } = await getAllAgents();
+
+  
 
   console.log("Agents Data:", agents);
 

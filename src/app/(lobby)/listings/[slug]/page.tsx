@@ -1,29 +1,30 @@
-import { Breadcrumbs } from "@/components/bread-crumbs";
+import { Breadcrumbs } from "@/components/layout/bread-crumbs";
 import Shell from "@/layouts/shell";
 
-import { AlertCard } from "@/components/alert-card";
+import { AlertCard } from "@/components/common/alert-card";
 import Amenities from "@/components/amenities";
-import ContactCard from "@/components/contact-card";
+import ContactCard from "@/components/common/contact-card";
 import ContactSection from "@/components/contact-section";
-import ContentSection from "@/components/content-section";
-import { DynamicCarousel } from "@/components/dynamic-carousel";
+import ContentSection from "@/components/layout/content-section";
+import { DynamicCarousel } from "@/components/common/dynamic-carousel";
 import { Icons } from "@/components/icons";
 import LeaseOptions from "@/components/lease-option";
 import MortgageCalculator from "@/components/mortgage-calculator";
-import PropertyDetailsTable from "@/components/property-details";
+import PropertyDetailsTable from "@/components/property/details/property-details";
 import PropertyFavoritesBanner from "@/components/property-favorite-banner";
-import PropertyInsight from "@/components/property-insight";
-import PropertyListings from "@/components/property-listings";
-import PropertyShowcase from "@/components/property-showcase";
+import PropertyInsight from "@/components/property/details/property-insight";
+import PropertyListings from "@/components/property/listings/property-listings";
+import PropertyShowcase from "@/components/property/details/property-showcase";
 import SafetyTipsCard from "@/components/safety-tip";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { getListingDetails } from "@/lib/get-listing-detail";
-import { cn, formatNumber, sanitizeHtmlString } from "@/lib/utils";
+import { cn, formatNumber } from "@/lib/utils";
+import { sanitizeHtml } from "@/lib/dom-sanitizer";
 import { BathIcon, BedIcon, ParkingSquare, Square } from "lucide-react";
 import Link from "next/link";
 import ProjectVideo from "../../development-projects/_component/project-video";
-import { ErrorCard } from "@/components/error-card";
+import { ErrorCard } from "@/components/common/error-card";
 import type { Metadata } from "next";
 import { siteConfig } from "@/config/site";
 
@@ -294,10 +295,10 @@ export default async function DetailsPage({
           : false;
 
     const safePriceHtml = {
-      __html: sanitizeHtmlString(listingDetail.price ?? ""),
+      __html: sanitizeHtml(listingDetail.price ?? ""),
     } satisfies { __html: string };
     const safeDescriptionHtml = {
-      __html: sanitizeHtmlString(listingDetail.description ?? ""),
+      __html: sanitizeHtml(listingDetail.description ?? ""),
     } satisfies { __html: string };
 
     const propertyDetails = [
@@ -525,7 +526,7 @@ export default async function DetailsPage({
                   title="Description"
                   description=""
                   href="/listings"
-                  className="pt-14 md:pt-20 px-0 pb-10 md:pb-0"
+                  className="pt-14 md:pt-20 px-0 pb-10 overflow-hidden md:pb-0"
                   btnHidden
                 >
                   {listingDetail?.description &&

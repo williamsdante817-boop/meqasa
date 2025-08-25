@@ -1,8 +1,8 @@
 "use client";
 
-import { AlertCard } from "@/components/alert-card";
+import { AlertCard } from "@/components/common/alert-card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import UnitCard from "@/components/unit-card";
+import UnitCard from "@/components/property/cards/unit-card";
 import type { DeveloperDetails, Project, Unit } from "@/types";
 import React from "react";
 import { ProjectCard } from "./project-card";

@@ -3,8 +3,8 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PropertyListings from "./property-listings";
 import { useMemo } from "react";
-import { AlertCard } from "@/components/alert-card";
-import type { Listing } from "./property-card";
+import { AlertCard } from "@/components/common/alert-card";
+import type { Listing } from "../cards/property-card";
 
 interface LatestListingsTabProps {
   rentListings: Listing[];
@@ -33,7 +33,7 @@ export function LatestListingsTab({
         onTabChange?.(value);
       }}
     >
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex items-center justify-between gap-4 mx-4 md:mx-0">
         <TabsList
           className="grid w-full md:w-[400px] grid-cols-2"
           aria-label="Property listing categories"

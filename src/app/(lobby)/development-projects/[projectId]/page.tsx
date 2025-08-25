@@ -1,4 +1,4 @@
-import { Breadcrumbs } from "@/components/bread-crumbs";
+import { Breadcrumbs } from "@/components/layout/bread-crumbs";
 import { Badge } from "@/components/ui/badge";
 import Shell from "@/layouts/shell";
 import { CheckCircle, MapPin } from "lucide-react";

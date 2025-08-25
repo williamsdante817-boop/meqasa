@@ -77,7 +77,7 @@ function Slides({ image }: { image: string }) {
     <CarouselItem className="h-full w-full min-w-full flex-1">
       <div className="p-0">
         <Card className="rounded-none border-0">
-          <CardContent className="flex h-[250px] items-center justify-center p-0 lg:h-[457px] relative">
+          <CardContent className="flex aspect-[16/9] items-center justify-center p-0 relative">
             {/* <Image
             alt="test"
             src={img}

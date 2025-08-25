@@ -4,12 +4,12 @@ import React from "react";
 import Link from "next/link";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { AspectRatio } from "./ui/aspect-ratio";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Calendar } from "lucide-react";
-import { PlaceholderImage } from "./placeholder-image";
-import { ImageWithFallback } from "@/components/image-with-fallback";
+import { PlaceholderImage } from "@/components/common/placeholder-image";
+import { ImageWithFallback } from "@/components/common/image-with-fallback";
 import { cn } from "@/lib/utils";
-import { Skeleton } from "./ui/skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function BlogCard({
   datePosted,

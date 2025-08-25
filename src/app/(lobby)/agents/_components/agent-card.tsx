@@ -14,8 +14,8 @@ import type { MouseEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
-import { DeveloperContactCard } from "@/components/developer-contact-card";
-import { ImageWithFallback } from "@/components/image-with-fallback";
+import { DeveloperContactCard } from "@/components/developer/cards/developer-contact-card";
+import { ImageWithFallback } from "@/components/common/image-with-fallback";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -163,9 +163,14 @@ export function AgentCard({
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
-                    <h2 className="text-brand-accent font-semibold text-xl line-clamp-1">
-                      {agentName}
-                    </h2>
+                    <Link
+                      href={agentDetailUrl}
+                      className="hover:text-brand-accent-darken transition-colors duration-200"
+                    >
+                      <h2 className="text-brand-accent font-semibold text-xl line-clamp-1">
+                        {agentName}
+                      </h2>
+                    </Link>
                     {isVerified === true ||
                     isVerified === "plus" ||
                     isVerified === "basic" ? (
@@ -189,9 +194,9 @@ export function AgentCard({
                     )}
                   </div>
 
-                  <div className="flex items-center gap-2 text-brand-muted mb-3">
+                  <div className="flex items-center gap-2 text-brand-muted mb-3 flex-nowrap overflow-hidden">
                     <MapPin className="h-4 w-4 flex-shrink-0 text-brand-muted" />
-                    <span className="text-sm line-clamp-1">
+                    <span className="text-sm truncate">
                       {location || "Location not available"}
                     </span>
                   </div>
@@ -248,12 +253,16 @@ export function AgentCard({
             </div>
           )}
 
-          {/* Clickable overlay for navigation - positioned above content but below button */}
-          <Link
-            href={agentDetailUrl}
-            className="absolute inset-0 z-0"
-            aria-label={`View details for ${agentName}`}
-          />
+          {/* Navigation link - only for the agent name and info area */}
+          <div className="mt-4">
+            <Link
+              href={agentDetailUrl}
+              className="inline-flex items-center text-brand-accent hover:text-brand-accent-darken transition-colors duration-200 font-medium"
+              aria-label={`View details for ${agentName}`}
+            >
+              View Details →
+            </Link>
+          </div>
         </div>
       </Card>
 

@@ -1,4 +1,4 @@
-import { Breadcrumbs } from "@/components/bread-crumbs";
+import { Breadcrumbs } from "@/components/layout/bread-crumbs";
 import { HeroBannerSkeleton } from "@/components/search/BannerSkeleton";
 import { HeroBanner } from "@/components/search/HeroBanner";
 import PropertyTypeLinks from "@/components/search/PropertyTypeLinks";

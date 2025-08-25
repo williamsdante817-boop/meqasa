@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { PlaceholderImage } from "@/components/placeholder-image";
+import { PlaceholderImage } from "@/components/common/placeholder-image";
 
 interface PropertyPlanProps {
   className?: string;

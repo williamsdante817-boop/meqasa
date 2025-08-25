@@ -1,5 +1,5 @@
 "use client";
-import { ErrorCard } from "@/components/error-card";
+import { ErrorCard } from "@/components/common/error-card";
 import Shell from "@/layouts/shell";
 import React from "react";
 

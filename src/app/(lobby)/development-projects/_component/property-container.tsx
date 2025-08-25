@@ -1,15 +1,16 @@
 "use client";
-import { AlertCard } from "@/components/alert-card";
+import { AlertCard } from "@/components/common/alert-card";
 import Amenities from "@/components/amenities";
-import ContactCard from "@/components/contact-card";
+import ContactCard from "@/components/common/contact-card";
 import ContactSection from "@/components/contact-section";
-import ContentSection from "@/components/content-section";
-import PropertyDetailsTable from "@/components/property-details";
-import PropertyListings from "@/components/property-listings";
-import PropertyShowcase from "@/components/property-showcase";
+import ContentSection from "@/components/layout/content-section";
+import PropertyDetailsTable from "@/components/property/details/property-details";
+import PropertyListings from "@/components/property/listings/property-listings";
+import PropertyShowcase from "@/components/property/details/property-showcase";
 import { Badge } from "@/components/ui/badge";
 import Shell from "@/layouts/shell";
-import { buildInnerHtml, cn, formatPrice } from "@/lib/utils";
+import { cn, formatPrice } from "@/lib/utils";
+import { sanitizeRichHtmlToInnerHtml } from "@/lib/dom-sanitizer";
 import type { DeveloperProject } from "@/types";
 import { Dot, MapPin, AlertCircle, RefreshCw } from "lucide-react";
 import { useRef, useMemo, Component, type ReactNode } from "react";
@@ -169,7 +170,9 @@ function validateProjectData(data: DeveloperProject): {
 function useProjectDataTransformers(projectData: DeveloperProject) {
   return useMemo(
     () => ({
-      markup: buildInnerHtml(projectData.project?.aboutproject ?? ""),
+      markup: sanitizeRichHtmlToInnerHtml(
+        projectData.project?.aboutproject ?? "",
+      ),
       unityTypes: (projectData.unittypes ?? []).map(
         (unitType) => unitType.type + " ",
       ),

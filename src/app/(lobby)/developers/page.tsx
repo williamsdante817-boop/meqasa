@@ -1,13 +1,13 @@
 import Shell from "@/layouts/shell";
-import { DeveloperCard } from "@/components/developer-card";
+import { DeveloperCard } from "@/components/developer/cards/developer-card";
 import SearchInput from "@/components/search-input";
 import { getDevelopers } from "@/lib/get-developers";
-import { Breadcrumbs } from "@/components/bread-crumbs";
+import { Breadcrumbs } from "@/components/layout/bread-crumbs";
 import { Suspense } from "react";
 import { StreamingErrorBoundary } from "@/components/streaming/StreamingErrorBoundary";
-import { DevelopersSkeleton } from "@/components/developers/developers-skeleton";
-import { EmptyDevelopersState } from "@/components/developers/empty-developers-state";
-import { ErrorFallback } from "@/components/developers/error-fallback";
+import { DevelopersSkeleton } from "@/components/developer/developers/developers-skeleton";
+import { EmptyDevelopersState } from "@/components/developer/developers/empty-developers-state";
+import { ErrorFallback } from "@/components/developer/developers/error-fallback";
 import { analytics } from "@/lib/analytics";
 
 export const metadata = {

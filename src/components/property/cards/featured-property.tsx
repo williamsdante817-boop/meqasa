@@ -6,7 +6,7 @@
 // import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 // import type { Listing } from "@/types";
 // import { AspectRatio } from "@radix-ui/react-aspect-ratio";
-// import { PlaceholderImage } from "./placeholder-image";
+// import { PlaceholderImage } from "@/components/common/placeholder-image";
 // import { useState } from "react";
 
 // export default function FeaturedProperty({ item }: { item: Listing }) {

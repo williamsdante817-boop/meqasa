@@ -5,7 +5,7 @@ import Link from "next/link";
 import React from "react";
 
 import { AddFavoriteButton } from "@/components/add-favorite-button";
-import { ImageWithFallback } from "@/components/image-with-fallback";
+import { ImageWithFallback } from "@/components/common/image-with-fallback";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";

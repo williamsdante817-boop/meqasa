@@ -1,5 +1,5 @@
-import ContactCard from "@/components/contact-card";
-import ContentSection from "@/components/content-section";
+import ContactCard from "@/components/common/contact-card";
+import ContentSection from "@/components/layout/content-section";
 import { Badge } from "@/components/ui/badge";
 import Shell from "@/layouts/shell";
 import { Dot, MapPin } from "lucide-react";

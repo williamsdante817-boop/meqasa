@@ -1,4 +1,4 @@
-import { Breadcrumbs } from "@/components/bread-crumbs";
+import { Breadcrumbs } from "@/components/layout/bread-crumbs";
 import PropertyTypeLinks from "@/components/search/PropertyTypeLinks";
 import { ResultSearchFilter } from "@/components/search/results-search-filter";
 import SearchResultsSkeleton from "@/components/search/SearchResultsSkeleton";

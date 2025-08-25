@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card";
-import ContentSection from "@/components/content-section";
+import ContentSection from "@/components/layout/content-section";
 import { useMemo } from "react";
 
 // Helper function to convert YouTube URL to embed format

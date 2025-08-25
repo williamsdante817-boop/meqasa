@@ -1,7 +1,13 @@
 // import type { User } from "@clerk/nextjs/server"
 import { clsx, type ClassValue } from "clsx";
-import sanitizeHtml from "sanitize-html";
 import { twMerge } from "tailwind-merge";
+// Import new DOMPurify-based sanitization functions
+import {
+  sanitizeHtml,
+  sanitizeToInnerHtml,
+  sanitizeRichHtml,
+  sanitizeRichHtmlToInnerHtml,
+} from "./dom-sanitizer";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -179,76 +185,36 @@ export function toBase64(str: string) {
 }
 
 // Sanitize HTML to prevent XSS in server/client rendering contexts
+// DEPRECATED: Use sanitizeHtml from dom-sanitizer instead
 export function sanitizeHtmlString(html: string): string {
-  if (!html) return "";
-  return sanitizeHtml(html, {
-    allowedTags: [
-      "b",
-      "i",
-      "em",
-      "strong",
-      "span",
-      "small",
-      "sup",
-      "sub",
-      "u",
-      "s",
-    ],
-    allowedAttributes: {
-      span: ["class"],
-    },
-    allowedSchemes: [],
-    allowProtocolRelative: false,
-    disallowedTagsMode: "discard",
-  });
+  console.warn(
+    "sanitizeHtmlString is deprecated. Use sanitizeHtml from dom-sanitizer instead.",
+  );
+  return sanitizeHtml(html);
 }
 
 // Build a React dangerouslySetInnerHTML payload with sanitized content
+// DEPRECATED: Use sanitizeToInnerHtml from dom-sanitizer instead
 export function toInnerHtml(html: string): { __html: string } {
-  return { __html: sanitizeHtmlString(html) };
+  console.warn(
+    "toInnerHtml is deprecated. Use sanitizeToInnerHtml from dom-sanitizer instead.",
+  );
+  return sanitizeToInnerHtml(html);
 }
 
 // Rich HTML sanitizer for ad/banner markup that may contain images and links
+// DEPRECATED: Use sanitizeRichHtml from dom-sanitizer instead
 export function sanitizeRichHtmlString(html: string): string {
-  if (!html) return "";
-  return sanitizeHtml(html, {
-    allowedTags: [
-      "div",
-      "p",
-      "span",
-      "a",
-      "img",
-      "picture",
-      "source",
-      "b",
-      "strong",
-      "em",
-      "br",
-      "ul",
-      "ol",
-      "li",
-    ],
-    allowedAttributes: {
-      a: ["href", "target", "rel"],
-      img: ["src", "alt", "loading", "width", "height"],
-      source: ["srcset", "type"],
-      div: ["class"],
-      p: ["class"],
-      span: ["class"],
-      picture: ["class"],
-    },
-    allowedSchemes: ["http", "https", "data"],
-    allowProtocolRelative: false,
-    transformTags: {
-      a: sanitizeHtml.simpleTransform("a", { rel: "noopener noreferrer" }),
-    },
-  });
+  console.warn(
+    "sanitizeRichHtmlString is deprecated. Use sanitizeRichHtml from dom-sanitizer instead.",
+  );
+  return sanitizeRichHtml(html);
 }
 
 export function buildInnerHtml(html: string): { __html: string } {
-  return { __html: sanitizeHtmlString(html) };
+  return sanitizeToInnerHtml(html);
 }
 
 export function buildRichInnerHtml(html: string): { __html: string } {
-  return { __html: sanitizeRichHtmlString(html) };
+  return sanitizeRichHtmlToInnerHtml(html);
 }

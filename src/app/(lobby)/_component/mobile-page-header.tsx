@@ -2,7 +2,7 @@ import {
   PageHeader,
   PageHeaderDescription,
   PageHeaderHeading,
-} from "@/components/page-header";
+} from "@/components/layout/page-header";
 import MobileSearchForm from "./mobile-search-form";
 
 export default function MobilePageHeader() {

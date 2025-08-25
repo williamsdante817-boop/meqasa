@@ -1,10 +1,10 @@
-import { FeaturedListingsSection } from "@/components/featured-listings-section";
-import { AlertCard } from "@/components/alert-card";
+import { FeaturedListingsSection } from "@/components/property/listings/featured-listings-section";
+import { AlertCard } from "@/components/common/alert-card";
 import type {
   getFeaturedListings,
   FeaturedListingsResponse,
 } from "@/lib/get-featured-listings";
-import type { Listing as CardListing } from "@/components/property-card";
+import type { Listing as CardListing } from "@/components/property/cards/property-card";
 
 
 interface StreamingFeaturedListingsProps {

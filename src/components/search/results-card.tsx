@@ -6,7 +6,7 @@ import Link from "next/link";
 import React, { useState } from "react";
 
 import { AddFavoriteButton } from "@/components/add-favorite-button";
-import { ImageWithFallback } from "@/components/image-with-fallback";
+import { ImageWithFallback } from "@/components/common/image-with-fallback";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -25,44 +25,14 @@ import {
 } from "@/components/ui/tooltip";
 import { Skeleton } from "@/components/ui/skeleton";
 import { buildInnerHtml, cn } from "@/lib/utils";
-import { DeveloperContactCard } from "@/components/developer-contact-card";
+import { DeveloperContactCard } from "@/components/developer/cards/developer-contact-card";
+import type { MeqasaListing } from "@/types/meqasa";
 
-export interface ResultData {
-  istopad: boolean;
-  photocount: string;
-  recency: string;
-  detailreq: string;
-  image: string;
-  streetaddress: string;
-  locationstring: string;
-  floorarea: string;
-  bathroomcount: string;
-  bedroomcount: string;
-  garagecount: string;
-  listingid: string;
-  isunit: boolean;
-  type: string;
-  contract: string;
-  summary: string;
-  description: string | null;
-  owner: {
-    haswan: boolean;
-    name: string;
-    first: string;
-    image: string;
-    verification: string;
-    type: string;
-    page: string;
-  };
-  pdr: string;
-  priceval: number;
-  pricepart1: string;
-  pricepart2: string;
-  availability: string;
-}
-
-export function ResultsCard({ result }: { result: ResultData }) {
+export function ResultsCard({ result }: { result: MeqasaListing }) {
   const [isOpen, setIsOpen] = useState(false);
+
+  // Simple test to see if component is rendering
+  console.log("ResultsCard rendered:", result.listingid, result.istopad);
 
   // Compute details page link and cleanPath for listingId extraction
   let detailsLink = "";
@@ -177,43 +147,45 @@ export function ResultsCard({ result }: { result: ResultData }) {
 
           {/* Property Details */}
           <div className="flex items-center justify-between gap-1 pt-3 text-sm">
-            <div className="flex items-center gap-1 text-brand-muted">
+            <div className="flex items-center gap-1 text-brand-muted flex-nowrap overflow-hidden">
               {result.bedroomcount && (
                 <>
-                  <span className="font-medium">
+                  <span className="font-medium truncate">
                     {result.bedroomcount} Beds
                   </span>
-                  <Dot className="h-4 w-4 text-brand-accent" />
+                  <Dot className="h-4 w-4 text-brand-accent flex-shrink-0" />
                 </>
               )}
               {result.bathroomcount && (
                 <>
-                  <span className="font-medium">
+                  <span className="font-medium truncate">
                     {result.bathroomcount} Baths
                   </span>
                   {result.garagecount && (
-                    <Dot className="h-4 w-4 text-brand-accent" />
+                    <Dot className="h-4 w-4 text-brand-accent flex-shrink-0" />
                   )}
                 </>
               )}
               {result.garagecount && (
                 <>
-                  <span className="font-medium">
+                  <span className="font-medium truncate">
                     {result.garagecount} Parking
                   </span>
                   {result.floorarea && (
-                    <Dot className="h-4 w-4 text-brand-accent" />
+                    <Dot className="h-4 w-4 text-brand-accent flex-shrink-0" />
                   )}
                 </>
               )}
               {result.floorarea && (
-                <span className="font-medium">{result.floorarea} m²</span>
+                <span className="font-medium truncate">
+                  {result.floorarea} m²
+                </span>
               )}
             </div>
 
             {/* Top Ad Badge for Mobile */}
             {result.istopad && (
-              <Badge className="bg-transparent uppercase text-brand-accent border border-orange-400 text-xs md:hidden">
+              <Badge className="bg-transparent uppercase text-brand-accent border border-orange-400 text-xs">
                 top ad
               </Badge>
             )}
@@ -253,13 +225,13 @@ export function ResultsCard({ result }: { result: ResultData }) {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-4">
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
               <DialogTrigger asChild>
                 <Button
                   variant="outline"
                   size="icon"
-                  className="h-9 w-9 text-brand-accent border-brand-border hover:bg-brand-accent hover:text-white transition-colors duration-200"
+                  className="h-9 w-9 shadow-none text-brand-accent border-brand-border"
                   aria-label={`Contact ${result.owner.name || "agent"}`}
                 >
                   <Phone className="h-4 w-4" />

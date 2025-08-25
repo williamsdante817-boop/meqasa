@@ -228,7 +228,7 @@ export const siteConfig: SiteConfig = {
       items: [],
     },
     {
-      title: "Developments",
+      title: "All Projects",
       description:
         "Browse properties for sale, including houses and apartments.",
       items: [],

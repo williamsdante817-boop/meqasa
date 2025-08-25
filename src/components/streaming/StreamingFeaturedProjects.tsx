@@ -1,5 +1,5 @@
-import ContentSection from "@/components/content-section";
-import FeaturedProjectsCarousel from "@/components/featured-projects-carousel";
+import ContentSection from "@/components/layout/content-section";
+import FeaturedProjectsCarousel from "@/components/developer/projects/featured-projects-carousel";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import type { getFeaturedProjects } from "@/lib/get-featured-projects";
 
@@ -23,7 +23,7 @@ export async function StreamingFeaturedProjects({
           title="Featured Projects"
           description="View all featured properties"
           href="/developments"
-          className="pt-14 md:pt-20 lg:pt-24 w-full "
+          className="pt-14 md:pt-20 lg:pt-24 w-full [&_p]:px-4 [&_h2]:px-4 md:[&_p]:px-0 md:[&_h2]:px-0"
         >
           <Alert className="mx-auto max-w-md">
             <AlertTitle>No featured projects available</AlertTitle>
@@ -44,7 +44,7 @@ export async function StreamingFeaturedProjects({
           title="Featured Projects"
           description="View all featured properties"
           href="/developments"
-          className="pt-14 md:pt-20 lg:pt-24 w-full"
+          className="pt-14 md:pt-20 lg:pt-24 w-full [&_p]:px-4 [&_h2]:px-4 md:[&_p]:px-0 md:[&_h2]:px-0"
         >
           <Alert className="mx-auto max-w-md">
             <AlertTitle>No featured projects available</AlertTitle>
@@ -62,7 +62,7 @@ export async function StreamingFeaturedProjects({
         title="Featured Projects"
         description="View all featured properties"
         href="/developments"
-        className="pt-14 md:pt-20 lg:pt-24 w-full"
+        className="pt-14 md:pt-20 lg:pt-24 w-full [&_p]:px-4 [&_h2]:px-4 md:[&_p]:px-0 md:[&_h2]:px-0"
       >
         <FeaturedProjectsCarousel properties={featuredProjects} delay={5000} />
       </ContentSection>
@@ -74,7 +74,7 @@ export async function StreamingFeaturedProjects({
         title="Featured Projects"
         description="View all featured properties"
         href="/developments"
-        className="pt-14 md:pt-20 lg:pt-24 w-full mx-auto [&_p]:px-4 [&_h2]:px-4 md:max-w-[720px] lg:max-w-[960px] xl:max-w-[1140px] 2xl:max-w-[1320px]"
+        className="pt-14 md:pt-20 lg:pt-24 w-full [&_p]:px-4 [&_h2]:px-4 md:[&_p]:px-0 md:[&_h2]:px-0"
       >
         <Alert variant="destructive" className="mx-auto max-w-md">
           <AlertTitle>Unable to load featured projects</AlertTitle>

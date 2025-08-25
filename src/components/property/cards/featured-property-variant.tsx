@@ -3,10 +3,10 @@ import { cn } from "@/lib/utils";
 import type { FeaturedProject } from "@/types";
 import { Dot } from "lucide-react";
 import Link from "next/link";
-import { AspectRatio } from "./ui/aspect-ratio";
-import { Badge } from "./ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { ImageWithFallback } from "./image-with-fallback";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ImageWithFallback } from "@/components/common/image-with-fallback";
 
 interface FeaturedPropertyCardProps {
   item: FeaturedProject;
@@ -49,7 +49,7 @@ export default function FeaturedPropertyCard({
 
   return (
     <Card
-      className="relative h-full overflow-hidden md:rounded-lg p-0 gap-0 flex flex-col"
+      className="relative h-full overflow-hidden rounded-lg p-0 gap-0 flex flex-col"
       role="article"
       aria-labelledby={`project-title-${projectid}`}
     >

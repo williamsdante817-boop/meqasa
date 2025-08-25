@@ -1,6 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
-import ContentSection from "@/components/content-section";
+import ContentSection from "@/components/layout/content-section";
 import Shell from "@/layouts/shell";
 
 // Hero Banner Loading Skeleton
@@ -53,7 +53,7 @@ export function FeaturedProjectsSkeleton() {
                   {/* Header image area (16:9) with gradient overlay */}
                   <div className="p-0 w-full">
                     <AspectRatio ratio={16 / 9} className="relative">
-                      <Skeleton className="absolute bg-gray-100 inset-0 rounded-t-lg" />
+                      <Skeleton className="absolute bg-gray-100 inset-0 rounded-t-lg rounded-b-none" />
                     </AspectRatio>
                   </div>
 
@@ -69,7 +69,7 @@ export function FeaturedProjectsSkeleton() {
                     </div>
 
                     {/* Title */}
-                    <Skeleton className="h-5 bg-gray-100 w-3/4 mb-2 lg:h-6" />
+                    <Skeleton className="h-5 bg-gray-100 w-52 md:w-3/4 mb-2 lg:h-6" />
 
                     {/* City */}
                     <Skeleton className="h-4 bg-gray-100 w-1/2 mb-6 lg:h-5" />
