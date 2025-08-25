@@ -17,6 +17,8 @@ export function useHeroBanner(initialData?: AdLink) {
     // Banners can be cached even longer
     staleTime: process.env.NODE_ENV === "development" ? 2 * 60 * 1000 : 10 * 60 * 1000, // 2min dev, 10min prod
     initialData,
+    // Banners change occasionally - longer intervals for background refresh
+    refetchInterval: process.env.NODE_ENV === "development" ? 10 * 60 * 1000 : 30 * 60 * 1000, // 10min dev, 30min prod
   });
 }
 
@@ -31,6 +33,8 @@ export function useFlexiBanner(initialData?: string) {
     ...queryConfig.static,
     staleTime: process.env.NODE_ENV === "development" ? 2 * 60 * 1000 : 10 * 60 * 1000, // 2min dev, 10min prod
     initialData,
+    // Flexi banners change occasionally - longer intervals for background refresh
+    refetchInterval: process.env.NODE_ENV === "development" ? 10 * 60 * 1000 : 30 * 60 * 1000, // 10min dev, 30min prod
   });
 }
 
@@ -47,5 +51,11 @@ export function useStaticData(initialData?: StaticData) {
     // Static data can be cached very long
     staleTime: process.env.NODE_ENV === "development" ? 5 * 60 * 1000 : 30 * 60 * 1000, // 5min dev, 30min prod
     initialData,
+    // Static content like agent logos rarely changes - use server data only
+    enabled: typeof window === "undefined", // Only fetch server-side
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchInterval: false,
   });
 }
