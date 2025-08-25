@@ -27,8 +27,6 @@ export const queryConfig = {
     gcTime: 10 * 60 * 1000, // 10 minutes
     refetchOnWindowFocus: false,
     refetchOnMount: true,
-    // Keep previous data while refetching (good for search)
-    keepPreviousData: true,
   },
 
   /**

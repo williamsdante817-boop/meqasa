@@ -1,6 +1,5 @@
 export const dynamic = "force-dynamic";
 import React from "react";
-import Lobby from "./_component/lobby";
 import { getFeaturedListings } from "@/lib/get-featured-listings";
 import { getFeaturedProjects } from "@/lib/get-featured-projects";
 import { getFeaturedUnits } from "@/lib/get-featured-units";
@@ -9,6 +8,7 @@ import { getLatestListings } from "@/lib/get-latest-listing";
 import { getFlexiBanner } from "@/lib/get-flexi-banner";
 import { getStaticData } from "@/lib/static-data";
 import { LobbySkeleton } from "./_component/lobby-skeleton";
+import { HomepageClient } from "@/components/homepage/homepage-client";
 import type { Metadata } from "next";
 import { siteConfig } from "@/config/site";
 import { sanitizeStructuredData } from "@/lib/dom-sanitizer";
@@ -92,22 +92,41 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function HomePage() {
   /**
-   * Hybrid rendering strategy:
-   * - Static data (agent logos, blog, locations, SEO text) is cached and fetched once
-   * - Fresh data (listings, featured properties, banners) is fetched on every request
-   * This provides better performance while maintaining real-time data for critical content.
+   * Hybrid rendering strategy with React Query:
+   * - Server-side: Fast initial load with fresh data for SEO and performance
+   * - Client-side: React Query manages background updates and caching
+   * - Best of both worlds: Fast initial render + smart client-side updates
    */
 
-  // Static data - cached, fetched once
+  // Server-side: Get initial data for fast first load
   const staticData = await getStaticData();
 
-  // Fresh data - always fetched (hot promises for parallel execution)
-  const featuredProjects = getFeaturedProjects();
-  const featuredUnits = getFeaturedUnits();
-  const featuredListings = getFeaturedListings();
-  const latestListings = getLatestListings();
-  const heroBanner = getHeroBanner();
-  const flexiBanner = getFlexiBanner();
+  // Await all data in parallel for initial render
+  const [
+    featuredProjects,
+    featuredUnits,
+    featuredListings,
+    latestListings,
+    heroBanner,
+    flexiBanner
+  ] = await Promise.all([
+    getFeaturedProjects(),
+    getFeaturedUnits(),
+    getFeaturedListings(),
+    getLatestListings(),
+    getHeroBanner(),
+    getFlexiBanner()
+  ]);
+
+  const initialData = {
+    staticData,
+    featuredProjects,
+    featuredUnits,
+    featuredListings,
+    latestListings,
+    heroBanner,
+    flexiBanner
+  };
 
   return (
     <>
@@ -151,16 +170,9 @@ export default async function HomePage() {
           },
         })}
       />
+      {/* Use hybrid client component with server-rendered initial data */}
       <React.Suspense fallback={<LobbySkeleton />}>
-        <Lobby
-          staticData={staticData}
-          heroBannerPromise={heroBanner}
-          latestListingsPromise={latestListings}
-          featuredProjectsPromise={featuredProjects}
-          featuredListingsPromise={featuredListings}
-          featuredUnitsPromise={featuredUnits}
-          flexiBannerPromise={flexiBanner}
-        />
+        <HomepageClient initialData={initialData} />
       </React.Suspense>
     </>
   );
