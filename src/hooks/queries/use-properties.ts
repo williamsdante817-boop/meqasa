@@ -36,24 +36,6 @@ export function useLatestListings(initialData?: LatestListingsResponse) {
   });
 }
 
-/**
- * Hook for property search with filters
- * Keeps previous data while fetching new results for smooth UX
- */
-export function usePropertySearch(filters: Record<string, unknown>) {
-  return useQuery({
-    queryKey: queryKeys.properties.search(filters),
-    queryFn: () => {
-      // You'll implement this when you create a centralized search function
-      // For now, we'll use a placeholder
-      console.log("Property search with filters:", filters);
-      return Promise.resolve([]);
-    },
-    ...queryConfig.properties,
-    placeholderData: (previousData) => previousData, // Keep previous data while refetching
-    enabled: Object.keys(filters).length > 0, // Only run when we have filters
-  });
-}
 
 /**
  * Hook for individual property details

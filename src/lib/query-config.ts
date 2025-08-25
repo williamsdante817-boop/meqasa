@@ -128,4 +128,16 @@ export const queryKeys = {
     banners: () => [...queryKeys.static.all, "banners"] as const,
     banner: (type: string) => [...queryKeys.static.banners(), type] as const,
   },
+
+  // Search functionality
+  search: {
+    all: ["search"] as const,
+    properties: (filters: Record<string, any>) => 
+      [...queryKeys.search.all, "properties", filters] as const,
+    propertiesInfinite: (filters: Record<string, any>) => 
+      [...queryKeys.search.all, "properties", "infinite", filters] as const,
+    suggestions: (type: string, query: string) => 
+      [...queryKeys.search.all, "suggestions", type, query] as const,
+    history: () => [...queryKeys.search.all, "history"] as const,
+  },
 } as const;
