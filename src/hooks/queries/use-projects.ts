@@ -4,18 +4,20 @@ import { useQuery } from "@tanstack/react-query";
 import { queryConfig, queryKeys } from "@/lib/query-config";
 import { getFeaturedProjects } from "@/lib/get-featured-projects";
 import { getFeaturedUnits } from "@/lib/get-featured-units";
+import type { FeaturedProject, Unit } from "@/types";
 
 /**
  * Hook for fetching featured development projects
  * Uses React Query with optimized caching for homepage
  */
-export function useFeaturedProjects() {
+export function useFeaturedProjects(initialData?: FeaturedProject[]) {
   return useQuery({
     queryKey: queryKeys.projects.featured(),
     queryFn: getFeaturedProjects,
     ...queryConfig.properties,
     // Projects change less frequently than regular listings
     staleTime: process.env.NODE_ENV === "development" ? 60 * 1000 : 5 * 60 * 1000, // 1min dev, 5min prod
+    initialData,
   });
 }
 
@@ -23,12 +25,13 @@ export function useFeaturedProjects() {
  * Hook for fetching featured units
  * These are featured individual units from development projects
  */
-export function useFeaturedUnits() {
+export function useFeaturedUnits(initialData?: Unit[]) {
   return useQuery({
     queryKey: ["projects", "featured-units"] as const,
     queryFn: getFeaturedUnits,
     ...queryConfig.properties,
     staleTime: process.env.NODE_ENV === "development" ? 60 * 1000 : 3 * 60 * 1000, // 1min dev, 3min prod
+    initialData,
   });
 }
 

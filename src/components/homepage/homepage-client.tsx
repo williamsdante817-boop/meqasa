@@ -11,16 +11,19 @@ import {
   useStaticData 
 } from "@/hooks/queries";
 import Lobby from "@/app/(lobby)/_component/lobby";
-import { LobbySkeleton } from "@/app/(lobby)/_component/lobby-skeleton";
+import type { FeaturedListingsResponse } from "@/lib/get-featured-listings";
+import type { LatestListingsResponse } from "@/lib/get-latest-listing";
+import type { StaticData } from "@/lib/static-data";
+import type { FeaturedProject, Unit, AdLink } from "@/types";
 
 interface InitialData {
-  staticData: any;
-  featuredProjects: any;
-  featuredUnits: any;
-  featuredListings: any;
-  latestListings: any;
-  heroBanner: any;
-  flexiBanner: any;
+  staticData: StaticData;
+  featuredProjects: FeaturedProject[];
+  featuredUnits: Unit[];
+  featuredListings: FeaturedListingsResponse;
+  latestListings: LatestListingsResponse;
+  heroBanner: AdLink;
+  flexiBanner: string;
 }
 
 interface HomepageClientProps {
@@ -32,24 +35,24 @@ interface HomepageClientProps {
  * Receives initial server-side data and then manages client-side updates
  */
 export function HomepageClient({ initialData }: HomepageClientProps) {
-  // Use React Query hooks - they will start with initial data, then update
-  const { data: featuredListings } = useFeaturedListings();
-  const { data: latestListings } = useLatestListings();
-  const { data: featuredProjects } = useFeaturedProjects();
-  const { data: featuredUnits } = useFeaturedUnits();
-  const { data: heroBanner } = useHeroBanner();
-  const { data: flexiBanner } = useFlexiBanner();
-  const { data: staticData } = useStaticData();
+  // Use React Query hooks with initial data from server
+  const { data: featuredListings } = useFeaturedListings(initialData.featuredListings);
+  const { data: latestListings } = useLatestListings(initialData.latestListings);
+  const { data: featuredProjects } = useFeaturedProjects(initialData.featuredProjects);
+  const { data: featuredUnits } = useFeaturedUnits(initialData.featuredUnits);
+  const { data: heroBanner } = useHeroBanner(initialData.heroBanner);
+  const { data: flexiBanner } = useFlexiBanner(initialData.flexiBanner);
+  const { data: staticData } = useStaticData(initialData.staticData);
 
   // Use server data initially, then React Query data once available
   const resolvedData = {
-    staticData: staticData || initialData.staticData,
-    featuredProjects: featuredProjects || initialData.featuredProjects,
-    featuredUnits: featuredUnits || initialData.featuredUnits,
-    featuredListings: featuredListings || initialData.featuredListings,
-    latestListings: latestListings || initialData.latestListings,
-    heroBanner: heroBanner || initialData.heroBanner,
-    flexiBanner: flexiBanner || initialData.flexiBanner,
+    staticData: staticData ?? initialData.staticData,
+    featuredProjects: featuredProjects ?? initialData.featuredProjects,
+    featuredUnits: featuredUnits ?? initialData.featuredUnits,
+    featuredListings: featuredListings ?? initialData.featuredListings,
+    latestListings: latestListings ?? initialData.latestListings,
+    heroBanner: heroBanner ?? initialData.heroBanner,
+    flexiBanner: flexiBanner ?? initialData.flexiBanner,
   };
 
   return (
