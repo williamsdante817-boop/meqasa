@@ -2,11 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { SearchResults } from "./search-results";
-import { SearchResultsEnhanced } from "./SearchResultsEnhanced";
 import type { MeqasaListing } from "@/types/meqasa";
-
-// Feature flag for React Query enhanced search
-const USE_ENHANCED_SEARCH = process.env.NODE_ENV === "development";
 
 interface SearchResultsWrapperProps {
   type: string;
@@ -36,21 +32,6 @@ export function SearchResultsWrapper({
     router.push(`?${newSearchParams.toString()}`, { scroll: false });
   };
 
-  // Use enhanced version in development for testing
-  if (USE_ENHANCED_SEARCH) {
-    return (
-      <SearchResultsEnhanced
-        type={type}
-        location={location}
-        initialResults={initialResults}
-        initialTotal={initialTotal}
-        initialSearchId={initialSearchId}
-        initialPage={initialPage}
-      />
-    );
-  }
-
-  // Use original version as fallback
   return (
     <SearchResults
       type={type}

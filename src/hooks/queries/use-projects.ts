@@ -12,9 +12,7 @@ export function useFeaturedProjects(initialData?: FeaturedProject[]) {
   return useQuery({
     queryKey: queryKeys.projects.featured(),
     queryFn: () => fetch("/api/homepage/featured-projects").then(r => r.json()),
-    ...queryConfig.properties,
-    // Projects change less frequently than regular listings
-    staleTime: process.env.NODE_ENV === "development" ? 60 * 1000 : 5 * 60 * 1000, // 1min dev, 5min prod
+    ...queryConfig.homepageBanners, // Focus-based refresh, longer stale time
     initialData,
   });
 }
@@ -27,8 +25,7 @@ export function useFeaturedUnits(initialData?: Unit[]) {
   return useQuery({
     queryKey: ["projects", "featured-units"] as const,
     queryFn: () => fetch("/api/homepage/featured-units").then(r => r.json()),
-    ...queryConfig.properties,
-    staleTime: process.env.NODE_ENV === "development" ? 60 * 1000 : 3 * 60 * 1000, // 1min dev, 3min prod
+    ...queryConfig.homepageBanners, // Focus-based refresh, longer stale time
     initialData,
   });
 }

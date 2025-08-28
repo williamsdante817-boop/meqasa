@@ -127,13 +127,16 @@ export default async function Lobby({
   flexiBannerPromise,
 }: LobbyProps) {
   return (
-    <LobbyContent
-      staticData={staticData}
-      heroBannerPromise={heroBannerPromise}
-      featuredProjectsPromise={featuredProjectsPromise}
-      featuredListingsPromise={featuredListingsPromise}
-      latestListingsPromise={latestListingsPromise}
-      flexiBannerPromise={flexiBannerPromise}
-    />
+    <>
+      <LobbyContent
+        staticData={staticData}
+        heroBannerPromise={heroBannerPromise}
+        featuredProjectsPromise={featuredProjectsPromise}
+        featuredListingsPromise={featuredListingsPromise}
+        latestListingsPromise={latestListingsPromise}
+        flexiBannerPromise={flexiBannerPromise}
+      />
+      
+    </>
   );
 }

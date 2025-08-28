@@ -3,7 +3,7 @@ import {
   PageHeaderDescription,
   PageHeaderHeading,
 } from "@/components/layout/page-header";
-import MobileSearchForm from "./mobile-search-form";
+import { MobileSearchOverlay } from "@/components/search/MobileSearchOverlay";
 
 export default function MobilePageHeader() {
   return (
@@ -27,7 +27,9 @@ export default function MobilePageHeader() {
       >
         Discover the perfect property tailored to your lifestyle and preference
       </PageHeaderDescription>
-      <MobileSearchForm />
+      {/* Mobile Search Overlay - Rendered at root level */}
+      <MobileSearchOverlay />
+      {/* <MobileSearchForm /> */}
     </PageHeader>
   );
 }

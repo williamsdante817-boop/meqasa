@@ -128,7 +128,7 @@ export function SearchForm({
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form id={`search-form-${type}`} onSubmit={handleSubmit}>
       <Input
         type="radio"
         value={type}

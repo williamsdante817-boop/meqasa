@@ -82,11 +82,11 @@ const socialLinks = {
 };
 
 export const siteConfig: SiteConfig = {
-  name: "Meqasa",
+  name: "MeQasa",
   description:
-    "Find your dream home on meQasa, Ghana's real estate marketplace. We provide a wide range of properties for rent and sale, including houses, apartments, offices, and land.",
+    "Find your dream home on MeQasa, Ghana's leading real estate marketplace. Browse thousands of verified properties for rent and sale including houses, apartments, offices, and land across Ghana.",
   url: "https://meqasa.com",
-  ogImage: "https://skateshop.sadmn.com/opengraph-image.png",
+  ogImage: "https://meqasa.com/opengraph-image.png",
   email: "info@meqasa.com",
   links,
   socialLinks,

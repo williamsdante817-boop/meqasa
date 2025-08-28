@@ -134,7 +134,7 @@ export function SearchInput({
 
   return (
     <div className="relative search-input-container">
-      <div className="relative mt-3 hidden h-[60px] w-full items-center rounded-xl bg-white shadow-sm lg:flex">
+      <div className="relative mt-3 hidden h-[60px] w-full items-center rounded-lg bg-white shadow-sm lg:flex">
         <Label htmlFor="query" className="sr-only">
           search
         </Label>
@@ -148,7 +148,7 @@ export function SearchInput({
           onKeyDown={handleKeyDown}
           onFocus={handleInputFocus}
           onBlur={handleInputBlur}
-          className="h-full rounded-xl border-none py-4 pl-[52px] pr-4 text-base font-light text-b-accent shadow-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary focus-visible:outline-none lg:rounded-l-xl lg:rounded-r-none"
+          className="h-full rounded-lg border-none py-4 pl-[52px] pr-4 text-base font-light text-b-accent shadow-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary focus-visible:outline-none lg:rounded-l-xl lg:rounded-r-none placeholder:text-base"
         />
         <Button
           type="submit"

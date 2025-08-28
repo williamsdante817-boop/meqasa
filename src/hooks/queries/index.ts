@@ -20,12 +20,7 @@ export {
   useStaticData,
 } from "./use-static-content";
 
-// Search functionality queries
+// Agent queries
 export {
-  usePropertySearch,
-  useLoadMoreProperties,
-  useInfinitePropertySearch,
-  useSearchSuggestions,
-  useSearchHistory,
-  type SearchFilters,
-} from "./use-search";
+  useAgentListingsPagination,
+} from "./use-agents";

@@ -61,6 +61,43 @@ export const queryConfig = {
     refetchOnWindowFocus: false,
     refetchOnMount: false,
   },
+
+  /**
+   * For homepage dynamic content that refreshes only on window focus
+   * Examples: featured listings, latest listings
+   * Removes background polling for efficiency while maintaining data freshness
+   */
+  homepage: {
+    staleTime: isDevelopment ? 60 * 1000 : 5 * 60 * 1000, // 1min dev, 5min prod (longer stale time)
+    gcTime: 15 * 60 * 1000, // 15 minutes (longer cache)
+    refetchOnWindowFocus: true, // Enable focus-based refresh
+    refetchOnMount: true,
+    refetchInterval: false, // Disable background polling
+  },
+
+  /**
+   * For semi-static homepage content (banners, featured projects)
+   * Refresh on focus but with longer stale time since they change less frequently
+   */
+  homepageBanners: {
+    staleTime: isDevelopment ? 2 * 60 * 1000 : 15 * 60 * 1000, // 2min dev, 15min prod
+    gcTime: 30 * 60 * 1000, // 30 minutes
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+    refetchInterval: false, // Remove background polling
+  },
+
+  /**
+   * For agent listings with pagination
+   * Moderate freshness since agents add/remove listings regularly
+   */
+  agentListings: {
+    staleTime: isDevelopment ? 30 * 1000 : 3 * 60 * 1000, // 30s dev, 3min prod
+    gcTime: 10 * 60 * 1000, // 10 minutes
+    refetchOnWindowFocus: true, // Refresh when user returns
+    refetchOnMount: false, // Trust cached data on mount
+    refetchInterval: false, // No background polling
+  },
 } as const;
 
 /**
@@ -72,14 +109,14 @@ export const queryKeys = {
   properties: {
     all: ["properties"] as const,
     lists: () => [...queryKeys.properties.all, "list"] as const,
-    list: (filters: Record<string, any>) => 
+    list: (filters: Record<string, unknown>) => 
       [...queryKeys.properties.lists(), filters] as const,
     details: () => [...queryKeys.properties.all, "detail"] as const,
     detail: (id: string) => [...queryKeys.properties.details(), id] as const,
     featured: () => [...queryKeys.properties.all, "featured"] as const,
     latest: () => [...queryKeys.properties.all, "latest"] as const,
     similar: (id: string) => [...queryKeys.properties.all, "similar", id] as const,
-    search: (params: Record<string, any>) => 
+    search: (params: Record<string, unknown>) => 
       [...queryKeys.properties.all, "search", params] as const,
   },
 
@@ -90,6 +127,9 @@ export const queryKeys = {
     details: () => [...queryKeys.agents.all, "detail"] as const,
     detail: (id: string) => [...queryKeys.agents.details(), id] as const,
     listings: (id: string) => [...queryKeys.agents.all, id, "listings"] as const,
+    // Paginated listings for agent pages
+    paginatedListings: (agentId: string | number, page: number) => 
+      [...queryKeys.agents.all, agentId, "listings", "paginated", page] as const,
   },
 
   // Developers
@@ -132,9 +172,9 @@ export const queryKeys = {
   // Search functionality
   search: {
     all: ["search"] as const,
-    properties: (filters: Record<string, any>) => 
+    properties: (filters: Record<string, unknown>) => 
       [...queryKeys.search.all, "properties", filters] as const,
-    propertiesInfinite: (filters: Record<string, any>) => 
+    propertiesInfinite: (filters: Record<string, unknown>) => 
       [...queryKeys.search.all, "properties", "infinite", filters] as const,
     suggestions: (type: string, query: string) => 
       [...queryKeys.search.all, "suggestions", type, query] as const,

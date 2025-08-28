@@ -18,42 +18,87 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Icons } from "@/components/icons";
+import { Home, Search, Heart, Phone, Users, Building2, MapPin } from "lucide-react";
 
 interface MobileNavProps {
   items?: MainNavItem[];
 }
 
-export function MobileNav({ items }: MobileNavProps) {
+export function MobileNav({ items: _ }: MobileNavProps) {
   const isDesktop = useMediaQuery("(min-width: 1024px)");
   const segment = useSelectedLayoutSegment();
   const [open, setOpen] = React.useState(false);
-  const memoizedItems = React.useMemo(() => items, [items]);
 
   if (isDesktop) return null;
+
+  // Simplified mobile nav items - focus on primary actions
+  const quickActions = [
+    { title: "Search Properties", href: "/", icon: Search, description: "Find your dream home" },
+    { title: "Saved Properties", href: "/favorites", icon: Heart, description: "View saved listings" },
+    { title: "Agents", href: "/agents", icon: Users, description: "Browse real estate agents" },
+    { title: "Developers", href: "/developers", icon: Building2, description: "View development projects" },
+    { title: "All Projects", href: "/projects", icon: MapPin, description: "Explore all projects" },
+    { title: "Contact", href: "/contact", icon: Phone, description: "Get in touch with us" },
+  ];
+
+  // Primary navigation categories - simplified for mobile
+  const primaryCategories = [
+    {
+      title: "For Rent",
+      icon: Home,
+      items: [
+        { title: "Houses", href: "/search/rent?q=ghana&ftype=house" },
+        { title: "Apartments", href: "/search/rent?q=ghana&ftype=apartment" },
+        { title: "Office Spaces", href: "/search/rent?q=ghana&ftype=office" },
+        { title: "Short Let", href: "/search/rent?q=ghana&frentperiod=shortrent" },
+      ]
+    },
+    {
+      title: "For Sale", 
+      icon: Building2,
+      items: [
+        { title: "Houses", href: "/search/sale?q=ghana&ftype=house" },
+        { title: "Apartments", href: "/search/sale?q=ghana&ftype=apartment" },
+        { title: "Office Spaces", href: "/search/sale?q=ghana&ftype=office" },
+        { title: "Commercial", href: "/search/sale?q=ghana&ftype=commercial" },
+      ]
+    },
+    {
+      title: "Land",
+      icon: MapPin,
+      items: [
+        { title: "Residential Land", href: "/search/sale?q=ghana&ftype=land" },
+        { title: "Commercial Land", href: "/search/sale?q=ghana&ftype=commercial" },
+        { title: "Industrial Land", href: "/search/sale?q=ghana&ftype=industrial" },
+      ]
+    }
+  ];
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <Button
-          variant="ghost"
+          variant="outline"
           size="icon"
-          className="size-7 hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 lg:hidden"
+          className="text-brand-accent shadow-none hover:text-brand-primary hover:bg-brand-primary/10 focus-visible:bg-brand-primary/10 focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-0 lg:hidden"
           aria-label="Toggle navigation menu"
           aria-expanded={open}
           aria-controls="mobile-nav"
         >
-          <Icons.menu aria-hidden="true" />
+          <Icons.menu aria-hidden="true" className="size-7" />
           <span className="sr-only">Toggle Menu</span>
         </Button>
       </SheetTrigger>
       <SheetContent
         side="left"
-        className="pl-1 pr-0 pt-9"
+        className="w-[300px] p-0"
         id="mobile-nav"
         role="navigation"
         aria-label="Mobile navigation"
       >
-        <div className="w-full px-7">
+        {/* Header */}
+        <div className="flex items-center justify-between p-6 border-b bg-gradient-to-r from-brand-primary to-brand-primary-dark">
+          <h2 className="sr-only">Mobile Navigation Menu</h2>
           <Link
             href="/"
             className="flex items-center"
@@ -61,55 +106,109 @@ export function MobileNav({ items }: MobileNavProps) {
             aria-label="Home"
           >
             <Icons.logo
-              className="mr-2 size-6 text-[#f93a5d]"
+              className="mr-2 size-6 text-white"
               aria-hidden="true"
             />
-            <span className="font-bold text-accent-foreground">
+            <span className="font-bold text-white text-lg">
               {siteConfig.name}
             </span>
-            <span className="sr-only">Home</span>
           </Link>
         </div>
-        <ScrollArea className="my-4 h-[calc(100vh-8rem)] pb-10 pl-6">
-          <div className="pl-1 pr-7">
-            <Accordion type="multiple" className="w-full">
-              {memoizedItems?.map((item, index) =>
-                item.items && item.items.length !== 0 ? (
-                  <AccordionItem value={item.title} key={index}>
-                    <AccordionTrigger
-                      className="text-sm capitalize text-accent-foreground"
-                      aria-label={`${item.title} menu`}
+
+        <ScrollArea className="h-[calc(100vh-88px)]">
+          <div className="p-6 space-y-6">
+            {/* Quick Actions */}
+            <div className="space-y-3">
+              <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">
+                Quick Access
+              </h3>
+              <div className="grid grid-cols-2 gap-3">
+                {quickActions.slice(0, 4).map((action) => {
+                  const IconComponent = action.icon;
+                  return (
+                    <Link
+                      key={action.title}
+                      href={action.href}
+                      onClick={() => setOpen(false)}
+                      className="flex flex-col items-center p-4 bg-gray-50 rounded-lg border hover:bg-gray-100 transition-colors group"
                     >
-                      {item.title}
-                    </AccordionTrigger>
-                    <AccordionContent>
-                      <div className="flex flex-col space-y-2">
-                        {item.items.map((subItem, subIndex) =>
-                          subItem.href ? (
+                      <IconComponent className="h-6 w-6 text-brand-primary stroke-[1.5] mb-2 group-hover:scale-110 transition-transform" />
+                      <span className="text-xs font-medium text-center text-gray-700">
+                        {action.title.split(' ')[0]}
+                      </span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Primary Categories */}
+            <div className="space-y-3">
+              <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">
+                Browse Properties
+              </h3>
+              <Accordion type="single" className="w-full space-y-3" collapsible>
+                {primaryCategories.map((category, index) => {
+                  const IconComponent = category.icon;
+                  return (
+                    <AccordionItem 
+                      value={category.title} 
+                      key={index}
+                      className="border rounded-lg bg-white shadow-none"
+                    >
+                      <AccordionTrigger
+                        className="px-4 py-3 text-left hover:no-underline
+                         hover:bg-gray-50"
+                        aria-label={`${category.title} menu`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <IconComponent className="h-5 w-5 text-brand-primary stroke-[1.5]" />
+                          <span className="font-medium text-gray-900">{category.title}</span>
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent className="px-4 pb-3">
+                        <div className="grid gap-2">
+                          {category.items.map((subItem, subIndex) => (
                             <MobileLink
                               key={subIndex}
-                              href={String(subItem.href)}
+                              href={subItem.href}
                               segment={String(segment)}
                               setOpen={setOpen}
-                              className="m-1"
+                              className="p-3 rounded-md hover:bg-gray-50 transition-colors"
                             >
                               {subItem.title}
                             </MobileLink>
-                          ) : (
-                            <div
-                              key={subIndex}
-                              className="text-foreground/70 transition-colors"
-                            >
-                              {subItem.title}
-                            </div>
-                          ),
-                        )}
+                          ))}
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  );
+                })}
+              </Accordion>
+            </div>
+
+            {/* Additional Links */}
+            <div className="space-y-3 pt-3 border-t">
+              <div className="space-y-2">
+                {quickActions.slice(4).map((action) => {
+                  const IconComponent = action.icon;
+                  return (
+                    <Link
+                      key={action.title}
+                      href={action.href}
+                      onClick={() => setOpen(false)}
+                      className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors"
+                    >
+                      <IconComponent className="h-5 w-5 text-brand-primary stroke-[1.5]" />
+                      <div>
+                        <span className="font-medium text-gray-900">{action.title}</span>
+                        <p className="text-xs text-gray-500">{action.description}</p>
                       </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                ) : null,
-              )}
-            </Accordion>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </ScrollArea>
       </SheetContent>

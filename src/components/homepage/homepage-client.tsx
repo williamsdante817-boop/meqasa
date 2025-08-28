@@ -45,8 +45,9 @@ export function HomepageClient({ initialData }: HomepageClientProps) {
   const { data: staticData } = useStaticData(initialData.staticData);
 
   // Use server data initially, then React Query data once available
+  // For staticData, always use initial data since we've disabled refetching entirely
   const resolvedData = {
-    staticData: staticData ?? initialData.staticData,
+    staticData: initialData.staticData, // Always use initial - never refetch
     featuredProjects: featuredProjects ?? initialData.featuredProjects,
     featuredUnits: featuredUnits ?? initialData.featuredUnits,
     featuredListings: featuredListings ?? initialData.featuredListings,

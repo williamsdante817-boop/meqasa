@@ -18,9 +18,9 @@ function createQueryClient() {
         gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
         
         // Error handling
-        retry: (failureCount, error: any) => {
+        retry: (failureCount, error: unknown) => {
           // Don't retry on client errors (4xx)
-          if (error?.status >= 400 && error?.status < 500) {
+          if (error && typeof error === 'object' && 'status' in error && typeof error.status === 'number' && error.status >= 400 && error.status < 500) {
             return false;
           }
           // Retry up to 3 times for server errors
@@ -57,9 +57,7 @@ export function getQueryClient(): QueryClient {
   }
   
   // Browser: create singleton
-  if (!clientSingleton) {
-    clientSingleton = createQueryClient();
-  }
+  clientSingleton ??= createQueryClient();
   
   return clientSingleton;
 }

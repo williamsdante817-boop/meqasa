@@ -1,20 +1,11 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { searchConfig } from "@/config/search";
 import { type FormState } from "@/types/search";
-import { SearchIcon } from "lucide-react";
 import { useState } from "react";
 import { CommonFilters } from "./search/CommonFilters";
 import { PriceInput } from "./search/PriceInput";
@@ -30,14 +21,15 @@ const getDefaultFormState = (): FormState => ({
   maxPrice: "",
   minArea: "",
   maxArea: "",
-  period: "",
-  sort: "",
+  period: "any",
+  sort: "default",
   furnished: false,
   owner: false,
   howShort: "- Any -",
 });
 
 export function SearchFilter() {
+  // Desktop-only search component
   // Separate form states for each tab
   const [rentFormState, setRentFormState] = useState<FormState>(
     getDefaultFormState(),
@@ -93,90 +85,42 @@ export function SearchFilter() {
 
   return (
     <div className="hidden lg:block absolute left-1/2 w-[920px] -translate-x-1/2 -translate-y-1/2 z-50">
-      <h1 className="sr-only mb-4 text-center text-3xl font-extrabold text-b-accent">
-        Ghana&apos;s Smarter Property Search
-      </h1>
-      <Card
-        className="mx-auto my-0 h-fit w-full rounded-2xl border-0 p-2 lg:max-w-[928px] lg:p-3"
-        style={{ background: "rgba(11,17,52,.65)" }}
-      >
-        <Tabs defaultValue="rent" className="w-full">
-          <div className="mx-auto my-0 w-4/5 lg:max-w-[460px]">
-            <TabsList className="grid h-fit w-full grid-cols-4 bg-white p-1.5 text-b-accent">
-              <TabsTrigger
-                value="rent"
-                className="font-bold data-[state=active]:bg-rose-500 data-[state=active]:text-white lg:text-base text-brand-accent"
-              >
-                Rent
-              </TabsTrigger>
-              <TabsTrigger
-                value="buy"
-                className="font-bold data-[state=active]:bg-rose-500 data-[state=active]:text-white lg:text-base text-brand-accent"
-              >
-                Buy
-              </TabsTrigger>
-              <TabsTrigger
-                value="land"
-                className="font-bold data-[state=active]:bg-rose-500 data-[state=active]:text-white lg:text-base text-brand-accent"
-              >
-                Land
-              </TabsTrigger>
-              <TabsTrigger
-                value="short-let"
-                className="font-bold data-[state=active]:bg-rose-500 data-[state=active]:text-white lg:text-base text-brand-accent"
-              >
-                Short Let
-              </TabsTrigger>
-            </TabsList>
-          </div>
-
-          <div className="lg:hidden">
-            <Dialog>
-              <DialogTrigger className="w-full">
-                <div
-                  className="mt-2 flex h-[60px] items-center gap-6 rounded-xl bg-white p-2 lg:hidden"
-                  role="button"
-                  tabIndex={0}
+        <h1 className="sr-only mb-4 text-center text-3xl font-extrabold text-b-accent">
+          Ghana&apos;s Smarter Property Search
+        </h1>
+        <Card
+          className="mx-auto my-0 h-fit w-full rounded-2xl border-0 p-2 lg:max-w-[928px] lg:p-3"
+          style={{ background: "rgba(11,17,52,.65)" }}
+        >
+          <Tabs defaultValue="rent" className="w-full">
+            <div className="mx-auto my-0 w-4/5 lg:max-w-[460px]">
+              <TabsList className="grid h-fit w-full grid-cols-4 bg-white p-1.5 text-b-accent">
+                <TabsTrigger
+                  value="rent"
+                  className="font-bold data-[state=active]:bg-rose-500 data-[state=active]:text-white lg:text-base text-brand-accent"
                 >
-                  <SearchIcon />
-                  <p className="text-slate-400">
-                    Search for an MRT, project, or area
-                  </p>
-                </div>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-md">
-                <DialogHeader>
-                  <DialogTitle>Search Properties</DialogTitle>
-                </DialogHeader>
-                <SearchForm
-                  type="rent"
-                  formState={rentFormState}
-                  updateFormState={(updates) =>
-                    updateFormState("rent", updates)
-                  }
+                  Rent
+                </TabsTrigger>
+                <TabsTrigger
+                  value="buy"
+                  className="font-bold data-[state=active]:bg-rose-500 data-[state=active]:text-white lg:text-base text-brand-accent"
                 >
-                  <div className="space-y-4">
-                    <Button type="submit" className="w-full">
-                      Search
-                    </Button>
-                  </div>
-                </SearchForm>
-                <SearchForm
-                  type="rent"
-                  formState={rentFormState}
-                  updateFormState={(updates) =>
-                    updateFormState("rent", updates)
-                  }
+                  Buy
+                </TabsTrigger>
+                <TabsTrigger
+                  value="land"
+                  className="font-bold data-[state=active]:bg-rose-500 data-[state=active]:text-white lg:text-base text-brand-accent"
                 >
-                  <div className="space-y-4">
-                    <Button type="submit" className="w-full">
-                      Search
-                    </Button>
-                  </div>
-                </SearchForm>
-              </DialogContent>
-            </Dialog>
-          </div>
+                  Land
+                </TabsTrigger>
+                <TabsTrigger
+                  value="short-let"
+                  className="font-bold data-[state=active]:bg-rose-500 data-[state=active]:text-white lg:text-brand-accent"
+                >
+                  Short Let
+                </TabsTrigger>
+              </TabsList>
+            </div>
 
           <TabsContent value="buy">
             <SearchForm

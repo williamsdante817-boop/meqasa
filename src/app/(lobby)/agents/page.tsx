@@ -74,9 +74,8 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function AgentsPage() {
-  const { list: agents } = await getAllAgents();
-
-  
+  const { list } = await getAllAgents();
+  const agents = list ?? [];
 
   console.log("Agents Data:", agents);
 
@@ -93,21 +92,20 @@ export default async function AgentsPage() {
             description:
               "Comprehensive list of professional real estate agents and brokers in Ghana",
             url: `${siteConfig.url}/agents`,
-            numberOfItems: agents?.length || 0,
-            itemListElement:
-              agents?.map((agent, index) => ({
-                "@type": "ListItem",
-                position: index + 1,
-                item: {
-                  "@type": "RealEstateAgent",
-                  name: agent.name ?? agent.company,
-                  description: `Professional real estate agent on MeQasa`,
-                  url: `${siteConfig.url}/agents/${encodeURIComponent(agent.name)}`,
-                  image: agent.logo
-                    ? `${siteConfig.url}/uploads/imgs/${agent.logo}`
-                    : undefined,
-                },
-              })) ?? [],
+            numberOfItems: agents.length ?? 0,
+            itemListElement: agents.map((agent, index) => ({
+              "@type": "ListItem",
+              position: index + 1,
+              item: {
+                "@type": "RealEstateAgent",
+                name: agent.name ?? agent.company,
+                description: `Professional real estate agent on MeQasa`,
+                url: `${siteConfig.url}/agents/${encodeURIComponent(agent.name)}`,
+                image: agent.logo
+                  ? `${siteConfig.url}/uploads/imgs/${agent.logo}`
+                  : undefined,
+              },
+            })),
           }),
         }}
       />

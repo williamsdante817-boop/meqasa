@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { queryConfig, queryKeys } from "@/lib/query-config";
 import type { FeaturedListingsResponse } from "@/lib/get-featured-listings";
 import type { LatestListingsResponse } from "@/lib/get-latest-listing";
+import { getListingDetails, type SimilarListings } from "@/lib/get-listing-detail";
 
 /**
  * Hook for fetching featured property listings
@@ -13,9 +14,7 @@ export function useFeaturedListings(initialData?: FeaturedListingsResponse) {
   return useQuery({
     queryKey: queryKeys.properties.featured(),
     queryFn: () => fetch("/api/homepage/featured-listings").then(r => r.json()),
-    ...queryConfig.properties, // 2min stale time, 10min cache
-    // Override for featured content - slightly more aggressive refresh
-    staleTime: process.env.NODE_ENV === "development" ? 30 * 1000 : 90 * 1000, // 30s dev, 90s prod
+    ...queryConfig.homepage, // Focus-based refresh, longer stale time
     initialData,
   });
 }
@@ -28,10 +27,7 @@ export function useLatestListings(initialData?: LatestListingsResponse) {
   return useQuery({
     queryKey: queryKeys.properties.latest(),
     queryFn: () => fetch("/api/homepage/latest-listings").then(r => r.json()),
-    ...queryConfig.properties,
-    // Latest listings need to be fresher
-    staleTime: process.env.NODE_ENV === "development" ? 15 * 1000 : 60 * 1000, // 15s dev, 60s prod
-    refetchInterval: process.env.NODE_ENV === "development" ? 30 * 1000 : 2 * 60 * 1000, // 30s dev, 2min prod
+    ...queryConfig.homepage, // Focus-based refresh, no background polling
     initialData,
   });
 }
@@ -40,16 +36,45 @@ export function useLatestListings(initialData?: LatestListingsResponse) {
 /**
  * Hook for individual property details
  * Uses longer cache time since property details don't change often
+ * Returns complete property data including similar properties, images, and owner info
  */
-export function usePropertyDetails(propertyId: string) {
+export function usePropertyDetails(propertyId: string, initialData?: SimilarListings) {
   return useQuery({
     queryKey: queryKeys.properties.detail(propertyId),
-    queryFn: () => {
-      // You'll implement this when you create a centralized property details function
-      console.log("Fetching property details for:", propertyId);
-      return Promise.resolve(null);
+    queryFn: async () => {
+      try {
+        return await getListingDetails(propertyId);
+      } catch (error) {
+        // Enhanced error handling for production
+        if (error instanceof Error) {
+          // Check for specific error messages from API
+          if (error.message.toLowerCase().includes('not found') || 
+              error.message.toLowerCase().includes('not available')) {
+            throw new Error(`Property listing ${propertyId} is not available`);
+          }
+          
+          if (error.message.toLowerCase().includes('network') ||
+              error.message.toLowerCase().includes('timeout')) {
+            throw new Error('Network error loading property. Please check your connection and try again.');
+          }
+        }
+        
+        // Generic fallback error
+        throw new Error('Unable to load property details. Please try again later.');
+      }
     },
     ...queryConfig.static, // Longer cache time for property details
-    enabled: !!propertyId, // Only run when we have a property ID
+    enabled: !!propertyId && !initialData, // Don't run query if we have initialData
+    initialData,
+    retry: (failureCount, error) => {
+      // Don't retry on "not found" errors
+      if (error instanceof Error && 
+          error.message.toLowerCase().includes('not available')) {
+        return false;
+      }
+      // Retry network errors up to 2 times
+      return failureCount < 2;
+    },
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
   });
 }

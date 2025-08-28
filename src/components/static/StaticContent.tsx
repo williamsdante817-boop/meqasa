@@ -15,8 +15,10 @@ interface StaticContentProps {
 }
 
 export function StaticAgentLogos({ staticData }: StaticContentProps) {
-  // Show skeleton if agent logos are not available
-  if (!staticData.agentLogos || staticData.agentLogos.length === 0) {
+  // More robust check - only show skeleton if we truly have no data
+  // During React Query background refetches, we want to keep showing existing data
+  // This prevents the "stuck in loading mode" issue when React Query refetches
+  if (!staticData?.agentLogos || staticData.agentLogos.length === 0) {
     return <AgentLogosSkeleton />;
   }
 

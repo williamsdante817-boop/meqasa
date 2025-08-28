@@ -16,6 +16,7 @@ import {
   PaginationEllipsis,
 } from "@/components/ui/pagination";
 import type { AgentListing } from "@/types/agent-listings";
+import { useAgentListingsPagination } from "@/hooks/queries";
 
 // Constants
 const ITEMS_PER_PAGE = 16;
@@ -56,21 +57,35 @@ export function AgentListings({
 }: AgentListingsProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [listings, setListings] = useState<AgentListing[]>(initialListings);
   const [currentPage, setCurrentPage] = useState(() => {
     const pageParam = searchParams.get("page");
     const parsedPage = pageParam ? parseInt(pageParam) : 1;
     return isNaN(parsedPage) || parsedPage < 1 ? 1 : parsedPage;
   });
-  const [totalPages, setTotalPages] = useState(
-    Math.ceil(totalCount / ITEMS_PER_PAGE),
-  );
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [isPaginationLoading, setIsPaginationLoading] = useState(false);
   const listingsTopRef = useRef<HTMLDivElement>(null);
-  const isFetchingRef = useRef(false); // Prevent race conditions
   const paginationClickedRef = useRef(false); // Track if pagination button was clicked
+
+  // Use React Query for pagination (page 2+)
+  const {
+    data: paginationData,
+    isLoading: isPaginationQueryLoading,
+    error: paginationError,
+    isFetching: isPaginationFetching,
+  } = useAgentListingsPagination(agentId, agentName, currentPage, ITEMS_PER_PAGE);
+
+  // Determine what data to show - no useEffect needed!
+  const listings = currentPage === 1 ? initialListings : (paginationData?.listings ?? []);
+  const totalPages = currentPage === 1 
+    ? Math.ceil(totalCount / ITEMS_PER_PAGE) 
+    : (paginationData?.totalPages ?? 0);
+  const isLoading = currentPage > 1 ? (isPaginationQueryLoading || isPaginationFetching) : false;
+  const error = currentPage > 1 ? paginationError : null;
+
+  // Calculate pagination range for display
+  const startItem = (currentPage - 1) * ITEMS_PER_PAGE + 1;
+  const endItem = Math.min(currentPage * ITEMS_PER_PAGE, totalCount);
+  const hasListings = listings.length > 0;
 
   // Sync current page with URL changes (for browser back/forward)
   useEffect(() => {
@@ -81,56 +96,19 @@ export function AgentListings({
     }
   }, [searchParams, currentPage]);
 
-  // Fetch listings when page changes
-  useEffect(() => {
-    const fetchListings = async () => {
-      if (isFetchingRef.current) return; // Prevent race conditions
-      isFetchingRef.current = true;
-      setError(null);
-      setIsLoading(true);
-
-      try {
-        const response = await fetch("/api/agent-listings", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            agentId,
-            agentName,
-            page: currentPage,
-            limit: ITEMS_PER_PAGE,
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error(`Failed to fetch listings: ${response.status}`);
-        }
-
-        const data = (await response.json()) as {
-          listings: AgentListing[];
-          totalPages: number;
-        };
-
-        setListings(data.listings);
-        setTotalPages(data.totalPages);
-      } catch (error) {
-        console.error("Error fetching agent listings:", error);
-        setError(
-          error instanceof Error ? error.message : "Failed to fetch listings",
-        );
-      } finally {
-        setIsLoading(false);
-        isFetchingRef.current = false;
-      }
-    };
-
-    void fetchListings();
-  }, [agentId, agentName, currentPage]);
-
-  // Scroll to top of listings only when pagination button is clicked
+  // Scroll behavior: handle all page transitions in one place
   useEffect(() => {
     if (paginationClickedRef.current && listingsTopRef.current) {
-      listingsTopRef.current.scrollIntoView({ behavior: "smooth" });
-      paginationClickedRef.current = false;
+      // For page 1: scroll immediately (data already available)
+      // For pages 2+: scroll after a short delay to let React Query finish
+      const scrollDelay = currentPage === 1 ? 0 : 100;
+      
+      setTimeout(() => {
+        if (listingsTopRef.current) {
+          listingsTopRef.current.scrollIntoView({ behavior: "smooth" });
+          paginationClickedRef.current = false;
+        }
+      }, scrollDelay);
     }
   }, [currentPage]);
 
@@ -162,7 +140,7 @@ export function AgentListings({
       {error && (
         <Alert className="mb-6 border-red-200 bg-red-50">
           <AlertDescription className="text-red-800">
-            {error}. Please try again.
+            {error instanceof Error ? error.message : String(error)}. Please try again.
           </AlertDescription>
         </Alert>
       )}
@@ -180,12 +158,20 @@ export function AgentListings({
               Listings By {agentName}
             </h2>
             <Badge className="bg-brand-primary text-white font-medium">
-              {listings.length} listings
+              {totalCount} total
             </Badge>
           </div>
 
           <p className="text-brand-muted text-sm mb-6">
-            Showing {listings.length} of {totalCount} listings total
+            {hasListings && totalCount > 0 ? (
+              totalCount <= ITEMS_PER_PAGE ? (
+                `Showing all ${totalCount} listings`
+              ) : (
+                `Showing ${startItem}-${endItem} of ${totalCount} listings`
+              )
+            ) : (
+              "No listings found"
+            )}
           </p>
         </div>
       </div>

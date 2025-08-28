@@ -3,6 +3,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Card } from "@/components/ui/card";
 import { ChevronDown, ListFilterPlus, SearchIcon } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import {
+  PageHeader,
+  PageHeaderDescription,
+  PageHeaderHeading,
+} from "@/components/layout/page-header";
+import { FeaturedProjectsSkeleton } from "@/components/streaming/LoadingSkeletons";
 
 export function LobbySkeleton() {
   return (
@@ -12,7 +18,30 @@ export function LobbySkeleton() {
         <div className="max-h-[305px] h-[305px] relative bg-gray-200">
           <Skeleton className="w-full h-full" />
         </div>
-        <div className="absolute -bottom-20 left-1/2 -translate-x-1/2 px-4 w-full max-w-4xl">
+
+        {/* Mobile Page Header - Only visible on mobile */}
+        <PageHeader
+          as="section"
+          className="mx-auto items-center gap-2 text-center lg:hidden flex absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white z-10"
+          withPadding
+        >
+          <PageHeaderHeading
+            className="animate-pulse text-white"
+            as="h1"
+          >
+            <Skeleton className="h-8 w-64 bg-white/20" />
+          </PageHeaderHeading>
+          <PageHeaderDescription className="max-w-[46.875rem] animate-pulse">
+            <Skeleton className="h-4 w-80 bg-white/20 mt-2" />
+          </PageHeaderDescription>
+          {/* Mobile Search Trigger Skeleton */}
+          <div className="mt-4 w-[80%] mx-auto">
+            <Skeleton className="h-12 w-full bg-white/90 rounded-lg" />
+          </div>
+        </PageHeader>
+
+        {/* Desktop Search Form - Only visible on desktop */}
+        <div className="absolute -bottom-20 left-1/2 -translate-x-1/2 px-4 w-full max-w-4xl hidden lg:block">
           <Card
             className="mx-auto my-0 h-fit w-full rounded-2xl border-0 p-2 lg:max-w-[928px] lg:p-3 gap-0"
             style={{ background: "rgba(11,17,52,.65)" }}
@@ -93,8 +122,14 @@ export function LobbySkeleton() {
         </div>
       </div>
 
-      <Shell>
-        <div className="w-full lg:p-4">
+      {/* Mobile: Show Featured Projects Skeleton instead of grid */}
+      <div className="lg:hidden">
+        <FeaturedProjectsSkeleton />
+      </div>
+
+      {/* Desktop: Show Grid Skeleton */}
+      <Shell className="hidden lg:block">
+        <div className="w-full p-4">
           {/* Grid ad skeleton */}
           <div className="mt-6 grid grid-cols-2 gap-4">
             <Skeleton className="h-44 w-full rounded-lg" />

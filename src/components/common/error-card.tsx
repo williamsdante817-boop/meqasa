@@ -43,34 +43,31 @@ export function ErrorCard({
       </div>
       <div className="flex flex-col items-center justify-center space-y-1.5 py-14 text-center">
         <CardTitle className="text-xl font-semibold">{title}</CardTitle>
-        <CardDescription className="line-clamp-4 text-brand-muted capitalize">
+        <CardDescription className="line-clamp-4 text-brand-muted ">
           {description}
         </CardDescription>
       </div>
-      {retryLink ? (
-        <Link
-          href={retryLink}
-          className={cn(
-            buttonVariants({
-              variant: "default"
-            }),
-            'bg-brand-accent text-white'
-          )}
-        >
-          {retryLinkText}
-          <span className="sr-only">{retryLinkText}</span>
-        </Link>
-      ) : null}
-      {reset ? (
-        <Button
-          aria-label="Retry"
-          variant="ghost"
-          onClick={reset}
-        
-        >
-          Retry
-        </Button>
-      ) : null}
+      <div className="flex flex-nowrap items-center h-full justify-center gap-8 text-center">
+        {reset ? (
+          <Button aria-label="Retry" variant="outline" onClick={reset}>
+            Retry
+          </Button>
+        ) : null}
+        {retryLink ? (
+          <Link
+            href={retryLink}
+            className={cn(
+              buttonVariants({
+                variant: "default",
+              }),
+              "bg-brand-accent text-white",
+            )}
+          >
+            {retryLinkText}
+            <span className="sr-only">{retryLinkText}</span>
+          </Link>
+        ) : null}
+      </div>
     </Card>
   );
 }

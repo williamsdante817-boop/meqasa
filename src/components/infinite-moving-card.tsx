@@ -168,9 +168,11 @@ const OptimizedAgentLogo: React.FC<OptimizedAgentLogoProps> = ({
   alt,
   fallbackSrc,
 }) => {
+  // Use src as initial state and only update when it actually changes
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [currentSrc, setCurrentSrc] = useState(src);
+  const prevSrcRef = useRef(src);
 
   const handleLoad = () => {
     setIsLoading(false);
@@ -188,11 +190,14 @@ const OptimizedAgentLogo: React.FC<OptimizedAgentLogoProps> = ({
     }
   };
 
-  // Reset state when src changes
+  // Only reset state when src prop actually changes (not on every re-render)
   React.useEffect(() => {
-    setCurrentSrc(src);
-    setIsLoading(true);
-    setHasError(false);
+    if (prevSrcRef.current !== src) {
+      setCurrentSrc(src);
+      setIsLoading(true);
+      setHasError(false);
+      prevSrcRef.current = src;
+    }
   }, [src]);
 
   return (

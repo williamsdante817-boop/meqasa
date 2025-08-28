@@ -24,9 +24,9 @@ import { sanitizeHtml } from "@/lib/dom-sanitizer";
 import { BathIcon, BedIcon, ParkingSquare, Square } from "lucide-react";
 import Link from "next/link";
 import ProjectVideo from "../../development-projects/_component/project-video";
-import { ErrorCard } from "@/components/common/error-card";
 import type { Metadata } from "next";
 import { siteConfig } from "@/config/site";
+import { createPropertyError } from "@/lib/error-handling";
 
 // Constants for better maintainability
 const CONTRACT_TYPES = {
@@ -68,8 +68,26 @@ export async function generateMetadata({
 
     if (!match?.[1]) {
       return {
-        title: "Listing Not Found | MeQasa",
-        description: "The requested property listing could not be found.",
+        title:
+          "Property Not Found | MeQasa - Ghana's Leading Real Estate Marketplace",
+        description:
+          "The requested property listing could not be found. Browse thousands of verified properties for rent and sale on MeQasa.",
+        openGraph: {
+          title: "Property Not Found | MeQasa",
+          description: "The requested property listing could not be found.",
+          type: "website",
+          url: `/listings/${slug}`,
+          siteName: siteConfig.name,
+        },
+        twitter: {
+          card: "summary",
+          title: "Property Not Found | MeQasa",
+          description: "The requested property listing could not be found.",
+        },
+        robots: {
+          index: false,
+          follow: true,
+        },
       };
     }
 
@@ -78,58 +96,104 @@ export async function generateMetadata({
 
     if (!listingDetail) {
       return {
-        title: "Listing Not Found | MeQasa",
-        description: "The requested property listing could not be found.",
+        title:
+          "Property Not Found | MeQasa - Ghana's Leading Real Estate Marketplace",
+        description:
+          "The requested property listing could not be found. Browse thousands of verified properties for rent and sale on MeQasa.",
+        openGraph: {
+          title: "Property Not Found | MeQasa",
+          description: "The requested property listing could not be found.",
+          type: "website",
+          url: `/listings/${slug}`,
+          siteName: siteConfig.name,
+        },
+        twitter: {
+          card: "summary",
+          title: "Property Not Found | MeQasa",
+          description: "The requested property listing could not be found.",
+        },
+        robots: {
+          index: false,
+          follow: true,
+        },
       };
     }
 
-    const title = `${listingDetail.title || "Property"} for ${listingDetail.contract} in ${listingDetail.locationstring} | MeQasa`;
-    const description = `${listingDetail.title || "Property"} for ${listingDetail.contract} in ${listingDetail.locationstring}. ${listingDetail.beds} bed, ${listingDetail.baths} bath property with ${listingDetail.floorarea} sqm floor area. ${listingDetail.price ? `Price: ${listingDetail.price}` : "Contact for pricing"}.`;
+    // Extract price for meta description
+    const priceText = listingDetail.price
+      ? listingDetail.price.replace(/<[^>]*>/g, "").trim()
+      : "Contact for pricing";
 
+    // Create SEO-optimized title
+    const title = `${listingDetail.title || `${listingDetail.beds} Bedroom ${listingDetail.type}`} for ${listingDetail.contract} in ${listingDetail.locationstring} | MeQasa`;
+
+    // Create detailed description for SEO
+    const description = `${listingDetail.title || `${listingDetail.beds} bedroom ${listingDetail.type.toLowerCase()}`} for ${listingDetail.contract} in ${listingDetail.locationstring}, Ghana. ${listingDetail.beds ? `${listingDetail.beds} bed` : ""}${listingDetail.baths ? `, ${listingDetail.baths} bath` : ""}${listingDetail.floorarea ? ` property with ${listingDetail.floorarea} sqm` : ""}. ${priceText}. Verified listing on MeQasa.`;
+
+    // Comprehensive keywords for SEO
     const keywords = [
-      listingDetail.title || "property",
-      listingDetail.contract,
-      listingDetail.locationstring,
-      listingDetail.type,
-      `${listingDetail.beds} bedroom`,
-      `${listingDetail.baths} bathroom`,
-      listingDetail.floorarea,
-      "MeQasa",
+      listingDetail.title,
+      `${listingDetail.type} for ${listingDetail.contract}`,
+      `${listingDetail.locationstring} properties`,
+      `${listingDetail.location} real estate`,
+      `${listingDetail.beds} bedroom ${listingDetail.type}`,
+      `${listingDetail.contract} ${listingDetail.locationstring}`,
+      "MeQasa Ghana",
       "Ghana real estate",
-      "property listing",
+      "property listing Ghana",
+      "verified properties Ghana",
       listingDetail.contract === "rent"
-        ? "rental property"
-        : "property for sale",
-    ];
+        ? "rental property Ghana"
+        : "property for sale Ghana",
+      `${listingDetail.locationstring} ${listingDetail.contract}`,
+    ].filter(Boolean);
+
+    // Generate image URLs
+    const imageUrl = listingDetail.imagelist?.[0]
+      ? `https://meqasa.com/uploads/imgs/${listingDetail.imagelist[0]}`
+      : null;
+
+    const images = imageUrl
+      ? [
+          {
+            url: imageUrl,
+            width: 1200,
+            height: 630,
+            alt: `${listingDetail.title || `${listingDetail.type} for ${listingDetail.contract}`} in ${listingDetail.locationstring}`,
+            type: "image/jpeg",
+          },
+          {
+            url: imageUrl,
+            width: 800,
+            height: 600,
+            alt: `${listingDetail.title || `${listingDetail.type} for ${listingDetail.contract}`} in ${listingDetail.locationstring}`,
+            type: "image/jpeg",
+          },
+        ]
+      : [];
 
     return {
       title,
       description,
-      keywords,
-      authors: [{ name: "MeQasa" }],
+      keywords: keywords.join(", "),
+      authors: [{ name: "MeQasa", url: "https://meqasa.com" }],
       creator: "MeQasa",
       publisher: "MeQasa",
+      category: "Real Estate",
+      classification: "Real Estate Listing",
       metadataBase: new URL(siteConfig.url),
       alternates: {
         canonical: `/listings/${slug}`,
       },
       openGraph: {
         type: "website",
-        locale: "en_US",
+        locale: "en_GH",
         url: `/listings/${slug}`,
         siteName: siteConfig.name,
         title,
         description,
-        images: listingDetail.imagelist?.[0]
-          ? [
-              {
-                url: `https://meqasa.com/uploads/imgs/${listingDetail.imagelist[0]}`,
-                width: 1200,
-                height: 630,
-                alt: listingDetail.title || "Property listing",
-              },
-            ]
-          : [],
+        images,
+        countryName: "Ghana",
       },
       twitter: {
         card: "summary_large_image",
@@ -137,13 +201,14 @@ export async function generateMetadata({
         creator: "@meqasa",
         title,
         description,
-        images: listingDetail.imagelist?.[0]
-          ? [`https://meqasa.com/uploads/imgs/${listingDetail.imagelist[0]}`]
-          : [],
+        images: imageUrl ? [imageUrl] : [],
       },
       robots: {
         index: true,
         follow: true,
+        noarchive: false,
+        nosnippet: false,
+        noimageindex: false,
         googleBot: {
           index: true,
           follow: true,
@@ -152,11 +217,32 @@ export async function generateMetadata({
           "max-snippet": -1,
         },
       },
+      verification: {
+        google: process.env.GOOGLE_SITE_VERIFICATION,
+      },
+      other: {
+        "property:price": priceText,
+        "property:location": listingDetail.locationstring,
+        "property:type": listingDetail.type,
+        "property:contract": listingDetail.contract,
+        "property:bedrooms": listingDetail.beds,
+        "property:bathrooms": listingDetail.baths,
+        ...(listingDetail.floorarea && {
+          "property:area": `${listingDetail.floorarea} sqm`,
+        }),
+      },
     };
   } catch (error) {
+    console.error("Error generating metadata:", error);
     return {
-      title: "Property Listing | MeQasa",
-      description: "View detailed property information on MeQasa.",
+      title:
+        "Property Details | MeQasa - Ghana's Leading Real Estate Marketplace",
+      description:
+        "View detailed property information on MeQasa, Ghana's leading real estate marketplace with thousands of verified properties.",
+      robots: {
+        index: false,
+        follow: true,
+      },
     };
   }
 }
@@ -170,564 +256,575 @@ export default async function DetailsPage({
   // Extract listing ID more reliably
   const match = /-(\d+)$/.exec(slug);
   if (!match?.[1]) {
-    // Return a not found page instead of throwing
-    return (
-      <main>
-        <Shell>
-          <div className="text-center py-10">
-            <h1 className="text-2xl font-bold text-brand-accent">
-              Listing Not Found
-            </h1>
-            <p className="text-brand-muted mt-2">
-              The requested property listing could not be found.
-            </p>
-          </div>
-        </Shell>
-      </main>
-    );
+    throw createPropertyError(new Error("Invalid slug format"), "invalid_slug");
   }
 
   const listingId = match[1];
+  console.log(
+    "Property page - extracting ID from slug:",
+    slug,
+    "-> ID:",
+    listingId,
+  );
 
-  try {
-    const listingDetail = await getListingDetails(listingId);
+  console.log("Property page - calling getListingDetails with ID:", listingId);
+  const listingDetail = await getListingDetails(listingId);
+  console.log(
+    "Property page - got listing detail:",
+    !!listingDetail,
+    listingDetail?.listingid,
+  );
 
-    if (!listingDetail) {
-      return (
-        <main>
-          <Shell>
-            <div className="text-center py-10">
-              <h1 className="text-2xl font-bold text-brand-accent">
-                Listing Not Found
-              </h1>
-              <p className="text-brand-muted mt-2">
-                The requested property listing could not be found.
-              </p>
-            </div>
-          </Shell>
-        </main>
-      );
-    }
+  if (!listingDetail) {
+    throw createPropertyError(new Error("Property listing not found"));
+  }
 
-    // Generate structured data for the property listing
-    const structuredData = {
-      "@context": "https://schema.org",
-      "@type": "RealEstateListing",
-      name: listingDetail.title || `Property for ${listingDetail.contract}`,
-      description:
-        listingDetail.description ||
-        `${listingDetail.title || "Property"} for ${listingDetail.contract} in ${listingDetail.locationstring}`,
-      url: `${siteConfig.url}/listings/${slug}`,
-      image: listingDetail.imagelist?.[0]
-        ? `https://meqasa.com/uploads/imgs/${listingDetail.imagelist[0]}`
+  // Generate comprehensive structured data for SEO and rich snippets
+  const cleanPrice = listingDetail.price
+    ? listingDetail.price.replace(/<[^>]*>/g, "").replace(/[^\d.,]/g, "")
+    : null;
+
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "RealEstateListing",
+    "@id": `${siteConfig.url}/listings/${slug}`,
+    name:
+      listingDetail.title ||
+      `${listingDetail.beds ? `${listingDetail.beds} Bedroom ` : ""}${listingDetail.type} for ${listingDetail.contract}`,
+    description:
+      listingDetail.description ||
+      `${listingDetail.title || `${listingDetail.beds} bedroom ${listingDetail.type.toLowerCase()}`} for ${listingDetail.contract} in ${listingDetail.locationstring}, Ghana. ${listingDetail.beds ? `${listingDetail.beds} bed` : ""}${listingDetail.baths ? `, ${listingDetail.baths} bath` : ""}${listingDetail.floorarea ? ` property with ${listingDetail.floorarea} sqm` : ""}.`,
+    url: `${siteConfig.url}/listings/${slug}`,
+    image:
+      listingDetail.imagelist?.map(
+        (img) => `https://meqasa.com/uploads/imgs/${img}`,
+      ) || [],
+    datePublished: new Date().toISOString(),
+    dateModified: new Date().toISOString(),
+    author: {
+      "@type": "Organization",
+      name: "MeQasa",
+      url: "https://meqasa.com",
+      logo: {
+        "@type": "ImageObject",
+        url: "https://meqasa.com/logo.png",
+      },
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "MeQasa",
+      url: "https://meqasa.com",
+      logo: {
+        "@type": "ImageObject",
+        url: "https://meqasa.com/logo.png",
+      },
+    },
+    offers: {
+      "@type": "Offer",
+      availability: "https://schema.org/InStock",
+      price: cleanPrice ?? undefined,
+      priceCurrency: "GHS",
+      priceSpecification: cleanPrice
+        ? {
+            "@type": "PriceSpecification",
+            price: cleanPrice,
+            priceCurrency: "GHS",
+            unitCode: listingDetail.contract === "rent" ? "MON" : undefined,
+          }
         : undefined,
-      offers: {
-        "@type": "Offer",
-        availability: "https://schema.org/InStock",
-        price: listingDetail.price || "Contact for pricing",
-        priceCurrency: "GHS",
-        businessFunction:
-          listingDetail.contract === "rent"
-            ? "http://purl.org/goodrelations/v1#LeaseOut"
-            : "http://purl.org/goodrelations/v1#Sell",
-      },
-      address: {
-        "@type": "PostalAddress",
-        streetAddress: listingDetail.streetaddress,
-        addressLocality: listingDetail.locationstring,
-        addressCountry: "Ghana",
-      },
-      numberOfBedrooms: parseInt(listingDetail.beds) || undefined,
-      numberOfBathrooms: parseInt(listingDetail.baths) || undefined,
-      floorSize: {
-        "@type": "QuantitativeValue",
-        value: listingDetail.floorarea,
-        unitCode: "MTK",
-      },
-      propertyType: listingDetail.type,
-      category:
+      businessFunction:
         listingDetail.contract === "rent"
-          ? "Rental Property"
-          : "Property for Sale",
-    };
+          ? "http://purl.org/goodrelations/v1#LeaseOut"
+          : "http://purl.org/goodrelations/v1#Sell",
+      offeredBy: {
+        "@type": "RealEstateAgent",
+        name: listingDetail.owner.name,
+        url: listingDetail.owner.page
+          ? `https://meqasa.com${listingDetail.owner.page}`
+          : undefined,
+        image:
+          (listingDetail.owner.logo ?? listingDetail.owner.profilepic)
+            ? `https://meqasa.com${listingDetail.owner.logo ?? listingDetail.owner.profilepic}`
+            : undefined,
+      },
+    },
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: listingDetail.streetaddress ?? listingDetail.location,
+      addressLocality: listingDetail.locationstring,
+      addressRegion: listingDetail.locationstring.includes("Accra")
+        ? "Greater Accra"
+        : undefined,
+      addressCountry: "GH",
+      postalCode: undefined,
+    },
 
-    // Build Similar Listings search href based on current listing details
-    const contract = listingDetail.contract.toLowerCase();
-    const location = listingDetail.location.toLowerCase();
-    const type = listingDetail.type.toLowerCase();
-    const searchParams = new URLSearchParams({
-      q: location,
-      page: "1",
-      ftype: type,
-    });
-    const numBeds = Number.parseInt(listingDetail.beds, 10);
-    const numBaths = Number.parseInt(listingDetail.baths, 10);
-    if (!Number.isNaN(numBeds) && numBeds > 0)
-      searchParams.set("fbeds", String(numBeds));
-    if (!Number.isNaN(numBaths) && numBaths > 0)
-      searchParams.set("fbaths", String(numBaths));
-    const similarSearchHref = `/search/${contract}?${searchParams.toString()}`;
-
-    // Construct internal agent link `/agents/{name}?g={id}` using owner.page as source of id
-    const agentNameEncoded = encodeURIComponent(listingDetail.owner.name);
-    const ownerPageUrl = listingDetail.owner.page;
-    let agentIdFromPage = "";
-    const qMarkIndex = ownerPageUrl.indexOf("?");
-    if (qMarkIndex !== -1) {
-      const queryString = ownerPageUrl.slice(qMarkIndex + 1);
-      const sp = new URLSearchParams(queryString);
-      agentIdFromPage = sp.get("g") ?? "";
-    } else {
-      const execResult = /[?&]g=([^&]+)/.exec(ownerPageUrl);
-      agentIdFromPage = execResult?.[1] ?? "";
-    }
-    const agentHref = agentIdFromPage
-      ? `/agents/${agentNameEncoded}?g=${encodeURIComponent(agentIdFromPage)}`
-      : `/agents/${agentNameEncoded}`;
-
-    const isFurnished =
-      typeof listingDetail.isfurnished === "boolean"
-        ? listingDetail.isfurnished
-        : typeof listingDetail.isfurnished === "string"
-          ? ["1", "true", "yes", "y"].includes(
-              listingDetail.isfurnished.toLowerCase(),
-            )
-          : false;
-
-    const safePriceHtml = {
-      __html: sanitizeHtml(listingDetail.price ?? ""),
-    } satisfies { __html: string };
-    const safeDescriptionHtml = {
-      __html: sanitizeHtml(listingDetail.description ?? ""),
-    } satisfies { __html: string };
-
-    const propertyDetails = [
-      { title: "Type", value: listingDetail.type || "Not specified" },
-      { title: "Contract", value: listingDetail.contract || "Not specified" },
-      { title: "Location", value: listingDetail.location || "Not specified" },
+    numberOfRooms: parseInt(listingDetail.beds) || undefined,
+    numberOfBedrooms: parseInt(listingDetail.beds) || undefined,
+    numberOfBathrooms: parseInt(listingDetail.baths) || undefined,
+    floorSize: listingDetail.floorarea
+      ? {
+          "@type": "QuantitativeValue",
+          value: parseFloat(listingDetail.floorarea),
+          unitCode: "MTK",
+          unitText: "square meters",
+        }
+      : undefined,
+    propertyType: listingDetail.type,
+    category:
+      listingDetail.contract === "rent"
+        ? "Rental Property"
+        : "Property for Sale",
+    additionalType: `https://schema.org/${listingDetail.type === "house" ? "House" : listingDetail.type === "apartment" ? "Apartment" : "Accommodation"}`,
+    amenityFeature:
+      listingDetail.amenities?.map((amenity: string) => ({
+        "@type": "LocationFeatureSpecification",
+        name: amenity,
+        value: true,
+      })) || [],
+    petsAllowed: undefined,
+    smokingAllowed: undefined,
+    tourBookingPage: `${siteConfig.url}/listings/${slug}`,
+    potentialAction: [
       {
-        title: "Bedrooms",
-        value: listingDetail.beds || "Not specified",
+        "@type": "ViewAction",
+        target: `${siteConfig.url}/listings/${slug}`,
+        name: "View Property Details",
       },
       {
-        title: "Bathrooms",
-        value: listingDetail.baths || "Not specified",
+        "@type": "ContactAction",
+        target: `mailto:${siteConfig.email}`,
+        name: "Contact Agent",
       },
-      { title: "Garages", value: listingDetail.garages || "Not specified" },
-      {
-        title: "Area",
-        value: listingDetail.floorarea
-          ? `${listingDetail.floorarea} ㎡`
+    ],
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `${siteConfig.url}/listings/${slug}`,
+    },
+    isAccessibleForFree: false,
+    keywords: [
+      listingDetail.type,
+      listingDetail.contract,
+      listingDetail.locationstring,
+      "Ghana real estate",
+      "MeQasa",
+    ].join(", "),
+  };
+
+  // Build Similar Listings search href based on current listing details
+  const contract = listingDetail.contract.toLowerCase();
+  const location = listingDetail.location.toLowerCase();
+  const type = listingDetail.type.toLowerCase();
+  const searchParams = new URLSearchParams({
+    q: location,
+    page: "1",
+    ftype: type,
+  });
+  const numBeds = Number.parseInt(listingDetail.beds, 10);
+  const numBaths = Number.parseInt(listingDetail.baths, 10);
+  if (!Number.isNaN(numBeds) && numBeds > 0)
+    searchParams.set("fbeds", String(numBeds));
+  if (!Number.isNaN(numBaths) && numBaths > 0)
+    searchParams.set("fbaths", String(numBaths));
+  const similarSearchHref = `/search/${contract}?${searchParams.toString()}`;
+
+  // Construct internal agent link `/agents/{name}?g={id}` using owner.page as source of id
+  const agentNameEncoded = encodeURIComponent(listingDetail.owner.name);
+  const ownerPageUrl = listingDetail.owner.page;
+  let agentIdFromPage = "";
+  const qMarkIndex = ownerPageUrl.indexOf("?");
+  if (qMarkIndex !== -1) {
+    const queryString = ownerPageUrl.slice(qMarkIndex + 1);
+    const sp = new URLSearchParams(queryString);
+    agentIdFromPage = sp.get("g") ?? "";
+  } else {
+    const execResult = /[?&]g=([^&]+)/.exec(ownerPageUrl);
+    agentIdFromPage = execResult?.[1] ?? "";
+  }
+  const agentHref = agentIdFromPage
+    ? `/agents/${agentNameEncoded}?g=${encodeURIComponent(agentIdFromPage)}`
+    : `/agents/${agentNameEncoded}`;
+
+  const isFurnished =
+    typeof listingDetail.isfurnished === "boolean"
+      ? listingDetail.isfurnished
+      : typeof listingDetail.isfurnished === "string"
+        ? ["1", "true", "yes", "y"].includes(
+            listingDetail.isfurnished.toLowerCase(),
+          )
+        : false;
+
+  const safePriceHtml = {
+    __html: sanitizeHtml(listingDetail.price ?? ""),
+  } satisfies { __html: string };
+  const safeDescriptionHtml = {
+    __html: sanitizeHtml(listingDetail.description ?? ""),
+  } satisfies { __html: string };
+
+  const propertyDetails = [
+    { title: "Type", value: listingDetail.type || "Not specified" },
+    { title: "Contract", value: listingDetail.contract || "Not specified" },
+    { title: "Location", value: listingDetail.location || "Not specified" },
+    {
+      title: "Bedrooms",
+      value: listingDetail.beds || "Not specified",
+    },
+    {
+      title: "Bathrooms",
+      value: listingDetail.baths || "Not specified",
+    },
+    { title: "Garages", value: listingDetail.garages || "Not specified" },
+    {
+      title: "Area",
+      value: listingDetail.floorarea
+        ? `${listingDetail.floorarea} ㎡`
+        : "Not specified",
+    },
+    {
+      title: "Furnished",
+      value:
+        listingDetail.isfurnished !== ""
+          ? listingDetail.isfurnished
+            ? "Yes"
+            : "No"
           : "Not specified",
-      },
-      {
-        title: "Furnished",
-        value:
-          listingDetail.isfurnished !== ""
-            ? listingDetail.isfurnished
-              ? "Yes"
-              : "No"
-            : "Not specified",
-      },
-      {
-        title: "Reference",
-        value: listingDetail.listingid,
-      },
-    ];
+    },
+    {
+      title: "Reference",
+      value: listingDetail.listingid,
+    },
+  ];
 
-    return (
-      <>
-        {/* Structured Data for SEO */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-        />
-        <main>
-          <Shell>
-            <div className="space-y-3 mb-3">
-              <Breadcrumbs
-                className="pt-4"
-                segments={[
-                  { title: "Home", href: "/" },
-                  {
-                    title: `For ${listingDetail.contract}`,
-                    href: `/search/${listingDetail.contract.toLowerCase()}?q=ghana&page=1`,
-                  },
-                  {
-                    title: `${listingDetail.type}`,
-                    href: `/search/${listingDetail.contract.toLowerCase()}?q=ghana&ftype=${listingDetail.type}&page=1`,
-                  },
-                  {
-                    title: `${listingDetail.location}`,
-                    href: `/search/${listingDetail.contract.toLowerCase()}?q=${listingDetail.location}&page=1`,
-                  },
-                ]}
-                aria-label="Property listing navigation"
-              />
-              <h1 className="font-bold leading-tight tracking-tighter text-brand-accent lg:leading-[1.1] text-2xl md:text-3xl capitalize">
-                {listingDetail.title}
-              </h1>
-            </div>
-          </Shell>
-          <section
-            className="border-b border-brand-badge-ongoing bg-black flex items-center justify-center"
-            aria-label="Property images"
-          >
-            <DynamicCarousel images={listingDetail.imagelist} />
-          </section>
-          <Shell>
-            <div className="grid grid-cols-1 text-brand-accent w-full mt-4 lg:grid-cols-[2fr_1fr] lg:gap-8 lg:px-0">
-              <div>
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center">
-                    <h2
-                      className="text-2xl font-extrabold text-brand-accent lg:text-3xl"
-                      dangerouslySetInnerHTML={safePriceHtml}
-                    />
-                    <span className="text-brand-muted font-light text-sm md:text-xl">
-                      {listingDetail.leaseunit}
-                    </span>
-                  </div>
-                  <span className="flex gap-2 md:gap-4 text-xs">
-                    {(listingDetail.owner.verification ===
-                      VERIFICATION_STATUSES.APPROVED ||
-                      listingDetail.owner.verification ===
-                        VERIFICATION_STATUSES.APPROVED2) && (
-                      <Badge className="hidden md:block uppercase text-white bg-green-500">
-                        Verified
-                      </Badge>
-                    )}
-                    {Boolean(listingDetail.isnegotiable) && (
-                      <Badge className="uppercase  text-white bg-brand-primary">
-                        Negotiable
-                      </Badge>
-                    )}
-                  </span>
-                </div>
-                <div className="flex items-center gap-4 py-3">
-                  <div
-                    className="flex items-center gap-1.5 md:gap-4 flex-wrap"
-                    role="list"
-                    aria-label="Property features"
-                  >
-                    {listingDetail.beds && (
-                      <div className="flex items-center gap-2" role="listitem">
-                        <p className="flex items-center gap-1 text-brand-accent">
-                          <BedIcon
-                            className="text-brand-muted"
-                            strokeWidth={1.2}
-                            aria-hidden="true"
-                          />{" "}
-                          <span>{listingDetail.beds} Beds</span>
-                        </p>
-                      </div>
-                    )}
-                    {listingDetail.baths && (
-                      <div className="flex items-center gap-2" role="listitem">
-                        <p className="flex items-center gap-1 text-brand-accent">
-                          <BathIcon
-                            className="text-brand-muted"
-                            strokeWidth={1.2}
-                            aria-hidden="true"
-                          />{" "}
-                          <span>{listingDetail.baths} Baths</span>
-                        </p>
-                      </div>
-                    )}
-                    {listingDetail.garages && (
-                      <div className="flex items-center gap-2" role="listitem">
-                        <p className="flex items-center gap-1 text-brand-accent">
-                          <ParkingSquare
-                            className="text-brand-muted"
-                            strokeWidth={1.2}
-                            aria-hidden="true"
-                          />{" "}
-                          <span>{listingDetail.garages} Parking</span>
-                        </p>
-                      </div>
-                    )}
-                    {listingDetail.floorarea && (
-                      <div className="flex items-center gap-2" role="listitem">
-                        <p className="flex items-center gap-1 text-brand-accent">
-                          <Square
-                            className="text-brand-muted"
-                            strokeWidth={1.2}
-                            aria-hidden="true"
-                          />{" "}
-                          <span>{listingDetail.floorarea} sqm</span>
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-                <div className="flex items-center gap-4 mb-6">
-                  <Badge className="uppercase text-xs text-blue-500 bg-blue-100/60">
-                    {isFurnished ? "Furnished" : "Unfurnished"}
-                  </Badge>
-                  <Badge className="uppercase text-xs text-blue-500 bg-blue-100/60 max-w-[280px] md:max-w-full">
-                    <p className="truncate w-full">{listingDetail.location}</p>
-                  </Badge>
-                </div>
-                <aside className="mb-6">
-                  {listingDetail.owner.listingscount !== "0" && (
-                    <div className="flex items-center gap-4 md:gap-8 border-y text-sm py-4 lg:py-10 lg:text-base">
-                      <div>
-                        <Icons.trend />
-                      </div>
-                      <div>
-                        <p className="text-brand-accent lg:font-semibold">
-                          This property is popular
-                        </p>
-                        <p className="text-brand-accent">
-                          <span>{`It's been viewed ${formatNumber(listingDetail.owner.listingscount, { notation: "compact" })} times.`}</span>
-                          <span className="lg:font-semibold">
-                            {" "}
-                            Contact agent before it&apos;s gone!
-                          </span>
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                </aside>
-                <aside className="mb-6">
-                  <Card className="flex items-start justify-between gap-5 rounded-lg border-orange-200 px-4 text-brand-accent lg:flex-row lg:w-fit lg:px-6 py-4">
-                    <Badge className="bg-orange-500 uppercase">
-                      {listingDetail.owner.type !== "Agent"
-                        ? "Project name"
-                        : "Categories"}
-                    </Badge>
-                    <div>
-                      {listingDetail.owner.type !== "Agent" ? (
-                        <p className="font-semibold">{"Project name"}</p>
-                      ) : (
-                        // categoryData.categories?.map((cat) => (
-                        <div>
-                          <Link
-                            href={`/search/${listingDetail.contract.toLowerCase()}?q=ghana&ftype=${listingDetail.type.toLowerCase()}&page=1`}
-                            className="block text-sm text-blue-500"
-                            key={listingDetail.parenttext}
-                          >
-                            {listingDetail.parenttext}
-                          </Link>
-                          <Link
-                            href={`/search/${listingDetail.contract.toLowerCase()}?q=${listingDetail.location.toLowerCase()}&ftype=${listingDetail.type.toLowerCase()}&page=1`}
-                            className="block text-sm text-blue-500"
-                            key={listingDetail.categorytext}
-                          >
-                            {listingDetail.categorytext}
-                          </Link>
-                        </div>
-                      )}
-                    </div>
-                  </Card>
-                </aside>
-                <SafetyTipsCard />
-                <ContentSection
-                  title="Description"
-                  description=""
-                  href="/listings"
-                  className="pt-14 md:pt-20 px-0 pb-10 overflow-hidden md:pb-0"
-                  btnHidden
-                >
-                  {listingDetail?.description &&
-                  listingDetail.description.trim() !== "" ? (
-                    <>
-                      <p
-                        dangerouslySetInnerHTML={safeDescriptionHtml}
-                        className="text-brand-muted"
-                      />
-                      <span className="block text-gray-500 mt-4">
-                        Listed by:{" "}
-                        <Link
-                          href={agentHref}
-                          className="decoration-dashed hover:text-blue-500 underline underline-offset-2"
-                        >
-                          {listingDetail.owner.name}
-                        </Link>
-                      </span>
-                    </>
-                  ) : (
-                    <AlertCard
-                      title="No description provided"
-                      description="This listing doesn't have a detailed description yet."
-                      className="my-4"
-                    />
-                  )}
-                </ContentSection>
-                <ContentSection
-                  title="Explore More"
-                  description=""
-                  href="/listings"
-                  className="pt-14 px-0 md:pt-20"
-                  btnHidden
-                >
-                  <PropertyShowcase images={listingDetail?.imagelist} />
-                </ContentSection>
-                <PropertyFavoritesBanner
-                  propertyId={Number(listingDetail.detailreq.split("-").pop())}
-                  propertyType="listing"
-                />
+  return (
+    <>
+      {/* JSON-LD Structured Data for SEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(structuredData, null, 2),
+        }}
+      />
 
-                {/* Video component - will show when video data is available */}
-                {(listingDetail as unknown as { videoUrl?: string }).videoUrl &&
-                  (
-                    listingDetail as unknown as { videoUrl?: string }
-                  ).videoUrl!.trim() !== "" && (
-                    <ProjectVideo
-                      videoUrl={
-                        (listingDetail as unknown as { videoUrl?: string })
-                          .videoUrl!
-                      }
-                    />
-                  )}
-
-                <ContentSection
-                  title="Project Details"
-                  description=""
-                  href=""
-                  className="pt-14 md:pt-20"
-                  btnHidden
-                >
-                  <PropertyDetailsTable details={propertyDetails} />
-                </ContentSection>
-
-                {listingDetail.contract.toLowerCase() !==
-                  CONTRACT_TYPES.SALE && (
-                  <LeaseOptions leaseOptions={listingDetail.leaseoptions} />
-                )}
-
-                {listingDetail.amenities.length > 0 && (
-                  <ContentSection
-                    title="Amenities"
-                    description=""
-                    href=""
-                    className="pt-14 md:pt-20"
-                    btnHidden
-                  >
-                    <Amenities amenities={listingDetail.amenities} />
-                  </ContentSection>
-                )}
-
-                <PropertyInsight />
-              </div>
-              <aside className="hidden lg:block">
-                <ContactCard
-                  name={listingDetail.owner.name}
-                  image={`${listingDetail.owner.logo !== "" ? listingDetail.owner.logo : listingDetail.owner.profilepic}`}
-                  listingId={listingDetail.listingid}
-                />
-              </aside>
-            </div>
-          </Shell>
-          <Shell>
-            {listingDetail.contract.toLowerCase() === CONTRACT_TYPES.SALE &&
-              listingDetail.type.toLowerCase() !== PROPERTY_TYPES.LAND && (
-                <ContentSection
-                  title="Mortgage Calculator"
-                  description=""
-                  href=""
-                  className="pt-14 md:pt-20"
-                  btnHidden
-                >
-                  <MortgageCalculator
-                    key={listingDetail.listingid}
-                    price={extractNumericPrice(listingDetail.price)}
-                  />
-                </ContentSection>
-              )}
-          </Shell>
-
-          <ContactSection
-            name={listingDetail.owner.name}
-            image={`${listingDetail.owner.logo !== "" ? listingDetail.owner.logo : listingDetail.owner.profilepic}`}
-            listingId={listingDetail.listingid}
-          />
-          {listingDetail.similars.length > 0 ? (
-            <ContentSection
-              title="Similar Listings"
-              description=""
-              href={similarSearchHref}
-              className={cn(
-                "w-full mx-auto",
-                "pt-14 md:pt-20 lg:pt-24 md:block mb-6",
-              )}
-            >
-              <PropertyListings
-                listings={listingDetail.similars}
-                parentContract={listingDetail.contract}
-              />
-            </ContentSection>
-          ) : (
-            <Shell>
-              <AlertCard className="my-10" />
-            </Shell>
-          )}
-        </main>
-      </>
-    );
-  } catch (error: unknown) {
-    // Check if it's a specific "listing not published" error
-    if (
-      error instanceof Error &&
-      error.message.includes("listing not published")
-    ) {
-      return (
-        <main>
-          <Shell>
-            <div className="text-center py-10">
-              <AlertCard
-                title="Listing Not Available"
-                description="This property listing is not currently published or available for viewing."
-                className="my-10"
-              />
-              <div className="mt-6">
-                <Link
-                  href="/"
-                  className="inline-flex items-center px-4 py-2 bg-brand-primary text-white rounded-md hover:bg-brand-primary-dark transition-colors"
-                >
-                  ← Back to Home
-                </Link>
-              </div>
-            </div>
-          </Shell>
-        </main>
-      );
-    }
-
-    // Handle explicit "listing not found" coming from backend
-    if (
-      error instanceof Error &&
-      error.message.toLowerCase().includes("listing not found")
-    ) {
-      return (
-        <main>
-          <Shell>
-            <div className="max-w-md mx-auto my-20">
-              <ErrorCard
-                title="Property listing not found"
-                description={error.message}
-                retryLink="/"
-                retryLinkText="Go to Home"
-              />
-            </div>
-          </Shell>
-        </main>
-      );
-    }
-
-    return (
       <main>
         <Shell>
-          <div className="max-w-md mx-auto my-20">
-            <ErrorCard
-              title="Error Loading Page"
-              description="Sorry, we encountered an error while loading this property listing. Please try again later."
-              retryLink="/"
-              retryLinkText="Go to Home"
+          <div className="space-y-3 mb-3">
+            <Breadcrumbs
+              className="pt-4"
+              segments={[
+                { title: "Home", href: "/" },
+                {
+                  title: `For ${listingDetail.contract}`,
+                  href: `/search/${listingDetail.contract.toLowerCase()}?q=ghana&page=1`,
+                },
+                {
+                  title: `${listingDetail.type}`,
+                  href: `/search/${listingDetail.contract.toLowerCase()}?q=ghana&ftype=${listingDetail.type}&page=1`,
+                },
+                {
+                  title: `${listingDetail.location}`,
+                  href: `/search/${listingDetail.contract.toLowerCase()}?q=${listingDetail.location}&page=1`,
+                },
+              ]}
+              aria-label="Property listing navigation"
             />
+            <h1 className="font-bold leading-tight tracking-tighter text-brand-accent lg:leading-[1.1] text-2xl md:text-3xl capitalize">
+              {listingDetail.title}
+            </h1>
           </div>
         </Shell>
+        <section
+          className="border-b border-brand-badge-ongoing bg-black flex items-center justify-center"
+          aria-label="Property images"
+        >
+          <DynamicCarousel images={listingDetail.imagelist} />
+        </section>
+        <Shell>
+          <div className="grid grid-cols-1 text-brand-accent w-full mt-4 lg:grid-cols-[2fr_1fr] lg:gap-8 lg:px-0">
+            <div>
+              <div className="flex items-center gap-4">
+                <div className="flex items-center">
+                  <h2
+                    className="text-2xl font-extrabold text-brand-accent lg:text-3xl"
+                    dangerouslySetInnerHTML={safePriceHtml}
+                  />
+                  <span className="text-brand-muted font-light text-sm md:text-xl">
+                    {listingDetail.leaseunit}
+                  </span>
+                </div>
+                <span className="flex gap-2 md:gap-4 text-xs">
+                  {(listingDetail.owner.verification ===
+                    VERIFICATION_STATUSES.APPROVED ||
+                    listingDetail.owner.verification ===
+                      VERIFICATION_STATUSES.APPROVED2) && (
+                    <Badge className="hidden md:block uppercase text-white bg-green-500">
+                      Verified
+                    </Badge>
+                  )}
+                  {Boolean(listingDetail.isnegotiable) && (
+                    <Badge className="uppercase  text-white bg-brand-primary">
+                      Negotiable
+                    </Badge>
+                  )}
+                </span>
+              </div>
+              <div className="flex items-center gap-4 py-3">
+                <div
+                  className="flex items-center gap-1.5 md:gap-4 flex-wrap"
+                  role="list"
+                  aria-label="Property features"
+                >
+                  {listingDetail.beds && (
+                    <div className="flex items-center gap-2" role="listitem">
+                      <p className="flex items-center gap-1 text-brand-accent">
+                        <BedIcon
+                          className="text-brand-muted"
+                          strokeWidth={1.2}
+                          aria-hidden="true"
+                        />{" "}
+                        <span>{listingDetail.beds} Beds</span>
+                      </p>
+                    </div>
+                  )}
+                  {listingDetail.baths && (
+                    <div className="flex items-center gap-2" role="listitem">
+                      <p className="flex items-center gap-1 text-brand-accent">
+                        <BathIcon
+                          className="text-brand-muted"
+                          strokeWidth={1.2}
+                          aria-hidden="true"
+                        />{" "}
+                        <span>{listingDetail.baths} Baths</span>
+                      </p>
+                    </div>
+                  )}
+                  {listingDetail.garages && (
+                    <div className="flex items-center gap-2" role="listitem">
+                      <p className="flex items-center gap-1 text-brand-accent">
+                        <ParkingSquare
+                          className="text-brand-muted"
+                          strokeWidth={1.2}
+                          aria-hidden="true"
+                        />{" "}
+                        <span>{listingDetail.garages} Parking</span>
+                      </p>
+                    </div>
+                  )}
+                  {listingDetail.floorarea && (
+                    <div className="flex items-center gap-2" role="listitem">
+                      <p className="flex items-center gap-1 text-brand-accent">
+                        <Square
+                          className="text-brand-muted"
+                          strokeWidth={1.2}
+                          aria-hidden="true"
+                        />{" "}
+                        <span>{listingDetail.floorarea} sqm</span>
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div className="flex items-center gap-4 mb-6">
+                <Badge className="uppercase text-xs text-blue-500 bg-blue-100/60">
+                  {isFurnished ? "Furnished" : "Unfurnished"}
+                </Badge>
+                <Badge className="uppercase text-xs text-blue-500 bg-blue-100/60 max-w-[280px] md:max-w-full">
+                  <p className="truncate w-full">{listingDetail.location}</p>
+                </Badge>
+              </div>
+              <aside className="mb-6">
+                {listingDetail.owner.listingscount !== "0" && (
+                  <div className="flex items-center gap-4 md:gap-8 border-y text-sm py-4 lg:py-10 lg:text-base">
+                    <div>
+                      <Icons.trend />
+                    </div>
+                    <div>
+                      <p className="text-brand-accent lg:font-semibold">
+                        This property is popular
+                      </p>
+                      <p className="text-brand-accent">
+                        <span>{`It's been viewed ${formatNumber(listingDetail.owner.listingscount, { notation: "compact" })} times.`}</span>
+                        <span className="lg:font-semibold">
+                          {" "}
+                          Contact agent before it&apos;s gone!
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </aside>
+              <aside className="mb-6">
+                <Card className="flex items-start justify-between gap-5 rounded-lg border-orange-200 px-4 text-brand-accent lg:flex-row lg:w-fit lg:px-6 py-4">
+                  <Badge className="bg-orange-500 uppercase">
+                    {listingDetail.owner.type !== "Agent"
+                      ? "Project name"
+                      : "Categories"}
+                  </Badge>
+                  <div>
+                    {listingDetail.owner.type !== "Agent" ? (
+                      <p className="font-semibold">{"Project name"}</p>
+                    ) : (
+                      // categoryData.categories?.map((cat) => (
+                      <div>
+                        <Link
+                          href={`/search/${listingDetail.contract.toLowerCase()}?q=ghana&ftype=${listingDetail.type.toLowerCase()}&page=1`}
+                          className="block text-sm text-blue-500"
+                          key={listingDetail.parenttext}
+                        >
+                          {listingDetail.parenttext}
+                        </Link>
+                        <Link
+                          href={`/search/${listingDetail.contract.toLowerCase()}?q=${listingDetail.location.toLowerCase()}&ftype=${listingDetail.type.toLowerCase()}&page=1`}
+                          className="block text-sm text-blue-500"
+                          key={listingDetail.categorytext}
+                        >
+                          {listingDetail.categorytext}
+                        </Link>
+                      </div>
+                    )}
+                  </div>
+                </Card>
+              </aside>
+              <SafetyTipsCard />
+              <ContentSection
+                title="Description"
+                description=""
+                href="/listings"
+                className="pt-14 md:pt-20 px-0 pb-10 overflow-hidden md:pb-0"
+                btnHidden
+              >
+                {listingDetail?.description &&
+                listingDetail.description.trim() !== "" ? (
+                  <>
+                    <p
+                      dangerouslySetInnerHTML={safeDescriptionHtml}
+                      className="text-brand-muted"
+                    />
+                    <span className="block text-gray-500 mt-4">
+                      Listed by:{" "}
+                      <Link
+                        href={agentHref}
+                        className="decoration-dashed hover:text-blue-500 underline underline-offset-2"
+                      >
+                        {listingDetail.owner.name}
+                      </Link>
+                    </span>
+                  </>
+                ) : (
+                  <AlertCard
+                    title="No description provided"
+                    description="This listing doesn't have a detailed description yet."
+                    className="my-4"
+                  />
+                )}
+              </ContentSection>
+              <ContentSection
+                title="Explore More"
+                description=""
+                href="/listings"
+                className="pt-14 px-0 md:pt-20"
+                btnHidden
+              >
+                <PropertyShowcase images={listingDetail?.imagelist} />
+              </ContentSection>
+              <PropertyFavoritesBanner
+                propertyId={Number(listingDetail.detailreq.split("-").pop())}
+                propertyType="listing"
+              />
+
+              {/* Video component - will show when video data is available */}
+              {(listingDetail as unknown as { videoUrl?: string }).videoUrl &&
+                (
+                  listingDetail as unknown as { videoUrl?: string }
+                ).videoUrl!.trim() !== "" && (
+                  <ProjectVideo
+                    videoUrl={
+                      (listingDetail as unknown as { videoUrl?: string })
+                        .videoUrl!
+                    }
+                  />
+                )}
+
+              <ContentSection
+                title="Project Details"
+                description=""
+                href=""
+                className="pt-14 md:pt-20"
+                btnHidden
+              >
+                <PropertyDetailsTable details={propertyDetails} />
+              </ContentSection>
+
+              {listingDetail.contract.toLowerCase() !== CONTRACT_TYPES.SALE && (
+                <LeaseOptions leaseOptions={listingDetail.leaseoptions} />
+              )}
+
+              {listingDetail.amenities.length > 0 && (
+                <ContentSection
+                  title="Amenities"
+                  description=""
+                  href=""
+                  className="pt-14 md:pt-20"
+                  btnHidden
+                >
+                  <Amenities amenities={listingDetail.amenities} />
+                </ContentSection>
+              )}
+
+              <PropertyInsight />
+            </div>
+            <aside className="hidden lg:block">
+              <ContactCard
+                name={listingDetail.owner.name}
+                image={`${listingDetail.owner.logo !== "" ? listingDetail.owner.logo : listingDetail.owner.profilepic}`}
+                listingId={listingDetail.listingid}
+              />
+            </aside>
+          </div>
+        </Shell>
+        <Shell>
+          {listingDetail.contract.toLowerCase() === CONTRACT_TYPES.SALE &&
+            listingDetail.type.toLowerCase() !== PROPERTY_TYPES.LAND && (
+              <ContentSection
+                title="Mortgage Calculator"
+                description=""
+                href=""
+                className="pt-14 md:pt-20"
+                btnHidden
+              >
+                <MortgageCalculator
+                  key={listingDetail.listingid}
+                  price={extractNumericPrice(listingDetail.price)}
+                />
+              </ContentSection>
+            )}
+        </Shell>
+
+        <ContactSection
+          name={listingDetail.owner.name}
+          image={`${listingDetail.owner.logo !== "" ? listingDetail.owner.logo : listingDetail.owner.profilepic}`}
+          listingId={listingDetail.listingid}
+        />
+        {listingDetail.similars.length > 0 ? (
+          <ContentSection
+            title="Similar Listings"
+            description=""
+            href={similarSearchHref}
+            className={cn(
+              "w-full mx-auto",
+              "pt-14 md:pt-20 lg:pt-24 md:block mb-6 [&_p]:px-4 [&_h2]:px-4 md:[&_p]:px-0 md:[&_h2]:px-0",
+            )}
+          >
+            <PropertyListings
+              listings={listingDetail.similars}
+              parentContract={listingDetail.contract}
+            />
+          </ContentSection>
+        ) : (
+          <Shell>
+            <AlertCard className="my-10" />
+          </Shell>
+        )}
       </main>
-    );
-  }
+    </>
+  );
 }
