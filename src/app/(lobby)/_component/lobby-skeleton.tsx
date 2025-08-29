@@ -19,6 +19,7 @@ export function LobbySkeleton() {
           <Skeleton className="w-full h-full" />
         </div>
 
+
         {/* Mobile Page Header - Only visible on mobile */}
         <PageHeader
           as="section"
