@@ -24,3 +24,8 @@ export {
 export {
   useAgentListingsPagination,
 } from "./use-agents";
+
+// Blog queries
+export {
+  useFeaturedBlog,
+} from "./use-blog";

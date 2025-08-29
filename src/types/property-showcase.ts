@@ -1,10 +1,10 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 // Zod schemas for runtime validation
 export const ImageArraySchema = z
   .array(z.string().min(1))
-  .min(1, 'At least one image is required')
-  .max(50, 'Maximum 50 images allowed');
+  .min(1, "At least one image is required")
+  .max(50, "Maximum 50 images allowed");
 
 export const PropertyShowcasePropsSchema = z.object({
   images: ImageArraySchema,
@@ -15,7 +15,11 @@ export const PropertyShowcasePropsSchema = z.object({
   className: z.string().optional(),
   onImageClick: z.function().args(z.number()).returns(z.void()).optional(),
   onImageLoad: z.function().args(z.number()).returns(z.void()).optional(),
-  onImageError: z.function().args(z.number(), z.string()).returns(z.void()).optional(),
+  onImageError: z
+    .function()
+    .args(z.number(), z.string())
+    .returns(z.void())
+    .optional(),
 });
 
 // TypeScript interfaces derived from schemas
@@ -79,12 +83,16 @@ export interface ImageMetrics {
 }
 
 // Validation helper functions
-export const validatePropertyShowcaseProps = (props: unknown): PropertyShowcaseProps => {
+export const validatePropertyShowcaseProps = (
+  props: unknown,
+): PropertyShowcaseProps => {
   try {
     return PropertyShowcasePropsSchema.parse(props) as PropertyShowcaseProps;
   } catch (error) {
     if (error instanceof z.ZodError) {
-      const issues = error.issues.map(issue => `${issue.path.join('.')}: ${issue.message}`).join(', ');
+      const issues = error.issues
+        .map((issue) => `${issue.path.join(".")}: ${issue.message}`)
+        .join(", ");
       throw new Error(`PropertyShowcase props validation failed: ${issues}`);
     }
     throw error;
@@ -105,24 +113,24 @@ export class PropertyShowcaseError extends Error {
   constructor(
     message: string,
     public code: string,
-    public context?: Record<string, any>
+    public context?: Record<string, unknown>,
   ) {
     super(message);
-    this.name = 'PropertyShowcaseError';
+    this.name = "PropertyShowcaseError";
   }
 }
 
-export type PropertyShowcaseErrorCode = 
-  | 'INVALID_PROPS'
-  | 'IMAGE_LOAD_FAILED'
-  | 'MODAL_ERROR'
-  | 'PRELOAD_FAILED'
-  | 'VALIDATION_ERROR';
+export type PropertyShowcaseErrorCode =
+  | "INVALID_PROPS"
+  | "IMAGE_LOAD_FAILED"
+  | "MODAL_ERROR"
+  | "PRELOAD_FAILED"
+  | "VALIDATION_ERROR";
 
 export const createPropertyShowcaseError = (
   code: PropertyShowcaseErrorCode,
   message: string,
-  context?: Record<string, any>
+  context?: Record<string, unknown>,
 ): PropertyShowcaseError => {
   return new PropertyShowcaseError(message, code, context);
 };

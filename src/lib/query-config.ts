@@ -180,4 +180,11 @@ export const queryKeys = {
       [...queryKeys.search.all, "suggestions", type, query] as const,
     history: () => [...queryKeys.search.all, "history"] as const,
   },
+
+  // Blog content
+  blog: {
+    all: ["blog"] as const,
+    featured: () => [...queryKeys.blog.all, "featured"] as const,
+    category: (type: string) => [...queryKeys.blog.all, "category", type] as const,
+  },
 } as const;

@@ -59,6 +59,6 @@ export function useStaticData(initialData?: StaticData) {
   // Always return the data or initial data - never undefined
   return {
     ...query,
-    data: query.data ?? initialData,
+    data: (query.data ?? initialData) as StaticData,
   };
 }

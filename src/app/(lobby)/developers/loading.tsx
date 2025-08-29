@@ -1,7 +1,6 @@
-import Shell from "@/layouts/shell";
 import { DevelopersSkeleton } from "@/components/developer/developers/developers-skeleton";
 import { Breadcrumbs } from "@/components/layout/bread-crumbs";
-import { Skeleton } from "@/components/ui/skeleton";
+import Shell from "@/layouts/shell";
 
 export default function DevelopersLoading() {
   return (

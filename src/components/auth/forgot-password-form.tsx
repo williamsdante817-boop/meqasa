@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface ForgotPasswordFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function ForgotPasswordForm({ className, ...props }: ForgotPasswordFormProps) {
@@ -58,10 +59,10 @@ export function ForgotPasswordForm({ className, ...props }: ForgotPasswordFormPr
           Check your email
         </h3>
         <p className="text-sm text-brand-muted mb-4 px-2">
-          We've sent a password reset link to <strong>{email}</strong>
+          We&apos;ve sent a password reset link to <strong>{email}</strong>
         </p>
         <p className="text-xs text-brand-muted px-2">
-          Didn't receive the email? Check your spam folder or{" "}
+          Didn&apos;t receive the email? Check your spam folder or{" "}
           <button 
             onClick={() => {
               setIsSuccess(false);

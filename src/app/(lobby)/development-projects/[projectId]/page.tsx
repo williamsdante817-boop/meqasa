@@ -101,7 +101,7 @@ export async function generateMetadata({
         },
       },
     };
-  } catch (error) {
+  } catch {
     return {
       title: "Development Project | MeQasa",
       description: "Explore development projects and new properties on MeQasa.",

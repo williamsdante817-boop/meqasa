@@ -153,7 +153,6 @@ export default async function SearchPage({
     type: string,
     location: string,
     searchParams: Record<string, string>,
-    resultCount: number,
   ): string => {
     const typeDisplay =
       type === "rent" ? "Rental" : type === "sale" ? "Sale" : type;
@@ -162,9 +161,6 @@ export default async function SearchPage({
     // Check for specific filters to make heading more specific
     const propertyType = searchParams.ftype;
     const bedrooms = searchParams.fbeds;
-    const bathrooms = searchParams.fbaths;
-    const minPrice = searchParams.fmin;
-    const maxPrice = searchParams.fmax;
     const furnished = searchParams.fisfurnished;
     const owner = searchParams.ffsbo;
     const period = searchParams.frentperiod;
@@ -211,8 +207,6 @@ export default async function SearchPage({
     resultCount: number,
     searchParams: Record<string, string>,
   ): string => {
-    const typeDisplay =
-      type === "rent" ? "rental" : type === "sale" ? "sale" : type;
     const locationDisplay = location === "ghana" ? "Ghana" : location;
 
     // Check for price filters
@@ -321,12 +315,7 @@ export default async function SearchPage({
             <Breadcrumbs className="capitalize" segments={segments} />
             <header>
               <h1 className="mt-2 text-lg font-bold leading-6 text-brand-accent capitalize md:text-xl">
-                {generateDynamicHeading(
-                  type,
-                  location,
-                  resolvedSearchParams,
-                  searchData.resultcount,
-                )}
+                {generateDynamicHeading(type, location, resolvedSearchParams)}
               </h1>
               <p className="mt-3 text-sm text-brand-muted">
                 {generateDynamicSubheading(

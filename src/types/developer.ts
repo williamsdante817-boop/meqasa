@@ -140,8 +140,10 @@ export interface FeaturedProject {
   unitsizes: string;
 }
 
+import type { Unit } from "./property";
+
 export interface DeveloperDetails {
-  units: import("./property").Unit[];
+  units: Unit[];
   lands: unknown[];
   developer: Developer;
   projects: Project[];
@@ -149,7 +151,7 @@ export interface DeveloperDetails {
 }
 
 export interface DeveloperProject {
-  units: import("./property").Unit[];
+  units: Unit[];
   lands: unknown[];
   establishments: Establishment[];
   features: Feature[];

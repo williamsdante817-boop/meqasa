@@ -1,24 +1,23 @@
 "use client";
-import { AlertCard } from "@/components/common/alert-card";
 import Amenities from "@/components/amenities";
+import { AlertCard } from "@/components/common/alert-card";
 import ContactCard from "@/components/common/contact-card";
 import ContactSection from "@/components/contact-section";
 import ContentSection from "@/components/layout/content-section";
 import PropertyDetailsTable from "@/components/property/details/property-details";
-import PropertyListings from "@/components/property/listings/property-listings";
 import PropertyShowcase from "@/components/property/details/property-showcase";
+import PropertyListings from "@/components/property/listings/property-listings";
 import { Badge } from "@/components/ui/badge";
 import Shell from "@/layouts/shell";
-import { cn, formatPrice } from "@/lib/utils";
 import { sanitizeRichHtmlToInnerHtml } from "@/lib/dom-sanitizer";
+import { cn, formatPrice } from "@/lib/utils";
 import type { DeveloperProject } from "@/types";
-import { Dot, MapPin, AlertCircle, RefreshCw } from "lucide-react";
-import { useRef, useMemo, Component, type ReactNode } from "react";
+import { AlertCircle, Dot, MapPin, RefreshCw } from "lucide-react";
+import { Component, useMemo, useRef, type ReactNode } from "react";
 
 // Import components directly for better performance and simpler code
-import FloorPlans from "./floor-plan";
-import NearbyLocation from "./nearest-establishements";
 import { NearestEstablishments } from "@/components/nearest-establishments";
+import FloorPlans from "./floor-plan";
 import ProjectVideo from "./project-video";
 import PropertyScrollNav from "./property-scroll-nav";
 
@@ -91,6 +90,7 @@ class PropertyContainerErrorBoundary extends Component<
 
 // Enhanced error fallback component
 function PropertyContainerError({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   error,
   errorId,
   retry,

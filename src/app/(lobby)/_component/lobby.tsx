@@ -3,10 +3,8 @@ import { HomepagePopup } from "@/components/homepage-popup";
 import { SearchFilter } from "@/components/search";
 import {
   StaticAgentLogos,
-  StaticBlogSection,
   StaticFooterContent,
   StaticLocationSection,
-  StaticMarketNews,
 } from "@/components/static/StaticContent";
 
 import {
@@ -21,7 +19,7 @@ import { StreamingFeaturedProjects } from "@/components/streaming/StreamingFeatu
 import { StreamingGridBanner } from "@/components/streaming/StreamingGridBanner";
 import { StreamingHeroBanner } from "@/components/streaming/StreamingHeroBanner";
 import { StreamingLatestListings } from "@/components/streaming/StreamingLatestListings";
-import Shell from "@/layouts/shell";
+import { StreamingBlog } from "@/components/streaming/StreamingBlog";
 import type { getFeaturedListings } from "@/lib/get-featured-listings";
 import type { getFeaturedProjects } from "@/lib/get-featured-projects";
 import type { getFeaturedUnits } from "@/lib/get-featured-units";
@@ -29,6 +27,7 @@ import type { getFlexiBanner } from "@/lib/get-flexi-banner";
 import type { getHeroBanner } from "@/lib/get-hero-banner";
 import type { getLatestListings } from "@/lib/get-latest-listing";
 import type { StaticData } from "@/lib/static-data";
+import type { BlogResponse } from "@/types/blog";
 import MobilePageHeader from "./mobile-page-header";
 
 interface LobbyProps {
@@ -39,6 +38,7 @@ interface LobbyProps {
   featuredUnitsPromise: ReturnType<typeof getFeaturedUnits>;
   heroBannerPromise: ReturnType<typeof getHeroBanner>;
   flexiBannerPromise: ReturnType<typeof getFlexiBanner>;
+  blogDataPromise: Promise<BlogResponse>;
   // Static data (cached)
   staticData: StaticData;
 }
@@ -50,6 +50,7 @@ async function LobbyContent({
   featuredListingsPromise,
   latestListingsPromise,
   flexiBannerPromise,
+  blogDataPromise,
 }: {
   staticData: StaticData;
   heroBannerPromise: ReturnType<typeof getHeroBanner>;
@@ -57,6 +58,7 @@ async function LobbyContent({
   featuredListingsPromise: ReturnType<typeof getFeaturedListings>;
   latestListingsPromise: ReturnType<typeof getLatestListings>;
   flexiBannerPromise: ReturnType<typeof getFlexiBanner>;
+  blogDataPromise: Promise<BlogResponse>;
 }) {
   return (
     <main>
@@ -100,13 +102,10 @@ async function LobbyContent({
           />
         </StreamingErrorBoundary>
 
-        {/* Static Content - Rendered Immediately */}
-        <Shell className="!px-0">
-          <div className="lg:flex flex-col md:flex-row gap-8">
-            <StaticBlogSection staticData={staticData} />
-            <StaticMarketNews staticData={staticData} />
-          </div>
-        </Shell>
+        {/* Blog Section - Streamed */}
+        <StreamingErrorBoundary fallback={<div className="py-14" />}>
+          <StreamingBlog blogDataPromise={blogDataPromise} />
+        </StreamingErrorBoundary>
 
         <StaticLocationSection staticData={staticData} />
         <StaticFooterContent />
@@ -125,6 +124,7 @@ export default async function Lobby({
   latestListingsPromise,
   heroBannerPromise,
   flexiBannerPromise,
+  blogDataPromise,
 }: LobbyProps) {
   return (
     <>
@@ -135,6 +135,7 @@ export default async function Lobby({
         featuredListingsPromise={featuredListingsPromise}
         latestListingsPromise={latestListingsPromise}
         flexiBannerPromise={flexiBannerPromise}
+        blogDataPromise={blogDataPromise}
       />
       
     </>

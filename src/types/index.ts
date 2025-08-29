@@ -7,3 +7,4 @@ export * from "./search";
 export * from "./meqasa";
 export * from "./location";
 export * from "./agent-listings";
+export * from "./blog";

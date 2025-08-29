@@ -83,14 +83,14 @@ export default function FeaturedProjectsCarousel({
         aria-label="Featured Projects Carousel"
       >
         <CarouselContent
-          className="-ml-1 lg:pt-4"
+          className="-ml-1 p-1 lg:pt-4"
           role="list"
           aria-label="Featured Projects List"
         >
           {properties.map((item, index) => (
             <CarouselItem
               key={item.projectid}
-              className={`basis-[88%] md:basis-[44%] ${index === 0 ? "md:pl-0" : ""}`}
+              className="basis-[88%] md:basis-[500px] pl-4"
               role="listitem"
               aria-label={`Featured Project ${index + 1} of ${properties.length}`}
             >
@@ -104,12 +104,12 @@ export default function FeaturedProjectsCarousel({
           aria-label="Carousel Navigation Controls"
         >
           <CarouselPrevious
-            className="h-10 w-10 rounded-full shadow-none hover:shadow-sm cursor-pointer border-gray-200 transition-all duration-200 hover:bg-gray-50 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary focus-visible:outline-none"
+            className="h-11 w-11"
             aria-label={`Previous slide, currently viewing slide ${currentSlide + 1} of ${properties.length}`}
             tabIndex={0}
           />
           <CarouselNext
-            className="h-10 w-10 rounded-full shadow-none hover:shadow-sm cursor-pointer border-gray-200 transition-all duration-200 hover:bg-gray-50 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary focus-visible:outline-none"
+            className="h-11 w-11"
             aria-label={`Next slide, currently viewing slide ${currentSlide + 1} of ${properties.length}`}
             tabIndex={0}
           />

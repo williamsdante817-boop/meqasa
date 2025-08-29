@@ -20,7 +20,7 @@ export default function ForgotPasswordPage() {
           Reset your password
         </h2>
         <p className="mt-2 text-center text-sm text-brand-muted px-4">
-          Enter your email address and we'll send you a link to reset your password.
+          Enter your email address and we&apos;ll send you a link to reset your password.
         </p>
       </div>
 
@@ -40,7 +40,7 @@ export default function ForgotPasswordPage() {
         
         <div className="mt-6 sm:mt-8 text-center text-sm text-brand-muted px-4">
           <p>
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <Link 
               href="/auth/sign-up" 
               className="text-brand-primary hover:text-brand-primary-dark font-medium transition-colors"

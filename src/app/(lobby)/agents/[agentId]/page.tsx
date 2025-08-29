@@ -2,15 +2,14 @@ export const dynamic = "force-dynamic";
 
 import { notFound } from "next/navigation";
 
-import { Breadcrumbs } from "@/components/layout/bread-crumbs";
 import ContactCard from "@/components/common/contact-card";
-import { AgentHeader } from "../_components/agent-header";
-import { AgentInfo } from "../_components/agent-info";
-import { AgentListings } from "../_components/agent-listings";
+import { Breadcrumbs } from "@/components/layout/bread-crumbs";
+import { siteConfig } from "@/config/site";
 import Shell from "@/layouts/shell";
 import { getAgentDetails } from "@/lib/get-agent-details";
 import type { Metadata } from "next";
-import { siteConfig } from "@/config/site";
+import { AgentHeader } from "../_components/agent-header";
+import { AgentListings } from "../_components/agent-listings";
 
 interface AgentDetailsPageProps {
   params: Promise<{ agentId: string }>;
@@ -117,7 +116,7 @@ export async function generateMetadata({
         },
       },
     };
-  } catch (error) {
+  } catch {
     return {
       title: "Real Estate Agent | MeQasa",
       description: "Connect with professional real estate agents on MeQasa.",
@@ -183,7 +182,7 @@ export default async function AgentDetailsPage({
       name: `${agent.name} Property Listings`,
       description: `Properties listed by ${agent.name}`,
       itemListElement:
-        agent.listings?.map((listing, index) => ({
+        agent.listings?.map((listing, _index) => ({
           "@type": "Offer",
           itemOffered: {
             "@type": "RealEstateListing",

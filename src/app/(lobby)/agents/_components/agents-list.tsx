@@ -38,7 +38,6 @@ interface AgentsListProps {
   agents: Agent[];
 }
 
-
 const PAGE_SIZE = 16;
 const PAGINATION_THRESHOLD = 5;
 
@@ -67,7 +66,10 @@ export function AgentsList({ agents }: AgentsListProps) {
   const agentsTopRef = useRef<HTMLDivElement>(null);
 
   // Ensure agents is an array and has content
-  const validAgents = Array.isArray(agents) ? agents : [];
+  const validAgents = useMemo(
+    () => (Array.isArray(agents) ? agents : []),
+    [agents],
+  );
   const totalPages = Math.ceil(validAgents.length / PAGE_SIZE);
 
   const visibleAgents = useMemo(() => {
@@ -77,7 +79,6 @@ export function AgentsList({ agents }: AgentsListProps) {
   }, [validAgents, currentPage]);
 
   console.log("AgentsListProps", agents);
-
 
   // Reset to first page when agents data changes
   useEffect(() => {

@@ -67,8 +67,8 @@ export default function BlogCard({
             {displayDate}
           </time>
         </div>
-        <div className="hidden lg:block lg:w-full lg:overflow-hidden lg:rounded-2xl">
-          <Card className="overflow-hidden size-full !p-0 border-none">
+        <div className="hidden lg:block lg:w-full lg:overflow-hidden lg:rounded-lg">
+          <Card className="overflow-hidden size-full !p-0 rounded-lg">
             <CardContent className="!p-0 rounded-lg">
               <AspectRatio ratio={4 / 3} className="relative">
                 {hasPoster && !imgError ? (

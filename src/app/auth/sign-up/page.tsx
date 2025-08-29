@@ -33,7 +33,7 @@ export default function SignUpPage() {
           </Link>
           <h1 className="text-3xl font-bold mb-4">Join {siteConfig.name} today</h1>
           <p className="text-lg text-white/90 mb-6">
-            Create your free account to save properties, list your own properties, and connect with Ghana's top real estate professionals.
+            Create your free account to save properties, list your own properties, and connect with Ghana&apos;s top real estate professionals.
           </p>
           <div className="grid grid-cols-1 gap-3 text-sm text-white/80">
             <div className="flex items-center gap-2">

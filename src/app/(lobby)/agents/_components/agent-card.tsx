@@ -1,26 +1,25 @@
 "use client";
 
 import {
+  CheckCircle,
   FacebookIcon,
   InstagramIcon,
-  MapPin,
   LinkedinIcon,
+  MapPin,
   TwitterIcon,
   YoutubeIcon,
-  CheckCircle,
 } from "lucide-react";
-import { useState } from "react";
-import type { MouseEvent } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
+import type { MouseEvent } from "react";
+import { useState } from "react";
 
-import { DeveloperContactCard } from "@/components/developer/cards/developer-contact-card";
 import { ImageWithFallback } from "@/components/common/image-with-fallback";
-import { Skeleton } from "@/components/ui/skeleton";
+import { DeveloperContactCard } from "@/components/developer/cards/developer-contact-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Skeleton } from "@/components/ui/skeleton";
 import { formatNumber } from "@/lib/utils";
 
 interface BrokerSocials {
@@ -53,14 +52,12 @@ export function AgentCard({
   logo,
   name,
   socials,
-  website,
   className,
 }: AgentCardProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [logoLoading, setLogoLoading] = useState(true);
   const [logoError, setLogoError] = useState(false);
 
-  const router = useRouter();
 
   const agentName = name;
   const listingsCount = formatNumber(listings);

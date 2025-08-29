@@ -7,6 +7,7 @@ import { getHeroBanner } from "@/lib/get-hero-banner";
 import { getLatestListings } from "@/lib/get-latest-listing";
 import { getFlexiBanner } from "@/lib/get-flexi-banner";
 import { getStaticData } from "@/lib/static-data";
+import { getBlogData } from "@/lib/get-blog-data";
 import { LobbySkeleton } from "./_component/lobby-skeleton";
 import { HomepageClient } from "@/components/homepage/homepage-client";
 import type { Metadata } from "next";
@@ -108,15 +109,18 @@ export default async function HomePage() {
     featuredListings,
     latestListings,
     heroBanner,
-    flexiBanner
+    flexiBanner,
+    blogData
   ] = await Promise.all([
     getFeaturedProjects(),
     getFeaturedUnits(),
     getFeaturedListings(),
     getLatestListings(),
     getHeroBanner(),
-    getFlexiBanner()
+    getFlexiBanner(),
+    getBlogData()
   ]);
+
 
   const initialData = {
     staticData,
@@ -125,7 +129,8 @@ export default async function HomePage() {
     featuredListings,
     latestListings,
     heroBanner,
-    flexiBanner
+    flexiBanner,
+    blogData
   };
 
   return (
