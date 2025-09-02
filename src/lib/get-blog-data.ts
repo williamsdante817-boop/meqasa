@@ -40,7 +40,7 @@ export async function getBlogData(): Promise<BlogResponse> {
     };
 
     return cleanedData;
-  } catch (error) {
+  } catch {
     // Return empty structure on error to prevent SSR failures
     const fallbackData = {
       featured: [],

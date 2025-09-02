@@ -20,6 +20,7 @@ import { NearestEstablishments } from "@/components/nearest-establishments";
 import FloorPlans from "./floor-plan";
 import ProjectVideo from "./project-video";
 import PropertyScrollNav from "./property-scroll-nav";
+import { ExpandableDescription } from "@/components/expandable-description";
 
 // Constants for better maintainability
 const SECTION_IDS = {
@@ -30,9 +31,9 @@ const SECTION_IDS = {
 } as const;
 
 const STATUS_BADGE_VARIANTS = {
-  completed: "bg-green-500 text-white",
-  ongoing: "bg-yellow-500 text-white",
-  default: "bg-gray-500 text-white",
+  completed: "success",
+  ongoing: "warning", 
+  default: "default",
 } as const;
 
 // Enhanced error boundary for production
@@ -168,6 +169,7 @@ function validateProjectData(data: DeveloperProject): {
 
 // Memoized project data transformers with safety checks
 function useProjectDataTransformers(projectData: DeveloperProject) {
+  console.log(projectData)
   return useMemo(
     () => ({
       markup: sanitizeRichHtmlToInnerHtml(
@@ -276,28 +278,28 @@ function PropertyContainerContent({
 
     return projectData.minmax.map((obj, index) => (
       <div
-        className="mt-6 flex items-center justify-between rounded-lg border border-orange-300 p-3 text-brand-accent shadow-sm"
+        className="mt-6 flex items-center justify-between rounded-lg border border-orange-200 bg-gradient-to-r from-gray-50 to-gray-50 p-4 md:p-6 shadow-sm transition-shadow"
         key={`${projectData.project.projectid}-${index}`}
       >
         <div>
           <div className="mb-3">
-            <span className="text-sm font-semibold capitalize text-inherit lg:text-base">
-              price range
+            <span className="text-sm font-semibold text-brand-accent lg:text-base">
+              Price Range
             </span>
-            <span className="text-xs tracking-wide"> (minimum)</span>
+            <span className="text-xs text-brand-muted block"> (minimum)</span>
           </div>
-          <span className="text-xl font-extrabold text-inherit lg:text-2xl lg:font-bold">
+          <span className="text-xl font-extrabold text-brand-accent lg:text-2xl lg:font-bold">
             {formatPrice(obj.minprice, { currency: "GHS" })}
           </span>
         </div>
         <div>
           <div className="mb-3">
-            <span className="text-sm font-semibold capitalize text-inherit lg:text-base">
-              price range
+            <span className="text-sm font-semibold text-brand-accent lg:text-base">
+              Price Range
             </span>
-            <span className="text-xs tracking-wide"> (maximum)</span>
+            <span className="text-xs text-brand-muted block"> (maximum)</span>
           </div>
-          <span className="text-xl font-extrabold text-inherit lg:text-2xl lg:font-bold">
+          <span className="text-xl font-extrabold text-brand-accent lg:text-2xl lg:font-bold">
             {formatPrice(obj.maxprice, { currency: "GHS" })}
           </span>
         </div>
@@ -305,27 +307,28 @@ function PropertyContainerContent({
     ));
   }, [projectData.minmax, projectData.project.projectid]);
 
-  // Memoize units mapping - this hook MUST be called fourth
-  const mappedUnits = useMemo(() => {
-    if (!projectData.units || projectData.units.length === 0) return [];
+     // Memoize units mapping - this hook MUST be called fourth
+   const mappedUnits = useMemo(() => {
+     if (!projectData.units || projectData.units.length === 0) return [];
 
-    return projectData.units.map((unit) => ({
-      ...unit,
-      image: unit.coverphoto,
-      detailreq: `/developer-unit/${unit.unitid}`,
-      listingid: String(unit.unitid),
-      streetaddress: unit.address,
-      contract: unit.terms,
-      title: unit.title ?? unit.unitname,
-      garages: unit.garages?.toString() ?? "0",
-      price: unit.price?.toString() ?? "0",
-      bathroomcount: unit.baths?.toString() ?? "0",
-      bedroomcount: unit.beds?.toString() ?? "0",
-      summary: unit.title ?? unit.unitname,
-      pricepart1: unit.price?.toString() ?? "0",
-      pricepart2: unit.terms === "rent" ? "/month" : "",
-    }));
-  }, [projectData.units]);
+     return projectData.units.map((unit) => ({
+       ...unit,
+       image: unit.coverphoto,
+       detailreq: `/developer-unit/${unit.unitid}`,
+       listingid: String(unit.unitid),
+       streetaddress: unit.address,
+       contract: unit.terms,
+       title: unit.title ?? unit.unitname,
+       garages: unit.garages?.toString() ?? "0",
+       price: unit.price?.toString() ?? "0",
+       bathroomcount: unit.baths?.toString() ?? "0",
+       bedroomcount: unit.beds?.toString() ?? "0",
+       summary: unit.title ?? unit.unitname,
+       pricepart1: unit.price?.toString() ?? "0",
+       pricepart2: unit.terms === "rent" ? "/month" : "",
+       featured: Boolean(unit.featured),
+     }));
+   }, [projectData.units]);
 
   // Validate data AFTER all hooks have been called
   const validation = validateProjectData(projectData);
@@ -343,10 +346,9 @@ function PropertyContainerContent({
   return (
     <>
       <PropertyScrollNav sectionRefs={sectionRefs} />
-
-      <Shell className="px-0">
-        <div className="grid grid-cols-1 text-brand-accent w-full mt-4 lg:grid-cols-[2fr_1fr] lg:gap-8 lg:px-0">
-          <div className="mt-6 grid gap-8 px-3 pb-3 transition-all duration-300 ease-in lg:container lg:grid-cols-1 lg:p-0">
+      <Shell>
+        <div className="grid grid-cols-1 text-brand-accent w-full mt-4 lg:grid-cols-[2fr_1fr] lg:gap-8">
+          <div className="mt-6 grid gap-8 pb-3 transition-all duration-300 ease-in lg:grid-cols-1 lg:px-0">
             <div>
               <div className="text-brand-accent">
                 <span className="text-base font-semibold">
@@ -359,7 +361,8 @@ function PropertyContainerContent({
                   {projectData.project.projectstatus && (
                     <div className="flex items-center">
                       <Badge
-                        className={cn("uppercase", statusBadgeVariant)}
+                        variant={statusBadgeVariant}
+                        className="uppercase"
                         aria-label={`Project status: ${projectData.project.projectstatus}`}
                       >
                         {projectData.project.projectstatus}
@@ -381,14 +384,14 @@ function PropertyContainerContent({
                     strokeWidth="1.3"
                     aria-hidden="true"
                   />
-                  {projectData.project.formatted_address ??
-                    projectData.project.city}
+                  {projectData.project.formatted_address ||
+                          projectData.project.city}
                 </div>
               </div>
 
               {priceRangeDisplay ?? (
-                <div className="mt-6 p-4 bg-gray-50 rounded-lg text-center text-gray-500">
-                  Price information not available
+                <div className="mt-6 p-4 md:p-6 bg-gradient-to-r from-gray-50 to-gray-50 rounded-lg border border-gray-200 text-center">
+                  <p className="text-brand-muted text-sm">Price information not available</p>
                 </div>
               )}
 
@@ -401,10 +404,11 @@ function PropertyContainerContent({
                     className="pt-14 px-0 md:pt-20 pb-10 md:pb-0"
                     btnHidden
                   >
-                    <div
-                      dangerouslySetInnerHTML={markup}
-                      className="text-brand-muted prose prose-sm max-w-none"
-                      aria-label="About developer information"
+                  
+                    <ExpandableDescription 
+                      description={markup}
+                      name={projectData.project.companyname}
+                      href=""
                     />
                   </ContentSection>
                 )}
@@ -449,18 +453,24 @@ function PropertyContainerContent({
                   <ProjectVideo videoUrl={projectData.project.tourvideo} />
                 )}
 
-                <div
-                  id="site-plan"
-                  ref={sectionRefs["site-plan"]}
-                  className="py-16 px-0"
+                <ContentSection
+                  title="Site Plans"
+                  description=""
+                  href=""
+                  className="pt-14 px-0 md:pt-20"
+                  btnHidden
+                  sectionId="site-plan"
                 >
-                  <h2 className="text-2xl font-bold mb-6">Site Plans</h2>
-                  <div className="h-96 bg-gray-100 rounded-lg flex items-center justify-center">
-                    <p className="text-gray-500">
+                  <div
+                    id="site-plan"
+                    ref={sectionRefs["site-plan"]}
+                    className="h-96 bg-gradient-to-r from-gray-50 to-gray-50 rounded-lg border border-gray-200 flex items-center justify-center"
+                  >
+                    <p className="text-brand-muted text-sm">
                       Site plans will be available soon
                     </p>
                   </div>
-                </div>
+                </ContentSection>
               </div>
             </div>
           </div>
@@ -510,11 +520,11 @@ function PropertyContainerContent({
             >
               <NearestEstablishments
                 className="mb-8"
-                projectLocation={{
+                propertyLocation={{
                   lat: projectData.project.lat || 5.56,
                   lng: projectData.project.lng || -0.2057,
                 }}
-                projectName={projectData.project.projectname}
+                propertyName={projectData.project.projectname}
                 neighborhood={
                   projectData.project.city || projectData.project.region
                 }

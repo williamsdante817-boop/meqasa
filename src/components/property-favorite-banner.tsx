@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Heart } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import { toast } from "sonner";
+import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { AnimatePresence, motion } from "framer-motion";
+import { Heart } from "lucide-react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 interface PropertyFavoritesBannerProps {
   propertyId: number;
@@ -56,59 +57,64 @@ export default function PropertyFavoritesBanner({
   };
 
   return (
-    <div className="w-full py-10 border-y border-gray-200 mt-4">
-      <div className="w-full bg-blue-50 rounded-lg p-4 flex items-center">
-        <div
-          className={cn(
-            "bg-white border border-rose-100 rounded-full p-2 mr-4 relative cursor-pointer transition-colors",
-            isFavorite && "border-rose-200 bg-rose-50",
-            "hover:border-rose-200 hover:bg-rose-50",
-          )}
-          onClick={toggleFavorite}
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-          role="button"
-          tabIndex={0}
-          aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
-        >
-          <AnimatePresence mode="wait">
-            {filled || isFavorite ? (
-              <motion.div
-                key="filled"
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.8, opacity: 0 }}
-                transition={{ duration: 0.3 }}
-                className="absolute inset-0 flex items-center justify-center"
-              >
-                <Heart
-                  className={cn(
-                    "h-5 w-5 text-brand-primary",
-                    isFavorite && "fill-current",
-                  )}
-                />
-              </motion.div>
-            ) : (
-              <motion.div
-                key="outline"
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.8, opacity: 0 }}
-                transition={{ duration: 0.3 }}
-                className="absolute inset-0 flex items-center justify-center"
-              >
-                <Heart className="h-5 w-5 text-brand-primary" />
-              </motion.div>
-            )}
-          </AnimatePresence>
-          <div className="h-5 w-5 opacity-0">
-            <Heart />
+    <div className="w-full py-10 mt-4">
+      <Card className="w-full bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
+        <div className="flex items-center gap-4">
+          <div className="flex-1">
+            <h3 className="text-lg font-semibold text-brand-accent mb-2">
+              Save This {propertyType === 'listing' ? 'Property' : 'Project'}
+            </h3>
+            <p className="text-brand-muted mb-4">
+              Add to favorites to compare with other properties and track price changes
+            </p>
+            <div
+              className={cn(
+                "inline-flex items-center gap-3 bg-white border border-rose-200 rounded-lg px-4 py-3 relative cursor-pointer transition-all hover:shadow-md",
+                isFavorite && "border-rose-300 bg-rose-50 shadow-sm",
+                "hover:border-rose-300 hover:bg-rose-50",
+              )}
+              onClick={toggleFavorite}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+              role="button"
+              tabIndex={0}
+              aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+            >
+              <AnimatePresence mode="wait">
+                {filled || isFavorite ? (
+                  <motion.div
+                    key="filled"
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.8, opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <Heart
+                      className={cn(
+                        "h-5 w-5 text-brand-primary",
+                        isFavorite && "fill-current",
+                      )}
+                    />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="outline"
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.8, opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <Heart className="h-5 w-5 text-brand-primary" />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              <span className="font-medium text-brand-accent">
+                {isFavorite ? 'Added to Favorites!' : 'Add to Favorites'}
+              </span>
+            </div>
           </div>
         </div>
-        <p className="text-brand-accent">
-          Like this {propertyType}? Add as favorites and compare listings
-        </p>
-      </div>
+      </Card>
     </div>
   );
 }

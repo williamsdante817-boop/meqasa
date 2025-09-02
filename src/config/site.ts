@@ -67,11 +67,11 @@ export interface SiteConfig {
 export type { SiteConfig as SiteConfigType };
 
 const links = {
-  x: "https://twitter.com/sadmann17",
-  github: "https://github.com/sadmann7/skateshop",
-  githubAccount: "https://github.com/sadmann7",
-  discord: "https://discord.com/users/sadmann7",
-  calDotCom: "https://cal.com/sadmann7",
+  x: "https://twitter.com/meqasa",
+  github: "https://github.com/meqasa",
+  githubAccount: "https://github.com/meqasa",
+  discord: "https://discord.gg/meqasa", 
+  calDotCom: "https://cal.com/meqasa",
 };
 
 const socialLinks = {

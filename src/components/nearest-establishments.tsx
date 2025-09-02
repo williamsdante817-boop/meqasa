@@ -1,16 +1,35 @@
-import { useState, useCallback, useMemo } from "react";
-import {
-  Search,
+"use client";
+
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { 
+  GraduationCap, 
+  Building, 
+  Heart, 
+  ShoppingBag, 
+  Plane, 
   MapPin,
   Clock,
-  Building,
-  Plane,
-  GraduationCap,
-  ShoppingBag,
-  Heart,
+  Star,
+  Search,
+  Loader2,
+  AlertCircle,
+  Navigation,
+  ZoomIn,
+  ZoomOut,
+  Maximize2,
+  Bed,
+  Bath,
+  Maximize,
+  Home,
+  User
 } from "lucide-react";
-import { Input } from "./ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { Skeleton } from "./ui/skeleton";
+import { cn } from "@/lib/utils";
+import Image from "next/image";
 import {
   GoogleMap,
   useJsApiLoader,
@@ -18,662 +37,312 @@ import {
   InfoWindow,
 } from "@react-google-maps/api";
 
-interface Location {
+// Types
+export interface PropertyLocation {
   lat: number;
   lng: number;
 }
 
-interface Establishment {
+export interface NearestEstablishment {
   id: string;
   name: string;
   address: string;
-  location: Location;
   distance: number; // in meters
   travelTime: number; // in minutes
-  type: "school" | "bank" | "hospital" | "store" | "airport";
+  type: 'schools' | 'supermarkets' | 'banks' | 'hospitals' | 'airports';
   rating?: number;
-  placeId?: string;
+  phone?: string;
+  openNow?: boolean;
+  coordinates: PropertyLocation;
+}
+
+interface PropertyInfo {
+  id?: string;
+  name: string;
+  location: string;
+  image?: string;
+  price?: string;
+  bedrooms?: number;
+  bathrooms?: number;
+  size?: string;
+  type?: string;
+  description?: string;
+  developer?: string;
 }
 
 interface NearestEstablishmentsProps {
-  className?: string;
-  projectLocation: Location;
-  projectName?: string;
+  propertyLocation: PropertyLocation;
+  propertyName?: string;
   neighborhood?: string;
+  className?: string;
+  maxResults?: number;
+  maxDistance?: number; // in km
+  propertyInfo?: PropertyInfo;
 }
 
+// Configuration for establishment categories
+const ESTABLISHMENT_CATEGORIES = {
+  schools: {
+    label: 'Schools',
+    icon: GraduationCap,
+    color: 'bg-blue-50 text-blue-700 border-blue-200',
+    description: 'Educational institutions'
+  },
+  supermarkets: {
+    label: 'Supermarkets',
+    icon: ShoppingBag,
+    color: 'bg-orange-50 text-orange-700 border-orange-200',
+    description: 'Supermarkets & stores'
+  },
+  banks: {
+    label: 'Banks',
+    icon: Building,
+    color: 'bg-green-50 text-green-700 border-green-200',
+    description: 'Financial institutions'
+  },
+  hospitals: {
+    label: 'Hospitals',
+    icon: Heart,
+    color: 'bg-red-50 text-red-700 border-red-200',
+    description: 'Healthcare facilities'
+  },
+  airports: {
+    label: 'Airports',
+    icon: Plane,
+    color: 'bg-purple-50 text-purple-700 border-purple-200',
+    description: 'Transportation hubs'
+  }
+} as const;
+
+type EstablishmentType = keyof typeof ESTABLISHMENT_CATEGORIES;
+
+// Google Maps configuration
+const GOOGLE_MAPS_LIBRARIES: ("places")[] = ["places"];
 const mapContainerStyle = {
   width: "100%",
   height: "100%",
 };
 
 const defaultCenter = {
-  lat: 5.56, // Accra, Ghana default
-  lng: -0.2057,
+  lat: 5.6037, // Accra, Ghana
+  lng: -0.1870,
 };
 
-const establishmentTypes = [
-  { id: "school", label: "Schools", icon: GraduationCap, color: "#3B82F6" },
-  { id: "bank", label: "Banks", icon: Building, color: "#10B981" },
-  { id: "hospital", label: "Hospitals", icon: Heart, color: "#EF4444" },
-  { id: "store", label: "Stores", icon: ShoppingBag, color: "#F59E0B" },
-  { id: "airport", label: "Airports", icon: Plane, color: "#8B5CF6" },
-] as const;
+// Utility functions
+
+// function calculateTravelTime(distance: number): number {
+//   // Estimate travel time based on distance (assuming 30 km/h average city speed)
+//   const averageSpeed = 30; // km/h
+//   const timeInHours = distance / averageSpeed;
+//   return Math.max(2, Math.round(timeInHours * 60)); // Minimum 2 minutes
+// }
+
+function formatDistance(distance: number): string {
+  if (distance >= 1) {
+    return `${distance.toFixed(1)}km`;
+  }
+  return `${Math.round(distance * 1000)}m`;
+}
+
+function normalizeLocationKey(location: string): string {
+  return location
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9-]/g, '')
+    .trim();
+}
+
+// Static mock data removed - now uses Google Maps API via establishments-service
 
 export function NearestEstablishments({
-  className = "",
-  projectLocation,
-  projectName = "Project",
-  neighborhood,
+  propertyLocation,
+  propertyName = "Property",
+  neighborhood = "Accra",
+  className,
+  maxDistance = 10, // 10km radius
+  propertyInfo
 }: NearestEstablishmentsProps) {
-  const [activeTab, setActiveTab] =
-    useState<(typeof establishmentTypes)[number]["id"]>("school");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [viewMode, setViewMode] = useState<"map" | "satellite">("map");
-  const [selectedEstablishment, setSelectedEstablishment] =
-    useState<Establishment | null>(null);
+  console.log('🏢 NearestEstablishments component instantiated with:', { propertyLocation, neighborhood });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [establishments, setEstablishments] = useState<NearestEstablishment[]>([]);
+  const [activeCategory, setActiveCategory] = useState<EstablishmentType>('schools');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedEstablishment, setSelectedEstablishment] = useState<NearestEstablishment | null>(null);
   const [map, setMap] = useState<google.maps.Map | null>(null);
-
+  const [mapType, setMapType] = useState<"roadmap" | "satellite">("roadmap");
+  const [mobileView, setMobileView] = useState<"list" | "map">("list");
+  const [showPropertyInfo, setShowPropertyInfo] = useState(false);
+  
   // Load Google Maps API
+  // For production: Set NEXT_PUBLIC_GOOGLE_MAPS_API_KEY in .env.local
+  // Example: NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_api_key_here
   const { isLoaded, loadError } = useJsApiLoader({
     id: "google-map-script",
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? "",
-    libraries: ["places"],
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "demo-key",
+    libraries: GOOGLE_MAPS_LIBRARIES,
   });
 
-  // Map center based on project location
-  const mapCenter = useMemo(
-    () => projectLocation ?? defaultCenter,
-    [projectLocation],
-  );
-
-  // Location-specific establishments database
-  const getLocationSpecificEstablishments = useCallback(() => {
-    const locationKey =
-      neighborhood?.toLowerCase().replace(/\s+/g, "_") ?? "default";
-
-    // Real establishments database by location
-    const establishmentsByLocation: Record<
-      string,
-      Record<
-        string,
-        Array<{
-          name: string;
-          address: string;
-          coordinates: Location;
-          rating: number;
-        }>
-      >
-    > = {
-      madina: {
-        school: [
-          {
-            name: "Madina Institute",
-            address: "Madina-Adenta Road, Madina",
-            coordinates: {
-              lat: mapCenter.lat + 0.002,
-              lng: mapCenter.lng + 0.001,
-            },
-            rating: 4.5,
-          },
-          {
-            name: "Zongo Junction School",
-            address: "Zongo Junction, Madina",
-            coordinates: {
-              lat: mapCenter.lat - 0.001,
-              lng: mapCenter.lng + 0.002,
-            },
-            rating: 4.2,
-          },
-          {
-            name: "Madina Estate School",
-            address: "Madina Estate, Madina",
-            coordinates: {
-              lat: mapCenter.lat + 0.001,
-              lng: mapCenter.lng - 0.001,
-            },
-            rating: 4.3,
-          },
-        ],
-        bank: [
-          {
-            name: "GCB Bank Madina",
-            address: "Madina Market, Madina",
-            coordinates: {
-              lat: mapCenter.lat + 0.0015,
-              lng: mapCenter.lng + 0.0005,
-            },
-            rating: 4.1,
-          },
-          {
-            name: "Ecobank Madina Branch",
-            address: "Adenta-Madina Road, Madina",
-            coordinates: {
-              lat: mapCenter.lat - 0.0005,
-              lng: mapCenter.lng + 0.0015,
-            },
-            rating: 4.0,
-          },
-          {
-            name: "Access Bank Madina",
-            address: "Zongo Junction, Madina",
-            coordinates: {
-              lat: mapCenter.lat + 0.001,
-              lng: mapCenter.lng - 0.0005,
-            },
-            rating: 4.2,
-          },
-        ],
-        hospital: [
-          {
-            name: "Madina Polyclinic",
-            address: "Madina-Adenta Road, Madina",
-            coordinates: {
-              lat: mapCenter.lat + 0.003,
-              lng: mapCenter.lng + 0.001,
-            },
-            rating: 4.0,
-          },
-          {
-            name: "Zongo Junction Clinic",
-            address: "Zongo Junction, Madina",
-            coordinates: {
-              lat: mapCenter.lat - 0.002,
-              lng: mapCenter.lng + 0.003,
-            },
-            rating: 3.8,
-          },
-        ],
-        store: [
-          {
-            name: "Madina Market",
-            address: "Madina Market Square, Madina",
-            coordinates: {
-              lat: mapCenter.lat + 0.0005,
-              lng: mapCenter.lng + 0.002,
-            },
-            rating: 4.3,
-          },
-          {
-            name: "Shoprite Madina",
-            address: "Adenta-Madina Road, Madina",
-            coordinates: {
-              lat: mapCenter.lat - 0.001,
-              lng: mapCenter.lng + 0.0025,
-            },
-            rating: 4.1,
-          },
-          {
-            name: "Melcom Madina",
-            address: "Zongo Junction, Madina",
-            coordinates: {
-              lat: mapCenter.lat + 0.0015,
-              lng: mapCenter.lng - 0.0015,
-            },
-            rating: 3.9,
-          },
-        ],
-        airport: [
-          {
-            name: "Kotoka International Airport",
-            address: "Airport Road, Accra",
-            coordinates: {
-              lat: mapCenter.lat - 0.05,
-              lng: mapCenter.lng - 0.03,
-            },
-            rating: 4.2,
-          },
-        ],
-      },
-      east_legon: {
-        school: [
-          {
-            name: "Lincoln Community School",
-            address: "American House, East Legon",
-            coordinates: {
-              lat: mapCenter.lat + 0.002,
-              lng: mapCenter.lng + 0.001,
-            },
-            rating: 4.8,
-          },
-          {
-            name: "East Legon Executive Fitness Club School",
-            address: "East Legon, Accra",
-            coordinates: {
-              lat: mapCenter.lat - 0.001,
-              lng: mapCenter.lng + 0.002,
-            },
-            rating: 4.6,
-          },
-          {
-            name: "SOS Hermann Gmeiner International College",
-            address: "East Legon, Accra",
-            coordinates: {
-              lat: mapCenter.lat + 0.001,
-              lng: mapCenter.lng - 0.001,
-            },
-            rating: 4.7,
-          },
-        ],
-        bank: [
-          {
-            name: "Standard Chartered East Legon",
-            address: "East Legon, Accra",
-            coordinates: {
-              lat: mapCenter.lat + 0.0015,
-              lng: mapCenter.lng + 0.0005,
-            },
-            rating: 4.4,
-          },
-          {
-            name: "GCB Bank East Legon",
-            address: "East Legon, Accra",
-            coordinates: {
-              lat: mapCenter.lat - 0.0005,
-              lng: mapCenter.lng + 0.0015,
-            },
-            rating: 4.3,
-          },
-          {
-            name: "Zenith Bank East Legon",
-            address: "East Legon, Accra",
-            coordinates: {
-              lat: mapCenter.lat + 0.001,
-              lng: mapCenter.lng - 0.0005,
-            },
-            rating: 4.2,
-          },
-        ],
-        hospital: [
-          {
-            name: "East Legon Hospital",
-            address: "East Legon, Accra",
-            coordinates: {
-              lat: mapCenter.lat + 0.003,
-              lng: mapCenter.lng + 0.001,
-            },
-            rating: 4.5,
-          },
-          {
-            name: "Nyaho Medical Centre",
-            address: "East Legon, Accra",
-            coordinates: {
-              lat: mapCenter.lat - 0.002,
-              lng: mapCenter.lng + 0.003,
-            },
-            rating: 4.6,
-          },
-        ],
-        store: [
-          {
-            name: "East Legon Mall",
-            address: "East Legon, Accra",
-            coordinates: {
-              lat: mapCenter.lat + 0.0005,
-              lng: mapCenter.lng + 0.002,
-            },
-            rating: 4.4,
-          },
-          {
-            name: "Shoprite East Legon",
-            address: "East Legon, Accra",
-            coordinates: {
-              lat: mapCenter.lat - 0.001,
-              lng: mapCenter.lng + 0.0025,
-            },
-            rating: 4.2,
-          },
-          {
-            name: "Game East Legon",
-            address: "East Legon, Accra",
-            coordinates: {
-              lat: mapCenter.lat + 0.0015,
-              lng: mapCenter.lng - 0.0015,
-            },
-            rating: 4.0,
-          },
-        ],
-        airport: [
-          {
-            name: "Kotoka International Airport",
-            address: "Airport Road, Accra",
-            coordinates: {
-              lat: mapCenter.lat - 0.03,
-              lng: mapCenter.lng - 0.02,
-            },
-            rating: 4.2,
-          },
-        ],
-      },
-      airport_residential_area: {
-        school: [
-          {
-            name: "Airport West International School",
-            address: "Airport Residential Area, Accra",
-            coordinates: {
-              lat: mapCenter.lat + 0.002,
-              lng: mapCenter.lng + 0.001,
-            },
-            rating: 4.7,
-          },
-          {
-            name: "British International School",
-            address: "Airport Residential Area, Accra",
-            coordinates: {
-              lat: mapCenter.lat - 0.001,
-              lng: mapCenter.lng + 0.002,
-            },
-            rating: 4.8,
-          },
-          {
-            name: "Galaxy International School",
-            address: "Airport Residential Area, Accra",
-            coordinates: {
-              lat: mapCenter.lat + 0.001,
-              lng: mapCenter.lng - 0.001,
-            },
-            rating: 4.6,
-          },
-        ],
-        bank: [
-          {
-            name: "Ecobank Airport",
-            address: "Airport Residential Area, Accra",
-            coordinates: {
-              lat: mapCenter.lat + 0.0015,
-              lng: mapCenter.lng + 0.0005,
-            },
-            rating: 4.3,
-          },
-          {
-            name: "Standard Chartered Airport",
-            address: "Airport Residential Area, Accra",
-            coordinates: {
-              lat: mapCenter.lat - 0.0005,
-              lng: mapCenter.lng + 0.0015,
-            },
-            rating: 4.4,
-          },
-          {
-            name: "CalBank Airport",
-            address: "Airport Residential Area, Accra",
-            coordinates: {
-              lat: mapCenter.lat + 0.001,
-              lng: mapCenter.lng - 0.0005,
-            },
-            rating: 4.1,
-          },
-        ],
-        hospital: [
-          {
-            name: "Airport View Hospital",
-            address: "Airport Residential Area, Accra",
-            coordinates: {
-              lat: mapCenter.lat + 0.003,
-              lng: mapCenter.lng + 0.001,
-            },
-            rating: 4.4,
-          },
-          {
-            name: "Trust Hospital Airport",
-            address: "Airport Residential Area, Accra",
-            coordinates: {
-              lat: mapCenter.lat - 0.002,
-              lng: mapCenter.lng + 0.003,
-            },
-            rating: 4.5,
-          },
-        ],
-        store: [
-          {
-            name: "A&C Shopping Mall",
-            address: "Airport Residential Area, Accra",
-            coordinates: {
-              lat: mapCenter.lat + 0.0005,
-              lng: mapCenter.lng + 0.002,
-            },
-            rating: 4.2,
-          },
-          {
-            name: "Airport Shell Station",
-            address: "Airport Residential Area, Accra",
-            coordinates: {
-              lat: mapCenter.lat - 0.001,
-              lng: mapCenter.lng + 0.0025,
-            },
-            rating: 4.0,
-          },
-          {
-            name: "Max Mart Airport",
-            address: "Airport Residential Area, Accra",
-            coordinates: {
-              lat: mapCenter.lat + 0.0015,
-              lng: mapCenter.lng - 0.0015,
-            },
-            rating: 3.9,
-          },
-        ],
-        airport: [
-          {
-            name: "Kotoka International Airport",
-            address: "Airport Road, Accra",
-            coordinates: {
-              lat: mapCenter.lat + 0.01,
-              lng: mapCenter.lng + 0.005,
-            },
-            rating: 4.2,
-          },
-        ],
-      },
-      default: {
-        school: [
-          {
-            name: "Community School",
-            address: `Main Street, ${neighborhood ?? "Accra"}`,
-            coordinates: {
-              lat: mapCenter.lat + 0.002,
-              lng: mapCenter.lng + 0.001,
-            },
-            rating: 4.0,
-          },
-          {
-            name: "Public Primary School",
-            address: `Education Road, ${neighborhood ?? "Accra"}`,
-            coordinates: {
-              lat: mapCenter.lat - 0.001,
-              lng: mapCenter.lng + 0.002,
-            },
-            rating: 3.8,
-          },
-          {
-            name: "Secondary School",
-            address: `School Lane, ${neighborhood ?? "Accra"}`,
-            coordinates: {
-              lat: mapCenter.lat + 0.001,
-              lng: mapCenter.lng - 0.001,
-            },
-            rating: 4.1,
-          },
-        ],
-        bank: [
-          {
-            name: "GCB Bank",
-            address: `Financial District, ${neighborhood ?? "Accra"}`,
-            coordinates: {
-              lat: mapCenter.lat + 0.0015,
-              lng: mapCenter.lng + 0.0005,
-            },
-            rating: 4.1,
-          },
-          {
-            name: "Standard Chartered Bank",
-            address: `Business Avenue, ${neighborhood ?? "Accra"}`,
-            coordinates: {
-              lat: mapCenter.lat - 0.0005,
-              lng: mapCenter.lng + 0.0015,
-            },
-            rating: 4.2,
-          },
-          {
-            name: "Ecobank Ghana",
-            address: `Commerce Street, ${neighborhood ?? "Accra"}`,
-            coordinates: {
-              lat: mapCenter.lat + 0.001,
-              lng: mapCenter.lng - 0.0005,
-            },
-            rating: 4.0,
-          },
-        ],
-        hospital: [
-          {
-            name: "Community Hospital",
-            address: `Medical District, ${neighborhood ?? "Accra"}`,
-            coordinates: {
-              lat: mapCenter.lat + 0.003,
-              lng: mapCenter.lng + 0.001,
-            },
-            rating: 4.0,
-          },
-          {
-            name: "Health Clinic",
-            address: `Health Avenue, ${neighborhood ?? "Accra"}`,
-            coordinates: {
-              lat: mapCenter.lat - 0.002,
-              lng: mapCenter.lng + 0.003,
-            },
-            rating: 3.9,
-          },
-        ],
-        store: [
-          {
-            name: "Shopping Center",
-            address: `Shopping District, ${neighborhood ?? "Accra"}`,
-            coordinates: {
-              lat: mapCenter.lat + 0.0005,
-              lng: mapCenter.lng + 0.002,
-            },
-            rating: 4.0,
-          },
-          {
-            name: "Supermarket",
-            address: `Market Street, ${neighborhood ?? "Accra"}`,
-            coordinates: {
-              lat: mapCenter.lat - 0.001,
-              lng: mapCenter.lng + 0.0025,
-            },
-            rating: 3.8,
-          },
-          {
-            name: "Retail Center",
-            address: `Commercial Road, ${neighborhood ?? "Accra"}`,
-            coordinates: {
-              lat: mapCenter.lat + 0.0015,
-              lng: mapCenter.lng - 0.0015,
-            },
-            rating: 3.9,
-          },
-        ],
-        airport: [
-          {
-            name: "Kotoka International Airport",
-            address: "Airport Road, Accra",
-            coordinates: {
-              lat: mapCenter.lat - 0.08,
-              lng: mapCenter.lng - 0.05,
-            },
-            rating: 4.2,
-          },
-        ],
-      },
-    };
-
-    return (
-      establishmentsByLocation[locationKey] ?? establishmentsByLocation.default
-    );
-  }, [mapCenter, neighborhood]);
-
-  // Dynamic establishments data based on actual project location
-  const sampleEstablishments: Establishment[] = useMemo(() => {
-    const locationData = getLocationSpecificEstablishments();
-
-    // Early return if no location data
-    if (!locationData) {
-      return [];
+  // Map center based on property location with validation
+  const mapCenter = useMemo(() => {
+    if (propertyLocation && 
+        typeof propertyLocation.lat === 'number' && 
+        typeof propertyLocation.lng === 'number' &&
+        propertyLocation.lat !== 0 && 
+        propertyLocation.lng !== 0) {
+      return propertyLocation;
     }
-
-    // Calculate distance between two points using Haversine formula
-    const calculateDistance = (
-      lat1: number,
-      lon1: number,
-      lat2: number,
-      lon2: number,
-    ) => {
-      const R = 6371; // Earth's radius in kilometers
-      const dLat = ((lat2 - lat1) * Math.PI) / 180;
-      const dLon = ((lon2 - lon1) * Math.PI) / 180;
-      const a =
-        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.cos((lat1 * Math.PI) / 180) *
-          Math.cos((lat2 * Math.PI) / 180) *
-          Math.sin(dLon / 2) *
-          Math.sin(dLon / 2);
-      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-      return R * c * 1000; // Convert to meters
+    
+    // Use neighborhood-specific defaults if available
+    const neighborhoodDefaults: Record<string, PropertyLocation> = {
+      'adenta': { lat: 5.7010, lng: -0.1680 },
+      'east-legon': { lat: 5.6500, lng: -0.1460 },
+      'adjiringanor': { lat: 5.6520, lng: -0.1445 },
+      'airport-residential': { lat: 5.6000, lng: -0.1700 },
     };
+    
+    const normalizedNeighborhood = normalizeLocationKey(neighborhood);
+    return neighborhoodDefaults[normalizedNeighborhood] || defaultCenter;
+  }, [propertyLocation, neighborhood]);
 
-    // Convert location data to establishment format
-    const establishments: Establishment[] = [];
-    let establishmentId = 1;
+  // Test geocoding first - get location string, pass to server-side Google Geocoding API, log coordinates
+  const testGeocode = async (locationString: string) => {
+    console.log(`🌍 GEOCODING TEST: Starting for "${locationString}" via server-side API`);
+    
+    try {
+      console.log(`📡 Making request to /api/google-maps/geocode...`);
+      
+      const response = await fetch(`/api/google-maps/geocode?address=${encodeURIComponent(locationString)}`);
+      console.log(`📊 Response status: ${response.status}`);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      console.log(`📝 Server response:`, data);
+      
+      if (data.success && data.coordinates) {
+        const coordinates = data.coordinates;
+        
+        console.log(`✅ GEOCODING SUCCESS!`);
+        console.log(`📍 Location: "${locationString}"`);
+        console.log(`🎯 Latitude: ${coordinates.lat}`);
+        console.log(`🎯 Longitude: ${coordinates.lng}`);
+        console.log(`📮 Full address: ${data.formatted_address}`);
+        
+        return coordinates as { lat: number; lng: number };
+      } else {
+        console.log(`❌ Geocoding failed: ${data.error || 'No coordinates returned'}`);
+        return null;
+      }
+    } catch (error) {
+      console.error(`🚨 Geocoding error:`, error);
+      return null;
+    }
+  };
 
-    establishmentTypes.forEach((typeConfig) => {
-      const typeEstablishments = locationData[typeConfig.id] ?? [];
-
-      typeEstablishments.forEach((establishment) => {
-        // Calculate actual distance from project location
-        const distance = Math.round(
-          calculateDistance(
-            mapCenter.lat,
-            mapCenter.lng,
-            establishment.coordinates.lat,
-            establishment.coordinates.lng,
-          ),
-        );
-
-        // Calculate travel time based on distance (assuming 30 km/h average speed)
-        const travelTime = Math.round((distance / 1000) * 2); // 2 minutes per km
-
-        establishments.push({
-          id: `${typeConfig.id}${establishmentId++}`,
-          name: establishment.name,
-          address: establishment.address,
-          location: establishment.coordinates,
-          distance,
-          travelTime: Math.max(1, travelTime), // Minimum 1 minute
-          type: typeConfig.id,
-          rating: establishment.rating,
-        });
-      });
-    });
-
-    // Sort by distance (closest first)
-    return establishments.sort((a, b) => a.distance - b.distance);
-  }, [mapCenter, getLocationSpecificEstablishments]);
-
-  // Filter establishments by active tab and search query
+  // Fetch establishments using our Google Maps API service
+  const fetchEstablishments = useCallback(async () => {
+    console.log('🚀 fetchEstablishments called with:', { propertyLocation, neighborhood });
+    
+    // STEP 1: Test geocoding first!
+    if (neighborhood) {
+      console.log(`🔍 TESTING GEOCODING for neighborhood: "${neighborhood}"`);
+      const geocodedCoords = await testGeocode(neighborhood);
+      
+      if (geocodedCoords) {
+        console.log(`🎉 GEOCODING WORKED! Got coordinates:`, geocodedCoords);
+      } else {
+        console.log(`⚠️ Geocoding failed, will use fallback data`);
+      }
+    }
+    
+    try {
+      setLoading(true);
+      setError(null);
+      
+      // Use our new Google Maps API service
+      console.log('📦 Importing establishments-service...');
+      const { getEstablishments } = await import('@/app/(lobby)/development-projects/_component/establishments-service');
+      
+      const establishmentsData = await getEstablishments(
+        propertyLocation,
+        neighborhood,
+        { maxDistance: maxDistance * 1000 } // Convert km to meters
+      );
+      
+      // Transform the data format to match our component interface
+      const transformedEstablishments: NearestEstablishment[] = establishmentsData.map(est => ({
+        id: est.id,
+        name: est.name,
+        address: est.address,
+        distance: est.distance,
+        travelTime: est.travelTime || 0,
+        type: est.type === 'school' ? 'schools' : 
+              est.type === 'bank' ? 'banks' :
+              est.type === 'hospital' ? 'hospitals' :
+              est.type === 'supermarket' ? 'supermarkets' :
+              est.type === 'airport' ? 'airports' : 'schools',
+        rating: est.rating,
+        phone: est.phone,
+        openNow: est.openNow,
+        coordinates: est.coordinates || { lat: 0, lng: 0 }
+      }));
+      
+      setEstablishments(transformedEstablishments);
+    } catch (err) {
+      setError('Failed to load nearby establishments. Please try again.');
+      console.error('Error fetching establishments:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, [propertyLocation, neighborhood, maxDistance]);
+  
+  useEffect(() => {
+    console.log('⚡ useEffect triggered, calling fetchEstablishments');
+    void fetchEstablishments();
+  }, [fetchEstablishments]);
+  
+  // Filter establishments by category and search
   const filteredEstablishments = useMemo(() => {
-    return sampleEstablishments
-      .filter((establishment) => establishment.type === activeTab)
-      .filter(
-        (establishment) =>
-          establishment.name
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase()) ||
-          establishment.address
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase()),
-      )
-      .sort((a, b) => a.distance - b.distance);
-  }, [sampleEstablishments, activeTab, searchQuery]);
+    let filtered = establishments.filter(est => est.type === activeCategory);
+    
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(est => 
+        est.name.toLowerCase().includes(query) ||
+        est.address.toLowerCase().includes(query)
+      );
+    }
+    
+    return filtered; // Show all results, no artificial limit
+  }, [establishments, activeCategory, searchQuery]);
+  
+  // Get counts for each category
+  const categoryCounts = useMemo(() => {
+    const counts: Record<EstablishmentType, number> = {
+      schools: 0,
+      supermarkets: 0,
+      banks: 0,
+      hospitals: 0,
+      airports: 0
+    };
+    
+    establishments.forEach(est => {
+      counts[est.type]++;
+    });
+    
+    return counts;
+  }, [establishments]);
+  
+  // Get nearest establishment overall
+  const nearestEstablishment = useMemo(() => {
+    if (establishments.length === 0) return null;
+    return establishments.reduce((nearest, current) => 
+      current.distance < nearest.distance ? current : nearest
+    );
+  }, [establishments]);
 
   // Map options
   const mapOptions = useMemo(
@@ -681,45 +350,95 @@ export function NearestEstablishments({
       disableDefaultUI: false,
       clickableIcons: true,
       scrollwheel: true,
-      mapTypeId: viewMode === "satellite" ? "satellite" : "roadmap",
+      mapTypeId: mapType,
       zoomControl: false,
       streetViewControl: false,
       mapTypeControl: false,
       fullscreenControl: false,
     }),
-    [viewMode],
+    [mapType]
   );
 
   // Handle map load
-  const onLoad = useCallback(
-    (map: google.maps.Map) => {
-      setMap(map);
-      // Fit bounds to include project location and all establishments
+  const onMapLoad = useCallback(
+    (mapInstance: google.maps.Map) => {
+      setMap(mapInstance);
+      
+      // Validate property location before using it
+      if (!propertyLocation || typeof propertyLocation.lat !== 'number' || typeof propertyLocation.lng !== 'number') {
+        console.warn('Invalid property location, using default center');
+        mapInstance.setCenter(defaultCenter);
+        mapInstance.setZoom(12);
+        return;
+      }
+      
+      // Create bounds that include property location and all establishments
       const bounds = new google.maps.LatLngBounds();
-      bounds.extend(projectLocation);
-
-      sampleEstablishments.forEach((establishment) => {
-        bounds.extend(establishment.location);
-      });
-
-      map.fitBounds(bounds);
-
-      // Add some padding to the bounds
-      const listener = google.maps.event.addListener(map, "idle", () => {
-        if (map.getZoom()! > 15) map.setZoom(15);
-        google.maps.event.removeListener(listener);
-      });
+      
+      try {
+        // Add property location to bounds
+        bounds.extend({ lat: propertyLocation.lat, lng: propertyLocation.lng });
+        
+        // Add valid establishment coordinates to bounds
+        filteredEstablishments.forEach((establishment) => {
+          if (establishment.coordinates && 
+              typeof establishment.coordinates.lat === 'number' && 
+              typeof establishment.coordinates.lng === 'number') {
+            bounds.extend({
+              lat: establishment.coordinates.lat,
+              lng: establishment.coordinates.lng
+            });
+          }
+        });
+        
+        // Only fit bounds if we have valid data
+        if (!bounds.isEmpty()) {
+          mapInstance.fitBounds(bounds, { top: 50, right: 50, bottom: 50, left: 50 });
+          
+          // Set max zoom level
+          const listener = google.maps.event.addListener(mapInstance, "idle", () => {
+            const currentZoom = mapInstance.getZoom();
+            if (currentZoom && currentZoom > 16) {
+              mapInstance.setZoom(16);
+            }
+            google.maps.event.removeListener(listener);
+          });
+        } else {
+          // Fallback to center on property location
+          mapInstance.setCenter({ lat: propertyLocation.lat, lng: propertyLocation.lng });
+          mapInstance.setZoom(14);
+        }
+      } catch (error) {
+        console.error('Error setting map bounds:', error);
+        // Fallback to property location or default
+        const center = propertyLocation?.lat && propertyLocation?.lng 
+          ? { lat: propertyLocation.lat, lng: propertyLocation.lng }
+          : defaultCenter;
+        mapInstance.setCenter(center);
+        mapInstance.setZoom(12);
+      }
     },
-    [projectLocation, sampleEstablishments],
+    [propertyLocation, filteredEstablishments]
   );
 
   // Handle map unload
-  const onUnmount = useCallback(() => {
+  const onMapUnmount = useCallback(() => {
     setMap(null);
   }, []);
 
+  // Handle establishment click (from list)
+  const handleEstablishmentClick = useCallback((establishment: NearestEstablishment) => {
+    setSelectedEstablishment(establishment);
+    
+    // Pan to establishment on map
+    if (map) {
+      map.panTo(establishment.coordinates);
+      map.setZoom(15);
+    }
+  }, [map]);
+
   // Handle marker click
-  const handleMarkerClick = useCallback((establishment: Establishment) => {
+  const handleMarkerClick = useCallback((establishment: NearestEstablishment) => {
     setSelectedEstablishment(establishment);
   }, []);
 
@@ -728,298 +447,685 @@ export function NearestEstablishments({
     setSelectedEstablishment(null);
   }, []);
 
-  // Format distance
-  const formatDistance = (distance: number) => {
-    if (distance >= 1000) {
-      return `${(distance / 1000).toFixed(1)} km`;
-    }
-    return `${distance} m`;
-  };
+  // Handle property marker click
+  const handlePropertyMarkerClick = useCallback(() => {
+    setShowPropertyInfo(true);
+  }, []);
 
-  // Handle zoom controls
+  // Handle property info window close
+  const handlePropertyInfoClose = useCallback(() => {
+    setShowPropertyInfo(false);
+  }, []);
+
+  // Map controls
   const handleZoomIn = useCallback(() => {
     if (map) {
-      map.setZoom(map.getZoom()! + 1);
+      const currentZoom = map.getZoom() || 10;
+      map.setZoom(currentZoom + 1);
     }
   }, [map]);
 
   const handleZoomOut = useCallback(() => {
     if (map) {
-      map.setZoom(map.getZoom()! - 1);
+      const currentZoom = map.getZoom() || 10;
+      map.setZoom(currentZoom - 1);
     }
   }, [map]);
 
-  // Handle view mode change
-  const handleViewModeChange = useCallback(
-    (mode: "map" | "satellite") => {
-      setViewMode(mode);
-      if (map) {
-        map.setMapTypeId(mode === "satellite" ? "satellite" : "roadmap");
-      }
-    },
-    [map],
-  );
-
-  if (loadError) {
+  const handleToggleMapType = useCallback(() => {
+    const newMapType = mapType === "roadmap" ? "satellite" : "roadmap";
+    setMapType(newMapType);
+    if (map) {
+      map.setMapTypeId(newMapType);
+    }
+  }, [map, mapType]);
+  
+  if (error) {
     return (
-      <div
-        className={`bg-white border border-gray-200 rounded-lg p-6 ${className}`}
-      >
-        <div className="text-center text-red-500">
-          <p>Error loading Google Maps. Please check your API key.</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!isLoaded) {
-    return (
-      <div
-        className={`bg-white border border-gray-200 rounded-lg p-6 ${className}`}
-      >
-        <div className="text-center text-gray-500">
-          <p>Loading Google Maps...</p>
-        </div>
-      </div>
+      <Card className={cn("w-full border-red-100 bg-red-50/30", className)}>
+        <CardContent className="p-6">
+          <div className="flex items-center justify-center text-center py-8">
+            <div className="space-y-6 max-w-md">
+              <div className="w-16 h-16 mx-auto bg-gradient-to-br from-red-50 to-red-100 rounded-full flex items-center justify-center border-2 border-red-200">
+                <AlertCircle className="w-8 h-8 text-red-500" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-red-900 mb-2">Service Temporarily Unavailable</h3>
+                <p className="text-red-700 mb-6 text-sm leading-relaxed">
+                  We&apos;re having trouble loading nearby amenities right now. This might be due to a network issue or temporary service disruption.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <Button 
+                    onClick={fetchEstablishments} 
+                    variant="outline" 
+                    size="sm"
+                    className="border-red-200 text-red-700 hover:bg-red-50 transition-all hover:scale-105"
+                  >
+                    <Search className="w-4 h-4 mr-2" />
+                    Try Again
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    onClick={() => window.location.reload()}
+                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                  >
+                    Refresh Page
+                  </Button>
+                </div>
+              </div>
+              
+              {/* Technical details for debugging (hidden in production) */}
+              {process.env.NODE_ENV === 'development' && (
+                <details className="text-left bg-red-100 rounded p-3 text-xs">
+                  <summary className="cursor-pointer text-red-800 font-medium">Technical Details</summary>
+                  <p className="text-red-700 mt-2">{error}</p>
+                </details>
+              )}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     );
   }
 
   return (
-    <div
-      key={`${projectLocation.lat}-${projectLocation.lng}-${projectName}`}
-      className={`bg-white border border-gray-200 rounded-lg overflow-hidden ${className}`}
-    >
-      {/* Header */}
-      <div className="p-6 pb-4"></div>
-
-      {/* Search Bar */}
-      <div className="px-6 pb-4">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-          <Input
-            placeholder={`Search ${activeTab}s...`}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 bg-gray-50 border-gray-200"
-          />
-        </div>
-      </div>
-
-      {/* Tab Navigation */}
-      <div className="px-6 pb-4">
-        <div className="flex justify-between">
-          {establishmentTypes.map((tab) => {
-            const Icon = tab.icon;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex flex-col items-center gap-1 pb-2 border-b-2 transition-colors ${
-                  activeTab === tab.id
-                    ? "border-blue-500 text-blue-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700"
-                }`}
-              >
-                <Icon className="w-5 h-5" />
-                <span className="text-sm">{tab.label}</span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Main Content - Split Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[400px]">
-        {/* List Section - Now on the left */}
-        <div className="p-6 border-r border-gray-200">
-          <div className="flex items-center justify-between mb-4">
-            <div className="text-sm text-gray-600">
-              {filteredEstablishments.length > 0 &&
-                `Nearest: ${formatDistance(filteredEstablishments[0]?.distance ?? 0)}`}
+    <Card className={cn("w-full", className)}>
+      <CardHeader className="pb-4">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-8 h-8 bg-brand-blue/10 rounded-lg flex items-center justify-center">
+                <MapPin className="w-4 h-4 text-brand-blue" />
+              </div>
+              <div>
+                <CardTitle className="text-lg sm:text-xl text-brand-accent">Nearby Amenities</CardTitle>
+                <p className="text-brand-muted text-sm">
+                  Essential services near {propertyName}
+                </p>
+              </div>
             </div>
-            <div className="text-sm text-gray-500">
-              {filteredEstablishments.length} {activeTab}
-              {filteredEstablishments.length !== 1 ? "s" : ""} found
-            </div>
-          </div>
-
-          {/* Establishments List */}
-          <div className="space-y-4 max-h-[320px] overflow-y-auto">
-            {filteredEstablishments.map((establishment) => {
-              const tabConfig = establishmentTypes.find(
-                (tab) => tab.id === establishment.type,
-              );
-              return (
-                <div
-                  key={establishment.id}
-                  className="flex items-center justify-between py-2 border-b border-gray-100 last:border-b-0 cursor-pointer hover:bg-gray-50 rounded px-2 transition-colors"
-                  onClick={() => handleMarkerClick(establishment)}
-                >
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      {tabConfig && (
-                        <div
-                          className="w-3 h-3 rounded-full"
-                          style={{ backgroundColor: tabConfig.color }}
-                        />
-                      )}
-                      <h4 className="text-gray-900 truncate">
-                        {establishment.name}
-                      </h4>
-                    </div>
-                    <p className="text-gray-500 text-sm truncate">
-                      {establishment.address}
-                    </p>
-                  </div>
-                  <div className="text-right ml-4 flex-shrink-0">
-                    <div className="text-gray-900 mb-1">
-                      {formatDistance(establishment.distance)}
-                    </div>
-                    <div className="text-orange-500 text-sm flex items-center justify-end">
-                      <Clock className="w-3 h-3 mr-1" />
-                      {establishment.travelTime} min
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-
-            {filteredEstablishments.length === 0 && (
-              <div className="text-center py-8 text-gray-500">
-                <MapPin className="w-8 h-8 text-gray-300 mx-auto mb-2" />
-                <p>No {activeTab}s found matching your search.</p>
+            {nearestEstablishment && (
+              <div className="flex items-center gap-2 mt-3 p-2 bg-blue-50 rounded-lg border border-blue-100">
+                <Navigation className="w-4 h-4 text-blue-600" />
+                <span className="text-sm text-blue-800 font-medium">
+                  Closest: {nearestEstablishment.name} • {formatDistance(nearestEstablishment.distance / 1000)}
+                </span>
               </div>
             )}
           </div>
+          
+          {/* Quick Stats Badge */}
+          {!loading && establishments.length > 0 && (
+            <div className="flex items-center gap-3 text-sm">
+              <div className="bg-green-50 border border-green-200 rounded-lg px-3 py-1.5">
+                <span className="text-green-700 font-medium">{establishments.length}</span>
+                <span className="text-green-600 ml-1">locations found</span>
+              </div>
+              <div className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5">
+                <span className="text-gray-700 font-medium">{maxDistance}km</span>
+                <span className="text-gray-600 ml-1">radius</span>
+              </div>
+            </div>
+          )}
         </div>
-
-        {/* Map Section - Now on the right */}
-        <div className="relative bg-gray-100">
-          {/* Map Controls */}
-          <div className="absolute top-4 right-4 z-10 flex gap-2">
-            <Button
-              variant={viewMode === "map" ? "default" : "outline"}
-              size="sm"
-              onClick={() => handleViewModeChange("map")}
-              className="text-sm px-3 py-1 bg-white shadow-sm"
-            >
-              Map
-            </Button>
-            <Button
-              variant={viewMode === "satellite" ? "default" : "outline"}
-              size="sm"
-              onClick={() => handleViewModeChange("satellite")}
-              className="text-sm px-3 py-1 bg-white shadow-sm"
-            >
-              Satellite
-            </Button>
-          </div>
-
-          {/* Zoom Controls */}
-          <div className="absolute top-4 left-4 z-10 flex flex-col gap-1">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleZoomIn}
-              className="w-8 h-8 p-0 bg-white shadow-sm"
-            >
-              +
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleZoomOut}
-              className="w-8 h-8 p-0 bg-white shadow-sm"
-            >
-              -
-            </Button>
-          </div>
-
-          {/* Google Map */}
-          <GoogleMap
-            mapContainerStyle={mapContainerStyle}
-            center={mapCenter}
-            zoom={14}
-            options={mapOptions}
-            onLoad={onLoad}
-            onUnmount={onUnmount}
-          >
-            {/* Project Location Marker */}
-            <Marker
-              position={projectLocation}
-              icon={{
-                url:
-                  "data:image/svg+xml;charset=UTF-8," +
-                  encodeURIComponent(`
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="#FF6B35"/>
-                  </svg>
-                `),
-                scaledSize: new google.maps.Size(24, 24),
-              }}
-              title={projectName}
-            />
-
-            {/* Establishment Markers */}
-            {filteredEstablishments.map((establishment) => {
-              const tabConfig = establishmentTypes.find(
-                (tab) => tab.id === establishment.type,
-              );
-              return (
-                <Marker
-                  key={establishment.id}
-                  position={establishment.location}
-                  icon={{
-                    url:
-                      "data:image/svg+xml;charset=UTF-8," +
-                      encodeURIComponent(`
-                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="10" cy="10" r="8" fill="${tabConfig?.color ?? "#3B82F6"}" stroke="white" stroke-width="2"/>
-                      </svg>
-                    `),
-                    scaledSize: new google.maps.Size(20, 20),
-                  }}
-                  onClick={() => handleMarkerClick(establishment)}
-                  title={establishment.name}
-                />
-              );
-            })}
-
-            {/* Info Window */}
-            {selectedEstablishment && (
-              <InfoWindow
-                position={selectedEstablishment.location}
-                onCloseClick={handleInfoWindowClose}
+      </CardHeader>
+      
+      <CardContent className="space-y-6">
+        {/* Category Tabs */}
+        <div className="flex flex-wrap gap-2 sm:grid sm:grid-cols-2 lg:flex lg:flex-nowrap">
+          {Object.entries(ESTABLISHMENT_CATEGORIES).map(([key, config]) => {
+            const Icon = config.icon;
+            const count = categoryCounts[key as EstablishmentType];
+            const isActive = activeCategory === key;
+            
+            return (
+              <Button
+                key={key}
+                variant={isActive ? "default" : "outline"}
+                size="sm"
+                onClick={() => setActiveCategory(key as EstablishmentType)}
+                className={cn(
+                  "flex items-center gap-1.5 transition-all duration-200 min-w-0 flex-shrink-0",
+                  "text-xs sm:text-sm px-2 sm:px-3 py-2",
+                  isActive && "bg-brand-blue hover:bg-brand-blue/90"
+                )}
+                aria-pressed={isActive}
               >
-                <div className="p-2 max-w-xs">
-                  <h3 className="font-semibold text-gray-900 mb-1">
-                    {selectedEstablishment.name}
-                  </h3>
-                  <p className="text-sm text-gray-600 mb-2">
-                    {selectedEstablishment.address}
-                  </p>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-blue-600 font-medium">
-                      {formatDistance(selectedEstablishment.distance)}
-                    </span>
-                    <span className="text-orange-600">
-                      {selectedEstablishment.travelTime} min
-                    </span>
-                  </div>
-                  {selectedEstablishment.rating && (
-                    <div className="flex items-center mt-2">
-                      <span className="text-yellow-500 text-sm">★</span>
-                      <span className="text-sm text-gray-600 ml-1">
-                        {selectedEstablishment.rating}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              </InfoWindow>
-            )}
-          </GoogleMap>
+                <Icon className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                <span className="truncate">{config.label}</span>
+                <Badge variant="secondary" className="ml-1 bg-white/20 text-inherit text-xs px-1">
+                  {count}
+                </Badge>
+              </Button>
+            );
+          })}
         </div>
-      </div>
-    </div>
+        
+        {/* Search */}
+        <div className="relative">
+          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <Search className="w-4 h-4 text-gray-400" />
+          </div>
+          <Input
+            placeholder={`Search ${ESTABLISHMENT_CATEGORIES[activeCategory].label.toLowerCase()}...`}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-10 pr-10 bg-gray-50/50 border-gray-200 focus:bg-white transition-all duration-200 focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery('')}
+              className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 transition-colors"
+              aria-label="Clear search"
+            >
+              <div className="w-4 h-4 rounded-full bg-gray-300 hover:bg-gray-400 flex items-center justify-center transition-colors">
+                <div className="w-2 h-2 bg-white rounded-full" />
+              </div>
+            </button>
+          )}
+          
+          {/* Search results count */}
+          {searchQuery && (
+            <div className="absolute -bottom-6 left-0 text-xs text-brand-muted">
+              {filteredEstablishments.length} results for &ldquo;{searchQuery}&rdquo;
+            </div>
+          )}
+        </div>
+        
+        {/* Mobile/Tablet Toggle for Map View */}
+        <div className="block lg:hidden">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-semibold text-brand-accent">
+              Found {filteredEstablishments.length} {ESTABLISHMENT_CATEGORIES[activeCategory].label}
+            </h3>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setMobileView(mobileView === "list" ? "map" : "list")}
+              className="lg:hidden"
+            >
+              {mobileView === "list" ? "Show Map" : "Show List"}
+            </Button>
+          </div>
+        </div>
+
+        {/* Split View: List + Map */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 min-h-[400px] lg:min-h-[600px]">
+          {/* Left Side: Results List */}
+          <div className={cn(
+            "space-y-4",
+            "lg:block", // Always show on desktop
+            mobileView === "list" ? "block" : "hidden lg:block" // Show/hide based on mobile view mode
+          )}>
+            <div className="flex items-center justify-between">
+              <h3 className="font-semibold text-brand-accent text-sm sm:text-base">
+                Found {filteredEstablishments.length} {ESTABLISHMENT_CATEGORIES[activeCategory].label}
+              </h3>
+              {nearestEstablishment && (
+                <div className="text-xs sm:text-sm text-brand-blue">
+                  Nearest: {formatDistance(nearestEstablishment.distance / 1000)}
+                </div>
+              )}
+            </div>
+            
+            <div className="space-y-3 max-h-[350px] sm:max-h-[400px] lg:max-h-[500px] overflow-y-auto pr-2">
+              {loading ? (
+                <div className="space-y-3">
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <div key={i} className="flex items-center space-x-3 sm:space-x-4 p-3 sm:p-4 border rounded-lg bg-gradient-to-r from-gray-50 to-white">
+                      <Skeleton className="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex-shrink-0" />
+                      <div className="space-y-2 flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <Skeleton className="h-4 w-32 sm:w-48" />
+                          <Skeleton className="h-3 w-8 rounded-full" />
+                        </div>
+                        <Skeleton className="h-3 w-full max-w-64" />
+                        <div className="flex items-center gap-4">
+                          <Skeleton className="h-3 w-12" />
+                          <Skeleton className="h-3 w-16" />
+                        </div>
+                      </div>
+                      <div className="hidden sm:block">
+                        <Skeleton className="h-6 w-12 rounded-full" />
+                      </div>
+                    </div>
+                  ))}
+                  
+                  {/* Loading indicator */}
+                  <div className="flex items-center justify-center py-6">
+                    <div className="flex items-center gap-3 text-brand-muted">
+                      <Loader2 className="w-5 h-5 animate-spin text-brand-blue" />
+                      <span className="text-sm">Finding nearby amenities...</span>
+                    </div>
+                  </div>
+                </div>
+              ) : filteredEstablishments.length > 0 ? (
+                filteredEstablishments.map((establishment) => {
+                  const config = ESTABLISHMENT_CATEGORIES[establishment.type];
+                  const Icon = config.icon;
+                  const isSelected = selectedEstablishment?.id === establishment.id;
+                  
+                  return (
+                    <div
+                      key={establishment.id}
+                      onClick={() => handleEstablishmentClick(establishment)}
+                      className={cn(
+                        "flex items-center justify-between p-3 sm:p-4 border rounded-lg transition-all duration-200 cursor-pointer group touch-manipulation",
+                        "active:scale-95 sm:active:scale-100", // Subtle press feedback on mobile
+                        isSelected 
+                          ? "border-brand-blue bg-brand-blue/5 shadow-sm" 
+                          : "border-gray-200 hover:border-brand-blue/30 hover:shadow-sm"
+                      )}
+                    >
+                      <div className="flex items-center space-x-3 sm:space-x-4 min-w-0 flex-1">
+                        <div className={cn(
+                          "w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center transition-transform group-hover:scale-105 flex-shrink-0",
+                          config.color,
+                          isSelected && "ring-2 ring-brand-blue ring-offset-2"
+                        )}>
+                          <Icon className="w-5 h-5 sm:w-6 sm:h-6" />
+                        </div>
+                        
+                        <div className="space-y-1 flex-1 min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <h4 className={cn(
+                              "font-semibold transition-colors text-sm sm:text-base truncate",
+                              isSelected ? "text-brand-blue" : "text-brand-accent group-hover:text-brand-blue"
+                            )}>
+                              {establishment.name}
+                            </h4>
+                            {establishment.rating && (
+                              <div className="flex items-center gap-1 flex-shrink-0">
+                                <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                                <span className="text-xs text-brand-muted">
+                                  {establishment.rating}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                          
+                          {establishment.openNow !== undefined && (
+                            <Badge
+                              variant="outline"
+                              className={cn(
+                                "text-xs w-fit",
+                                establishment.openNow
+                                  ? "text-green-600 border-green-200 bg-green-50"
+                                  : "text-red-600 border-red-200 bg-red-50"
+                              )}
+                            >
+                              {establishment.openNow ? 'Open' : 'Closed'}
+                            </Badge>
+                          )}
+                          
+                          <p className="text-xs sm:text-sm text-brand-muted line-clamp-1">
+                            {establishment.address}
+                          </p>
+                          <div className="flex items-center gap-3 sm:gap-4 text-xs text-brand-muted">
+                            <div className="flex items-center gap-1">
+                              <MapPin className="w-3 h-3" />
+                              <span>{formatDistance(establishment.distance / 1000)}</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <Clock className="w-3 h-3" />
+                              <span>{establishment.travelTime} min</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="text-center py-12 text-brand-muted">
+                  <div className="w-16 h-16 mx-auto bg-gradient-to-br from-gray-50 to-gray-100 rounded-full flex items-center justify-center mb-6 border-2 border-gray-200">
+                    {(() => {
+                      const Icon = ESTABLISHMENT_CATEGORIES[activeCategory].icon;
+                      return <Icon className="w-8 h-8 text-gray-400" />;
+                    })()}
+                  </div>
+                  <h3 className="font-medium text-brand-accent mb-2">
+                    No {ESTABLISHMENT_CATEGORIES[activeCategory].label.toLowerCase()} found
+                  </h3>
+                  <p className="text-sm mb-4">
+                    {searchQuery 
+                      ? `No results match "${searchQuery}" in this area`
+                      : `We couldn't find any ${ESTABLISHMENT_CATEGORIES[activeCategory].label.toLowerCase()} within ${maxDistance}km of this location`
+                    }
+                  </p>
+                  
+                  <div className="flex flex-col sm:flex-row gap-2 justify-center">
+                    {searchQuery && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setSearchQuery('')}
+                        className="transition-all hover:scale-105"
+                      >
+                        Clear search
+                      </Button>
+                    )}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={fetchEstablishments}
+                      className="transition-all hover:scale-105"
+                    >
+                      <Search className="w-4 h-4 mr-2" />
+                      Refresh search
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Right Side: Interactive Map */}
+          <div className={cn(
+            "relative border border-gray-200 rounded-lg overflow-hidden bg-gray-100",
+            "lg:block", // Always show on desktop
+            mobileView === "map" ? "block" : "hidden lg:block" // Show/hide based on mobile view mode
+          )}>
+            {/* Map Loading/Error States */}
+            {loadError ? (
+              <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
+                <div className="text-center space-y-4">
+                  <AlertCircle className="w-12 h-12 text-red-500 mx-auto" />
+                  <div>
+                    <p className="text-brand-accent font-medium">Map unavailable</p>
+                    <p className="text-sm text-brand-muted">Please check your internet connection</p>
+                  </div>
+                </div>
+              </div>
+            ) : !isLoaded ? (
+              <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
+                <div className="text-center space-y-4">
+                  <Loader2 className="w-8 h-8 animate-spin text-brand-blue mx-auto" />
+                  <p className="text-brand-muted">Loading map...</p>
+                </div>
+              </div>
+            ) : (
+              <>
+                {/* Map Controls */}
+                <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-10 flex flex-col gap-1 sm:gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleToggleMapType}
+                    className="bg-white/90 backdrop-blur-sm shadow-sm p-2 sm:p-2.5"
+                    title={`Switch to ${mapType === "roadmap" ? "satellite" : "map"} view`}
+                  >
+                    <Maximize2 className="w-3 h-3 sm:w-4 sm:h-4" />
+                  </Button>
+                </div>
+                
+                <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-10 flex flex-col gap-1">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleZoomIn}
+                    className="w-8 h-8 sm:w-9 sm:h-9 p-0 bg-white/90 backdrop-blur-sm shadow-sm touch-manipulation"
+                    title="Zoom in"
+                  >
+                    <ZoomIn className="w-3 h-3 sm:w-4 sm:h-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleZoomOut}
+                    className="w-8 h-8 sm:w-9 sm:h-9 p-0 bg-white/90 backdrop-blur-sm shadow-sm touch-manipulation"
+                    title="Zoom out"
+                  >
+                    <ZoomOut className="w-3 h-3 sm:w-4 sm:h-4" />
+                  </Button>
+                </div>
+
+                {/* Google Map */}
+                <GoogleMap
+                  mapContainerStyle={mapContainerStyle}
+                  center={mapCenter}
+                  zoom={13}
+                  options={mapOptions}
+                  onLoad={onMapLoad}
+                  onUnmount={onMapUnmount}
+                >
+                  {/* Property Location Marker - only render if valid coordinates */}
+                  {propertyLocation && 
+                   typeof propertyLocation.lat === 'number' && 
+                   typeof propertyLocation.lng === 'number' && (
+                    <Marker
+                      position={{ lat: propertyLocation.lat, lng: propertyLocation.lng }}
+                      icon={{
+                        url: "data:image/svg+xml;charset=UTF-8," +
+                          encodeURIComponent(`
+                            <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <circle cx="18" cy="18" r="14" fill="#FF6B35" stroke="white" stroke-width="4"/>
+                              <circle cx="18" cy="18" r="6" fill="white"/>
+                              <path d="M18 10L20 14H22L18 18L16 14H14L18 10Z" fill="#FF6B35"/>
+                            </svg>
+                          `),
+                        scaledSize: new google.maps.Size(36, 36),
+                        anchor: new google.maps.Point(18, 18),
+                      }}
+                      title={`Click to view ${propertyName} details`}
+                      onClick={handlePropertyMarkerClick}
+                    />
+                  )}
+
+                  {/* Establishment Markers - only render if valid coordinates */}
+                  {filteredEstablishments
+                    .filter(establishment => 
+                      establishment.coordinates &&
+                      typeof establishment.coordinates.lat === 'number' &&
+                      typeof establishment.coordinates.lng === 'number'
+                    )
+                    .map((establishment) => {
+                      const config = ESTABLISHMENT_CATEGORIES[establishment.type];
+                      const isSelected = selectedEstablishment?.id === establishment.id;
+                      
+                      return (
+                        <Marker
+                          key={establishment.id}
+                          position={{
+                            lat: establishment.coordinates.lat,
+                            lng: establishment.coordinates.lng
+                          }}
+                          icon={{
+                            url: "data:image/svg+xml;charset=UTF-8," +
+                              encodeURIComponent(`
+                                <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <circle cx="14" cy="14" r="12" fill="${config.color.includes('blue') ? '#3B82F6' : 
+                                    config.color.includes('orange') ? '#F97316' :
+                                    config.color.includes('green') ? '#10B981' :
+                                    config.color.includes('red') ? '#EF4444' :
+                                    '#8B5CF6'}" stroke="white" stroke-width="${isSelected ? '4' : '2'}"/>
+                                  <circle cx="14" cy="14" r="4" fill="white"/>
+                                </svg>
+                              `),
+                            scaledSize: new google.maps.Size(28, 28),
+                            anchor: new google.maps.Point(14, 14),
+                          }}
+                          onClick={() => handleMarkerClick(establishment)}
+                          title={establishment.name}
+                        />
+                      );
+                    })}
+
+                  {/* Info Window for Establishments */}
+                  {selectedEstablishment && (
+                    <InfoWindow
+                      position={selectedEstablishment.coordinates}
+                      onCloseClick={handleInfoWindowClose}
+                    >
+                      <div className="p-3 max-w-xs">
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2">
+                            <h3 className="font-semibold text-brand-accent">
+                              {selectedEstablishment.name}
+                            </h3>
+                            {selectedEstablishment.rating && (
+                              <div className="flex items-center gap-1">
+                                <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                                <span className="text-xs font-medium">
+                                  {selectedEstablishment.rating}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                          <p className="text-sm text-brand-muted">
+                            {selectedEstablishment.address}
+                          </p>
+                          <div className="flex items-center gap-4 text-sm">
+                            <div className="flex items-center gap-1 text-brand-blue font-medium">
+                              <MapPin className="w-3 h-3" />
+                              <span>{formatDistance(selectedEstablishment.distance / 1000)}</span>
+                            </div>
+                            <div className="flex items-center gap-1 text-brand-muted">
+                              <Clock className="w-3 h-3" />
+                              <span>{selectedEstablishment.travelTime} min</span>
+                            </div>
+                          </div>
+                          {selectedEstablishment.openNow !== undefined && (
+                            <Badge
+                              variant="outline"
+                              className={cn(
+                                "text-xs w-fit",
+                                selectedEstablishment.openNow
+                                  ? "text-green-600 border-green-200 bg-green-50"
+                                  : "text-red-600 border-red-200 bg-red-50"
+                              )}
+                            >
+                              {selectedEstablishment.openNow ? 'Currently Open' : 'Currently Closed'}
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+                    </InfoWindow>
+                  )}
+
+                  {/* Info Window for Property */}
+                  {showPropertyInfo && propertyLocation && (
+                    <InfoWindow
+                      position={propertyLocation}
+                      onCloseClick={handlePropertyInfoClose}
+                    >
+                      <div className="p-3 max-w-sm">
+                        <div className="space-y-3">
+                          {/* Property Header */}
+                          <div className="flex items-start gap-3">
+                            {propertyInfo?.image ? (
+                              <Image
+                                src={propertyInfo.image}
+                                alt={propertyInfo.name}
+                                width={64}
+                                height={64}
+                                className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
+                                unoptimized
+                              />
+                            ) : (
+                              <div className="w-16 h-16 bg-brand-blue/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <Home className="w-8 h-8 text-brand-blue" />
+                              </div>
+                            )}
+                            <div className="min-w-0 flex-1">
+                              <h3 className="font-semibold text-brand-accent text-sm leading-tight">
+                                {propertyInfo?.name || propertyName}
+                              </h3>
+                              <div className="flex items-center gap-1 text-xs text-brand-muted mt-1">
+                                <MapPin className="w-3 h-3 flex-shrink-0" />
+                                <span className="truncate">{propertyInfo?.location || neighborhood}</span>
+                              </div>
+                              {propertyInfo?.price && (
+                                <div className="mt-2">
+                                  <span className="bg-brand-blue text-white px-2 py-1 rounded text-xs font-semibold">
+                                    {propertyInfo.price}
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Property Features */}
+                          {(propertyInfo?.bedrooms || propertyInfo?.bathrooms || propertyInfo?.size) && (
+                            <div className="flex items-center gap-4 text-xs bg-gray-50 rounded p-2">
+                              {propertyInfo.bedrooms && (
+                                <div className="flex items-center gap-1">
+                                  <Bed className="w-3 h-3 text-brand-blue" />
+                                  <span>{propertyInfo.bedrooms} bed</span>
+                                </div>
+                              )}
+                              {propertyInfo.bathrooms && (
+                                <div className="flex items-center gap-1">
+                                  <Bath className="w-3 h-3 text-brand-blue" />
+                                  <span>{propertyInfo.bathrooms} bath</span>
+                                </div>
+                              )}
+                              {propertyInfo.size && (
+                                <div className="flex items-center gap-1">
+                                  <Maximize className="w-3 h-3 text-brand-blue" />
+                                  <span>{propertyInfo.size}</span>
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {/* Property Type */}
+                          {propertyInfo?.type && (
+                            <div className="flex items-center justify-between">
+                              <Badge variant="secondary" className="text-xs">
+                                {propertyInfo.type}
+                              </Badge>
+                            </div>
+                          )}
+
+                          {/* Developer */}
+                          {propertyInfo?.developer && (
+                            <div className="flex items-center gap-2 text-xs text-brand-muted">
+                              <User className="w-3 h-3" />
+                              <span>Listed by {propertyInfo.developer}</span>
+                            </div>
+                          )}
+
+                          {/* Nearby amenities count */}
+                          {establishments.length > 0 && (
+                            <div className="text-xs text-brand-blue bg-blue-50 rounded p-2">
+                              <span className="font-medium">{establishments.length} amenities</span> found nearby
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </InfoWindow>
+                  )}
+                </GoogleMap>
+              </>
+            )}
+          </div>
+        </div>
+        
+        {/* Footer Stats */}
+        {!loading && establishments.length > 0 && (
+          <div className="pt-4 border-t border-gray-200">
+            <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 sm:gap-4 text-xs sm:text-sm text-brand-muted">
+              <div className="flex items-center gap-1">
+                <span className="font-medium">Total:</span>
+                <span>{establishments.length}</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="font-medium">Radius:</span>
+                <span>{maxDistance}km</span>
+              </div>
+              {nearestEstablishment && (
+                <div className="flex items-center gap-1 col-span-2 sm:col-span-1">
+                  <span className="font-medium">Nearest:</span>
+                  <span>{formatDistance(nearestEstablishment.distance / 1000)}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </CardContent>
+      
+    </Card>
   );
 }

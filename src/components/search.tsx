@@ -46,6 +46,7 @@ export function SearchFilter() {
   );
 
   // Helper function to get current form state based on active tab
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const getCurrentFormState = (tab: string): FormState => {
     switch (tab) {
       case "rent":

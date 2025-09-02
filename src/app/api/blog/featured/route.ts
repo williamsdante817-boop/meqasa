@@ -49,7 +49,7 @@ export async function GET() {
         "Cache-Control": "public, s-maxage=1800, stale-while-revalidate=3600", // 30min cache, 1hr stale
       },
     });
-  } catch (_error) {
+  } catch {
     // Return empty structure on error to prevent UI breaks
     const fallbackData: BlogResponse = {
       featured: [],

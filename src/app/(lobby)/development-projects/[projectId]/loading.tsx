@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 
 export default function ProjectLoading() {
   return (
-    <div>
+    <div className="w-full max-w-full overflow-x-hidden">
       <Shell>
         {/* Breadcrumbs skeleton */}
         <div className="flex items-center gap-2 my-4">
@@ -18,15 +18,15 @@ export default function ProjectLoading() {
       </Shell>
 
       {/* Hero image skeleton */}
-      <div className="relative w-full h-[200px] md:h-[450px] bg-gray-200 mb-4">
-        <Skeleton className="w-full h-[200px] md:h-full" />
+      <div className="relative w-full h-[250px] md:h-[450px] overflow-hidden flex md:mb-4 bg-gray-200">
+        <Skeleton className="w-full h-full" />
       </div>
 
       <Shell>
         <div className="h-fit w-full bg-inherit">
-          <div className="relative z-10 flex items-end gap-2 p-3 lg:container lg:-top-14 lg:gap-8 lg:px-0">
+          <div className="relative z-10 flex items-end gap-2 p-3 lg:-top-14 lg:gap-8">
             {/* Company Logo Card skeleton */}
-            <div className="bg-white rounded-md p-2 w-[160px] h-[160px] flex items-center justify-center shadow-sm border">
+            <div className="bg-white rounded-lg p-2 w-[130px] h-[130px] md:w-[160px] md:h-[160px] flex items-center justify-center border shadow-lg">
               <Skeleton className="w-[120px] h-[120px]" />
             </div>
 
@@ -41,8 +41,7 @@ export default function ProjectLoading() {
               </div>
 
               <div className="flex items-center gap-2">
-                <Skeleton className="h-10 w-10 rounded-full" />
-                <Skeleton className="h-10 w-32 rounded-md" />
+                <Skeleton className="h-10 w-32 rounded-lg bg-gray-700 hidden md:flex" />
               </div>
             </div>
           </div>
@@ -50,8 +49,8 @@ export default function ProjectLoading() {
       </Shell>
 
       <Shell>
-        <div className="grid grid-cols-1 text-brand-accent w-full mt-12 md:grid-cols-[2fr,1fr] lg:gap-8 lg:px-0">
-          <div className="mt-6 grid gap-8 px-3 pb-3 transition-all duration-300 ease-in lg:container lg:grid-cols-1 lg:p-0">
+        <div className="grid grid-cols-1 text-brand-accent w-full mt-12 md:grid-cols-[2fr,1fr] lg:gap-8">
+          <div className="mt-6 grid gap-8 px-3 pb-3 transition-all duration-300 ease-in lg:grid-cols-1 lg:px-0">
             {/* Project Highlight section */}
             <div>
               <Skeleton className="h-6 w-32 mb-4" />
@@ -64,7 +63,7 @@ export default function ProjectLoading() {
             </div>
 
             {/* Price range card */}
-            <div className="mt-6 flex items-center justify-between rounded-[16px] border border-orange-300 p-3">
+            <div className="mt-6 flex items-center justify-between rounded-lg border border-gray-200 bg-gradient-to-r from-gray-50 to-gray-50 p-4 md:p-6 shadow-sm">
               <div className="space-y-2">
                 <Skeleton className="h-5 w-32" />
                 <Skeleton className="h-8 w-40" />

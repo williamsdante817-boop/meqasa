@@ -1,5 +1,6 @@
 "use client";
 
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -7,12 +8,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
 import { searchConfig } from "@/config/search";
 import { type FormState } from "@/types/search";
-import { MobilePriceInput } from "./MobilePriceInput";
 import { MobileMoreFilters } from "./MobileMoreFilters";
-import { cn } from "@/lib/utils";
+import { MobilePriceInput } from "./MobilePriceInput";
 
 interface MobileCommonFiltersProps {
   showMoreFilters?: boolean;

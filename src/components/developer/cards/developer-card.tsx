@@ -3,7 +3,6 @@
 import { MapPin } from "lucide-react";
 import { useState, memo } from "react";
 import type { MouseEvent } from "react";
-import { useRouter } from "next/navigation";
 import { analytics } from "@/lib/analytics";
 import Link from "next/link";
 
@@ -53,7 +52,6 @@ function DeveloperCardComponent({ developer, className }: DeveloperCardProps) {
   const [heroLoading, setHeroLoading] = useState(true);
   const [heroError, setHeroError] = useState(false);
 
-  const router = useRouter();
 
   // Validate required props after hooks
   if (!developer?.developerid || !developer?.companyname) {

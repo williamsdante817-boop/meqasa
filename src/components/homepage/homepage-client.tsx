@@ -73,7 +73,6 @@ export function HomepageClient({ initialData }: HomepageClientProps) {
       latestListingsPromise={Promise.resolve(resolvedData.latestListings)}
       featuredProjectsPromise={Promise.resolve(resolvedData.featuredProjects)}
       featuredListingsPromise={Promise.resolve(resolvedData.featuredListings)}
-      featuredUnitsPromise={Promise.resolve(resolvedData.featuredUnits)}
       flexiBannerPromise={Promise.resolve(resolvedData.flexiBanner)}
       blogDataPromise={Promise.resolve(resolvedData.blogData)}
     />

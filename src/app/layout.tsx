@@ -7,6 +7,7 @@ import { Toaster } from "@/components/ui/toast";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
 import { QueryProvider } from "@/components/providers/query-provider";
+import { WebVitals } from "@/components/web-vitals";
 
 export const metadata: Metadata = {
   title: "Meqasa ",
@@ -39,6 +40,7 @@ export default function RootLayout({
           {children}
         </QueryProvider>
         <Toaster />
+        <WebVitals />
         <SpeedInsights />
         <Analytics />
       </body>

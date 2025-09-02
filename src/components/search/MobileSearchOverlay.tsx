@@ -1,11 +1,9 @@
 "use client";
 
-import { useState } from "react";
 import { type FormState } from "@/types/search";
-import { MobileSearchTrigger } from "./MobileSearchTrigger";
+import { useState } from "react";
 import { MobileSearchModal } from "./MobileSearchModal";
-import { Button } from "../ui/button";
-import { SearchIcon } from "lucide-react";
+import { MobileSearchTrigger } from "./MobileSearchTrigger";
 
 // Default form state for each tab
 const getDefaultFormState = (): FormState => ({

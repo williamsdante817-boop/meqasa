@@ -2,9 +2,9 @@ import { Breadcrumbs } from "@/components/layout/bread-crumbs";
 import ContactCard from "@/components/common/contact-card";
 import ContentSection from "@/components/layout/content-section";
 import Shell from "@/layouts/shell";
-import { buildInnerHtml } from "@/lib/utils";
+import { buildRichInnerHtml } from "@/lib/utils";
 import { getDeveloperProfile } from "@/lib/get-developer-profile";
-import { CheckCircle, MapPin } from "lucide-react";
+import { CheckCircle, MapPin, Building2 } from "lucide-react";
 import { ImageWithFallback } from "@/components/common/image-with-fallback";
 import { DeveloperTabs } from "../_component/developer-tabs";
 import ClientReviews from "../_component/client-reviews";
@@ -14,13 +14,34 @@ import { StreamingErrorBoundary } from "@/components/streaming/StreamingErrorBou
 import { Skeleton } from "@/components/ui/skeleton";
 import type { DeveloperDetails } from "@/types";
 import type { Metadata } from "next";
+import { ExpandableDescription } from "@/components/expandable-description";
 
-// Data validation helper
+// Data validation helper - more lenient validation
 function validateDeveloperData(developer: DeveloperDetails) {
-  if (!developer?.developer) return false;
+  if (!developer?.developer) {
+    console.warn("Developer data missing developer object");
+    return false;
+  }
 
-  const requiredFields = ["companyname", "address", "hero", "logo"] as const;
-  return requiredFields.every((field) => developer.developer[field]);
+  // Only require essential fields - hero and logo are optional for better UX
+  const requiredFields = ["companyname", "address"] as const;
+  const hasRequiredFields = requiredFields.every((field) => {
+    const hasField = developer.developer[field];
+    if (!hasField) {
+      console.warn(`Missing required field: ${field}`);
+    }
+    return hasField;
+  });
+
+  // Log optional fields for debugging
+  if (!developer.developer.hero) {
+    console.warn("Missing hero image - will show fallback");
+  }
+  if (!developer.developer.logo) {
+    console.warn("Missing logo - will show fallback");
+  }
+
+  return hasRequiredFields;
 }
 
 // Generate metadata for SEO
@@ -189,17 +210,28 @@ export default async function DeveloperProfilePage({
           aria-label={`${developer.developer.companyname} developer profile`}
         >
           <div className="relative w-full min-h-[200px] h-[300px] sm:min-h-[250px] sm:h-[350px] md:min-h-[400px] md:h-[50vh] md:max-h-[600px] overflow-hidden flex">
-            {/* Background Image */}
-            <ImageWithFallback
-              src={`https://meqasa.com/uploads/imgs/${developer.developer.hero}`}
-              alt={`${developer.developer.companyname} office building`}
-              fill
-              sizes="(min-width: 1024px) 20vw, (min-width: 768px) 25vw, (min-width: 640px) 33vw, (min-width: 475px) 50vw, 100vw"
-              className="object-cover"
-              unoptimized
-              priority
-              fallbackAlt="Developer office building"
-            />
+            {/* Background Image with fallback */}
+            {developer.developer.hero ? (
+              <ImageWithFallback
+                src={`https://meqasa.com/uploads/imgs/${developer.developer.hero}`}
+                alt={`${developer.developer.companyname} office building`}
+                fill
+                sizes="(min-width: 1024px) 20vw, (min-width: 768px) 25vw, (min-width: 640px) 33vw, (min-width: 475px) 50vw, 100vw"
+                className="object-cover"
+                unoptimized
+                priority
+                fallbackAlt="Developer office building"
+              />
+            ) : (
+              <div className="w-full h-full bg-gradient-to-br from-brand-primary to-brand-primary/80 flex items-center justify-center">
+                <div className="text-center text-white">
+                  <Building2 className="w-16 h-16 mx-auto mb-4 opacity-50" />
+                  <h2 className="text-2xl font-semibold opacity-75">
+                    {developer.developer.companyname}
+                  </h2>
+                </div>
+              </div>
+            )}
 
             <Shell>
               {/* Content Container */}
@@ -209,20 +241,22 @@ export default async function DeveloperProfilePage({
               />
               <div className="absolute bottom-4 md:pb-4 z-10 px-0 flex flex-col sm:flex-row items-start sm:items-end h-fit gap-4 sm:gap-6">
                 {/* Company Logo Card */}
-                <div
-                  className="bg-white/90 backdrop-blur-sm rounded-md p-2 min-w-[120px] min-h-[120px] sm:min-w-[140px] sm:min-h-[140px] md:min-w-[160px] md:min-h-[160px] w-[120px] h-[120px] sm:w-[140px] sm:h-[140px] md:w-[160px] md:h-[160px] md:flex items-center justify-center shadow-lg hidden"
-                  role="img"
-                  aria-label={`${developer.developer.companyname} logo`}
-                >
-                  <ImageWithFallback
-                    src={`https://meqasa.com/uploads/imgs/${developer.developer.logo}`}
-                    alt={`${developer.developer.companyname} logo`}
-                    width={120}
-                    height={120}
-                    className="object-contain w-auto h-auto"
-                    fallbackAlt={`${developer.developer.companyname} logo`}
-                  />
-                </div>
+                {developer.developer.logo && (
+                  <div
+                    className="bg-white/90 backdrop-blur-sm rounded-md p-2 min-w-[120px] min-h-[120px] sm:min-w-[140px] sm:min-h-[140px] md:min-w-[160px] md:min-h-[160px] w-[120px] h-[120px] sm:w-[140px] sm:h-[140px] md:w-[160px] md:h-[160px] md:flex items-center justify-center shadow-lg hidden"
+                    role="img"
+                    aria-label={`${developer.developer.companyname} logo`}
+                  >
+                    <ImageWithFallback
+                      src={`https://meqasa.com/uploads/imgs/${developer.developer.logo}`}
+                      alt={`${developer.developer.companyname} logo`}
+                      width={120}
+                      height={120}
+                      className="object-contain w-auto h-auto"
+                      fallbackAlt={`${developer.developer.companyname} logo`}
+                    />
+                  </div>
+                )}
 
                 {/* Company Info */}
                 <div className="text-white drop-shadow-lg">
@@ -317,12 +351,11 @@ export default async function DeveloperProfilePage({
                     className="pt-10 sm:pt-14 md:pt-20 pb-8 sm:pb-10 md:pb-0"
                     btnHidden
                   >
-                    <div
-                      dangerouslySetInnerHTML={buildInnerHtml(
-                        developer.developer.about ?? "",
-                      )}
-                      className="prose prose-sm max-w-none text-brand-muted"
-                    />
+                      <ExpandableDescription
+                        description={buildRichInnerHtml(developer.developer.about ?? "")}
+                        name={developer.developer.companyname}
+                        href={`/projects-by-developer/${developerId}`}
+                      />
                   </ContentSection>
                 </section>
 

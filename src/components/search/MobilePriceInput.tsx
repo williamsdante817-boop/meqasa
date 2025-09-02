@@ -25,6 +25,7 @@ interface MobilePriceInputProps {
 }
 
 export function MobilePriceInput({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   title,
   unit,
   placeholder,
@@ -38,11 +39,11 @@ export function MobilePriceInput({
   const formatNumber = (value: string) => {
     // Remove non-numeric characters except decimal point
     const numericValue = value.replace(/[^\d.]/g, "");
-    
+
     // Convert to number and format with commas
     const num = parseFloat(numericValue);
     if (isNaN(num)) return "";
-    
+
     return num.toLocaleString();
   };
 
@@ -150,7 +151,9 @@ export function MobilePriceInput({
 
       {/* Range Hint */}
       <div className="text-xs text-gray-500 text-start">
-        Range: {unit}{range.min.toLocaleString()} - {unit}{range.max.toLocaleString()}
+        Range: {unit}
+        {range.min.toLocaleString()} - {unit}
+        {range.max.toLocaleString()}
       </div>
     </div>
   );

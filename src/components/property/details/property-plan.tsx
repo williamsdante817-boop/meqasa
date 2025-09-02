@@ -16,8 +16,8 @@ export default function PropertyPlan({ className }: PropertyPlanProps) {
 
   return (
     <div className={cn("w-full", className)}>
-      <Card className="overflow-hidden">
-        <div className="relative h-[400px]">
+      <Card className="overflow-hidden rounded-lg">
+        <div className="relative h-[300px] md:h-[400px]">
           {!imgError ? (
             <>
               <Image

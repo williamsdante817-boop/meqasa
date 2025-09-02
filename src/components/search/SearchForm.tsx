@@ -128,7 +128,12 @@ export function SearchForm({
   };
 
   return (
-    <form id={`search-form-${type}`} onSubmit={handleSubmit}>
+    <form 
+      id={`search-form-${type}`} 
+      onSubmit={handleSubmit}
+      role="search"
+      aria-label={`Search for properties to ${type === 'buy' ? 'purchase' : type}`}
+    >
       <Input
         type="radio"
         value={type}
@@ -136,6 +141,7 @@ export function SearchForm({
         className="hidden"
         checked
         readOnly
+        aria-hidden="true"
       />
       <SearchInput
         onSubmit={(e) => e.preventDefault()}

@@ -1,11 +1,13 @@
 "use client";
 
-import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
 import { ImageCarouselModal } from "@/components/image-carousel-modal";
-import { ImageIcon } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { preloadImages } from "@/lib/image-preload";
+import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
+import { ImageIcon } from "lucide-react";
+import Image from "next/image";
+import { useEffect, useMemo, useState } from "react";
 
 // Light gray base64 placeholder - simplified to avoid parsing issues
 const PLACEHOLDER_BLUR = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIHZpZXdCb3g9IjAgMCAxMCAxMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjRjNGNEY2Ii8+Cjwvc3ZnPgo=';
@@ -36,14 +38,26 @@ function ImagePlaceholder({ className = "", message = "Image not available" }: {
   message?: string;
 }) {
   return (
-    <div
-      className={`w-full h-full min-h-full bg-gray-100 flex flex-col items-center justify-center rounded-lg ${className}`}
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
+      className={cn(
+        "w-full h-full min-h-full bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col items-center justify-center rounded-lg border border-gray-200",
+        className
+      )}
       role="img"
       aria-label={message}
     >
-      <ImageIcon className="w-8 h-8 text-gray-400 mb-2" />
-      <span className="text-gray-500 text-sm">{message}</span>
-    </div>
+      <motion.div
+        initial={{ y: 10, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.1, duration: 0.3 }}
+      >
+        <ImageIcon className="w-8 h-8 text-gray-400 mb-2" />
+        <span className="text-gray-500 text-sm text-center">{message}</span>
+      </motion.div>
+    </motion.div>
   );
 }
 
@@ -54,9 +68,9 @@ function PropertyShowcaseSkeleton({ maxImages = 4 }: { maxImages?: number }) {
   return (
     <div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-        {/* Main large image skeleton (left, spans two rows) */}
+        {/* Main large image skeleton (left, spans two rows) - matches exact dimensions */}
         <div className="md:col-span-2 row-span-2 relative max-h-[300px] md:max-h-[450px]">
-          <div className="rounded-lg overflow-hidden h-full">
+          <div className="rounded-lg overflow-hidden h-full min-h-[300px] md:min-h-[450px]">
             <Skeleton className="w-full h-full rounded-lg" />
           </div>
         </div>
@@ -66,7 +80,7 @@ function PropertyShowcaseSkeleton({ maxImages = 4 }: { maxImages?: number }) {
           {Array.from({ length: rightImageCount }, (_, index) => (
             <div
               key={`skeleton-right-${index}`}
-              className="rounded-lg overflow-hidden h-1/3 flex-1 relative"
+              className="rounded-lg overflow-hidden h-1/3 flex-1 relative min-h-[133px]"
             >
               <Skeleton className="w-full h-[200px] md:h-full rounded-lg" />
             </div>
@@ -160,29 +174,44 @@ function PropertyShowcaseImages({ images }: { images: string[] }) {
                   onError={() => handleImageError(0)}
                   onLoad={() => handleImageLoad(0)}
                   priority={true}
+                  quality={85}
                 />
               </div>
             ) : (
-              <button
+              <motion.button
                 onClick={() => handleImageClick(0)}
-                className="w-full h-full cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-lg"
+                className="group w-full h-full cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300"
                 aria-label="Open image gallery at main image"
                 type="button"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition-delay={0.1}
               >
-                <Image
-                  src={getImageUrl(mainImage)}
-                  alt="Main property image"
-                  width={900}
-                  height={600}
-                  className="w-full h-full object-cover cursor-pointer hover:opacity-95 transition-opacity"
-                  sizes="(min-width: 1024px) 66vw, 100vw"
-                  onError={() => handleImageError(0)}
-                  onLoad={() => handleImageLoad(0)}
-                  placeholder="blur"
-                  blurDataURL={PLACEHOLDER_BLUR}
-                  priority={true}
-                />
-              </button>
+                <motion.div
+                  className="w-full h-full overflow-hidden"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ duration: 0.4, ease: "easeOut" }}
+                >
+                  <Image
+                    src={getImageUrl(mainImage)}
+                    alt="Main property image"
+                    width={900}
+                    height={600}
+                    className="w-full h-full object-cover cursor-pointer group-hover:brightness-105 transition-all duration-300"
+                    sizes="(min-width: 1024px) 66vw, 100vw"
+                    onError={() => handleImageError(0)}
+                    onLoad={() => handleImageLoad(0)}
+                    placeholder="blur"
+                    blurDataURL={PLACEHOLDER_BLUR}
+                    priority={true}
+                    quality={85}
+                  />
+                </motion.div>
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300 pointer-events-none" />
+              </motion.button>
             )}
           </div>
         </div>
@@ -196,10 +225,17 @@ function PropertyShowcaseImages({ images }: { images: string[] }) {
             const showMoreOverlay = isLastTile && remainingCount > 0;
 
             return (
-              <div
+              <motion.div
                 key={`right-image-${actualIndex}-${image}`}
                 className="rounded-lg overflow-hidden h-1/3 flex-1 relative"
                 aria-label={`Additional property image ${actualIndex + 1}`}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ 
+                  delay: 0.2 + (index * 0.1), 
+                  duration: 0.4, 
+                  ease: "easeOut" 
+                }}
               >
                 {imgErrors[actualIndex] ? (
                   <ImagePlaceholder />
@@ -216,54 +252,98 @@ function PropertyShowcaseImages({ images }: { images: string[] }) {
                       sizes="(min-width: 1024px) 33vw, 100vw"
                       onError={() => handleImageError(actualIndex)}
                       onLoad={() => handleImageLoad(actualIndex)}
+                      quality={75}
                     />
                   </div>
                 ) : (
-                  <button
+                  <motion.button
                     onClick={() => handleImageClick(actualIndex)}
-                    className="relative w-full h-full cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-lg"
+                    className="group relative w-full h-full cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300"
                     aria-label={
                       showMoreOverlay
                         ? `Open image gallery at image ${actualIndex + 1}, plus ${remainingCount} more photos`
                         : `Open image gallery at image ${actualIndex + 1}`
                     }
                     type="button"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    transition={{ duration: 0.2, ease: "easeOut" }}
                   >
-                    <Image
-                      src={getImageUrl(image)}
-                      alt={`Property image ${actualIndex + 1}`}
-                      width={450}
-                      height={300}
-                      className="w-full h-[200px] md:h-full object-cover cursor-pointer hover:opacity-95 transition-opacity"
-                      sizes="(min-width: 1024px) 33vw, 100vw"
-                      onError={() => handleImageError(actualIndex)}
-                      onLoad={() => handleImageLoad(actualIndex)}
-                      placeholder="blur"
-                      blurDataURL={PLACEHOLDER_BLUR}
-                    />
+                    <motion.div
+                      className="w-full h-full overflow-hidden"
+                      whileHover={{ scale: 1.1 }}
+                      transition={{ duration: 0.4, ease: "easeOut" }}
+                    >
+                      <Image
+                        src={getImageUrl(image)}
+                        alt={`Property image ${actualIndex + 1}`}
+                        width={450}
+                        height={300}
+                        className="w-full h-[200px] md:h-full object-cover cursor-pointer group-hover:brightness-105 transition-all duration-300"
+                        sizes="(min-width: 1024px) 33vw, 100vw"
+                        onError={() => handleImageError(actualIndex)}
+                        onLoad={() => handleImageLoad(actualIndex)}
+                        placeholder="blur"
+                        blurDataURL={PLACEHOLDER_BLUR}
+                        quality={75}
+                      />
+                    </motion.div>
                     {showMoreOverlay && (
-                      <span className="absolute inset-0 bg-black/50 text-white flex items-center justify-center text-lg font-semibold pointer-events-none">
-                        +{remainingCount} more
-                      </span>
+                      <motion.div 
+                        className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent text-white flex items-center justify-center backdrop-blur-[1px]"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.3 }}
+                      >
+                        <motion.span 
+                          className="text-lg font-semibold drop-shadow-lg"
+                          initial={{ y: 10, opacity: 0 }}
+                          animate={{ y: 0, opacity: 1 }}
+                          transition={{ delay: 0.4, duration: 0.3 }}
+                        >
+                          +{remainingCount} more
+                        </motion.span>
+                      </motion.div>
                     )}
-                  </button>
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300 pointer-events-none" />
+                  </motion.button>
                 )}
-              </div>
+              </motion.div>
             );
           })}
         </div>
       </div>
 
       {/* See more photos button */}
-      <div className="text-left mt-2">
-        <button
-          className="text-brand-blue font-medium hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:underline cursor-pointer"
+      <motion.div 
+        className="text-left mt-4"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.6, duration: 0.3 }}
+      >
+        <motion.button
+          className="group inline-flex items-center gap-2 text-brand-blue font-medium hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:underline cursor-pointer transition-colors"
           onClick={() => handleImageClick(0)}
           aria-label="See more photos"
+          whileHover={{ x: 3 }}
+          whileTap={{ scale: 0.95 }}
+          transition={{ duration: 0.2 }}
         >
-          See more photos
-        </button>
-      </div>
+          <span>See more photos</span>
+          <motion.span
+            initial={{ x: 0 }}
+            animate={{ x: [0, 3, 0] }}
+            transition={{ 
+              repeat: Infinity, 
+              duration: 2, 
+              ease: "easeInOut",
+              repeatDelay: 3 
+            }}
+          >
+            →
+          </motion.span>
+        </motion.button>
+      </motion.div>
 
       {/* Image Carousel Modal */}
       <ImageCarouselModal

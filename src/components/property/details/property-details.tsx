@@ -1,5 +1,6 @@
-import type { ReactNode } from "react";
+import { Card } from "@/components/ui/card";
 import { formatDistanceToNow, type FormatDistanceOptions } from "date-fns";
+import type { ReactNode } from "react";
 
 interface PropertyDetail {
   title: string;
@@ -18,8 +19,6 @@ interface PropertyDetailsTableProps {
 
 export default function PropertyDetailsTable({
   details,
-  className = "",
-  title,
 }: PropertyDetailsTableProps) {
   // Filter out any details that should not be displayed
   const filteredDetails = details.filter(
@@ -71,42 +70,22 @@ export default function PropertyDetailsTable({
   };
 
   return (
-    <div className={`overflow-hidden ${className}`}>
-      {title && (
-        <h2 className="text-lg font-semibold mb-4" id="property-details-title">
-          {title}
-        </h2>
-      )}
-      <table
-        className="w-full divide-y divide-gray-200"
-        aria-labelledby={title ? "property-details-title" : undefined}
-      >
-        <thead className="sr-only">
-          <tr>
-            <th scope="col">Property</th>
-            <th scope="col">Value</th>
-          </tr>
-        </thead>
-        <tbody className="bg-transparent">
-          {filteredDetails.map((detail, index) => (
-            <tr
-              key={`${detail.title}-${index}`}
-              className={`flex items-center justify-between border-b first-of-type:border-t 
-                  bg-transparent`}
-            >
-              <td
-                className="py-6 whitespace-nowrap text-brand-accent font-semibold"
-                scope="row"
-              >
-                {detail.title}
-              </td>
-              <td className="py-6 whitespace-nowrap text-brand-muted capitalize">
-                {formatValue(detail)}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <Card className="border-gray-200 bg-gradient-to-r rounded-lg from-gray-50 to-gray-50 p-4 md:p-6">
+      <div className="space-y-3">
+        {filteredDetails.map((detail, index) => (
+          <div
+            key={`${detail.title}-${index}`}
+            className="flex items-center justify-between py-3 px-4 bg-white rounded-lg border border-gray-200 hover:border-gray-300 transition-colors"
+          >
+            <span className="text-sm font-medium text-brand-accent">
+              {detail.title}
+            </span>
+            <span className="text-sm text-brand-muted font-medium capitalize">
+              {formatValue(detail)}
+            </span>
+          </div>
+        ))}
+      </div>
+    </Card>
   );
 }

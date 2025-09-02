@@ -19,14 +19,15 @@ import SafetyTipsCard from "@/components/safety-tip";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { getListingDetails } from "@/lib/get-listing-detail";
-import { cn, formatNumber } from "@/lib/utils";
+import { buildInnerHtml, cn, formatNumber } from "@/lib/utils";
 import { sanitizeHtml } from "@/lib/dom-sanitizer";
-import { BathIcon, BedIcon, ParkingSquare, Square } from "lucide-react";
+import { BathIcon, BedIcon, ParkingSquare, Square, ShieldCheck, Tag, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import ProjectVideo from "../../development-projects/_component/project-video";
 import type { Metadata } from "next";
 import { siteConfig } from "@/config/site";
 import { createPropertyError } from "@/lib/error-handling";
+import { ExpandableDescription } from "@/components/expandable-description";
 
 // Constants for better maintainability
 const CONTRACT_TYPES = {
@@ -48,12 +49,36 @@ const VERIFICATION_STATUSES = {
 const extractNumericPrice = (priceString: string): string => {
   if (!priceString) return "0";
   const text = priceString.replace(/<[^>]*>/g, " ");
-  const currencyRegex =
-    /(?:GH\s*₵|GHS|GH₵)?\s*([0-9]{1,3}(?:,[0-9]{3})*(?:\.[0-9]+)?)/i;
-  const match = currencyRegex.exec(text);
-  if (match?.[1]) return match[1].replace(/,/g, "");
-  const digitsOnly = text.replace(/[^\d]/g, "");
-  return digitsOnly || "0";
+  
+  // Try to match currency with comma-formatted numbers first (1,234,567 format)
+  const currencyWithCommasRegex = /(?:GH\s*₵|GHS|GH₵)\s*([0-9]{1,3}(?:,[0-9]{3})+(?:\.[0-9]+)?)/i;
+  const currencyMatch = currencyWithCommasRegex.exec(text);
+  if (currencyMatch?.[1]) {
+    return currencyMatch[1].replace(/,/g, "");
+  }
+  
+  // Try to match currency with plain numbers (no commas, handles large numbers)
+  const currencyPlainRegex = /(?:GH\s*₵|GHS|GH₵)\s*([0-9]+(?:\.[0-9]+)?)/i;
+  const currencyPlainMatch = currencyPlainRegex.exec(text);
+  if (currencyPlainMatch?.[1]) {
+    return currencyPlainMatch[1];
+  }
+  
+  // Match formatted numbers without currency (1,234,567 format)
+  const formattedNumberRegex = /([0-9]{1,3}(?:,[0-9]{3})+(?:\.[0-9]+)?)/;
+  const formattedMatch = formattedNumberRegex.exec(text);
+  if (formattedMatch?.[1]) {
+    return formattedMatch[1].replace(/,/g, "");
+  }
+  
+  // Match plain numbers (fallback)
+  const plainNumberRegex = /([0-9]+(?:\.[0-9]+)?)/;
+  const plainMatch = plainNumberRegex.exec(text);
+  if (plainMatch?.[1]) {
+    return plainMatch[1];
+  }
+  
+  return "0";
 };
 
 // Generate metadata for SEO
@@ -457,9 +482,9 @@ export default async function DetailsPage({
   const safePriceHtml = {
     __html: sanitizeHtml(listingDetail.price ?? ""),
   } satisfies { __html: string };
-  const safeDescriptionHtml = {
-    __html: sanitizeHtml(listingDetail.description ?? ""),
-  } satisfies { __html: string };
+  // const safeDescriptionHtml = {
+  //   __html: sanitizeHtml(listingDetail.description ?? ""),
+  // } satisfies { __html: string };
 
   const propertyDetails = [
     { title: "Type", value: listingDetail.type || "Not specified" },
@@ -541,43 +566,44 @@ export default async function DetailsPage({
         <Shell>
           <div className="grid grid-cols-1 text-brand-accent w-full mt-4 lg:grid-cols-[2fr_1fr] lg:gap-8 lg:px-0">
             <div>
-              <div className="flex items-center gap-4">
+              <div className="flex items-start justify-between flex-wrap gap-3 md:flex-nowrap md:items-center md:gap-4">
                 <div className="flex items-center">
                   <h2
                     className="text-2xl font-extrabold text-brand-accent lg:text-3xl"
                     dangerouslySetInnerHTML={safePriceHtml}
                   />
-                  <span className="text-brand-muted font-light text-sm md:text-xl">
+                  <span className="text-brand-muted font-light text-sm md:text-xl ml-2">
                     {listingDetail.leaseunit}
                   </span>
                 </div>
-                <span className="flex gap-2 md:gap-4 text-xs">
+                <div className="flex gap-2 md:gap-3 text-xs flex-wrap">
                   {(listingDetail.owner.verification ===
                     VERIFICATION_STATUSES.APPROVED ||
                     listingDetail.owner.verification ===
                       VERIFICATION_STATUSES.APPROVED2) && (
-                    <Badge className="hidden md:block uppercase text-white bg-green-500">
+                    <Badge variant="success" className="uppercase">
+                      <ShieldCheck className="h-3 w-3 mr-1" />
                       Verified
                     </Badge>
                   )}
                   {Boolean(listingDetail.isnegotiable) && (
-                    <Badge className="uppercase  text-white bg-brand-primary">
+                    <Badge variant="default" className="uppercase">
                       Negotiable
                     </Badge>
                   )}
-                </span>
+                </div>
               </div>
               <div className="flex items-center gap-4 py-3">
                 <div
-                  className="flex items-center gap-1.5 md:gap-4 flex-wrap"
+                  className="flex items-center gap-3 md:gap-6 flex-wrap"
                   role="list"
                   aria-label="Property features"
                 >
                   {listingDetail.beds && (
                     <div className="flex items-center gap-2" role="listitem">
-                      <p className="flex items-center gap-1 text-brand-accent">
+                      <p className="flex items-center gap-2 text-brand-accent">
                         <BedIcon
-                          className="text-brand-muted"
+                          className="h-5 w-5 text-brand-muted"
                           strokeWidth={1.2}
                           aria-hidden="true"
                         />{" "}
@@ -587,9 +613,9 @@ export default async function DetailsPage({
                   )}
                   {listingDetail.baths && (
                     <div className="flex items-center gap-2" role="listitem">
-                      <p className="flex items-center gap-1 text-brand-accent">
+                      <p className="flex items-center gap-2 text-brand-accent">
                         <BathIcon
-                          className="text-brand-muted"
+                          className="h-5 w-5 text-brand-muted"
                           strokeWidth={1.2}
                           aria-hidden="true"
                         />{" "}
@@ -599,9 +625,9 @@ export default async function DetailsPage({
                   )}
                   {listingDetail.garages && (
                     <div className="flex items-center gap-2" role="listitem">
-                      <p className="flex items-center gap-1 text-brand-accent">
+                      <p className="flex items-center gap-2 text-brand-accent">
                         <ParkingSquare
-                          className="text-brand-muted"
+                          className="h-5 w-5 text-brand-muted"
                           strokeWidth={1.2}
                           aria-hidden="true"
                         />{" "}
@@ -611,9 +637,9 @@ export default async function DetailsPage({
                   )}
                   {listingDetail.floorarea && (
                     <div className="flex items-center gap-2" role="listitem">
-                      <p className="flex items-center gap-1 text-brand-accent">
+                      <p className="flex items-center gap-2 text-brand-accent">
                         <Square
-                          className="text-brand-muted"
+                          className="h-5 w-5 text-brand-muted"
                           strokeWidth={1.2}
                           aria-hidden="true"
                         />{" "}
@@ -624,63 +650,88 @@ export default async function DetailsPage({
                 </div>
               </div>
               <div className="flex items-center gap-4 mb-6">
-                <Badge className="uppercase text-xs text-blue-500 bg-blue-100/60">
+                <Badge variant="info" className="uppercase">
                   {isFurnished ? "Furnished" : "Unfurnished"}
                 </Badge>
-                <Badge className="uppercase text-xs text-blue-500 bg-blue-100/60 max-w-[280px] md:max-w-full">
+                <Badge variant="info" className="uppercase max-w-[280px] md:max-w-full">
                   <p className="truncate w-full">{listingDetail.location}</p>
                 </Badge>
               </div>
               <aside className="mb-6">
-                {listingDetail.owner.listingscount !== "0" && (
-                  <div className="flex items-center gap-4 md:gap-8 border-y text-sm py-4 lg:py-10 lg:text-base">
-                    <div>
-                      <Icons.trend />
+                {listingDetail.owner.listingscount !== "0" && 
+                 parseInt(listingDetail.owner.listingscount) >= 5 && (
+                  <Card className="relative overflow-hidden border-l-3 border-l-orange-500 bg-gradient-to-r rounded-lg from-orange-50 to-amber-50 p-4 md:p-6">
+                    <div className="flex items-center gap-4 md:gap-6">
+                      <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-orange-100 text-orange-600">
+                        <Icons.trend className="h-6 w-6" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-2 flex-wrap">
+                          <Badge variant="warning" className="text-xs font-semibold flex-shrink-0">
+                            🔥 TRENDING
+                          </Badge>
+                          <span className="text-xs text-orange-600 font-medium">
+                            High Interest Property
+                          </span>
+                        </div>
+                        <h3 className="text-brand-accent font-semibold text-base md:text-lg mb-2 leading-tight">
+                          This property is in high demand
+                        </h3>
+                        <div className="flex items-center gap-2 text-sm md:text-base flex-wrap">
+                          <span className="font-medium text-brand-accent flex-shrink-0">
+                            {`${formatNumber(listingDetail.owner.listingscount, { notation: "compact" })} views`}
+                          </span>
+                          <span className="text-brand-muted">•</span>
+                          <span className="text-orange-600 font-medium">
+                            Contact agent before it&apos;s gone!
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-brand-accent lg:font-semibold">
-                        This property is popular
-                      </p>
-                      <p className="text-brand-accent">
-                        <span>{`It's been viewed ${formatNumber(listingDetail.owner.listingscount, { notation: "compact" })} times.`}</span>
-                        <span className="lg:font-semibold">
-                          {" "}
-                          Contact agent before it&apos;s gone!
-                        </span>
-                      </p>
+                    {/* Subtle background pattern */}
+                    <div className="absolute top-2 right-2 opacity-5">
+                      <Icons.trend className="h-16 w-16 md:h-20 md:w-20 text-orange-500" />
                     </div>
-                  </div>
+                  </Card>
                 )}
               </aside>
               <aside className="mb-6">
-                <Card className="flex items-start justify-between gap-5 rounded-lg border-orange-200 px-4 text-brand-accent lg:flex-row lg:w-fit lg:px-6 py-4">
-                  <Badge className="bg-orange-500 uppercase">
-                    {listingDetail.owner.type !== "Agent"
-                      ? "Project name"
-                      : "Categories"}
-                  </Badge>
-                  <div>
-                    {listingDetail.owner.type !== "Agent" ? (
-                      <p className="font-semibold">{"Project name"}</p>
-                    ) : (
-                      // categoryData.categories?.map((cat) => (
-                      <div>
-                        <Link
-                          href={`/search/${listingDetail.contract.toLowerCase()}?q=ghana&ftype=${listingDetail.type.toLowerCase()}&page=1`}
-                          className="block text-sm text-blue-500"
-                          key={listingDetail.parenttext}
-                        >
-                          {listingDetail.parenttext}
-                        </Link>
-                        <Link
-                          href={`/search/${listingDetail.contract.toLowerCase()}?q=${listingDetail.location.toLowerCase()}&ftype=${listingDetail.type.toLowerCase()}&page=1`}
-                          className="block text-sm text-blue-500"
-                          key={listingDetail.categorytext}
-                        >
-                          {listingDetail.categorytext}
-                        </Link>
+                <Card className="border-blue-200 bg-gradient-to-r from-blue-50 rounded-lg to-indigo-50 p-4 md:p-5">
+                  <div className="flex items-start gap-4">
+                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-600">
+                      <Tag className="h-5 w-5" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-3">
+                        <Badge variant="info" className="text-xs font-semibold">
+                          {listingDetail.owner.type !== "Agent" ? "PROJECT" : "CATEGORIES"}
+                        </Badge>
                       </div>
-                    )}
+                      {listingDetail.owner.type !== "Agent" ? (
+                        <h3 className="font-semibold text-brand-accent text-base">
+                          {"Project name"}
+                        </h3>
+                      ) : (
+                        <div className="space-y-2">
+                          <Link
+                            href={`/search/${listingDetail.contract.toLowerCase()}?q=ghana&ftype=${listingDetail.type.toLowerCase()}&page=1`}
+                            className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 hover:underline transition-colors group"
+                            key={listingDetail.parenttext}
+                          >
+                            <span className="font-medium">{listingDetail.parenttext}</span>
+                            <ExternalLink className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                          </Link>
+                          <Link
+                            href={`/search/${listingDetail.contract.toLowerCase()}?q=${listingDetail.location.toLowerCase()}&ftype=${listingDetail.type.toLowerCase()}&page=1`}
+                            className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 hover:underline transition-colors group"
+                            key={listingDetail.categorytext}
+                          >
+                            <span className="font-medium">{listingDetail.categorytext}</span>
+                            <ExternalLink className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-colors" />
+                          </Link>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </Card>
               </aside>
@@ -694,26 +745,16 @@ export default async function DetailsPage({
               >
                 {listingDetail?.description &&
                 listingDetail.description.trim() !== "" ? (
-                  <>
-                    <p
-                      dangerouslySetInnerHTML={safeDescriptionHtml}
-                      className="text-brand-muted"
-                    />
-                    <span className="block text-gray-500 mt-4">
-                      Listed by:{" "}
-                      <Link
-                        href={agentHref}
-                        className="decoration-dashed hover:text-blue-500 underline underline-offset-2"
-                      >
-                        {listingDetail.owner.name}
-                      </Link>
-                    </span>
-                  </>
+                  <ExpandableDescription 
+                    description={buildInnerHtml(listingDetail.description)}
+                    name={listingDetail.owner.name}
+                    href={agentHref}
+                  />
                 ) : (
                   <AlertCard
                     title="No description provided"
                     description="This listing doesn't have a detailed description yet."
-                    className="my-4"
+                    className="my-4 h-[200px] md:h-[300px]"
                   />
                 )}
               </ContentSection>
@@ -770,7 +811,10 @@ export default async function DetailsPage({
                 </ContentSection>
               )}
 
-              <PropertyInsight />
+              <PropertyInsight 
+                location={listingDetail.locationstring}
+                bedroomType={listingDetail.beds ? `${listingDetail.beds}-bedroom` : undefined}
+              />
             </div>
             <aside className="hidden lg:block">
               <ContactCard

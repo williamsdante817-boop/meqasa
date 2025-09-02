@@ -1,6 +1,7 @@
 // Re-export all domain-specific types
 export * from "./common";
 export * from "./property";
+export * from "./property-standardized";
 export * from "./developer";
 export * from "./agent";
 export * from "./search";

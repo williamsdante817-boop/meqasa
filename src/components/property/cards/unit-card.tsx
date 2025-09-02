@@ -2,17 +2,16 @@
 import Link from "next/link";
 import React, { useMemo } from "react";
 
-import { Icons } from "@/components/icons";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Dot } from "lucide-react";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
-import type { SimilarUnit } from "@/lib/get-unit-details";
-import type { Unit } from "@/types";
 import { AddFavoriteButton } from "@/components/add-favorite-button";
 import { ImageWithFallback } from "@/components/common/image-with-fallback";
+import { Icons } from "@/components/icons";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import type { SimilarUnit } from "@/lib/get-unit-details";
+import type { Unit } from "@/types";
+import { Dot } from "lucide-react";
 
 export default function UnitCard({ unit }: { unit: SimilarUnit | Unit }) {
   const [imageLoading, setImageLoading] = React.useState(true);
@@ -44,7 +43,7 @@ export default function UnitCard({ unit }: { unit: SimilarUnit | Unit }) {
         className="block focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent focus:ring-accent rounded-lg transition-all duration-200"
       >
         <CardHeader className="!p-0 border-b border-b-gray-100 gap-0 rounded-lg shadow-none">
-          <AspectRatio ratio={4 / 3} className="relative">
+          <AspectRatio ratio={4 / 3} className="relative overflow-hidden rounded-lg">
             {imageLoading && (
               <Skeleton className="absolute inset-0 z-10 rounded-lg" />
             )}
@@ -53,9 +52,10 @@ export default function UnitCard({ unit }: { unit: SimilarUnit | Unit }) {
               src={`https://meqasa.com/uploads/imgs/${unit.coverphoto}`}
               sizes="(min-width: 1024px) 20vw, (min-width: 768px) 25vw, (min-width: 640px) 33vw, (min-width: 475px) 50vw, 100vw"
               fill
-              priority
+              priority={false}
               alt={imageAlt}
               fallbackAlt={`Image placeholder for ${unit.title}`}
+              quality={75}
               onLoad={() => setImageLoading(false)}
             />
           </AspectRatio>

@@ -1,55 +1,69 @@
+import { Skeleton } from "@/components/ui/skeleton";
+
 export function AgentListingsSkeleton() {
   return (
-    <div className="mb-8 grid grid-cols-1 gap-8">
+    <div className="mb-8 grid grid-cols-1 gap-8" role="status" aria-label="Loading agent listings">
       {Array.from({ length: 5 }).map((_, index) => (
         <div
           key={index}
           className="flex flex-col gap-4 rounded-xl border border-[#fea3b1] p-4 lg:flex-row"
+          role="status"
+          aria-label={`Loading listing ${index + 1}`}
         >
           {/* Image skeleton */}
           <div className="min-w-[256px] p-0">
-            <div className="relative min-h-[202px] min-w-[256px] rounded-2xl bg-gray-200 animate-pulse"></div>
+            <Skeleton 
+              variant="shimmer" 
+              className="relative min-h-[202px] min-w-[256px] rounded-2xl" 
+              aria-label="Loading property image"
+            />
           </div>
 
           {/* Content skeleton */}
           <div className="flex flex-col justify-between px-4 pb-4 lg:p-0">
             <div>
               {/* Title skeleton */}
-              <div className="h-6 bg-gray-200 rounded mb-3 animate-pulse"></div>
+              <Skeleton 
+                variant="text" 
+                size="lg" 
+                className="w-full mb-3" 
+                aria-label="Loading property title"
+              />
 
               {/* Price skeleton */}
               <div className="flex items-center gap-2 pt-3 mb-3">
-                <div className="h-5 bg-gray-200 rounded w-24 animate-pulse"></div>
-                <div className="h-4 bg-gray-200 rounded w-16 animate-pulse"></div>
+                <Skeleton variant="text" className="h-5 w-24 bg-brand-accent/20" />
+                <Skeleton variant="light" className="h-4 w-16" />
               </div>
 
               {/* Description skeleton */}
               <div className="pt-3 mb-3">
-                <div className="h-4 bg-gray-200 rounded mb-2 animate-pulse"></div>
-                <div className="h-4 bg-gray-200 rounded w-3/4 animate-pulse"></div>
+                <Skeleton variant="light" size="default" className="w-full mb-2" />
+                <Skeleton variant="light" size="default" className="w-3/4" />
               </div>
 
               {/* Property details skeleton */}
               <div className="flex items-center gap-1 pt-2">
-                <div className="h-4 bg-gray-200 rounded w-16 animate-pulse"></div>
-                <div className="h-4 bg-gray-200 rounded w-4 animate-pulse"></div>
-                <div className="h-4 bg-gray-200 rounded w-20 animate-pulse"></div>
-                <div className="h-4 bg-gray-200 rounded w-4 animate-pulse"></div>
-                <div className="h-4 bg-gray-200 rounded w-24 animate-pulse"></div>
+                <Skeleton variant="light" className="h-4 w-16" />
+                <Skeleton variant="light" className="h-3 w-3 rounded-full bg-brand-accent/20" />
+                <Skeleton variant="light" className="h-4 w-20" />
+                <Skeleton variant="light" className="h-3 w-3 rounded-full bg-brand-accent/20" />
+                <Skeleton variant="light" className="h-4 w-24" />
               </div>
             </div>
 
             {/* Footer skeleton */}
             <div className="mt-3 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="h-11 w-11 bg-gray-200 rounded-full animate-pulse"></div>
-                <div className="h-4 bg-gray-200 rounded w-20 animate-pulse"></div>
+                <Skeleton variant="card" className="h-11 w-11 rounded-full" />
+                <Skeleton variant="light" className="h-4 w-20" />
               </div>
-              <div className="h-9 bg-gray-200 rounded w-32 animate-pulse"></div>
+              <Skeleton variant="light" className="h-9 w-32 bg-brand-primary/20 rounded" />
             </div>
           </div>
         </div>
       ))}
+      <span className="sr-only">Loading agent property listings, please wait...</span>
     </div>
   );
 }

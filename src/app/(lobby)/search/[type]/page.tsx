@@ -2,6 +2,7 @@ import { Breadcrumbs } from "@/components/layout/bread-crumbs";
 import { HeroBannerSkeleton } from "@/components/search/BannerSkeleton";
 import { HeroBanner } from "@/components/search/HeroBanner";
 import PropertyTypeLinks from "@/components/search/PropertyTypeLinks";
+import { ProductionReferenceSearch } from "@/components/search/ProductionReferenceSearch";
 import { ResultSearchFilter } from "@/components/search/results-search-filter";
 import {
   StreamingFlexiBannerWrapper,
@@ -313,18 +314,31 @@ export default async function SearchPage({
           <PropertyTypeLinks />
           <div className="w-full">
             <Breadcrumbs className="capitalize" segments={segments} />
-            <header>
-              <h1 className="mt-2 text-lg font-bold leading-6 text-brand-accent capitalize md:text-xl">
-                {generateDynamicHeading(type, location, resolvedSearchParams)}
-              </h1>
-              <p className="mt-3 text-sm text-brand-muted">
-                {generateDynamicSubheading(
-                  type,
-                  location,
-                  searchData.resultcount,
-                  resolvedSearchParams,
-                )}
-              </p>
+            <header className="space-y-6">
+              <div>
+                <h1 className="mt-2 text-lg font-bold leading-6 text-brand-accent capitalize md:text-xl">
+                  {generateDynamicHeading(type, location, resolvedSearchParams)}
+                </h1>
+                <p className="mt-3 text-sm text-brand-muted">
+                  {generateDynamicSubheading(
+                    type,
+                    location,
+                    searchData.resultcount,
+                    resolvedSearchParams,
+                  )}
+                </p>
+              </div>
+              
+              {/* Production Reference Search Component */}
+              <div className="bg-gradient-to-r from-blue-50 to-green-50 border border-blue-200 rounded-lg p-4">
+                <ProductionReferenceSearch 
+                  showLabel={true}
+                  size="default"
+                  className="max-w-md"
+                  useHybridNavigation={true}
+                  showPerformanceInfo={false}
+                />
+              </div>
             </header>
 
             <div className="grid grid-cols-1 gap-8 mt-8 md:px-0 lg:grid-cols-[minmax(0,736px)_1fr] w-full">

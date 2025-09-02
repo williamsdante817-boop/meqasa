@@ -48,21 +48,27 @@ export function AddFavoriteButton({
       variant="outline"
       onClick={toggleFavorite}
       className={cn(
-        "p-2 h-auto w-auto rounded-full bg-white/80 backdrop-blur-sm hover:bg-white shadow-md focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary focus-visible:outline-none",
+        "p-2 h-auto w-auto rounded-full bg-white/80 backdrop-blur-sm hover:bg-white shadow-md focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary focus-visible:outline-none transition-all duration-200",
         isFavorite &&
           "bg-white text-brand-primary hover:text-brand-primary hover:bg-white",
         className,
       )}
       aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+      aria-pressed={isFavorite}
+      title={isFavorite ? "Remove from favorites" : "Add to favorites"}
     >
       <Heart
         className={cn(
-          "h-8 w-8 transition-colors",
+          "h-8 w-8 transition-all duration-200",
           isFavorite
-            ? "fill-brand-primary text-brand-primary"
-            : "text-gray-600",
+            ? "fill-brand-primary text-brand-primary scale-110"
+            : "text-gray-600 scale-100",
         )}
+        aria-hidden="true"
       />
+      <span className="sr-only">
+        {isFavorite ? "Property is in favorites" : "Property is not in favorites"}
+      </span>
     </Button>
   );
 }

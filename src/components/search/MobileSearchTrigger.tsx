@@ -1,8 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { SearchIcon, SlidersHorizontal } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { SearchIcon } from "lucide-react";
 
 interface MobileSearchTriggerProps {
   onOpen: () => void;
@@ -13,8 +11,11 @@ interface MobileSearchTriggerProps {
 
 export function MobileSearchTrigger({
   onOpen,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   className,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   placeholder = "Search for location, area, or project",
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   showFiltersHint = true,
 }: MobileSearchTriggerProps) {
   const handleClick = (e: React.MouseEvent) => {

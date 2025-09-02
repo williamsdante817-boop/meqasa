@@ -21,7 +21,7 @@ export async function StreamingBlog({ blogDataPromise }: StreamingBlogProps) {
     }
 
     return <BlogSectionStatic blogData={blogData} />;
-  } catch (_error) {
+  } catch {
     // Return empty state on error
     return (
       <AlertCard

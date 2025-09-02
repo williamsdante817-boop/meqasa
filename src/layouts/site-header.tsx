@@ -12,7 +12,7 @@ export function SiteHeader() {
 
   return (
     <header
-      className="sticky top-0 z-[100] w-full border-b bg-background flex items-center justify-center"
+      className="sticky top-0 z-[100] w-full border-b border-gray-200 bg-background flex items-center justify-center"
       role="banner"
     >
       <div className="flex items-center container h-16 px-4 lg:px-6">

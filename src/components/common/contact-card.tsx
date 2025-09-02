@@ -482,7 +482,7 @@ export default function ContactCard({
 
   return (
     <>
-      <Card className="max-w-md py-6 rounded-lg mx-auto sticky top-36">
+      <Card className="max-w-md py-6 rounded-lg border-gray-200 mx-auto sticky top-36">
         <CardContent>
           <div className="flex flex-col items-center">
             <div className="w-20 h-20 rounded-full overflow-hidden border border-gray-200 mb-4">

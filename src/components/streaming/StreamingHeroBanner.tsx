@@ -1,9 +1,9 @@
 import { HeroBanner } from "@/components/search/HeroBanner";
 import { HeroBannerSkeleton } from "./LoadingSkeletons";
-import type { getHeroBanner } from "@/lib/get-hero-banner";
+import type { AdLink } from "@/types";
 
 interface StreamingHeroBannerProps {
-  heroBannerPromise: ReturnType<typeof getHeroBanner>;
+  heroBannerPromise: Promise<AdLink>;
 }
 
 export async function StreamingHeroBanner({

@@ -27,6 +27,7 @@ import { siteConfig } from "@/config/site";
 import { searchConfig } from "@/config/search";
 import { type FormState } from "@/types/search";
 import { mockLocations } from "@/config/locations";
+import { ActiveFilterChips } from "./ActiveFilterChips";
 
 // Constants for better maintainability
 const SEARCH_DEBOUNCE_MS = 300;
@@ -261,8 +262,12 @@ const SearchInput = ({
 
   return (
     <div className="relative flex-1 search-input-container">
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-brand-accent" />
+      <div className={`relative transition-all duration-200 rounded-md ${
+        isInputFocused ? 'ring-2 ring-brand-primary/50 ring-offset-1' : ''
+      }`}>
+        <Search className={`absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 transition-colors duration-200 ${
+          isInputFocused ? 'text-brand-primary' : 'text-brand-accent'
+        }`} />
         <Input
           ref={inputRef}
           placeholder="Search location"
@@ -280,7 +285,7 @@ const SearchInput = ({
             // Don't immediately set focused to false to allow for suggestion clicks
             // The click outside handler will manage this properly
           }}
-          className="h-12 pl-10 bg-white shadow-none border-gray-200 text-brand-accent focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary focus-visible:outline-none"
+          className="h-12 pl-10 bg-white shadow-none border-gray-200 text-brand-accent focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none hover:border-gray-300 transition-all duration-200 placeholder:text-gray-400"
         />
       </div>
 
@@ -545,6 +550,69 @@ export function ResultSearchFilter() {
 
   const updateFormState = (updates: Partial<ExtendedFormState>) => {
     setFormState((prev) => ({ ...prev, ...updates }));
+  };
+
+  // Filter removal handlers for ActiveFilterChips
+  const handleRemoveFilter = (filterKey: keyof ExtendedFormState) => {
+    const resetValues: Partial<ExtendedFormState> = {};
+    
+    // Get current page type from URL to handle land tab logic
+    const pathSegments = pathname.split("/");
+    const urlContractType = pathSegments[pathSegments.length - 1];
+    const isLandSearch = urlContractType === "sale" && formState.propertyType === "land";
+    
+    switch (filterKey) {
+      case "propertyType":
+        // Keep land type for land searches, reset to "all" for others
+        resetValues.propertyType = isLandSearch ? "land" : "all";
+        break;
+      case "bedrooms":
+        resetValues.bedrooms = "- Any -";
+        break;
+      case "bathrooms":
+        resetValues.bathrooms = "- Any -";
+        break;
+      case "minPrice":
+        resetValues.minPrice = "";
+        break;
+      case "maxPrice":
+        resetValues.maxPrice = "";
+        break;
+      case "period":
+        resetValues.period = "- Any -";
+        break;
+      case "furnished":
+        resetValues.furnished = false;
+        break;
+      case "owner":
+        resetValues.owner = false;
+        break;
+      default:
+        break;
+    }
+    
+    updateFormState(resetValues);
+  };
+
+  const handleClearAllFilters = () => {
+    // Get current page type from URL to handle land tab logic
+    const pathSegments = pathname.split("/");
+    const urlContractType = pathSegments[pathSegments.length - 1];
+    const isLandSearch = urlContractType === "sale" && formState.propertyType === "land";
+    
+    updateFormState({
+      propertyType: isLandSearch ? "land" : "all", // Keep land type for land searches
+      bedrooms: "- Any -",
+      bathrooms: "- Any -",
+      minPrice: "",
+      maxPrice: "",
+      minArea: "",
+      maxArea: "",
+      period: "- Any -",
+      furnished: false,
+      owner: false,
+      howShort: "- Any -"
+    });
   };
 
   const handleSearch = async () => {
@@ -850,15 +918,33 @@ export function ResultSearchFilter() {
             updateFormState={updateFormState}
           />
 
-          {/* Update Search Button */}
+          {/* Enhanced Search Button with Loading State */}
           <Button
             onClick={handleSearch}
             disabled={isSearching}
-            className="h-12 bg-brand-primary hover:bg-brand-primary-dark text-white px-6 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="h-12 bg-brand-primary hover:bg-brand-primary-dark text-white px-6 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
           >
-            {isSearching ? "Searching..." : "Update search"}
+            {isSearching ? (
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <span>Searching...</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Search className="h-4 w-4" />
+                <span>Update search</span>
+              </div>
+            )}
           </Button>
         </div>
+
+        {/* Active Filter Chips */}
+        <ActiveFilterChips
+          formState={formState}
+          onRemoveFilter={handleRemoveFilter}
+          onClearAllFilters={handleClearAllFilters}
+          contractType={formState.listingType}
+        />
       </div>
     </SearchFilterErrorBoundary>
   );

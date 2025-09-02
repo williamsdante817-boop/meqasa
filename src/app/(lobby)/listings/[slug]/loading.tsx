@@ -20,10 +20,24 @@ export default function ListingLoading() {
         </div>
       </Shell>
 
-      {/* Image carousel skeleton */}
-      <section className="border-b border-brand-badge-ongoing bg-black min-h-[200px] md:min-h-[400px] flex items-center justify-center">
-        <Skeleton className="w-full h-[200px] md:h-[400px]" />
-      </section>
+      {/* Image carousel skeleton - matches DynamicCarousel exact dimensions */}
+      <div className="flex justify-center border-b border-orange-400 lg:bg-brand-secondary relative h-[280px] w-full overflow-hidden lg:max-h-[400px] lg:min-h-[400px]">
+        <div className="w-full max-w-xl lg:max-h-[400px] lg:min-h-[400px]">
+          <div className="h-[280px] w-full lg:max-h-[400px] lg:min-h-[400px]">
+            {/* Card skeleton matching exact Card dimensions */}
+            <div className="h-[280px] w-full rounded-none border-0 py-0 shadow-none lg:max-h-[400px] lg:min-h-[400px] flex items-center justify-center p-0 relative">
+              <Skeleton className="h-full w-full rounded-none" />
+            </div>
+          </div>
+          
+          {/* Carousel navigation badge skeleton - exact positioning */}
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20">
+            <div className="bg-black/70 text-white border-0 px-3 py-1 rounded">
+              <Skeleton className="h-4 w-16 bg-white/20 rounded-sm" />
+            </div>
+          </div>
+        </div>
+      </div>
 
       <Shell>
         <div className="grid grid-cols-1 text-brand-accent w-full mt-4 md:grid-cols-[2fr,1fr] lg:gap-8 lg:px-0">

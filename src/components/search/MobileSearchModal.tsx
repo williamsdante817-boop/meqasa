@@ -1,13 +1,14 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { X, Search } from "lucide-react";
 import { type FormState } from "@/types/search";
-import { SearchForm } from "./SearchForm";
-import { MobileSearchInput } from "./MobileSearchInput";
+import { ChevronRight, Search, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { ActiveFilterChips } from "./ActiveFilterChips";
 import { MobileCommonFilters } from "./MobileCommonFilters";
+import { MobileSearchInput } from "./MobileSearchInput";
+import { SearchForm } from "./SearchForm";
 
 interface MobileSearchModalProps {
   isOpen: boolean;
@@ -45,6 +46,75 @@ export function MobileSearchModal({
       default:
         return rentFormState;
     }
+  };
+
+  // Filter management for mobile
+  const handleRemoveFilter = (filterKey: keyof FormState) => {
+    const resetValues: Partial<FormState> = {};
+    
+    switch (filterKey) {
+      case "propertyType":
+        // Keep land type on land tab, reset to "all" for others
+        resetValues.propertyType = activeTab === "land" ? "land" : "all";
+        break;
+      case "bedrooms":
+        resetValues.bedrooms = "- Any -";
+        break;
+      case "bathrooms":
+        resetValues.bathrooms = "- Any -";
+        break;
+      case "minPrice":
+        resetValues.minPrice = "";
+        break;
+      case "maxPrice":
+        resetValues.maxPrice = "";
+        break;
+      case "period":
+        resetValues.period = "- Any -";
+        break;
+      case "furnished":
+        resetValues.furnished = false;
+        break;
+      case "owner":
+        resetValues.owner = false;
+        break;
+      default:
+        break;
+    }
+    
+    updateFormState(activeTab, resetValues);
+  };
+
+  const handleClearAllFilters = () => {
+    updateFormState(activeTab, {
+      propertyType: activeTab === "land" ? "land" : "all", // Keep land type on land tab
+      bedrooms: "- Any -",
+      bathrooms: "- Any -",
+      minPrice: "",
+      maxPrice: "",
+      minArea: "",
+      maxArea: "",
+      period: "- Any -",
+      furnished: false,
+      owner: false,
+    });
+  };
+
+  // Count active filters for badge
+  const getActiveFilterCount = (formState: FormState): number => {
+    let count = 0;
+    // Don't count "land" property type on land tab as it's the default
+    if (formState.propertyType && formState.propertyType !== "all" && 
+        !(activeTab === "land" && formState.propertyType === "land")) {
+      count++;
+    }
+    if (formState.bedrooms && formState.bedrooms !== "- Any -") count++;
+    if (formState.bathrooms && formState.bathrooms !== "- Any -") count++;
+    if (formState.minPrice || formState.maxPrice) count++;
+    if (formState.period && formState.period !== "- Any -") count++;
+    if (formState.furnished) count++;
+    if (formState.owner) count++;
+    return count;
   };
 
   // Handle escape key
@@ -231,16 +301,32 @@ export function MobileSearchModal({
             </div>
           </div>
 
-          {/* Footer with Search Button */}
+          {/* Active Filters Display */}
+          {getActiveFilterCount(currentFormState) > 0 && (
+            <div className="px-4 border-t border-gray-100">
+              <ActiveFilterChips
+                formState={currentFormState}
+                onRemoveFilter={handleRemoveFilter}
+                onClearAllFilters={handleClearAllFilters}
+                contractType={activeTab}
+              />
+            </div>
+          )}
+
+          {/* Enhanced Footer with Search Button */}
           <div className="p-4 border-t border-gray-200 bg-white sticky bottom-0">
-            <Button
-              type="submit"
-              form={`search-form-${activeTab}`}
-              className="w-full h-12 bg-rose-500 hover:bg-rose-600 text-white font-semibold rounded-lg"
-            >
-              <Search className="h-5 w-5 mr-2" />
-              Search
-            </Button>
+            <div className="space-y-2">
+              
+              <Button
+                type="submit"
+                form={`search-form-${activeTab}`}
+                className="w-full h-12 bg-rose-500 hover:bg-rose-600 text-white font-semibold rounded-lg transition-all duration-200 active:scale-95"
+              >
+                <Search className="h-5 w-5 mr-2" />
+                Search Properties
+                <ChevronRight className="h-4 w-4 ml-2" />
+              </Button>
+            </div>
           </div>
         </Tabs>
       </div>

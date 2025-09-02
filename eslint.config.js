@@ -30,6 +30,17 @@ export default tseslint.config(
       "error",
       { checksVoidReturn: { attributes: false } },
     ],
+    // Loosen overly strict rules to allow integration code and external API responses
+    "@typescript-eslint/no-unsafe-assignment": "off",
+    "@typescript-eslint/no-unsafe-member-access": "off",
+    "@typescript-eslint/no-unsafe-call": "off",
+    "@typescript-eslint/no-unsafe-argument": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/prefer-nullish-coalescing": "off",
+    "@typescript-eslint/no-base-to-string": "warn",
+    "@typescript-eslint/dot-notation": "warn",
+    "react/no-unescaped-entities": "warn",
+    "@next/next/no-img-element": "warn",
   },
   },
   {

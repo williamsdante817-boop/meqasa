@@ -6,6 +6,18 @@
 
 /** @type {import("next").NextConfig} */
 const config = {
+  // Performance optimizations
+  experimental: {
+    optimizePackageImports: [
+      "@radix-ui/react-icons",
+      "lucide-react",
+      "@/components/ui",
+    ],
+  },
+  
+  // Bundle analysis is configured below via wrapper when ANALYZE=true
+  
+  // Image optimizations
   images: {
     remotePatterns: [
       {
@@ -37,12 +49,45 @@ const config = {
         hostname: "blog.meqasa.com",
       },
     ],
+    localPatterns: [
+      {
+        pathname: "/placeholder.svg**",
+      },
+      {
+        pathname: "/logo.png",
+      },
+      {
+        pathname: "/insights_**",
+      },
+      {
+        pathname: "/placeholder-image.png",
+      },
+      {
+        pathname: "/plan-4.webp",
+      },
+    ],
     formats: ["image/webp", "image/avif"],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    minimumCacheTTL: 60,
-    qualities: [85, 90, 95],
+    minimumCacheTTL: 3600, // 1 hour cache
+    dangerouslyAllowSVG: true,
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    qualities: [75, 85, 90, 95],
   },
+  
+  // Production optimizations
+  poweredByHeader: false,
+  
+  // Compression
+  compress: true,
 };
 
-export default config;
+// If ANALYZE=true, wrap config with bundle analyzer
+let finalConfig = config;
+if (process.env.ANALYZE === 'true') {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const withBundleAnalyzer = require('@next/bundle-analyzer')({ enabled: true });
+  finalConfig = withBundleAnalyzer(finalConfig);
+}
+
+export default finalConfig;

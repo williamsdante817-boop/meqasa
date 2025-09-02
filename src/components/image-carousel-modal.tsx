@@ -1,12 +1,13 @@
 "use client";
 
-import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, X, ImageIcon, Loader2 } from "lucide-react";
-import Image from "next/image";
-import { useEffect, useState, useRef, useCallback, useMemo } from "react";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Skeleton } from "@/components/ui/skeleton";
 import { isImagePreloaded, preloadImages } from "@/lib/image-preload";
 import { cn } from "@/lib/utils";
+import { ChevronLeft, ChevronRight, ImageIcon, X } from "lucide-react";
+import Image from "next/image";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 // Constants for better maintainability
 const THUMBNAIL_WIDTH = 80;
@@ -28,8 +29,6 @@ function ImagePlaceholder({ className }: { className?: string }) {
 }
 
 // Light gray base64 placeholder (1x1 pixel)
-const PLACEHOLDER_BLUR =
-  "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDABQODxIPDRQSEBIXFRQdHx4eHRoaHSQtJSEkMjU1LS0yMi4qLjgyPj4+Oj4+Oj4+Oj4+Oj4+Oj4+Oj4+Oj7/2wBDAR4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAb/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=";
 
 interface ImageCarouselModalProps {
   images: (string | undefined)[];
@@ -306,9 +305,9 @@ export function ImageCarouselModal({
     >
       <DialogContent
         className={cn(
-          "fixed inset-0 w-screen h-screen max-w-none max-h-none p-0 m-0 bg-black border-none flex flex-col  translate-x-0 translate-y-0 left-0 top-0 !rounded-none",
+          "fixed inset-0 w-screen h-screen max-w-none max-h-none p-0 m-0 bg-black border-none flex flex-col translate-x-0 translate-y-0 left-0 top-0 !rounded-none",
           "transition-all duration-300 ease-out",
-          isAnimating ? "opacity-0 scale-95" : "opacity-100 scale-100",
+          isAnimating ? "opacity-0" : "opacity-100",
         )}
         onKeyDown={handleKeyDown}
         role="dialog"
@@ -320,7 +319,7 @@ export function ImageCarouselModal({
           {/* Photo count at top left */}
           <div
             className={cn(
-              "absolute top-4 left-4 z-50 text-white text-lg font-medium bg-black/60 rounded px-3 py-1",
+              "absolute top-4 left-4 z-50 text-white text-sm font-medium bg-black/60 rounded-lg px-3 py-2",
               "transition-all duration-300 ease-out",
               isAnimating
                 ? "opacity-0 translate-y-2"
@@ -335,7 +334,7 @@ export function ImageCarouselModal({
             variant="outline"
             size="icon"
             className={cn(
-              "absolute right-6 top-6 z-50 h-11 w-11 rounded-full bg-white text-accent-foreground shadow-md cursor-pointer",
+              "absolute right-6 top-6 z-50 h-11 w-11 rounded-full bg-white text-gray-700 shadow-md cursor-pointer hover:bg-white hover:shadow-lg",
               "transition-all duration-300 ease-out",
               isAnimating
                 ? "opacity-0 translate-y-2"
@@ -344,7 +343,7 @@ export function ImageCarouselModal({
             onClick={onClose}
             aria-label="Close image gallery"
           >
-            <X className="h-6 w-6" />
+            <X className="h-5 w-5" />
           </Button>
 
           {/* Previous button - hidden on mobile */}
@@ -352,7 +351,7 @@ export function ImageCarouselModal({
             variant="outline"
             size="icon"
             className={cn(
-              "absolute left-6 top-1/2 -translate-y-1/2 z-50 h-11 w-11 rounded-full bg-white text-accent-foreground shadow-md cursor-pointer hidden md:flex focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary focus-visible:outline-none",
+              "absolute left-6 top-1/2 -translate-y-1/2 z-50 h-11 w-11 rounded-full bg-white text-gray-700 shadow-md cursor-pointer hidden md:flex hover:bg-white hover:shadow-lg focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary focus-visible:outline-none",
               "transition-all duration-300 ease-out",
               isAnimating
                 ? "opacity-0 translate-x-2"
@@ -369,7 +368,7 @@ export function ImageCarouselModal({
           <div
             ref={mainImageRef}
             className={cn(
-              "relative flex items-center justify-center touch-pan-y overflow-hidden rounded-xl bg-black",
+              "relative flex items-center justify-center touch-pan-y overflow-hidden rounded-lg bg-gray-900",
               "transition-all duration-300 ease-out",
               isAnimating ? "opacity-0 scale-95" : "opacity-100 scale-100",
             )}
@@ -388,19 +387,10 @@ export function ImageCarouselModal({
               </div>
             ) : (
               <>
-                {/* Loading spinner overlay */}
+                {/* Loading skeleton overlay */}
                 {isLoading && (
-                  <div
-                    className="absolute inset-0 flex items-center justify-center bg-black/20 z-10"
-                    aria-live="polite"
-                    aria-atomic="true"
-                  >
-                    <div className="flex flex-col items-center gap-3">
-                      <Loader2 className="h-8 w-8 animate-spin text-white" />
-                      <span className="text-white text-sm font-medium">
-                        Loading image...
-                      </span>
-                    </div>
+                  <div className="absolute inset-0 z-10">
+                    <Skeleton className="w-full h-full rounded-lg" />
                   </div>
                 )}
 
@@ -412,8 +402,6 @@ export function ImageCarouselModal({
                     "object-contain transition-opacity duration-300",
                     isLoading ? "opacity-0" : "opacity-100",
                   )}
-                  placeholder="blur"
-                  blurDataURL={PLACEHOLDER_BLUR}
                   onLoadingComplete={handleImageLoad}
                   onError={() => handleImageError(currentIndex)}
                   draggable={false}
@@ -428,7 +416,7 @@ export function ImageCarouselModal({
             variant="outline"
             size="icon"
             className={cn(
-              "absolute right-6 top-1/2 -translate-y-1/2 z-50 h-11 w-11 rounded-full bg-white text-accent-foreground shadow-md cursor-pointer hidden md:flex focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary focus-visible:outline-none",
+              "absolute right-6 top-1/2 -translate-y-1/2 z-50 h-11 w-11 rounded-full bg-white text-gray-700 shadow-md cursor-pointer hidden md:flex hover:bg-white hover:shadow-lg focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary focus-visible:outline-none",
               "transition-all duration-300 ease-out",
               isAnimating
                 ? "opacity-0 -translate-x-2"
@@ -446,7 +434,7 @@ export function ImageCarouselModal({
             <div
               ref={thumbnailStripRef}
               className={cn(
-                "overflow-x-auto bg-black/80 py-3 px-0 flex gap-2 items-center justify-start border-t border-black/40",
+                "overflow-x-auto bg-black/80 py-3 px-0 flex gap-2 items-center justify-start border-t border-gray-600/40",
                 "transition-all duration-300 ease-out",
                 isAnimating
                   ? "opacity-0 translate-y-4"
@@ -491,8 +479,6 @@ export function ImageCarouselModal({
                       alt={`Thumbnail ${idx + 1}`}
                       fill
                       className="object-cover"
-                      placeholder="blur"
-                      blurDataURL={PLACEHOLDER_BLUR}
                       sizes={`${THUMBNAIL_WIDTH}px`}
                       onError={() => handleImageError(idx)}
                       draggable={false}

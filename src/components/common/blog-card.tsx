@@ -70,7 +70,7 @@ export default function BlogCard({
         <div className="hidden lg:block lg:w-full lg:overflow-hidden lg:rounded-lg">
           <Card className="overflow-hidden size-full !p-0 rounded-lg">
             <CardContent className="!p-0 rounded-lg">
-              <AspectRatio ratio={4 / 3} className="relative">
+              <AspectRatio ratio={4 / 3} className="relative overflow-hidden rounded-lg">
                 {hasPoster && !imgError ? (
                   <>
                     <ImageWithFallback
@@ -86,7 +86,7 @@ export default function BlogCard({
                       )}
                       onError={() => setImgError(true)}
                       onLoad={() => setIsLoading(false)}
-                      quality={90}
+                      quality={priority ? 85 : 75}
                     />
                     {isLoading && (
                       <Skeleton className="absolute inset-0 bg-gray-100 animate-pulse rounded-xl" />

@@ -191,7 +191,8 @@ export function DeveloperContactCard({
       // Clear any pending timeouts
       setCopiedNumber(false);
     };
-  }, [developerId, contextKey]); // Removed setPhoneNumbers from dependencies
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [developerId, contextKey]);
 
   const handleInputChange = (
     field: keyof ContactFormState,
@@ -476,23 +477,6 @@ export function DeveloperContactCard({
     }
   };
 
-  const handleReset = () => {
-    setIsSuccess(false);
-    setAgentInfo(null);
-    setContactForm({
-      name: "",
-      phone: "",
-      countryIso: DEFAULT_REGION,
-      email: "",
-      message: "",
-      alertsChecked: true,
-    });
-    setErrors({});
-    setBannerError("");
-    setActiveTab("phone");
-    setFormSubmitted(false);
-    setEmailSent(false);
-  };
 
   const handleUseDifferentInfo = () => {
     clearStoredContactInfo();

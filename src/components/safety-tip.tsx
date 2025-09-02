@@ -1,9 +1,8 @@
 "use client";
 
-import React from "react";
-import { Info } from "lucide-react";
+import { Shield } from "lucide-react";
 
-import { Card, CardContent, CardHeader } from "./ui/card";
+import { Card } from "./ui/card";
 
 const safetyTips = [
   "Do not make any inspection fee without seeing the agent and property.",
@@ -24,31 +23,38 @@ const safetyTips = [
 export default function SafetyTipsCard() {
   return (
     <section className="md:mt-20" aria-labelledby="safety-tips-heading">
-      <Card className="border-none bg-blue-50 rounded-lg p-4">
-        <CardHeader className="flex flex-row items-center gap-4 p-0">
-          <h2
-            id="safety-tips-heading"
-            className="text-base font-semibold capitalize text-brand-accent lg:text-lg"
-          >
-            Safety Tips
-          </h2>
-          <Info
-            className="inline-block h-5 w-5 text-brand-accent"
-            aria-hidden="true"
-          />
-        </CardHeader>
-        <CardContent className="p-0">
-          <ul
-            className="ml-4 list-inside list-disc space-y-2 text-brand-accent"
-            aria-label="List of safety tips"
-          >
-            {safetyTips.map((tip, index) => (
-              <li className="text-sm font-light" key={index}>
-                {tip}
-              </li>
-            ))}
-          </ul>
-        </CardContent>
+      <Card className="border-amber-200 bg-gradient-to-r from-amber-50 to-yellow-50 rounded-lg p-4 md:p-5 relative overflow-hidden">
+        <div className="flex items-start gap-4">
+          <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-amber-100 text-amber-600">
+            <Shield className="h-5 w-5" />
+          </div>
+          <div className="flex-1">
+            <div className="mb-3">
+              <h2
+                id="safety-tips-heading"
+                className="text-base font-semibold text-brand-accent lg:text-lg"
+              >
+                Safety Tips
+              </h2>
+            </div>
+            <div className="space-y-3">
+              {safetyTips.map((tip, index) => (
+                <div key={index} className="flex items-start gap-3">
+                  <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-amber-100 text-amber-600 mt-0.5">
+                    <span className="text-xs font-bold">{index + 1}</span>
+                  </div>
+                  <p className="text-sm text-brand-accent leading-relaxed">
+                    {tip}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        {/* Subtle background pattern */}
+        <div className="absolute bottom-2 right-2 opacity-5">
+          <Shield className="h-16 w-16 text-amber-500" />
+        </div>
       </Card>
     </section>
   );

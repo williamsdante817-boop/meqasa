@@ -1,14 +1,11 @@
 import { FeaturedListingsSection } from "@/components/property/listings/featured-listings-section";
 import { AlertCard } from "@/components/common/alert-card";
-import type {
-  getFeaturedListings,
-  FeaturedListingsResponse,
-} from "@/lib/get-featured-listings";
+import type { FeaturedListingsResponse } from "@/lib/get-featured-listings";
 import type { Listing as CardListing } from "@/components/property/cards/property-card";
-
+import { formatNumberToCedis } from "@/lib/utils";
 
 interface StreamingFeaturedListingsProps {
-  featuredListingsPromise: ReturnType<typeof getFeaturedListings>;
+  featuredListingsPromise: Promise<FeaturedListingsResponse>;
 }
 
 export async function StreamingFeaturedListings({
@@ -35,6 +32,11 @@ export async function StreamingFeaturedListings({
       const idMatch = /-(\d+)$/.exec(cleanPath);
       const listingid = idMatch?.[1] ?? "0";
 
+      // Use the original price data which is already cleaned by our transformer
+      // The get-featured-listings.ts now uses propertyDataFetchers which applies extractNumericPrice
+      const priceAmount = parseFloat(String(l.price || "0")) || 0;
+      const formattedPriceAmount = priceAmount > 0 ? formatNumberToCedis(priceAmount) : "Price on request";
+      
       return {
         detailreq: l.detailreq,
         image: l.image,
@@ -45,6 +47,8 @@ export async function StreamingFeaturedListings({
         bathroomcount: l.bathroomcount ?? String(l.baths ?? ""),
         bedroomcount: l.bedroomcount ?? String(l.beds ?? ""),
         price: l.price,
+        pricepart1: formattedPriceAmount, // Clean formatted price without period
+        pricepart2: l.contract === "rent" ? "month" : undefined, // Period only
         contract: l.contract,
       };
     };
@@ -59,7 +63,7 @@ export async function StreamingFeaturedListings({
     return (
       <AlertCard
         variant="destructive"
-        title="Unable to load featured listings"
+        title="Unable to render featured listings"
         description="Please try again later."
         className="my-8"
       />

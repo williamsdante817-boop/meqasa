@@ -36,7 +36,7 @@ export default function HeaderAdClient() {
 
   return (
     <div
-      className="py-[10px] border-b hidden lg:flex"
+      className="py-[10px] border-b border-gray-200 hidden lg:flex"
       role="banner"
       aria-label="Header advertisement"
     >

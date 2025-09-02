@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Check } from "lucide-react";
 
 interface AmenitiesProps {
@@ -13,42 +13,36 @@ export default function Amenities({ amenities = [] }: AmenitiesProps) {
   }
 
   return (
-    <Card
-      className="w-full p-0 border-none bg-transparent shadow-none"
-      role="region"
-      aria-label="Amenities"
-    >
-      <CardContent className="p-0">
-        <div
-          className="grid grid-cols-2 gap-4 md:grid-cols-3"
-          role="list"
-          aria-label="List of available amenities"
-        >
-          {amenities.map((amenity, index) => (
+    <Card className="border-gray-200 bg-gradient-to-r rounded-lg from-gray-50 to-gray-50 p-4 md:p-6">
+      <div
+        className="grid grid-cols-2 lg:grid-cols-3 gap-4"
+        role="list"
+        aria-label="List of available amenities"
+      >
+        {amenities.map((amenity, index) => (
+          <div
+            key={`amenity-${amenity}-${index}`}
+            className="flex items-center gap-3 rounded-lg border border-gray-200 bg-white p-3 hover:border-gray-300 transition-colors"
+            role="listitem"
+          >
             <div
-              key={`amenity-${amenity}-${index}`}
-              className="flex items-center gap-3 rounded-lg border bg-white p-3"
-              role="listitem"
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100 text-green-700 flex-shrink-0"
+              aria-hidden="true"
             >
-              <div
-                className="flex h-8 w-8 md:h-10 md:w-10 items-center justify-center rounded-full bg-green-500/10 flex-shrink-0"
+              <Check
+                className="h-4 w-4"
                 aria-hidden="true"
-              >
-                <Check
-                  className="h-4 w-4 md:h-5 md:w-5 text-brand-badge-completed"
-                  aria-hidden="true"
-                />
-              </div>
-              <p
-                className="text-sm md:text-base text-brand-accent line-clamp-1"
-                aria-label={`Amenity: ${amenity}`}
-              >
-                {amenity}
-              </p>
+              />
             </div>
-          ))}
-        </div>
-      </CardContent>
+            <p
+              className="text-sm font-medium text-brand-accent line-clamp-1 flex-1"
+              aria-label={`Amenity: ${amenity}`}
+            >
+              {amenity}
+            </p>
+          </div>
+        ))}
+      </div>
     </Card>
   );
 }

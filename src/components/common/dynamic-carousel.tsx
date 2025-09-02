@@ -114,7 +114,7 @@ const CarouselSlide = ({
                 onLoad={handleImageLoad}
                 onError={handleImageError}
                 loading={index === 0 ? "eager" : "lazy"}
-                quality={90}
+                quality={index === 0 ? 85 : 75}
               />
             </button>
           </CardContent>
@@ -250,10 +250,7 @@ export function DynamicCarousel({
           />
         </Carousel>
         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20">
-          <Badge
-            variant="secondary"
-            className="bg-black/70 text-white border-0"
-          >
+          <Badge variant="dark">
             Slide {current} of {count}
           </Badge>
         </div>

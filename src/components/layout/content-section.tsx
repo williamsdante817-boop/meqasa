@@ -66,7 +66,7 @@ export default function ContentSection({
       <div
         className={cn(
           "flex items-center justify-between gap-4",
-          border && "border-b pb-3",
+          border && "border-b border-gray-200 pb-3",
         )}
       >
         <div className="flex max-w-[61.25rem] flex-1 flex-col gap-0.5">

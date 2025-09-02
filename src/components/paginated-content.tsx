@@ -1,16 +1,14 @@
 "use client";
 
-import React from "react";
+import { Button } from "@/components/ui/button";
 import {
   Pagination,
   PaginationContent,
-  PaginationItem,
-  PaginationNext,
-  PaginationPrevious,
   PaginationEllipsis,
+  PaginationItem
 } from "@/components/ui/pagination";
 import { usePagination } from "@/hooks/use-pagination";
-import { Button } from "@/components/ui/button";
+import React from "react";
 
 interface PaginatedContentProps<T> {
   items: T[];

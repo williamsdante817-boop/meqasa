@@ -9,11 +9,13 @@ interface PlaceholderImageProps
   extends React.ComponentPropsWithoutRef<typeof AspectRatio> {
   isSkeleton?: boolean
   asChild?: boolean
+  aspectRatio?: number
 }
 
 export function PlaceholderImage({
   isSkeleton = false,
   asChild = false,
+  aspectRatio = 4/3,
   className,
   ...props
 }: PlaceholderImageProps) {
@@ -21,16 +23,16 @@ export function PlaceholderImage({
 
   return (
     <Comp
-      ratio={16 / 9}
+      ratio={aspectRatio}
       {...props}
       className={cn("overflow-hidden rounded-lg", className)}
     >
       <Skeleton
-        aria-label="Placeholder"
+        aria-label="Property image placeholder"
         role="img"
         aria-roledescription="placeholder"
         className={cn(
-          "flex size-full items-center justify-center",
+          "flex size-full items-center justify-center bg-muted",
           isSkeleton ? "animate-pulse" : "animate-none"
         )}
       >

@@ -1,56 +1,87 @@
 "use client";
 
-import { AspectRatio } from "./ui/aspect-ratio";
-import { Card, CardContent, CardHeader } from "./ui/card";
+import { Card, CardContent } from "./ui/card";
 import { Skeleton } from "./ui/skeleton";
 
-export default function FeaturedPropertySkeleton() {
+interface FeaturedPropertySkeletonProps {
+  className?: string
+  variant?: "default" | "compact"
+}
+
+export default function FeaturedPropertySkeleton({
+  className = "",
+  variant = "default"
+}: FeaturedPropertySkeletonProps) {
+  const isCompact = variant === "compact"
+  const cardHeight = isCompact ? "h-[200px]" : "h-[230px] md:h-[321px]"
+
   return (
     <Card
-      className="relative size-full overflow-hidden rounded-xl p-0 gap-0"
-      role="article"
+      className={`relative mb-8 ${cardHeight} w-full p-0 overflow-hidden rounded-lg border-none text-brand-accent ${className}`}
+      role="status"
+      aria-label="Loading featured property"
     >
-      <CardHeader className="p-0 gap-0">
-        <AspectRatio ratio={16 / 9} className="relative">
-          <Skeleton className="absolute inset-0 rounded-xl" />
-          <div
-            className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-slate-900/90"
-            aria-hidden="true"
-          />
-        </AspectRatio>
-      </CardHeader>
+      {/* Background gradient overlay - matches the actual component */}
+      <div
+        className="absolute inset-0 z-10"
+        style={{
+          backgroundImage: "linear-gradient( rgba(0,0,0,0.1), rgba(0,0,0,0.8))",
+        }}
+        aria-hidden="true"
+      />
+      
+      <CardContent className="p-0">
+        {/* Main image skeleton - matches exact dimensions */}
+        <Skeleton 
+          variant="shimmer" 
+          className={`${cardHeight === "h-[230px] md:h-[321px]" ? "h-[321px]" : "h-[200px]"} rounded-lg`}
+          aria-label="Loading featured property image"
+        />
 
-      <CardContent className="w-full p-4">
-        <div className="grid grid-cols-[minmax(0,1fr)_max-content] lg:gap-3">
-          <div>
-            {/* Project name skeleton */}
-            <Skeleton className="h-5 w-3/4 mb-1 lg:h-8 lg:mb-2" />
+        {/* Content overlay - matches absolute positioning */}
+        <div className="absolute inset-0 rounded-2xl">
+          <div className="absolute inset-x-4 bottom-4 z-20">
+            <div className="flex items-end justify-between">
+              {/* Left content - project info */}
+              <div className="text-white space-y-2">
+                {/* Project title skeleton */}
+                <Skeleton 
+                  variant="light" 
+                  className={`${isCompact ? "h-5 w-32" : "h-6 w-48 md:h-7 md:w-56"} bg-white/20`}
+                  aria-label="Loading project title"
+                />
 
-            {/* City and location skeleton */}
-            <Skeleton className="h-4 w-1/2 mb-2 lg:h-6 lg:mb-3" />
+                {/* Location skeleton - matches the dot-separated layout */}
+                <div className="flex items-center gap-1 pt-2">
+                  <Skeleton variant="light" className="h-4 w-20 bg-white/15" />
+                  <Skeleton variant="light" className="h-1 w-1 rounded-full bg-white/15" />
+                  <Skeleton variant="light" className="h-4 w-16 bg-white/15" />
+                </div>
 
-            {/* Status and bedrooms skeleton */}
-            <div className="mt-1 flex items-center gap-[5px]">
-              <Skeleton className="h-5 w-16 rounded-sm" />
-              <Skeleton className="h-4 w-4 rounded-full" />
-              <Skeleton className="h-4 w-24 lg:h-5 lg:w-32" />
-            </div>
+                {/* CTA Button skeleton */}
+                <div className="mt-3">
+                  <Skeleton 
+                    variant="light" 
+                    className={`${isCompact ? "h-8 w-24" : "h-10 w-32"} bg-brand-primary/40 rounded-md`}
+                    aria-label="Loading view project button"
+                  />
+                </div>
+              </div>
 
-            {/* Description skeleton - hidden on mobile, visible on lg+ */}
-            <div className="relative mt-2 hidden lg:grid lg:grid-cols-[minmax(0,1fr)_max-content]">
-              <div className="mt-2 space-y-2">
-                <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-4 w-3/4" />
+              {/* Right content - logo skeleton */}
+              <div className="flex items-end">
+                <Skeleton 
+                  variant="card"
+                  className={`${isCompact ? "h-12 w-12" : "h-14 w-14 md:h-16 md:w-16"} rounded-md bg-white/20`}
+                  aria-label="Loading developer logo"
+                />
               </div>
             </div>
           </div>
-
-          {/* Logo skeleton */}
-          <div className="max-w-[90px] max-h-[90px]">
-            <Skeleton className="h-[50px] w-[50px] rounded-sm" />
-          </div>
         </div>
       </CardContent>
+      
+      <span className="sr-only">Loading featured property project details, please wait...</span>
     </Card>
   );
 }

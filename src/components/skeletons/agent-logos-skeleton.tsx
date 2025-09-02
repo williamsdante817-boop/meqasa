@@ -4,17 +4,20 @@ export function AgentLogosSkeleton() {
   return (
     <div
       className="mt-[180px] hidden lg:flex"
-      role="complementary"
-      aria-label="Partner logos loading"
+      role="status"
+      aria-label="Loading partner logos"
     >
       <div className="flex gap-8 overflow-hidden">
         {Array.from({ length: 8 }).map((_, i) => (
           <Skeleton
             key={i}
-            className="h-12 w-24 bg-gray-200 animate-pulse rounded"
+            variant="card"
+            className="h-12 w-24 rounded"
+            aria-label={`Loading partner logo ${i + 1}`}
           />
         ))}
       </div>
+      <span className="sr-only">Loading partner company logos...</span>
     </div>
   );
 }
