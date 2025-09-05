@@ -207,7 +207,7 @@ const PropertyCard = React.forwardRef<HTMLDivElement, PropertyCardProps>(({
         <CardContent className="px-0 pb-0 space-y-1">
           <CardTitle 
             id={`property-title-${listingId}`}
-            className="line-clamp-1 mb-3 leading-relaxed font-bold text-brand-primary text-sm pt-2 capitalize"
+            className="line-clamp-1 mb-3 leading-relaxed font-bold text-brand-primary text-base sm:text-lg pt-2 capitalize transition-colors duration-200 group-hover:text-brand-primary-dark"
           >
             {title}
           </CardTitle>
@@ -215,29 +215,29 @@ const PropertyCard = React.forwardRef<HTMLDivElement, PropertyCardProps>(({
             <div className="flex h-fit items-center gap-2 mb-1.5 mt-[10px]" aria-label="Property pricing">
               {pricepart1 ? (
                 <span
-                  className="text-base font-bold leading-[19px] text-brand-accent md:text-[19px]"
+                  className="text-lg font-bold leading-tight text-brand-accent sm:text-xl"
                   dangerouslySetInnerHTML={buildInnerHtml(pricepart1)}
                 />
               ) : price ? (
                 <span
-                  className="text-base font-bold leading-[19px] text-brand-accent md:text-[19px]"
+                  className="text-lg font-bold leading-tight text-brand-accent sm:text-xl"
                   dangerouslySetInnerHTML={buildInnerHtml(price)}
                 />
               ) : (
-                <span className="text-base font-semibold text-brand-muted">
+                <span className="text-sm sm:text-base font-semibold text-brand-muted">
                   Price not available
                 </span>
               )}
               {pricepart2 && (
-                <span className="text-sm font-normal text-brand-muted">
+                <span className="text-sm sm:text-base font-normal text-brand-muted">
                   {pricepart2}
                 </span>
               )}
             </div>
-            <span className="text-base capitalize mb-1 text-brand-muted line-clamp-1">
+            <span className="text-sm sm:text-base capitalize mb-1 text-brand-muted line-clamp-1">
               {streetaddress}
             </span>
-            <div className="mt-1 flex items-center text-base text-brand-muted flex-nowrap overflow-hidden" aria-label="Property features">
+            <div className="mt-1 flex items-center text-sm sm:text-base text-brand-muted flex-nowrap overflow-hidden" aria-label="Property features">
               {Number.isFinite(bedsNum) && bedsNum > 0 && (
                 <>
                   <span className="truncate" aria-label={`${bedsNum} bedroom${bedsNum === 1 ? '' : 's'}`}>

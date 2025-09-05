@@ -334,7 +334,7 @@ export function ImageCarouselModal({
             variant="outline"
             size="icon"
             className={cn(
-              "absolute right-6 top-6 z-50 h-11 w-11 rounded-full bg-white text-gray-700 shadow-md cursor-pointer hover:bg-white hover:shadow-lg",
+              "absolute right-6 top-6 z-50 h-11 w-11 rounded-full bg-white/90 backdrop-blur-sm text-gray-700 shadow-lg cursor-pointer hover:bg-white hover:shadow-xl hover:scale-105 active:scale-95",
               "transition-all duration-300 ease-out",
               isAnimating
                 ? "opacity-0 translate-y-2"
@@ -351,7 +351,7 @@ export function ImageCarouselModal({
             variant="outline"
             size="icon"
             className={cn(
-              "absolute left-6 top-1/2 -translate-y-1/2 z-50 h-11 w-11 rounded-full bg-white text-gray-700 shadow-md cursor-pointer hidden md:flex hover:bg-white hover:shadow-lg focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary focus-visible:outline-none",
+              "absolute left-6 top-1/2 -translate-y-1/2 z-50 h-11 w-11 rounded-full bg-white/90 backdrop-blur-sm text-gray-700 shadow-lg cursor-pointer hidden md:flex hover:bg-white hover:shadow-xl hover:scale-105 active:scale-95 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary focus-visible:outline-none disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100",
               "transition-all duration-300 ease-out",
               isAnimating
                 ? "opacity-0 translate-x-2"
@@ -416,7 +416,7 @@ export function ImageCarouselModal({
             variant="outline"
             size="icon"
             className={cn(
-              "absolute right-6 top-1/2 -translate-y-1/2 z-50 h-11 w-11 rounded-full bg-white text-gray-700 shadow-md cursor-pointer hidden md:flex hover:bg-white hover:shadow-lg focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary focus-visible:outline-none",
+              "absolute right-6 top-1/2 -translate-y-1/2 z-50 h-11 w-11 rounded-full bg-white/90 backdrop-blur-sm text-gray-700 shadow-lg cursor-pointer hidden md:flex hover:bg-white hover:shadow-xl hover:scale-105 active:scale-95 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary focus-visible:outline-none disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100",
               "transition-all duration-300 ease-out",
               isAnimating
                 ? "opacity-0 -translate-x-2"

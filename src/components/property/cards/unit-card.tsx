@@ -45,7 +45,7 @@ export default function UnitCard({ unit }: { unit: SimilarUnit | Unit }) {
         <CardHeader className="!p-0 border-b border-b-gray-100 gap-0 rounded-lg shadow-none">
           <AspectRatio ratio={4 / 3} className="relative overflow-hidden rounded-lg">
             {imageLoading && (
-              <Skeleton className="absolute inset-0 z-10 rounded-lg" />
+              <Skeleton className="absolute inset-0 z-10 rounded-lg h-[256px]" />
             )}
             <ImageWithFallback
               className="object-cover rounded-lg"

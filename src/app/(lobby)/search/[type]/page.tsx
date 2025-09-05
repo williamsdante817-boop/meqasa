@@ -2,7 +2,7 @@ import { Breadcrumbs } from "@/components/layout/bread-crumbs";
 import { HeroBannerSkeleton } from "@/components/search/BannerSkeleton";
 import { HeroBanner } from "@/components/search/HeroBanner";
 import PropertyTypeLinks from "@/components/search/PropertyTypeLinks";
-import { ProductionReferenceSearch } from "@/components/search/ProductionReferenceSearch";
+import { ReferenceSearch } from "@/components/search/ReferenceSearch";
 import { ResultSearchFilter } from "@/components/search/results-search-filter";
 import {
   StreamingFlexiBannerWrapper,
@@ -133,7 +133,12 @@ export default async function SearchPage({
         return {
           results: [],
           resultcount: 0,
-          searchid: null,
+          searchid: 0,
+          topads: [],
+          project1: { empty: true },
+          project2: { empty: true },
+          bottomads: [],
+          searchdesc: "",
         };
       }
     })(),
@@ -307,10 +312,10 @@ export default async function SearchPage({
           <HeroBannerSkeleton />
         )}
 
-        <div className="hidden md:block sticky top-[56px] z-50 bg-white">
+        <div className="sticky top-[56px] z-50 bg-white">
           <ResultSearchFilter />
         </div>
-        <Shell className="mt-12 flex gap-8 md:px-0">
+        <Shell className="mt-12 flex gap-8 md:px-0 max-w-[1250px]">
           <PropertyTypeLinks />
           <div className="w-full">
             <Breadcrumbs className="capitalize" segments={segments} />
@@ -329,14 +334,14 @@ export default async function SearchPage({
                 </p>
               </div>
               
-              {/* Production Reference Search Component */}
+              {/* Unified Reference Search Component - Properties + Units */}
               <div className="bg-gradient-to-r from-blue-50 to-green-50 border border-blue-200 rounded-lg p-4">
-                <ProductionReferenceSearch 
+                <ReferenceSearch 
                   showLabel={true}
                   size="default"
                   className="max-w-md"
-                  useHybridNavigation={true}
-                  showPerformanceInfo={false}
+                  enableUnifiedSearch={true}
+                  placeholder="Search by reference (e.g. 086983)"
                 />
               </div>
             </header>
@@ -354,6 +359,7 @@ export default async function SearchPage({
                   initialTotal={searchData.resultcount}
                   initialSearchId={searchData.searchid ?? 0}
                   initialPage={parseInt(resolvedSearchParams.page ?? "1")}
+                  initialSearchData={searchData}
                 />
               </div>
 

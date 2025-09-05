@@ -19,18 +19,38 @@ import SafetyTipsCard from "@/components/safety-tip";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import Shell from "@/layouts/shell";
+import { extractUnitData, hasCompressedData } from "@/lib/compressed-data-utils";
 import { getUnitDetails } from "@/lib/get-unit-details";
 import { buildInnerHtml, cn, formatNumber, slugify } from "@/lib/utils";
 import { BathIcon, BedIcon, ParkingSquare, Square } from "lucide-react";
 import ProjectVideo from "../../development-projects/_component/project-video";
 export default async function DeveloperUnitPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ unitId: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { unitId } = await params;
+  const searchParamsResolved = await searchParams;
 
-  const unitDetails = await getUnitDetails(unitId);
+  // Check for compressed data from search first (SSR-compatible)
+  let unitDetails;
+  
+  if (hasCompressedData(searchParamsResolved)) {
+    // Extract compressed unit data
+    unitDetails = extractUnitData(searchParamsResolved);
+    
+    if (unitDetails) {
+      console.log(`✅ COMPRESSED DATA HIT: Using passed unit data, no API call needed!`);
+    } else {
+      console.log(`⚠️ COMPRESSED DATA INVALID: Fetching from API`);
+      unitDetails = await getUnitDetails(unitId);
+    }
+  } else {
+    // Normal API call when not coming from search
+    unitDetails = await getUnitDetails(unitId);
+  }
 
   // Extract unit ID more reliably
   const match = /-(\d+)$/.exec(unitId);
@@ -94,21 +114,21 @@ export default async function DeveloperUnitPage({
   const location = unitDetails.unit.city?.toLowerCase() ?? "";
   const type = unitDetails.unit.unittypename?.toLowerCase() ?? "";
 
-  const searchParams = new URLSearchParams({
+  const similarSearchParams = new URLSearchParams({
     q: location || "ghana",
     page: "1",
   });
-  if (type) searchParams.set("ftype", type);
+  if (type) similarSearchParams.set("ftype", type);
   if (typeof unitDetails.unit.beds === "number" && unitDetails.unit.beds > 0) {
-    searchParams.set("fbeds", String(unitDetails.unit.beds));
+    similarSearchParams.set("fbeds", String(unitDetails.unit.beds));
   }
   if (
     typeof unitDetails.unit.baths === "number" &&
     unitDetails.unit.baths > 0
   ) {
-    searchParams.set("fbaths", String(unitDetails.unit.baths));
+    similarSearchParams.set("fbaths", String(unitDetails.unit.baths));
   }
-  const similarSearchHref = `/search/${contract}?${searchParams.toString()}`;
+  const similarSearchHref = `/search/${contract}?${similarSearchParams.toString()}`;
 
   const developerSlug = slugify(unitDetails.unit.companyname || "developer");
   const developerHref = `/projects-by-developer/${developerSlug}-${unitDetails.unit.developerid}`;

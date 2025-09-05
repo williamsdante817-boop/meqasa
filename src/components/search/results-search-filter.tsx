@@ -1,18 +1,11 @@
 "use client";
 
 import type React from "react";
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -21,17 +14,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Search, ChevronDown, ListFilterPlus, AlertCircle } from "lucide-react";
+import { AlertCircle, Search } from "lucide-react";
 import { siteConfig } from "@/config/site";
 import { searchConfig } from "@/config/search";
 import { type FormState } from "@/types/search";
-import { mockLocations } from "@/config/locations";
 import { ActiveFilterChips } from "./ActiveFilterChips";
+import { PriceRangeSelect } from "@/components/ui/price-range-select";
+import { MoreFiltersPopover } from "@/components/ui/more-filters-popover";
+import { SearchInputWithSuggestions } from "@/components/ui/search-input-with-suggestions";
 
-// Constants for better maintainability
-const SEARCH_DEBOUNCE_MS = 300;
-const MAX_SUGGESTIONS = 5;
+// Constants for better maintainability  
 const DEFAULT_LOCATION = "ghana";
 const DEFAULT_CONTRACT_TYPE = "sale";
 
@@ -41,379 +33,6 @@ interface ExtendedFormState extends FormState {
   howShort?: string; // Add short-let duration field
 }
 
-// Price Range Component
-const PriceRangeSelect = ({
-  minValue,
-  maxValue,
-  onMinChange,
-  onMaxChange,
-  priceRange,
-}: {
-  minValue: string;
-  maxValue: string;
-  onMinChange: (value: string) => void;
-  onMaxChange: (value: string) => void;
-  priceRange: { min: number; max: number; step: number };
-}) => {
-  const getDisplayText = () => {
-    const min = minValue ? Number.parseInt(minValue) : null;
-    const max = maxValue ? Number.parseInt(maxValue) : null;
-
-    const formatNumber = (num: number) => num.toLocaleString();
-
-    if (min && max) {
-      return `GH₵${formatNumber(min)} - GH₵${formatNumber(max)}`;
-    } else if (min) {
-      return `GH₵${formatNumber(min)}+`;
-    } else if (max) {
-      return `Up to GH₵${formatNumber(max)}`;
-    }
-
-    return "Price range";
-  };
-
-  const isInvalid = () => {
-    if (!minValue || !maxValue) return false;
-    const minNum = Number.parseInt(minValue);
-    const maxNum = Number.parseInt(maxValue);
-
-    // Check if values are valid numbers
-    if (isNaN(minNum) || isNaN(maxNum)) return false;
-
-    return minNum >= maxNum;
-  };
-
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          className="h-12 shadow-none justify-between bg-white border-gray-200 hover:bg-gray-50 text-brand-accent font-normal"
-        >
-          {getDisplayText()}
-          <ChevronDown className="h-4 w-4 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-80" align="start">
-        <div className="space-y-4">
-          <h4 className="font-medium leading-none">Price Range</h4>
-          <div className="grid grid-cols-2 gap-2">
-            <div>
-              <Label htmlFor="min-price">Min (GH₵)</Label>
-              <Input
-                id="min-price"
-                placeholder="Min price"
-                type="number"
-                min={priceRange.min}
-                max={priceRange.max}
-                step={priceRange.step}
-                value={minValue}
-                onChange={(e) => onMinChange(e.target.value)}
-                className={`${isInvalid() ? "border-red-500 focus:border-red-500" : ""}`}
-              />
-            </div>
-            <div>
-              <Label htmlFor="max-price">Max (GH₵)</Label>
-              <Input
-                id="max-price"
-                placeholder="Max price"
-                type="number"
-                min={priceRange.min}
-                max={priceRange.max}
-                step={priceRange.step}
-                value={maxValue}
-                onChange={(e) => onMaxChange(e.target.value)}
-                className={`${isInvalid() ? "border-red-500 focus:border-red-500" : ""}`}
-              />
-            </div>
-          </div>
-          {isInvalid() && (
-            <p className="text-red-500 text-xs mt-1">
-              Max price must be greater than min price
-            </p>
-          )}
-        </div>
-      </PopoverContent>
-    </Popover>
-  );
-};
-
-// Search Input with Suggestions
-const SearchInput = ({
-  searchValue,
-  onSearchChange,
-}: {
-  searchValue: string;
-  onSearchChange: (value: string) => void;
-}) => {
-  const [suggestions, setSuggestions] = useState<string[]>([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const [selectedIndex, setSelectedIndex] = useState(-1);
-  const [isInputFocused, setIsInputFocused] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  const debouncedSearch = useCallback(
-    (searchQuery: string) => {
-      const timeout = setTimeout(() => {
-        if (searchQuery.length > 0 && isInputFocused) {
-          // Use mockLocations with fallback to empty array if not available
-          const locations = mockLocations || [];
-          const filtered = locations.filter((location) =>
-            location.toLowerCase().includes(searchQuery.toLowerCase()),
-          );
-          setSuggestions(filtered.slice(0, MAX_SUGGESTIONS));
-          setShowSuggestions(true);
-        } else {
-          setSuggestions([]);
-          setShowSuggestions(false);
-        }
-      }, SEARCH_DEBOUNCE_MS);
-
-      return () => clearTimeout(timeout);
-    },
-    [isInputFocused],
-  );
-
-  useEffect(() => {
-    // Only run debounced search if the input is focused and user is actively typing
-    if (isInputFocused && searchValue.length > 0) {
-      const cleanup = debouncedSearch(searchValue);
-      return cleanup;
-    } else if (!isInputFocused) {
-      // Hide suggestions when input loses focus
-      setShowSuggestions(false);
-      setSelectedIndex(-1);
-    }
-  }, [searchValue, debouncedSearch, isInputFocused]);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onSearchChange(e.target.value);
-    setSelectedIndex(-1);
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (!showSuggestions) return;
-
-    switch (e.key) {
-      case "ArrowDown":
-        e.preventDefault();
-        setSelectedIndex((prev) =>
-          prev < suggestions.length - 1 ? prev + 1 : prev,
-        );
-        break;
-      case "ArrowUp":
-        e.preventDefault();
-        setSelectedIndex((prev) => (prev > 0 ? prev - 1 : -1));
-        break;
-      case "Enter":
-        e.preventDefault();
-        if (selectedIndex >= 0 && selectedIndex < suggestions.length) {
-          const suggestion = suggestions[selectedIndex];
-          if (suggestion) {
-            selectSuggestion(suggestion);
-          }
-        }
-        break;
-      case "Escape":
-        setShowSuggestions(false);
-        setSelectedIndex(-1);
-        break;
-    }
-  };
-
-  const selectSuggestion = (location: string) => {
-    console.log("Selecting suggestion:", location); // Debug log
-
-    // Update the search value
-    onSearchChange(location);
-
-    // Close suggestions and reset selection
-    setShowSuggestions(false);
-    setSelectedIndex(-1);
-
-    // Ensure the input stays focused after selection
-    setIsInputFocused(true);
-
-    // Focus the input after a small delay to ensure state update
-    setTimeout(() => {
-      if (inputRef.current) {
-        inputRef.current.focus();
-      }
-      console.log("After update - search value should be:", location);
-    }, 100);
-  };
-
-  // Handle clicks outside the component to close suggestions
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as HTMLElement;
-      if (!target.closest(".search-input-container")) {
-        setShowSuggestions(false);
-        setSelectedIndex(-1);
-        setIsInputFocused(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  return (
-    <div className="relative flex-1 search-input-container">
-      <div className={`relative transition-all duration-200 rounded-md ${
-        isInputFocused ? 'ring-2 ring-brand-primary/50 ring-offset-1' : ''
-      }`}>
-        <Search className={`absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 transition-colors duration-200 ${
-          isInputFocused ? 'text-brand-primary' : 'text-brand-accent'
-        }`} />
-        <Input
-          ref={inputRef}
-          placeholder="Search location"
-          value={searchValue}
-          onChange={handleInputChange}
-          onKeyDown={handleKeyDown}
-          onFocus={() => {
-            setIsInputFocused(true);
-            // Only show suggestions if there's a search value and suggestions exist
-            if (searchValue && suggestions.length > 0) {
-              setShowSuggestions(true);
-            }
-          }}
-          onBlur={() => {
-            // Don't immediately set focused to false to allow for suggestion clicks
-            // The click outside handler will manage this properly
-          }}
-          className="h-12 pl-10 bg-white shadow-none border-gray-200 text-brand-accent focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none hover:border-gray-300 transition-all duration-200 placeholder:text-gray-400"
-        />
-      </div>
-
-      {showSuggestions && suggestions.length > 0 && (
-        <div className="absolute top-full left-0 right-0 z-[9999] mt-1">
-          <div className="bg-white rounded-lg shadow-lg border border-gray-200 max-h-60 overflow-y-auto">
-            {suggestions.map((location, index) => (
-              <div
-                key={location}
-                className={`px-4 py-3 cursor-pointer hover:bg-gray-50 border-b border-gray-100 last:border-b-0 ${
-                  index === selectedIndex
-                    ? "bg-blue-50 text-blue-600"
-                    : "text-brand-accent"
-                }`}
-                onMouseDown={(e) => {
-                  e.preventDefault(); // Prevent blur from firing
-                  selectSuggestion(location);
-                }}
-              >
-                <div className="flex items-center">
-                  <Search className="w-4 h-4 mr-3 text-gray-400" />
-                  <span className="text-sm">{location}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
-
-// More Filters Popover
-const MoreFiltersPopover = ({
-  formState,
-  updateFormState,
-}: {
-  formState: ExtendedFormState;
-  updateFormState: (updates: Partial<ExtendedFormState>) => void;
-}) => (
-  <Popover>
-    <PopoverTrigger asChild>
-      <Button
-        variant="outline"
-        className="h-12 shadow-none bg-white border-gray-200 hover:bg-gray-50 text-brand-accent font-normal"
-      >
-        More filters
-        <ListFilterPlus className="ml-2 h-4 w-4" />
-      </Button>
-    </PopoverTrigger>
-    <PopoverContent className="w-[400px]" align="end">
-      <div className="space-y-4">
-        <h4 className="font-medium leading-none">Additional Filters</h4>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <Label>Rent Period</Label>
-            <Select
-              value={formState.period}
-              onValueChange={(value) => updateFormState({ period: value })}
-            >
-              <SelectTrigger className="h-10 shadow-none cursor-pointer">
-                <SelectValue placeholder="Select period" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectItem value="- Any -">Any Period</SelectItem>
-                  <SelectItem value="shortrent">Short Term</SelectItem>
-                  <SelectItem value="longrent">Long Term</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div>
-            <Label>Sort by</Label>
-            <Select
-              value={formState.sort}
-              onValueChange={(value) => updateFormState({ sort: value })}
-            >
-              <SelectTrigger className="h-10 shadow-none cursor-pointer">
-                <SelectValue placeholder="Sort by" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectItem value="date">Newest First</SelectItem>
-                  <SelectItem value="date2">Oldest First</SelectItem>
-                  <SelectItem value="price">Lowest Price</SelectItem>
-                  <SelectItem value="price2">Highest Price</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-
-        <div className="space-y-3">
-          <Label className="text-sm font-medium">Property Features</Label>
-          <div className="space-y-2">
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="furnished"
-                checked={formState.furnished}
-                onCheckedChange={(checked) =>
-                  updateFormState({ furnished: !!checked })
-                }
-              />
-              <Label htmlFor="furnished" className="text-sm cursor-pointer">
-                Furnished Properties
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="owner"
-                checked={formState.owner}
-                onCheckedChange={(checked) =>
-                  updateFormState({ owner: !!checked })
-                }
-              />
-              <Label htmlFor="owner" className="text-sm cursor-pointer">
-                For Sale by Owner
-              </Label>
-            </div>
-          </div>
-        </div>
-      </div>
-    </PopoverContent>
-  </Popover>
-);
 
 // Helper function to safely convert string to number or return empty string
 const safeNumber = (value: string | undefined): string => {
@@ -447,7 +66,7 @@ function SearchFilterErrorBoundary({
       <div className="bg-red-50 border border-red-200 rounded-lg p-4 mx-4 my-4">
         <div className="flex items-center">
           <AlertCircle className="h-5 w-5 text-red-400 mr-2" />
-          <div className="text-sm text-red-700">
+          <div className="text-sm sm:text-base text-red-700">
             Something went wrong with the search filters. Please refresh the
             page.
           </div>
@@ -534,15 +153,24 @@ export function ResultSearchFilter() {
   if (!isInitialized) {
     return (
       <div className="bg-white border border-gray-200 shadow-sm">
-        <div className="flex items-center gap-2 p-4 container mx-auto">
-          <div className="h-12 w-32 bg-gray-100 animate-pulse rounded"></div>
-          <div className="flex-1 h-12 bg-gray-100 animate-pulse rounded"></div>
-          <div className="h-12 w-40 bg-gray-100 animate-pulse rounded"></div>
-          <div className="h-12 w-32 bg-gray-100 animate-pulse rounded"></div>
-          <div className="h-12 w-32 bg-gray-100 animate-pulse rounded"></div>
-          <div className="h-12 w-40 bg-gray-100 animate-pulse rounded"></div>
-          <div className="h-12 w-32 bg-gray-100 animate-pulse rounded"></div>
-          <div className="h-12 bg-gray-100 animate-pulse rounded px-6"></div>
+        <div className="overflow-x-auto">
+          <div className="flex items-center gap-2 p-4 container mx-auto min-w-fit">
+            <div className="h-10 sm:h-12 w-28 sm:w-32 bg-gray-100 animate-pulse rounded flex-shrink-0"></div>
+            <div className="flex-1 min-w-[120px] sm:min-w-[200px] h-10 sm:h-12 bg-gray-100 animate-pulse rounded"></div>
+            <div className="h-10 sm:h-12 w-32 sm:w-40 bg-gray-100 animate-pulse rounded flex-shrink-0"></div>
+            <div className="h-10 sm:h-12 w-24 sm:w-32 bg-gray-100 animate-pulse rounded flex-shrink-0"></div>
+            <div className="h-10 sm:h-12 w-24 sm:w-32 bg-gray-100 animate-pulse rounded flex-shrink-0"></div>
+            <div className="h-10 sm:h-12 w-28 sm:w-40 bg-gray-100 animate-pulse rounded flex-shrink-0"></div>
+            <div className="h-10 sm:h-12 w-20 sm:w-32 bg-gray-100 animate-pulse rounded flex-shrink-0"></div>
+            <div className="h-10 sm:h-12 w-20 sm:w-32 bg-gray-100 animate-pulse rounded flex-shrink-0"></div>
+          </div>
+        </div>
+        <div className="px-4 pb-4 container mx-auto">
+          <div className="flex flex-wrap gap-2">
+            {Array.from({ length: 3 }).map((_, idx) => (
+              <div key={idx} className="h-8 w-20 bg-gray-100 animate-pulse rounded-full"></div>
+            ))}
+          </div>
         </div>
       </div>
     );
@@ -745,19 +373,21 @@ export function ResultSearchFilter() {
           <div className="bg-red-50 border-l-4 border-red-400 p-4 mx-4 mt-4">
             <div className="flex">
               <AlertCircle className="h-5 w-5 text-red-400 mr-2" />
-              <div className="text-sm text-red-700">{error}</div>
+              <div className="text-sm sm:text-base text-red-700">{error}</div>
             </div>
           </div>
         )}
 
-        <div className="flex items-center gap-2 p-4 container mx-auto">
+        {/* Mobile-responsive filter container with horizontal scrolling */}
+        <div className="overflow-x-auto">
+          <div className="flex items-center gap-2 p-4 container mx-auto min-w-fit">
           {/* For Sale/Rent Dropdown - Hidden for short-let searches */}
           {!isShortLetSearch() && (
             <Select
               value={formState.listingType}
               onValueChange={(value) => updateFormState({ listingType: value })}
             >
-              <SelectTrigger className="h-12 w-32 bg-white text-brand-accent border-gray-200 hover:bg-gray-50 shadow-none cursor-pointer">
+              <SelectTrigger className="h-10 sm:h-12 w-28 sm:w-32 bg-white text-brand-accent border-gray-200 hover:bg-gray-50 shadow-none cursor-pointer text-sm sm:text-base flex-shrink-0">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -774,9 +404,13 @@ export function ResultSearchFilter() {
           )}
 
           {/* Search Input */}
-          <SearchInput
-            searchValue={formState.search}
-            onSearchChange={(value) => updateFormState({ search: value })}
+          <SearchInputWithSuggestions
+            variant="results"
+            value={formState.search}
+            onChange={(value) => updateFormState({ search: value })}
+            placeholder="Location"
+            className="text-sm sm:text-base"
+            maxSuggestions={5}
           />
 
           {/* Property Type - Hidden for short-let searches */}
@@ -787,8 +421,8 @@ export function ResultSearchFilter() {
                 updateFormState({ propertyType: value })
               }
             >
-              <SelectTrigger className="h-12 w-40 text-brand-accent bg-white border-gray-200 hover:bg-gray-50 shadow-none cursor-pointer">
-                <SelectValue placeholder="Property type" />
+              <SelectTrigger className="h-10 sm:h-12 w-32 sm:w-40 text-brand-accent bg-white border-gray-200 hover:bg-gray-50 shadow-none cursor-pointer text-sm sm:text-base flex-shrink-0">
+                <SelectValue placeholder="Type" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
@@ -817,7 +451,7 @@ export function ResultSearchFilter() {
               value={formState.howShort ?? "- Any -"}
               onValueChange={(value) => updateFormState({ howShort: value })}
             >
-              <SelectTrigger className="h-12 w-40 text-brand-accent bg-white border-gray-200 hover:bg-gray-50 shadow-none cursor-pointer">
+              <SelectTrigger className="h-10 sm:h-12 w-32 sm:w-40 text-brand-accent bg-white border-gray-200 hover:bg-gray-50 shadow-none cursor-pointer text-sm sm:text-base flex-shrink-0">
                 <SelectValue placeholder="Duration" />
               </SelectTrigger>
               <SelectContent>
@@ -847,8 +481,8 @@ export function ResultSearchFilter() {
               value={formState.bedrooms || "- Any -"}
               onValueChange={(value) => updateFormState({ bedrooms: value })}
             >
-              <SelectTrigger className="h-12 w-32 text-brand-accent bg-white border-gray-200 hover:bg-gray-50 shadow-none cursor-pointer">
-                <SelectValue placeholder="Bedrooms" />
+              <SelectTrigger className="h-10 sm:h-12 w-24 sm:w-32 text-brand-accent bg-white border-gray-200 hover:bg-gray-50 shadow-none cursor-pointer text-sm sm:text-base flex-shrink-0">
+                <SelectValue placeholder="Beds" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
@@ -877,8 +511,8 @@ export function ResultSearchFilter() {
               value={formState.bathrooms || "- Any -"}
               onValueChange={(value) => updateFormState({ bathrooms: value })}
             >
-              <SelectTrigger className="h-12 w-32 text-brand-accent bg-white border-gray-200 hover:bg-gray-50 shadow-none cursor-pointer">
-                <SelectValue placeholder="Bathrooms" />
+              <SelectTrigger className="h-10 sm:h-12 w-24 sm:w-32 text-brand-accent bg-white border-gray-200 hover:bg-gray-50 shadow-none cursor-pointer text-sm sm:text-base flex-shrink-0">
+                <SelectValue placeholder="Baths" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
@@ -910,32 +544,41 @@ export function ResultSearchFilter() {
             priceRange={
               searchConfig?.priceRange || { min: 0, max: 1000000, step: 10000 }
             }
+            variant="default"
+            currency="GH₵"
+            title="Price Range"
+            showQuickSelections={true}
           />
 
-          {/* More Filters */}
-          <MoreFiltersPopover
-            formState={formState}
-            updateFormState={updateFormState}
-          />
+          {/* More Filters - Mobile responsive */}
+          <div className="flex-shrink-0">
+            <MoreFiltersPopover
+              formState={formState}
+              updateFormState={updateFormState}
+            />
+          </div>
 
-          {/* Enhanced Search Button with Loading State */}
+          {/* Enhanced Search Button with Loading State - Mobile responsive */}
           <Button
             onClick={handleSearch}
             disabled={isSearching}
-            className="h-12 bg-brand-primary hover:bg-brand-primary-dark text-white px-6 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+            className="h-10 sm:h-12 bg-brand-primary hover:bg-brand-primary-dark text-white px-3 sm:px-6 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 text-sm sm:text-base flex-shrink-0"
           >
             {isSearching ? (
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                <span>Searching...</span>
+              <div className="flex items-center gap-1 sm:gap-2">
+                <div className="w-3 h-3 sm:w-4 sm:h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <span className="hidden sm:inline">Searching...</span>
+                <span className="sm:hidden">...</span>
               </div>
             ) : (
-              <div className="flex items-center gap-2">
-                <Search className="h-4 w-4" />
-                <span>Update search</span>
+              <div className="flex items-center gap-1 sm:gap-2">
+                <Search className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline">Update search</span>
+                <span className="sm:hidden">Search</span>
               </div>
             )}
           </Button>
+          </div>
         </div>
 
         {/* Active Filter Chips */}

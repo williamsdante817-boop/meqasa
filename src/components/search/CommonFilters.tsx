@@ -11,8 +11,9 @@ import {
 } from "@/components/ui/select";
 import { searchConfig } from "@/config/search";
 import { type FormState } from "@/types/search";
-import { PriceInput } from "./PriceInput";
-import { MoreFiltersPopover } from "./MoreFiltersPopover";
+import { PriceRangeSelect } from "@/components/ui/price-range-select";
+import { MoreFiltersPopover } from "@/components/ui/more-filters-popover";
+import { PriceInput } from "@/components/search/PriceInput";
 
 interface CommonFiltersProps {
   showMoreFilters?: boolean;
@@ -205,13 +206,14 @@ export function CommonFilters({
           <Separator orientation="vertical" className="h-[20px] bg-[#9A9EB5]" />
         </>
       )}
-      <PriceInput
+      <PriceRangeSelect
         title="Price range"
-        unit="GH₵"
+        currency="GH₵"
         placeholder={{ min: "Min.price", max: "Max.price" }}
-        range={
+        priceRange={
           searchConfig?.priceRange || { min: 0, max: 1000000, step: 10000 }
         }
+        variant="home"
         className="h-[20px] border-none px-5 py-0 text-white"
         minValue={formState.minPrice}
         maxValue={formState.maxPrice}
@@ -244,6 +246,8 @@ export function CommonFilters({
           <MoreFiltersPopover
             formState={formState}
             updateFormState={updateFormState}
+            variant="home"
+            className="h-5 min-w-[150px] max-w-[150px] cursor-pointer rounded-none border-0 bg-transparent py-0 text-base font-medium shadow-none text-white focus:border-0 focus:ring-0 focus:ring-transparent"
           />
         </>
       )}

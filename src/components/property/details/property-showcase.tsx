@@ -180,7 +180,7 @@ function PropertyShowcaseImages({ images }: { images: string[] }) {
             ) : (
               <motion.button
                 onClick={() => handleImageClick(0)}
-                className="group w-full h-full cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300"
+                className="group w-full h-full cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300"
                 aria-label="Open image gallery at main image"
                 type="button"
                 whileHover={{ scale: 1.02 }}
@@ -188,7 +188,6 @@ function PropertyShowcaseImages({ images }: { images: string[] }) {
                 transition={{ duration: 0.2, ease: "easeOut" }}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition-delay={0.1}
               >
                 <motion.div
                   className="w-full h-full overflow-hidden"
@@ -210,7 +209,20 @@ function PropertyShowcaseImages({ images }: { images: string[] }) {
                     quality={85}
                   />
                 </motion.div>
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300 pointer-events-none" />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 pointer-events-none" />
+                {/* Hover overlay with subtle zoom icon */}
+                <motion.div 
+                  className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                  initial={{ scale: 0.8 }}
+                  whileHover={{ scale: 1 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <div className="bg-white/90 backdrop-blur-sm rounded-full p-3 shadow-lg">
+                    <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                    </svg>
+                  </div>
+                </motion.div>
               </motion.button>
             )}
           </div>
@@ -258,7 +270,7 @@ function PropertyShowcaseImages({ images }: { images: string[] }) {
                 ) : (
                   <motion.button
                     onClick={() => handleImageClick(actualIndex)}
-                    className="group relative w-full h-full cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300"
+                    className="group relative w-full h-full cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300"
                     aria-label={
                       showMoreOverlay
                         ? `Open image gallery at image ${actualIndex + 1}, plus ${remainingCount} more photos`

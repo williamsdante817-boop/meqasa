@@ -100,7 +100,7 @@ export function ArticleCard({
         {/* Article Content */}
         <div className={`p-4 flex-1 flex flex-col ${isList ? "justify-center" : ""}`}>
           {/* Source and Date */}
-          <div className={`flex items-center gap-2 text-xs text-gray-500 mb-2 ${isList ? "mb-1" : ""}`}>
+          <div className={`flex items-center gap-2 text-xs sm:text-sm text-gray-500 mb-2 ${isList ? "mb-1" : ""}`}>
             <span className="font-medium">{article.source}</span>
             <span>•</span>
             <time dateTime={article.date}>{article.date}</time>
@@ -117,8 +117,8 @@ export function ArticleCard({
               className={`
                 font-semibold text-gray-900 group-hover/link:text-brand-primary 
                 transition-colors duration-200 line-clamp-2
-                ${isFeatured ? "text-lg md:text-xl mb-3" : "text-sm mb-2"}
-                ${isList ? "text-sm leading-tight" : ""}
+                ${isFeatured ? "text-base sm:text-lg md:text-xl mb-3" : "text-sm sm:text-base mb-2"}
+                ${isList ? "text-sm sm:text-base leading-tight" : ""}
               `}
               title={article.summary}
             >
@@ -132,7 +132,7 @@ export function ArticleCard({
               href={article.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center text-sm text-brand-primary hover:text-brand-primary/80 transition-colors mt-auto"
+              className="inline-flex items-center text-sm sm:text-base text-brand-primary hover:text-brand-primary/80 transition-colors mt-auto"
             >
               Read More
               <ExternalLink className="w-4 h-4 ml-1" />

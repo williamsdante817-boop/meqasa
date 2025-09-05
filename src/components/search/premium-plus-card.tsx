@@ -1,13 +1,14 @@
 "use client";
 
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { Dot, Phone } from "lucide-react";
+import { Camera, Dot, Phone } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
 import { AddFavoriteButton } from "@/components/add-favorite-button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { PremiumPlusBadge } from "@/components/ui/premium-badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Card,
@@ -73,6 +74,7 @@ export function PremiumPlusPropertyCard({
 }: PremiumPlusPropertyCardProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [avatarError, setAvatarError] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   // Compute details page link
   const detailsLink = data.isunit
@@ -105,142 +107,187 @@ export function PremiumPlusPropertyCard({
     .slice(0, 2);
 
   return (
-    <Card className="group relative h-fit w-full overflow-hidden rounded-lg border border-gray-200 bg-white p-0 shadow-none transition-all duration-200 hover:shadow-elegant hover:border-brand-primary/20">
+    <Card className="relative h-full w-full overflow-hidden rounded-lg border border-gray-200 bg-white p-0 hover:border-brand-primary/30">
       <CardHeader className="p-0">
-        <div className="relative w-full rounded-lg min-h-[230px] md:min-h-[279px] md:min-w-[256px]">
+        <div className="relative w-full rounded-lg min-h-[200px] sm:min-h-[230px] md:min-h-[260px]">
           <Link
             href={detailsLink}
             className="absolute inset-0 z-10"
             aria-label={`View details for ${summary}`}
           />
 
-          {/* Loading Skeleton */}
-          <div className="absolute inset-0 z-0">
-            <Skeleton className="h-[202px] w-full rounded-t-lg md:h-[279px] lg:rounded-none lg:rounded-t-lg" />
-          </div>
+          {/* Loading Skeleton - only show when image hasn't loaded */}
+          {!imageLoaded && (
+            <div className="absolute inset-0 z-20">
+              <Skeleton className="h-full w-full rounded-t-lg animate-pulse" />
+            </div>
+          )}
 
           <ImageWithFallback
-            className="relative z-10 h-[202px] w-full rounded-t-lg object-cover md:h-[279px] lg:rounded-none lg:rounded-t-lg transition-opacity duration-300"
-            src={data.image2 || "/placeholder-image.png"}
+            className={cn(
+              "relative z-10 h-[200px] sm:h-[230px] md:h-[260px] w-full rounded-t-lg object-cover transition-all duration-500",
+              imageLoaded ? "opacity-100" : "opacity-0"
+            )}
+            src={data.image2 || data.image || "/placeholder-image.png"}
             alt={summary}
             placeholder="blur"
-            blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzI4IiBoZWlnaHQ9IjI3OSIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciPjxzdG9wIHN0b3AtY29sb3I9IiNmNmY3ZjgiIG9mZnNldD0iMCUiLz48c3RvcCBzdG9wLWNvbG9yPSIjZWRlZWYxIiBvZmZzZXQ9IjIwJSIvPjxzdG9wIHN0b3AtY29sb3I9IiNmNmY3ZjgiIG9mZnNldD0iNDAlIi8+PHN0b3Agc3RvcC1jb2xvcj0iI2Y2ZjdmOCIgb2Zmc2V0PSI3MCUiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjZmN2Y4Ii8+PHJlY3QgaWQ9InIiIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZykiLz48YW5pbWF0ZSB4bGlua3M6aHJlZj0iI3IiIGF0dHJpYnV0ZU5hbWU9IngiIGZyb209Ii03MjgiIHRvPSI3MjgiIGR1cj0iMXMiIHJlcGVhdENvdW50PSJpbmZpbml0ZSIgLz48L3N2Zz4="
-            sizes="(max-width: 640px) 100vw, (max-width: 768px) 256px, (max-width: 1024px) 300px, 256px"
+            blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iMzAiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PC9zdmc+"
+            sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
             priority
             fill
-            quality={90}
+            quality={85}
             fallbackAlt={`${summary} - Image not available`}
+            onLoad={() => setImageLoaded(true)}
           />
 
           {/* Premium Plus Badge */}
-          <Badge className="absolute left-3 top-3 z-20 bg-brand-primary text-white uppercase tracking-wide">
-            Premium Plus
-          </Badge>
+          <div className="absolute left-3 top-3 z-30">
+            <PremiumPlusBadge size="sm" />
+          </div>
 
           {/* Favorite Button */}
           {listingId > 0 && (
-            <div className="absolute right-3 top-3 z-30">
+            <div className="absolute right-3 top-3 z-30 opacity-90 group-hover:opacity-100 transition-opacity duration-200">
               <AddFavoriteButton listingId={listingId} />
             </div>
+          )}
+
+          {/* Photo count indicator */}
+          {data.photocount && parseInt(data.photocount) > 1 && (
+             <Badge
+            className="absolute bottom-3 right-3 z-30 bg-black/70 text-white text-xs hover:bg-black/90 transition-colors duration-200"
+            aria-label={`View ${data.photocount} photos`}
+          >
+            <Camera className="mr-1.5 h-3 w-3" />
+            <span>{data.photocount}</span>
+          </Badge>
           )}
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-3">
+      <CardContent className="flex flex-col flex-1 p-4 space-y-3">
         {/* Property Title */}
-        <h3 className="line-clamp-2 font-bold text-brand-primary transition-colors group-hover:text-brand-accent">
-          <Link
-            href={detailsLink}
-            title={summary}
-            aria-label={`View details for ${summary}`}
-            className="hover:underline"
-          >
+        <Link href={detailsLink} className="group/title">
+          <h3 className="line-clamp-2 font-bold text-brand-accent text-base sm:text-lg leading-tight transition-colors duration-200 group-hover/title:text-brand-accent-dark">
             {summary}
-          </Link>
-        </h3>
+          </h3>
+        </Link>
+
+        {/* Location */}
+        {data.streetaddress && (
+          <p className="text-sm sm:text-base text-brand-muted line-clamp-1 capitalize">
+         {data.streetaddress}
+          </p>
+        )}
 
         {/* Property Details */}
-        <div className="flex items-center gap-2 text-sm text-brand-muted">
+        <div className="flex items-center gap-1 text-sm text-brand-muted flex-wrap sm:text-base">
           {bedroomCount > 0 && (
-            <>
-              <span>{bedroomCount} Beds</span>
-              <Dot className="h-3 w-3 text-brand-accent" />
-            </>
+            <div className="flex items-center gap-1">
+              <span className="font-medium">
+                {bedroomCount} Bed{bedroomCount !== 1 ? 's' : ''}
+              </span>
+              {(bathroomCount > 0 || garageCount > 0) && (
+                <Dot className="h-3 w-3 text-brand-accent flex-shrink-0" />
+              )}
+            </div>
           )}
           {bathroomCount > 0 && (
-            <>
-              <span>{bathroomCount} Baths</span>
-              {garageCount > 0 && <Dot className="h-3 w-3 text-brand-accent" />}
-            </>
+            <div className="flex items-center gap-1">
+              <span className="font-medium">
+                {bathroomCount} Bath{bathroomCount !== 1 ? 's' : ''}
+              </span>
+              {garageCount > 0 && (
+                <Dot className="h-3 w-3 text-brand-accent flex-shrink-0" />
+              )}
+            </div>
           )}
           {garageCount > 0 && (
-            <>
-              <span>{garageCount} Parking</span>
-              <Dot className="h-3 w-3 text-brand-accent" />
-              <span>{floorArea} m²</span>
-            </>
+            <div className="flex items-center gap-1">
+              <span className="font-medium">{garageCount} Parking</span>
+              {floorArea !== '-' && (
+                <>
+                  <Dot className="h-3 w-3 text-brand-accent flex-shrink-0" />
+                  <span className="font-medium">{floorArea} m²</span>
+                </>
+              )}
+            </div>
           )}
         </div>
 
+        {/* Description if available */}
+        {data.description && (
+          <p 
+            className="line-clamp-2 text-sm text-brand-muted leading-relaxed sm:text-base"
+            dangerouslySetInnerHTML={buildInnerHtml(data.description)}
+          />
+        )}
+
         {/* Price */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-baseline gap-2 pt-1">
           {pricePart1 && (
             <span
-              className="text-lg font-bold text-brand-accent"
+              className="text-lg font-bold text-brand-primary leading-tight sm:text-xl"
               dangerouslySetInnerHTML={buildInnerHtml(pricePart1)}
             />
           )}
           {pricePart2 && (
-            <span className="text-sm font-normal text-brand-muted">
+            <span className="text-sm font-medium text-brand-muted leading-tight sm:text-base">
               {pricePart2}
             </span>
           )}
         </div>
       </CardContent>
 
-      <CardFooter className="flex items-center gap-3 border-t border-gray-100 p-4">
-        {/* Agent Avatar */}
-        <Avatar className="h-10 w-10 border border-gray-200 shadow-sm">
-          {/* Avatar Loading Skeleton */}
-          <div className="absolute inset-0 z-0">
-            <Skeleton className="h-10 w-10 rounded-full" />
+      <CardFooter className="flex items-center justify-between p-4 border-t border-gray-100">
+        {/* Agent Info */}
+        <div className="flex items-center gap-3">
+          <Avatar className="h-9 w-9 border border-brand-border shadow-sm transition-transform group-hover:scale-105">
+            <AvatarImage
+              src={ownerImage}
+              alt={ownerName}
+              onError={() => setAvatarError(true)}
+              className="object-cover"
+            />
+            <AvatarFallback className="bg-slate-50 text-sm font-semibold text-brand-accent">
+              {avatarInitials}
+            </AvatarFallback>
+          </Avatar>
+
+          <div className="flex flex-col">
+            {ownerName !== 'Agent' && (
+              <span className="text-sm font-medium text-brand-accent line-clamp-1 sm:text-base md:hidden">
+                {ownerName}
+              </span>
+            )}
+            <div className="hidden md:block">
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span className="line-clamp-1 w-fit text-left text-sm text-brand-muted cursor-help hover:text-brand-accent transition-colors sm:text-base">
+                      Updated {recency}
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Updated {recency}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+            <span className="text-xs text-brand-muted md:hidden sm:text-sm">
+              Updated {recency}
+            </span>
           </div>
-
-          <AvatarImage
-            src={ownerImage}
-            alt={ownerName}
-            onError={() => setAvatarError(true)}
-            className="relative z-10 object-fit"
-          />
-          <AvatarFallback className="relative z-10 bg-slate-50 text-sm font-semibold text-brand-accent">
-            {avatarInitials}
-          </AvatarFallback>
-        </Avatar>
-
-        {/* Update Time */}
-        <div className="hidden lg:block flex-1">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span className="line-clamp-1 text-xs text-brand-muted">
-                  Updated {recency} ago
-                </span>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Updated {recency} ago</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
               <Button
                 variant="outline"
                 size="icon"
-                className="h-9 w-9 text-brand-accent shadow-none"
+                className="h-9 w-9 shadow-none text-brand-accent border-brand-border hover:shadow-sm"
                 aria-label={`Contact ${ownerName}`}
               >
                 <Phone className="h-4 w-4" />
@@ -248,13 +295,9 @@ export function PremiumPlusPropertyCard({
             </DialogTrigger>
             <DialogContent className="max-w-lg w-full overflow-hidden p-4 sm:p-6">
               <DeveloperContactCard
-                developerName={ownerName}
+                developerName={ownerName ?? ""}
                 developerId={data.listingid}
-                logoSrc={
-                  data.owner?.image
-                    ? `https://meqasa.com/fascimos/somics/${data.owner.image}`
-                    : ""
-                }
+                logoSrc={ownerImage ?? ""}
                 fallbackImage="/placeholder-image.png"
                 onClose={() => setIsOpen(false)}
               />
@@ -264,12 +307,13 @@ export function PremiumPlusPropertyCard({
           <Link
             href={detailsLink}
             className={cn(
-              buttonVariants({ variant: "default" }),
-              "h-9 bg-brand-primary text-white hover:bg-brand-primary-dark font-semibold",
+              buttonVariants({ variant: "default", size: "sm" }),
+              "w-24 sm:w-32 font-semibold bg-brand-primary hover:bg-brand-primary-dark text-white transition-all duration-200 hover:shadow-md",
             )}
             aria-label={`View details for ${summary}`}
           >
-            View details
+            <span className="hidden sm:inline">View details</span>
+            <span className="sm:hidden">Details</span>
           </Link>
         </div>
       </CardFooter>

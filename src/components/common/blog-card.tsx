@@ -49,15 +49,15 @@ export default function BlogCard({
     <Link href={href} className="block" aria-label={`Read blog post: ${title}`}>
       <article className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_192px] mb-6 gap-4">
         <div className="space-y-2">
-          <h3 className="text-lg font-semibold text-brand-accent mb-1 leading-tight">
+          <h3 className="text-base sm:text-lg font-semibold text-brand-accent mb-1 leading-tight">
             {title}
           </h3>
-          <p className="line-clamp-3 text-sm md:text-base leading-relaxed text-brand-muted">
+          <p className="line-clamp-3 text-sm sm:text-base leading-relaxed text-brand-muted">
             {description}
           </p>
           <time
             dateTime={isoDate}
-            className="text-sm text-brand-accent flex items-center"
+            className="text-sm sm:text-base text-brand-accent flex items-center"
           >
             <Calendar
               className="mr-2 text-[#f93a5d]"

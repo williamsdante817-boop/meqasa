@@ -71,12 +71,22 @@ export async function processProductionReferenceSearch(
     const responseTime = performance.now() - startTime;
     const formattedRef = formatReferenceForDisplay(cleanRef);
     
+    // Get the listing details to pass along with the URL
+    let listingDetails;
+    try {
+      listingDetails = await getListingDetails(cleanRef);
+      console.log(`🔄 Got property data for reference: ${cleanRef}`);
+    } catch (dataError) {
+      console.warn(`Failed to get property data for ${cleanRef}:`, dataError);
+    }
+    
     return {
       reference: formattedRef,
       url,
       isValid: true,
       source: 'api',
-      responseTime
+      responseTime,
+      propertyData: listingDetails // Add the property data to pass along
     };
 
   } catch (error) {

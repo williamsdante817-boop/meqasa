@@ -222,7 +222,7 @@ export function ProductionReferenceSearch({
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
             className={cn(
-              "pr-10",
+              "pr-10 placeholder:!text-sm",
               inputSizeClass,
               error && "border-red-500 focus:border-red-500 focus:ring-red-500"
             )}

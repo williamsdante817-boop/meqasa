@@ -19,6 +19,7 @@ import SafetyTipsCard from "@/components/safety-tip";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { getListingDetails } from "@/lib/get-listing-detail";
+import { extractPropertyData, getCleanUrl, hasCompressedData } from "@/lib/compressed-data-utils";
 import { buildInnerHtml, cn, formatNumber } from "@/lib/utils";
 import { sanitizeHtml } from "@/lib/dom-sanitizer";
 import { BathIcon, BedIcon, ParkingSquare, Square, ShieldCheck, Tag, ExternalLink } from "lucide-react";
@@ -274,10 +275,14 @@ export async function generateMetadata({
 
 export default async function DetailsPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { slug } = await params;
+  const searchParamsResolved = await searchParams;
+  
   // Extract listing ID more reliably
   const match = /-(\d+)$/.exec(slug);
   if (!match?.[1]) {
@@ -292,8 +297,25 @@ export default async function DetailsPage({
     listingId,
   );
 
-  console.log("Property page - calling getListingDetails with ID:", listingId);
-  const listingDetail = await getListingDetails(listingId);
+  // Check for compressed data from search first (SSR-compatible)
+  let listingDetail;
+  
+  if (hasCompressedData(searchParamsResolved)) {
+    // Extract compressed property data
+    listingDetail = extractPropertyData(searchParamsResolved);
+    
+    if (listingDetail) {
+      console.log(`✅ COMPRESSED DATA HIT: Using passed property data, no API call needed!`);
+    } else {
+      console.log(`⚠️ COMPRESSED DATA INVALID: Fetching from API`);
+      listingDetail = await getListingDetails(listingId);
+    }
+  } else {
+    // Normal API call when not coming from search
+    console.log("Property page - calling getListingDetails with ID:", listingId);
+    listingDetail = await getListingDetails(listingId);
+  }
+  
   console.log(
     "Property page - got listing detail:",
     !!listingDetail,
@@ -440,7 +462,7 @@ export default async function DetailsPage({
   const contract = listingDetail.contract.toLowerCase();
   const location = listingDetail.location.toLowerCase();
   const type = listingDetail.type.toLowerCase();
-  const searchParams = new URLSearchParams({
+  const similarSearchParams = new URLSearchParams({
     q: location,
     page: "1",
     ftype: type,
@@ -448,10 +470,10 @@ export default async function DetailsPage({
   const numBeds = Number.parseInt(listingDetail.beds, 10);
   const numBaths = Number.parseInt(listingDetail.baths, 10);
   if (!Number.isNaN(numBeds) && numBeds > 0)
-    searchParams.set("fbeds", String(numBeds));
+    similarSearchParams.set("fbeds", String(numBeds));
   if (!Number.isNaN(numBaths) && numBaths > 0)
-    searchParams.set("fbaths", String(numBaths));
-  const similarSearchHref = `/search/${contract}?${searchParams.toString()}`;
+    similarSearchParams.set("fbaths", String(numBaths));
+  const similarSearchHref = `/search/${contract}?${similarSearchParams.toString()}`;
 
   // Construct internal agent link `/agents/{name}?g={id}` using owner.page as source of id
   const agentNameEncoded = encodeURIComponent(listingDetail.owner.name);

@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { SearchResults } from "./search-results";
-import type { MeqasaListing } from "@/types/meqasa";
+import type { MeqasaListing, MeqasaSearchResponse } from "@/types/meqasa";
 
 interface SearchResultsWrapperProps {
   type: string;
@@ -11,6 +11,7 @@ interface SearchResultsWrapperProps {
   initialTotal: number;
   initialSearchId: number;
   initialPage: number;
+  initialSearchData: MeqasaSearchResponse;
 }
 
 export function SearchResultsWrapper({
@@ -20,6 +21,7 @@ export function SearchResultsWrapper({
   initialTotal,
   initialSearchId,
   initialPage,
+  initialSearchData,
 }: SearchResultsWrapperProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -40,6 +42,7 @@ export function SearchResultsWrapper({
       initialTotal={initialTotal}
       initialSearchId={initialSearchId}
       initialPage={initialPage}
+      initialSearchData={initialSearchData}
       onSearchIdUpdate={handleSearchIdUpdate}
     />
   );

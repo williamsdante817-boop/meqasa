@@ -60,7 +60,7 @@ export function AgentPropertyCard({ listing }: { listing: AgentListing }) {
   // Safe price rendering using the same pattern as property-card
   const priceDisplay = listing.pricepart1 ? (
     <span
-      className="text-base font-semibold"
+      className="text-lg font-bold sm:text-xl"
       dangerouslySetInnerHTML={buildInnerHtml(listing.pricepart1)}
     />
   ) : null;
@@ -130,23 +130,23 @@ export function AgentPropertyCard({ listing }: { listing: AgentListing }) {
       </CardHeader>
       <CardContent className="flex flex-col justify-between px-4 pb-4 lg:p-0">
         <Link href={detailsLink}>
-          <h3 className="font-bold lg:text-lg line-clamp-2 capitalize">
+          <h3 className="font-bold text-base sm:text-lg line-clamp-2 capitalize">
             {listing.summary ?? "Property details"}
           </h3>
           <div className="flex h-fit items-center gap-2 pt-3">
             {priceDisplay}
             {listing.pricepart2 && (
-              <span className="text-sm font-normal text-brand-muted">
+              <span className="text-sm sm:text-base font-normal text-brand-muted">
                 {listing.pricepart2}
               </span>
             )}
           </div>
           {listing.description && (
-            <p className="line-clamp-2 pt-3 text-sm text-brand-muted">
+            <p className="line-clamp-2 pt-3 text-sm sm:text-base text-brand-muted">
               {listing.description}
             </p>
           )}
-          <div className="flex items-center gap-1 pt-2 text-sm">
+          <div className="flex items-center gap-1 pt-2 text-sm sm:text-base">
             {listing.bedroomcount ? (
               <>
                 <span>{listing.bedroomcount} Beds</span>

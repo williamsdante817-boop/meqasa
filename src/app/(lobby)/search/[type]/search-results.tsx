@@ -27,6 +27,7 @@ interface SearchResultsProps {
   initialTotal: number;
   initialSearchId: number;
   initialPage: number;
+  initialSearchData: MeqasaSearchResponse;
   onSearchIdUpdate?: (searchId: number, page: number) => void;
 }
 
@@ -58,6 +59,7 @@ export function SearchResults({
   initialTotal,
   initialSearchId,
   initialPage,
+  initialSearchData,
   onSearchIdUpdate,
 }: SearchResultsProps) {
   const [mounted, setMounted] = useState(false);
@@ -65,17 +67,26 @@ export function SearchResults({
   const [searchResults, setSearchResults] =
     useState<MeqasaListing[]>(initialResults);
   const [totalResults, setTotalResults] = useState(initialTotal);
-  // Create initial search state from the initial results
-  const initialSearchState: MeqasaSearchResponse = {
-    results: initialResults,
-    resultcount: initialTotal,
-    searchid: initialSearchId,
+  // Use the complete initial search data from server with fallbacks
+  const defaultSearchState: MeqasaSearchResponse = {
     topads: [],
     project1: { empty: true },
     project2: { empty: true },
     bottomads: [],
     searchdesc: "",
+    results: initialResults,
+    resultcount: initialTotal,
+    searchid: initialSearchId,
   };
+  
+  const initialSearchState: MeqasaSearchResponse = initialSearchData 
+    ? {
+        ...initialSearchData,
+        results: initialResults,
+        resultcount: initialTotal,
+        searchid: initialSearchId,
+      }
+    : defaultSearchState;
 
   const [search, setSearch] =
     useState<MeqasaSearchResponse>(initialSearchState);
@@ -465,14 +476,25 @@ export function SearchResults({
           {/* Main search results and cards */}
 
           {search?.topads && search.topads.length > 0 ? (
-            <CarouselPlugin>
-              {search?.topads?.map((property) => (
+            search.topads.length === 1 && search.topads[0] ? (
+              // Single Premium Plus card - full width
+              <div className="mb-8">
                 <PremiumPlusPropertyCard
-                  key={property.listingid}
-                  data={property}
+                  key={search.topads[0].listingid}
+                  data={search.topads[0]}
                 />
-              ))}
-            </CarouselPlugin>
+              </div>
+            ) : (
+              // Multiple Premium Plus cards - carousel view
+              <CarouselPlugin>
+                {search.topads.map((property) => (
+                  <PremiumPlusPropertyCard
+                    key={property.listingid}
+                    data={property}
+                  />
+                ))}
+              </CarouselPlugin>
+            )
           ) : null}
           {search?.project1 && !("empty" in search.project1) && (
             <FeaturedPropertyVariantCard project={search.project1} />

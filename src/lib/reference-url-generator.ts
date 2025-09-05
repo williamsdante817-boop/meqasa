@@ -67,9 +67,10 @@ export function generateFallbackPropertyUrl(reference: string): string {
     throw new Error("Invalid reference number");
   }
   
-  // Generate a descriptive URL that ends with the reference
-  // The listings page extracts IDs using /-(\d+)$/ regex
-  return `/listings/property-ref-${cleanRef}`;
+  // The listings page expects URLs ending with -{listingid} format
+  // Since we're searching by reference, we'll treat the reference AS the listing ID
+  // This assumes the reference corresponds to the actual listing ID
+  return `/listings/property-for-rent-or-sale-${cleanRef}`;
 }
 
 /**

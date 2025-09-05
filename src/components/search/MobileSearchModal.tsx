@@ -214,7 +214,7 @@ export function MobileSearchModal({
             <div className="p-4 space-y-4">
               {/* Search Input */}
               <div className="flex flex-col gap-3 text-left">
-                <label className="text-sm font-medium text-gray-700">
+                <label className="text-base font-medium text-gray-700">
                   Location
                 </label>
                 <MobileSearchInput

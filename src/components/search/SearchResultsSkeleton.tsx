@@ -1,62 +1,160 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import Shell from "@/layouts/shell";
 
-export default function SearchResultsSkeleton() {
+// Premium Plus Card Skeleton Component
+function PremiumPlusCardSkeleton() {
   return (
-    <>
-      {/* Search header skeleton */}
-      <div className="bg-brand-gray py-4">
-        <Shell>
-          <div className="flex items-center justify-between">
-            <Skeleton variant="text" size="lg" className="w-48" aria-label="Loading search results count" />
-            <div className="flex items-center gap-4">
-              <Skeleton variant="light" className="h-9 w-32" aria-label="Loading sort options" />
-              <Skeleton variant="light" className="h-9 w-9 rounded-md" aria-label="Loading view toggle" />
-            </div>
-          </div>
-        </Shell>
+    <div className="h-full w-full overflow-hidden rounded-lg border border-gray-200 bg-white p-0">
+      {/* Image skeleton */}
+      <div className="relative w-full min-h-[200px] sm:min-h-[230px] md:min-h-[260px]">
+        <Skeleton className="h-[200px] sm:h-[230px] md:h-[260px] w-full rounded-t-lg animate-pulse" />
+        
+        {/* Premium Plus Badge skeleton */}
+        <div className="absolute left-3 top-3 z-30">
+          <Skeleton className="h-6 w-24 rounded-md bg-brand-primary/20" />
+        </div>
+        
+        {/* Favorite button skeleton */}
+        <div className="absolute right-3 top-3 z-30">
+          <Skeleton className="h-10 w-10 rounded-full bg-white/80" />
+        </div>
+        
+        {/* Photo count skeleton */}
+        <div className="absolute bottom-3 right-3 z-30">
+          <Skeleton className="h-6 w-16 rounded-md bg-black/20" />
+        </div>
+      </div>
+      
+      {/* Content skeleton */}
+      <div className="flex flex-col flex-1 p-4 space-y-3">
+        {/* Title skeleton */}
+        <Skeleton className="h-5 w-4/5 bg-gray-200" />
+        
+        {/* Property details skeleton */}
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-4 w-12 bg-gray-200" />
+          <Skeleton className="h-3 w-3 rounded-full bg-gray-200" />
+          <Skeleton className="h-4 w-14 bg-gray-200" />
+          <Skeleton className="h-3 w-3 rounded-full bg-gray-200" />
+          <Skeleton className="h-4 w-16 bg-gray-200" />
+        </div>
+        
+        {/* Price skeleton */}
+        <Skeleton className="h-6 w-1/2 bg-gray-200" />
+      </div>
+      
+      {/* Footer skeleton */}
+      <div className="flex items-center justify-between p-4 border-t border-gray-100">
+        {/* Agent info skeleton */}
+        <div className="flex items-center gap-3">
+          <Skeleton className="h-9 w-9 rounded-full bg-gray-200" />
+        </div>
+        
+        {/* Action buttons skeleton */}
+        <div className="flex items-center gap-3">
+          <Skeleton className="h-9 w-9 rounded-md bg-gray-200" />
+          <Skeleton className="h-9 w-24 sm:w-32 rounded-md bg-gray-200" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Featured Property Variant Card Skeleton Component
+function FeaturedPropertyVariantSkeleton() {
+  return (
+    <div className="relative h-full overflow-hidden w-full rounded-lg p-0 gap-0 flex flex-col border border-gray-200 bg-white">
+      {/* Image skeleton with aspect ratio */}
+       <div className="relative w-full min-h-[200px] sm:min-h-[230px] md:min-h-[260px]">
+        <Skeleton className="h-[200px] sm:h-[230px] md:h-[260px] w-full rounded-t-lg animate-pulse" />
+        
+        {/* Premium Plus Badge skeleton */}
+        <div className="absolute left-3 bottom-3 z-30">
+          <Skeleton className="h-6 w-24 rounded-md bg-brand-primary/20" />
+        </div>
+        
+        {/* Photo count skeleton */}
+        <div className="absolute bottom-3 right-3 z-30">
+          <Skeleton className="h-18 w-18 rounded-md bg-black/20" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Carousel Plugin Skeleton Component
+function CarouselPluginSkeleton() {
+  return (
+    <div className="w-full mb-6 sm:mb-8">
+      {/* Carousel header skeleton */}
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <Skeleton className="h-6 w-48 mb-1 bg-gray-200" />
+        </div>
+        
+        {/* Desktop counter skeleton */}
+        <div className="hidden md:flex items-center gap-2">
+          <Skeleton className="h-4 w-16 bg-gray-200" />
+          <Skeleton className="h-1 w-16 rounded-full bg-gray-200" />
+        </div>
+        
+        {/* Mobile indicators skeleton */}
+        <div className="flex items-center gap-1 md:hidden">
+          {Array.from({ length: 3 }).map((_, index) => (
+            <Skeleton key={index} className="h-2 w-2 rounded-full bg-gray-200" />
+          ))}
+        </div>
       </div>
 
-      <Shell className="mt-8 flex gap-8 px-0">
-        {/* Filters sidebar skeleton */}
-        <div className="hidden lg:block">
-          <aside className="flex flex-col gap-6 min-w-[280px]" aria-label="Loading search filters">
-            <div className="space-y-4">
-              <Skeleton variant="text" size="md" className="w-24" />
-              <div className="space-y-3">
-                {Array.from({ length: 8 }).map((_, i) => (
-                  <div key={i} className="flex items-center gap-3">
-                    <Skeleton variant="light" className="h-4 w-4 rounded-sm" />
-                    <Skeleton variant="light" className="h-4 w-20" />
-                  </div>
-                ))}
-              </div>
+      {/* Carousel content skeleton */}
+      <div className="relative">
+        <div className="flex gap-2 md:gap-4 overflow-hidden">
+          {/* Desktop: Show one full card + peek of next */}
+          <div className="w-full md:w-[calc(100%-120px)] lg:w-[calc(100%-150px)] xl:w-[calc(100%-200px)] flex-shrink-0">
+            <PremiumPlusCardSkeleton />
+          </div>
+          
+          {/* Peek of next card on desktop */}
+          <div className="hidden md:block w-[120px] lg:w-[150px] xl:w-[200px] flex-shrink-0">
+            <div className="h-full overflow-hidden">
+              <PremiumPlusCardSkeleton />
             </div>
-
-            <div className="space-y-4">
-              <Skeleton variant="text" size="md" className="w-20" />
-              <Skeleton variant="light" className="h-24 w-full rounded-md" />
-            </div>
-
-            <div className="space-y-4">
-              <Skeleton variant="text" size="md" className="w-28" />
-              <div className="space-y-2">
-                <Skeleton variant="light" className="h-10 w-full rounded-md" />
-                <Skeleton variant="light" className="h-10 w-full rounded-md" />
-              </div>
-            </div>
-          </aside>
+          </div>
         </div>
+        
+        {/* Navigation buttons skeleton */}
+        <div className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 hidden md:block">
+          <Skeleton className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-white/90" />
+        </div>
+       
+      </div>
 
-        <div className="w-full">
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr,300px] md:px-0">
-            {/* Main results area */}
-            <div className="w-full pb-8">
-              <div className="grid grid-cols-1 gap-6">
-                {Array.from({ length: 8 }).map((_, i) => (
+      {/* Mobile progress indicator skeleton */}
+      <div className="flex justify-center mt-4 md:hidden">
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-3 w-32 bg-gray-200" />
+          <Skeleton className="h-1 w-12 rounded-full bg-gray-200" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Export individual skeleton components for granular use
+export { PremiumPlusCardSkeleton, FeaturedPropertyVariantSkeleton, CarouselPluginSkeleton };
+
+export default function SearchResultsSkeleton() {
+  return (
+    <Shell className="mt-8 flex gap-8 px-0">
+      <div className="w-full">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr,300px] md:px-0">
+          {/* Main results area */}
+          <div className="w-full pb-8">
+            <div className="grid grid-cols-1 gap-6">
+              {Array.from({ length: 5 }).map((_, i) => (
                   <div
                     key={i}
-                    className="flex flex-col gap-4 rounded-xl border border-gray-100 shadow-sm md:flex-row md:p-4 w-full bg-white hover:shadow-md transition-shadow"
+                    className="flex flex-col gap-4 rounded-lg border border-gray-100 md:flex-row md:p-4 w-full bg-white"
                     role="status"
                     aria-label={`Loading property ${i + 1}`}
                   >
@@ -65,7 +163,7 @@ export default function SearchResultsSkeleton() {
                       <div className="relative w-full pb-[60%] md:pb-[65%] overflow-hidden rounded-lg">
                         <Skeleton 
                           variant="shimmer" 
-                          className="absolute inset-0 rounded-lg" 
+                          className="absolute inset-0 rounded-lg h-[256px]" 
                           aria-label="Loading property image"
                         />
                         
@@ -128,33 +226,9 @@ export default function SearchResultsSkeleton() {
                   </div>
                 ))}
               </div>
-              
-              {/* Load more skeleton */}
-              <div className="mt-8 flex justify-center">
-                <Skeleton variant="light" className="h-12 w-32 rounded-md" />
-              </div>
-            </div>
-            
-            {/* Sidebar ads/content skeleton */}
-            <div>
-              <aside className="hidden lg:grid grid-cols-1 gap-6 w-full" aria-label="Loading sidebar content">
-                <div className="space-y-4">
-                  <Skeleton variant="text" size="md" className="w-32" />
-                  <Skeleton variant="card" className="h-[250px] w-full rounded-lg" />
-                </div>
-                <div className="space-y-4">
-                  <Skeleton variant="text" size="md" className="w-40" />
-                  <Skeleton variant="card" className="h-[300px] w-full rounded-lg" />
-                </div>
-                <div className="space-y-4">
-                  <Skeleton variant="text" size="md" className="w-36" />
-                  <Skeleton variant="card" className="h-[200px] w-full rounded-lg" />
-                </div>
-              </aside>
             </div>
           </div>
         </div>
       </Shell>
-    </>
   );
 }

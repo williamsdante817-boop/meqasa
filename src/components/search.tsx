@@ -8,7 +8,7 @@ import { searchConfig } from "@/config/search";
 import { type FormState } from "@/types/search";
 import { useState } from "react";
 import { CommonFilters } from "./search/CommonFilters";
-import { PriceInput } from "./search/PriceInput";
+import { PriceRangeSelect } from "@/components/ui/price-range-select";
 import { SearchForm } from "./search/SearchForm";
 
 // Default form state for each tab
@@ -155,17 +155,18 @@ export function SearchFilter() {
               updateFormState={(updates) => updateFormState("land", updates)}
             >
               <div className="relative mx-auto mt-3 hidden max-w-max items-end justify-center gap-2 py-1 lg:flex">
-                <PriceInput
+                <PriceRangeSelect
                   title="Price range"
-                  unit="GH₵"
+                  currency="GH₵"
                   placeholder={{ min: "Min.price", max: "Max.price" }}
-                  range={
+                  priceRange={
                     searchConfig?.priceRange || {
                       min: 0,
                       max: 1000000,
                       step: 10000,
                     }
                   }
+                  variant="home"
                   className="h-[20px] border-none px-5 py-0 text-white"
                   minValue={landFormState.minPrice}
                   maxValue={landFormState.maxPrice}
@@ -180,17 +181,18 @@ export function SearchFilter() {
                   orientation="vertical"
                   className="h-[20px] bg-[#9A9EB5]"
                 />
-                <PriceInput
+                <PriceRangeSelect
                   title="Area range"
-                  unit="m²"
+                  currency="m²"
                   placeholder={{ min: "Min.area", max: "Max.area" }}
-                  range={
+                  priceRange={
                     searchConfig?.priceRange || {
                       min: 0,
                       max: 1000000,
                       step: 10000,
                     }
                   }
+                  variant="home"
                   className="h-[20px] border-none px-5 py-0 text-white"
                   minValue={landFormState.minArea}
                   maxValue={landFormState.maxArea}
