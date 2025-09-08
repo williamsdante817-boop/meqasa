@@ -24,6 +24,13 @@ export default function DevelopmentProjectsFilters({
   const [searchQuery, setSearchQuery] = useState((searchParams.search as string) || "");
   const [showAllFilters, setShowAllFilters] = useState(false);
 
+  const normalizeParam = (value: string | string[] | undefined): string | undefined => {
+    if (Array.isArray(value)) {
+      return value.join(", ");
+    }
+    return value;
+  };
+
   // Update URL with new search parameters
   const updateSearchParams = useCallback((updates: Record<string, string | undefined>) => {
     const params = new URLSearchParams(currentSearchParams.toString());
@@ -60,17 +67,21 @@ export default function DevelopmentProjectsFilters({
   const getActiveFilters = () => {
     const filters = [];
     
-    if (searchParams.search) {
-      filters.push({ key: 'search', value: searchParams.search as string, label: `Search: ${searchParams.search}` });
+    const search = normalizeParam(searchParams.search);
+    if (search) {
+      filters.push({ key: 'search', value: search, label: `Search: ${search}` });
     }
-    if (searchParams.status) {
-      filters.push({ key: 'status', value: searchParams.status as string, label: `Status: ${searchParams.status}` });
+    const status = normalizeParam(searchParams.status);
+    if (status) {
+      filters.push({ key: 'status', value: status, label: `Status: ${status}` });
     }
-    if (searchParams.developer) {
-      filters.push({ key: 'developer', value: searchParams.developer as string, label: `Developer: ${searchParams.developer}` });
+    const developer = normalizeParam(searchParams.developer);
+    if (developer) {
+      filters.push({ key: 'developer', value: developer, label: `Developer: ${developer}` });
     }
-    if (searchParams.location) {
-      filters.push({ key: 'location', value: searchParams.location as string, label: `Location: ${searchParams.location}` });
+    const location = normalizeParam(searchParams.location);
+    if (location) {
+      filters.push({ key: 'location', value: location, label: `Location: ${location}` });
     }
     if (searchParams.featured) {
       filters.push({ key: 'featured', value: 'true', label: 'Featured Only' });

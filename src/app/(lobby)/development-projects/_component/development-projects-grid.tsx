@@ -49,8 +49,8 @@ export default function DevelopmentProjectsGrid({
         throw new Error('Failed to fetch projects');
       }
       
-      const data = await response.json();
-      return data.projects || [];
+      const data: { projects?: DevelopmentProject[] } = await response.json();
+      return data.projects ?? [];
     } catch (error) {
       console.error('Error fetching development projects:', error);
       return [];
@@ -110,7 +110,7 @@ export default function DevelopmentProjectsGrid({
       }
     };
 
-    loadProjects();
+    void loadProjects();
   }, [searchParams]);
 
   // Load more projects
@@ -180,7 +180,7 @@ export default function DevelopmentProjectsGrid({
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {projects.map((project) => (
           <DevelopmentProjectCard
-            key={project.id}
+            key={project.projectid}
             project={project}
           />
         ))}

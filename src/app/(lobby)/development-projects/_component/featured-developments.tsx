@@ -46,7 +46,7 @@ export default function FeaturedDevelopments() {
         throw new Error('Failed to fetch projects');
       }
       
-      const data = await response.json();
+      const data: { projects?: FeaturedDevelopment[] } = await response.json();
       // Filter for featured projects and limit to 2
       return (data.projects || [])
         .filter((project: FeaturedDevelopment) => project.isFeatured)
@@ -71,7 +71,7 @@ export default function FeaturedDevelopments() {
       }
     };
 
-    loadFeaturedProjects();
+    void loadFeaturedProjects();
   }, []);
 
   const handleImageLoad = (projectId: number) => {
@@ -133,7 +133,7 @@ export default function FeaturedDevelopments() {
             </h2>
           </div>
           <p className="text-brand-muted">
-            Discover our hand-picked premium projects from Ghana's leading developers
+            Discover our hand-picked premium projects from Ghana&apos;s leading developers
           </p>
         </div>
         
