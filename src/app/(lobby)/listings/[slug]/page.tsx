@@ -757,7 +757,6 @@ export default async function DetailsPage({
                   </div>
                 </Card>
               </aside>
-              <SafetyTipsCard />
               <ContentSection
                 title="Description"
                 description=""
@@ -832,6 +831,8 @@ export default async function DetailsPage({
                   <Amenities amenities={listingDetail.amenities} />
                 </ContentSection>
               )}
+
+              <SafetyTipsCard />
 
               <PropertyInsight 
                 location={listingDetail.locationstring}

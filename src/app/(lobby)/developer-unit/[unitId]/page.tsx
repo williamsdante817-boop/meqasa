@@ -312,8 +312,6 @@ export default async function DeveloperUnitPage({
                   </Card>
                 )}
               </aside>
-            <SafetyTipsCard />
-
             <ContentSection
               title="Description"
               description=""
@@ -373,6 +371,8 @@ export default async function DeveloperUnitPage({
                 />
               </ContentSection>
             ) : null}
+
+            <SafetyTipsCard />
 
             <ContentSection
               title="Property Plan"

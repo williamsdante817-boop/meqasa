@@ -229,8 +229,9 @@ export const siteConfig: SiteConfig = {
     },
     {
       title: "All Projects",
+      href: "/development-projects",
       description:
-        "Browse properties for sale, including houses and apartments.",
+        "Explore all real estate development projects in Ghana.",
       items: [],
     },
     {
