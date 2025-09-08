@@ -36,14 +36,14 @@ export const propertyDataFetchers = {
       // Transform to our standardized format while preserving original fields
       const transformListing = (item: unknown): PropertyListing => {
         const standardized = transformApiToPropertyListing(item);
-        
+
         // Store original API fields for backward compatibility
-        ((standardized as unknown) as Record<string, unknown>).originalApiData = {
+        (standardized as unknown as Record<string, unknown>).originalApiData = {
           pricepart1: (item as Record<string, unknown>).pricepart1,
           pricepart2: (item as Record<string, unknown>).pricepart2,
           price: (item as Record<string, unknown>).price,
         };
-        
+
         return standardized;
       };
 
@@ -72,11 +72,14 @@ export const propertyDataFetchers = {
       }
 
       const legacyProperty = response as LegacyListingDetails;
-      
+
       // Transform to standardized format
       return transformLegacyProperty(legacyProperty);
     } catch (error) {
-      console.error(`Failed to fetch property details for ${reference}:`, error);
+      console.error(
+        `Failed to fetch property details for ${reference}:`,
+        error
+      );
       return null;
     }
   },
@@ -90,9 +93,11 @@ export const propertyDataFetchers = {
     try {
       // Transform search params to API format
       const apiParams: Record<string, unknown> = {};
-      
+
       if (params.type) {
-        apiParams.type = Array.isArray(params.type) ? params.type.join(",") : params.type;
+        apiParams.type = Array.isArray(params.type)
+          ? params.type.join(",")
+          : params.type;
       }
       if (params.contract) apiParams.contract = params.contract;
       if (params.location) apiParams.location = params.location;
@@ -101,7 +106,7 @@ export const propertyDataFetchers = {
       if (params.price?.min) apiParams.price_min = params.price.min;
       if (params.price?.max) apiParams.price_max = params.price.max;
       if (params.q) apiParams.query = params.q;
-      
+
       apiParams.page = params.page ?? 1;
       apiParams.limit = params.limit ?? 20;
       apiParams.sort = params.sortBy ?? "date_desc";
@@ -113,53 +118,92 @@ export const propertyDataFetchers = {
         limit: number;
       }>(apiParams);
 
-      const properties = (response.properties ?? []).map((item: unknown): PropertyListing => {
-        const data = item as Record<string, unknown>;
-        return {
-          id: (data.id ?? data.listingid ?? "") as string,
-          reference: (data.reference ?? data.detailreq ?? "") as string,
-          title: (data.title ?? "") as string,
-          type: (["house", "apartment", "office", "land", "townhouse", "commercial space", "warehouse", "guest house", "shop", "retail", "beach house"].includes(data.type as string)
-            ? (data.type as
-                | "house"
-                | "apartment"
-                | "office"
-                | "land"
-                | "townhouse"
-                | "commercial space"
-                | "warehouse"
-                | "guest house"
-                | "shop"
-                | "retail"
-                | "beach house")
-            : "house"),
-          contract: (["rent", "sale", "short-stay"].includes(data.contract as string)
-            ? (data.contract as "rent" | "sale" | "short-stay")
-            : "rent"),
-          status: (["active", "pending", "sold", "rented", "withdrawn"].includes(data.status as string)
-            ? (data.status as "active" | "pending" | "sold" | "rented" | "withdrawn")
-            : "active"),
-          location: (data.location ?? data.streetaddress ?? "") as string,
-          bedrooms: parseInt((data.bedrooms ?? data.beds ?? "0") as string),
-          bathrooms: parseInt((data.bathrooms ?? data.baths ?? "0") as string),
-          floorArea: parseInt((data.floorArea ?? data.floorarea ?? "0") as string),
-          pricing: {
-            amount: parseFloat((data.price ?? "0") as string),
-            currency: "GHS",
-            formatted: `GH₵ ${typeof data.price === "number" || typeof data.price === "string" ? data.price : "0"}`,
-          },
-          coverImage: (data.coverImage ?? data.image ?? "") as string,
-          featured: Boolean(data.featured),
-          dateAdded: (data.dateAdded ?? data.datelisted ?? new Date().toISOString()) as string,
-          slug: typeof data.slug === "string"
-            ? data.slug
-            : `${typeof data.title === "string" ? data.title.toLowerCase().replace(/\s+/g, '-') : ""}-${typeof data.id === "string" || typeof data.id === "number" ? String(data.id) : ""}`,
-          agent: {
-            name: ((data.agent as Record<string, unknown>)?.name ?? (data.owner as Record<string, unknown>)?.name ?? "Unknown") as string,
-            verified: Boolean((data.agent as Record<string, unknown>)?.verified ?? (data.owner as Record<string, unknown>)?.verification === "1"),
-          },
-        };
-      });
+      const properties = (response.properties ?? []).map(
+        (item: unknown): PropertyListing => {
+          const data = item as Record<string, unknown>;
+          return {
+            id: (data.id ?? data.listingid ?? "") as string,
+            reference: (data.reference ?? data.detailreq ?? "") as string,
+            title: (data.title ?? "") as string,
+            type: [
+              "house",
+              "apartment",
+              "office",
+              "land",
+              "townhouse",
+              "commercial space",
+              "warehouse",
+              "guest house",
+              "shop",
+              "retail",
+              "beach house",
+            ].includes(data.type as string)
+              ? (data.type as
+                  | "house"
+                  | "apartment"
+                  | "office"
+                  | "land"
+                  | "townhouse"
+                  | "commercial space"
+                  | "warehouse"
+                  | "guest house"
+                  | "shop"
+                  | "retail"
+                  | "beach house")
+              : "house",
+            contract: ["rent", "sale", "short-stay"].includes(
+              data.contract as string
+            )
+              ? (data.contract as "rent" | "sale" | "short-stay")
+              : "rent",
+            status: [
+              "active",
+              "pending",
+              "sold",
+              "rented",
+              "withdrawn",
+            ].includes(data.status as string)
+              ? (data.status as
+                  | "active"
+                  | "pending"
+                  | "sold"
+                  | "rented"
+                  | "withdrawn")
+              : "active",
+            location: (data.location ?? data.streetaddress ?? "") as string,
+            bedrooms: parseInt((data.bedrooms ?? data.beds ?? "0") as string),
+            bathrooms: parseInt(
+              (data.bathrooms ?? data.baths ?? "0") as string
+            ),
+            floorArea: parseInt(
+              (data.floorArea ?? data.floorarea ?? "0") as string
+            ),
+            pricing: {
+              amount: parseFloat((data.price ?? "0") as string),
+              currency: "GHS",
+              formatted: `GH₵ ${typeof data.price === "number" || typeof data.price === "string" ? data.price : "0"}`,
+            },
+            coverImage: (data.coverImage ?? data.image ?? "") as string,
+            featured: Boolean(data.featured),
+            dateAdded: (data.dateAdded ??
+              data.datelisted ??
+              new Date().toISOString()) as string,
+            slug:
+              typeof data.slug === "string"
+                ? data.slug
+                : `${typeof data.title === "string" ? data.title.toLowerCase().replace(/\s+/g, "-") : ""}-${typeof data.id === "string" || typeof data.id === "number" ? String(data.id) : ""}`,
+            agent: {
+              name: ((data.agent as Record<string, unknown>)?.name ??
+                (data.owner as Record<string, unknown>)?.name ??
+                "Unknown") as string,
+              verified: Boolean(
+                (data.agent as Record<string, unknown>)?.verified ??
+                  (data.owner as Record<string, unknown>)?.verification === "1"
+              ),
+            },
+          };
+        }
+      );
 
       const total = response.total ?? properties.length;
       const currentPage = response.page ?? params.page ?? 1;
@@ -218,116 +262,137 @@ export const projectDataFetchers = {
   /**
    * Get featured projects
    */
-      async getFeaturedProjects(): Promise<PropertyProject[]> {
-      try {
-        const response = await meqasaApiClient.getFeaturedProjects<unknown[]>();
-        
-                return (response ?? []).map((item: unknown): PropertyProject => {
-          const data = item as Record<string, unknown>;
-          return {
-            id: (data.id ?? data.projectid ?? "") as string,
-            name: (data.name ?? data.projectname ?? "") as string,
-            slug: typeof data.slug === "string"
+  async getFeaturedProjects(): Promise<PropertyProject[]> {
+    try {
+      const response = await meqasaApiClient.getFeaturedProjects<unknown[]>();
+
+      return (response ?? []).map((item: unknown): PropertyProject => {
+        const data = item as Record<string, unknown>;
+        return {
+          id: (data.id ?? data.projectid ?? "") as string,
+          name: (data.name ?? data.projectname ?? "") as string,
+          slug:
+            typeof data.slug === "string"
               ? data.slug
-              : `${typeof data.name === "string" ? data.name.toLowerCase().replace(/\s+/g, '-') : ""}-${typeof data.id === "string" || typeof data.id === "number" ? String(data.id) : ""}`,
-            description: (data.description ?? "") as string,
-            location: {
-              area: (data.location ?? data.city ?? "") as string,
-              address: (data.address ?? "") as string,
-              coordinates: data.lat && data.lng ? {
-                lat: parseFloat(data.lat as string),
-                lng: parseFloat(data.lng as string),
-              } : undefined,
+              : `${typeof data.name === "string" ? data.name.toLowerCase().replace(/\s+/g, "-") : ""}-${typeof data.id === "string" || typeof data.id === "number" ? String(data.id) : ""}`,
+          description: (data.description ?? "") as string,
+          location: {
+            area: (data.location ?? data.city ?? "") as string,
+            address: (data.address ?? "") as string,
+            coordinates:
+              data.lat && data.lng
+                ? {
+                    lat: parseFloat(data.lat as string),
+                    lng: parseFloat(data.lng as string),
+                  }
+                : undefined,
+          },
+          developer: {
+            id: (data.developerid ?? "") as string,
+            name: (data.developername ?? "Unknown") as string,
+            verified: Boolean(
+              (data.developer as Record<string, unknown>)?.verified
+            ),
+            contact: {
+              phone: ((data.developer as Record<string, unknown>)?.phone ??
+                "") as string,
+              email: (data.developer as Record<string, unknown>)?.email as
+                | string
+                | undefined,
             },
-            developer: {
-              id: (data.developerid ?? "") as string,
-              name: (data.developername ?? "Unknown") as string,
-              verified: Boolean((data.developer as Record<string, unknown>)?.verified),
-              contact: {
-                phone: ((data.developer as Record<string, unknown>)?.phone ?? "") as string,
-                email: (data.developer as Record<string, unknown>)?.email as string | undefined,
-              },
-            },
-            media: {
-              coverImage: (data.coverphoto ?? data.image ?? "") as string,
-              images: (data.images ?? [data.coverphoto ?? data.image].filter(Boolean)) as string[],
-              tourVideo: data.tourvideo as string | undefined,
-            },
-            features: (Array.isArray(data.features)
-              ? data.features.filter((f: unknown) =>
-                  [
-                    "Swimming Pool",
-                    "Gym",
-                    "Garden",
-                    "Parking",
-                    "Security",
-                    "Generator",
-                    "Air Conditioning",
-                    "Furnished",
-                    "Balcony",
-                    "Terrace",
-                    "Elevator",
-                    "CCTV",
-                    "Gated Community",
-                    "Playground",
-                    "24hr Water",
-                    "24hr Electricity",
-                  ].includes(f as string)
-                ) as (
-                  | "Swimming Pool"
-                  | "Gym"
-                  | "Garden"
-                  | "Parking"
-                  | "Security"
-                  | "Generator"
-                  | "Air Conditioning"
-                  | "Furnished"
-                  | "Balcony"
-                  | "Terrace"
-                  | "Elevator"
-                  | "CCTV"
-                  | "Gated Community"
-                  | "Playground"
-                  | "24hr Water"
-                  | "24hr Electricity"
-                )[]
-              : []),
-            amenities: (data.amenities ?? []) as string[],
-            units: {
-              total: parseInt((data.totalunits ?? "0") as string),
-              available: parseInt((data.availableunits ?? "0") as string),
-              types: Array.isArray(data.unittypes)
-              ? data.unittypes.map((ut: { type: string; count?: number; priceFrom?: number }) => ({
-                  type: ut.type as
-                    | "house"
-                    | "apartment"
-                    | "office"
-                    | "land"
-                    | "townhouse"
-                    | "commercial space"
-                    | "warehouse"
-                    | "guest house"
-                    | "shop"
-                    | "retail"
-                    | "beach house",
-                  count: typeof ut.count === "number" ? ut.count : 0,
-                  priceFrom: typeof ut.priceFrom === "number" ? ut.priceFrom : 0,
-                }))
+          },
+          media: {
+            coverImage: (data.coverphoto ?? data.image ?? "") as string,
+            images: (data.images ??
+              [data.coverphoto ?? data.image].filter(Boolean)) as string[],
+            tourVideo: data.tourvideo as string | undefined,
+          },
+          features: Array.isArray(data.features)
+            ? (data.features.filter((f: unknown) =>
+                [
+                  "Swimming Pool",
+                  "Gym",
+                  "Garden",
+                  "Parking",
+                  "Security",
+                  "Generator",
+                  "Air Conditioning",
+                  "Furnished",
+                  "Balcony",
+                  "Terrace",
+                  "Elevator",
+                  "CCTV",
+                  "Gated Community",
+                  "Playground",
+                  "24hr Water",
+                  "24hr Electricity",
+                ].includes(f as string)
+              ) as (
+                | "Swimming Pool"
+                | "Gym"
+                | "Garden"
+                | "Parking"
+                | "Security"
+                | "Generator"
+                | "Air Conditioning"
+                | "Furnished"
+                | "Balcony"
+                | "Terrace"
+                | "Elevator"
+                | "CCTV"
+                | "Gated Community"
+                | "Playground"
+                | "24hr Water"
+                | "24hr Electricity"
+              )[])
+            : [],
+          amenities: (data.amenities ?? []) as string[],
+          units: {
+            total: parseInt((data.totalunits ?? "0") as string),
+            available: parseInt((data.availableunits ?? "0") as string),
+            types: Array.isArray(data.unittypes)
+              ? data.unittypes.map(
+                  (ut: {
+                    type: string;
+                    count?: number;
+                    priceFrom?: number;
+                  }) => ({
+                    type: ut.type as
+                      | "house"
+                      | "apartment"
+                      | "office"
+                      | "land"
+                      | "townhouse"
+                      | "commercial space"
+                      | "warehouse"
+                      | "guest house"
+                      | "shop"
+                      | "retail"
+                      | "beach house",
+                    count: typeof ut.count === "number" ? ut.count : 0,
+                    priceFrom:
+                      typeof ut.priceFrom === "number" ? ut.priceFrom : 0,
+                  })
+                )
               : [],
-            },
-            completion: {
-              status: (["under_construction", "completed", "planned"].includes(data.status as string)
-                ? (data.status as "under_construction" | "completed" | "planned")
-                : "under_construction"),
-              date: data.completiondate as string | undefined,
-            },
-            dates: {
-              launched: (data.dateadded ?? new Date().toISOString()) as string,
-              updated: (data.updated_at ?? data.dateadded ?? new Date().toISOString()) as string,
-            },
-            featured: Boolean(data.featured),
-          };
-        });
+          },
+          completion: {
+            status: ["under_construction", "completed", "planned"].includes(
+              data.status as string
+            )
+              ? (data.status as "under_construction" | "completed" | "planned")
+              : "under_construction",
+            date: data.completiondate as string | undefined,
+          },
+          dates: {
+            launched: (data.dateadded ?? new Date().toISOString()) as string,
+            updated: (data.updated_at ??
+              data.dateadded ??
+              new Date().toISOString()) as string,
+          },
+          featured: Boolean(data.featured),
+        };
+      });
     } catch (error) {
       console.error("Failed to fetch featured projects:", error);
       return [];
@@ -337,102 +402,123 @@ export const projectDataFetchers = {
   /**
    * Get project units
    */
-      async getProjectUnits(projectId: string): Promise<PropertyUnit[]> {
-      try {
-        const response = await meqasaApiClient.postForm<unknown[]>("/project-units", {
+  async getProjectUnits(projectId: string): Promise<PropertyUnit[]> {
+    try {
+      const response = await meqasaApiClient.postForm<unknown[]>(
+        "/project-units",
+        {
           projectid: projectId,
-        });
+        }
+      );
 
-                return (response ?? []).map((item: unknown): PropertyUnit => {
-          const data = item as Record<string, unknown>;
-          return {
-            id: (data.unitid ?? data.id ?? "") as string,
-            unitNumber: (data.unitnumber ?? data.unitname) as string | undefined,
-            type: (["house", "apartment", "office", "land", "townhouse", "commercial space", "warehouse", "guest house", "shop", "retail", "beach house"].includes(data.unittype as string)
-              ? (data.unittype as
-                  | "house"
-                  | "apartment"
-                  | "office"
-                  | "land"
-                  | "townhouse"
-                  | "commercial space"
-                  | "warehouse"
-                  | "guest house"
-                  | "shop"
-                  | "retail"
-                  | "beach house")
-              : "apartment"),
-            title: (data.title ?? data.unitname ?? "") as string,
-            bedrooms: parseInt((data.beds ?? "0") as string),
-            bathrooms: parseInt((data.baths ?? "0") as string),
-            floorArea: parseFloat((data.floorarea ?? "0") as string),
-            pricing: {
-              selling: data.sellingprice ? {
-                amount: parseFloat(data.sellingprice as string),
-                currency: "GHS",
-              } : undefined,
-              renting: data.rentpricepermonth ? {
-                amount: parseFloat(data.rentpricepermonth as string),
-                currency: "GHS",
-                period: "month" as const,
-              } : undefined,
+      return (response ?? []).map((item: unknown): PropertyUnit => {
+        const data = item as Record<string, unknown>;
+        return {
+          id: (data.unitid ?? data.id ?? "") as string,
+          unitNumber: (data.unitnumber ?? data.unitname) as string | undefined,
+          type: [
+            "house",
+            "apartment",
+            "office",
+            "land",
+            "townhouse",
+            "commercial space",
+            "warehouse",
+            "guest house",
+            "shop",
+            "retail",
+            "beach house",
+          ].includes(data.unittype as string)
+            ? (data.unittype as
+                | "house"
+                | "apartment"
+                | "office"
+                | "land"
+                | "townhouse"
+                | "commercial space"
+                | "warehouse"
+                | "guest house"
+                | "shop"
+                | "retail"
+                | "beach house")
+            : "apartment",
+          title: (data.title ?? data.unitname ?? "") as string,
+          bedrooms: parseInt((data.beds ?? "0") as string),
+          bathrooms: parseInt((data.baths ?? "0") as string),
+          floorArea: parseFloat((data.floorarea ?? "0") as string),
+          pricing: {
+            selling: data.sellingprice
+              ? {
+                  amount: parseFloat(data.sellingprice as string),
+                  currency: "GHS",
+                }
+              : undefined,
+            renting: data.rentpricepermonth
+              ? {
+                  amount: parseFloat(data.rentpricepermonth as string),
+                  currency: "GHS",
+                  period: "month" as const,
+                }
+              : undefined,
+          },
+          features: Array.isArray(data.features)
+            ? (data.features.filter((f: unknown) =>
+                [
+                  "Swimming Pool",
+                  "Gym",
+                  "Garden",
+                  "Parking",
+                  "Security",
+                  "Generator",
+                  "Air Conditioning",
+                  "Furnished",
+                  "Balcony",
+                  "Terrace",
+                  "Elevator",
+                  "CCTV",
+                  "Gated Community",
+                  "Playground",
+                  "24hr Water",
+                  "24hr Electricity",
+                ].includes(f as string)
+              ) as (
+                | "Swimming Pool"
+                | "Gym"
+                | "Garden"
+                | "Parking"
+                | "Security"
+                | "Generator"
+                | "Air Conditioning"
+                | "Furnished"
+                | "Balcony"
+                | "Terrace"
+                | "Elevator"
+                | "CCTV"
+                | "Gated Community"
+                | "Playground"
+                | "24hr Water"
+                | "24hr Electricity"
+              )[])
+            : [],
+          available: Boolean(!data.soldout),
+          coverImage: (data.coverphoto ?? "") as string,
+          floorPlan: data.floorplan
+            ? {
+                imageUrl: data.floorplan as string,
+                sqft: parseFloat((data.floorarea ?? "0") as string),
+                sqm: parseFloat((data.floorarea ?? "0") as string) * 0.092903, // Convert sqft to sqm
+              }
+            : undefined,
+          project: {
+            id: projectId,
+            name: (data.projectname ?? "") as string,
+            developer: {
+              id: (data.developerid ?? "") as string,
+              name: (data.developername ?? "") as string,
             },
-            features: Array.isArray(data.features)
-              ? data.features.filter((f: unknown) =>
-                  [
-                    "Swimming Pool",
-                    "Gym",
-                    "Garden",
-                    "Parking",
-                    "Security",
-                    "Generator",
-                    "Air Conditioning",
-                    "Furnished",
-                    "Balcony",
-                    "Terrace",
-                    "Elevator",
-                    "CCTV",
-                    "Gated Community",
-                    "Playground",
-                    "24hr Water",
-                    "24hr Electricity",
-                  ].includes(f as string)
-                ) as (
-                  | "Swimming Pool"
-                  | "Gym"
-                  | "Garden"
-                  | "Parking"
-                  | "Security"
-                  | "Generator"
-                  | "Air Conditioning"
-                  | "Furnished"
-                  | "Balcony"
-                  | "Terrace"
-                  | "Elevator"
-                  | "CCTV"
-                  | "Gated Community"
-                  | "Playground"
-                  | "24hr Water"
-                  | "24hr Electricity"
-                )[]
-              : [],
-            available: Boolean(!data.soldout),
-            coverImage: (data.coverphoto ?? "") as string,
-            floorPlan: data.floorplan ? {
-              imageUrl: data.floorplan as string,
-              sqft: parseFloat((data.floorarea ?? "0") as string),
-              sqm: parseFloat((data.floorarea ?? "0") as string) * 0.092903, // Convert sqft to sqm
-            } : undefined,
-            project: {
-              id: projectId,
-              name: (data.projectname ?? "") as string,
-              developer: {
-                id: (data.developerid ?? "") as string,
-                name: (data.developername ?? "") as string,
-              },
-            },
-          };
-        });
+          },
+        };
+      });
     } catch (error) {
       console.error(`Failed to fetch units for project ${projectId}:`, error);
       return [];
@@ -477,8 +563,9 @@ export const bannerDataFetchers = {
 export const blogDataFetchers = {
   async getBlogData(): Promise<BlogResponse> {
     try {
-      const response = await meqasaApiClient.getFeaturedBlogPosts<BlogResponse>();
-      
+      const response =
+        await meqasaApiClient.getFeaturedBlogPosts<BlogResponse>();
+
       // Validate and clean response structure
       return {
         featured: Array.isArray(response.featured) ? response.featured : [],

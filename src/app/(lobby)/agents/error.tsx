@@ -31,9 +31,13 @@ export default function AgentsError({ error, reset }: AgentsErrorProps) {
                   Technical Details
                 </summary>
                 <div className="text-sm text-gray-600 space-y-2">
-                  <p><strong>Error:</strong> {error.message}</p>
+                  <p>
+                    <strong>Error:</strong> {error.message}
+                  </p>
                   {error.digest && (
-                    <p><strong>Digest:</strong> {error.digest}</p>
+                    <p>
+                      <strong>Digest:</strong> {error.digest}
+                    </p>
                   )}
                 </div>
               </details>

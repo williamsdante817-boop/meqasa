@@ -46,7 +46,7 @@ export async function getBlogData(): Promise<BlogResponse> {
       featured: [],
       market: [],
     };
-    
+
     return fallbackData;
   }
 }

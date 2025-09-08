@@ -14,7 +14,7 @@ import type {
 export async function searchProperties(
   contract: string,
   locality: string,
-  params: MeqasaSearchParams,
+  params: MeqasaSearchParams
 ): Promise<MeqasaSearchResponse> {
   const isServer = typeof window === "undefined";
 
@@ -67,7 +67,7 @@ export async function searchProperties(
 export async function loadMoreProperties(
   contract: string,
   locality: string,
-  params: MeqasaLoadMoreParams,
+  params: MeqasaLoadMoreParams
 ): Promise<MeqasaSearchResponse> {
   const isServer = typeof window === "undefined";
 
@@ -131,7 +131,7 @@ export function getApiContractType(uiType: string): string {
  * Validate search parameters according to API documentation
  */
 export function validateSearchParams(
-  params: Partial<MeqasaSearchParams>,
+  params: Partial<MeqasaSearchParams>
 ): boolean {
   // Validate property type
   if (

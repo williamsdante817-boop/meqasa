@@ -66,7 +66,7 @@ export default function ContentSection({
       <div
         className={cn(
           "flex items-center justify-between gap-4",
-          border && "border-b border-gray-200 pb-3",
+          border && "border-b border-gray-200 pb-3"
         )}
       >
         <div className="flex max-w-[61.25rem] flex-1 flex-col gap-0.5">
@@ -74,7 +74,7 @@ export default function ContentSection({
             id={`${uniqueId}-title`}
             className={cn(
               "leading-tight tracking-tighter text-brand-accent text-2xl lg:text-3xl font-bold mb-1",
-              !btnHidden && "lg:font-extrabold",
+              !btnHidden && "lg:font-extrabold"
             )}
           >
             {title}

@@ -42,7 +42,7 @@ export function ResultsPopup({ type }: ResultsPopupProps) {
         }
 
         const response = await fetch(
-          `/api/popup/results?type=${type}&contract=${contract}`,
+          `/api/popup/results?type=${type}&contract=${contract}`
         );
 
         if (response.ok) {

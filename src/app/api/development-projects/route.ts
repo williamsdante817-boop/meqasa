@@ -61,21 +61,21 @@ const CLOUDFRONT_BASE = "https://dve7rykno93gs.cloudfront.net";
 const mockData: DevelopmentProjectResponse = {
   hero: {
     src: "/pieoq/1854304265",
-    href: "/follow-ad-2511?u=https://www.thorpe-bedu.com/belton-residences/"
+    href: "/follow-ad-2511?u=https://www.thorpe-bedu.com/belton-residences/",
   },
   developers: [
     {
       developerid: "18929975",
       logo: "f752f86705ef4ac685e67ab8f506b2d9",
       companyname: "Clifton Homes",
-      name: "CLIFTON HOMES"
+      name: "CLIFTON HOMES",
     },
     {
       developerid: "18929976",
       logo: "g852f86705ef4ac685e67ab8f506b2d8",
       companyname: "Premier Developments",
-      name: "PREMIER DEVELOPMENTS"
-    }
+      name: "PREMIER DEVELOPMENTS",
+    },
   ],
   projects: [
     {
@@ -84,7 +84,8 @@ const mockData: DevelopmentProjectResponse = {
       address: "Airport Residential Area",
       city: "Airport",
       region: "Greater Accra",
-      aboutproject: "Agora represents the pinnacle of luxury living in Accra, featuring world-class amenities, smart home technology, and breathtaking city views. This premium development offers a sophisticated lifestyle with 24/7 security, fitness center, swimming pool, and landscaped gardens.",
+      aboutproject:
+        "Agora represents the pinnacle of luxury living in Accra, featuring world-class amenities, smart home technology, and breathtaking city views. This premium development offers a sophisticated lifestyle with 24/7 security, fitness center, swimming pool, and landscaped gardens.",
       photo: "dbb8547f7216528a388afe4ce30a6d1d",
       projectstatus: "uncompleted",
       propertymanagement: "",
@@ -112,7 +113,7 @@ const mockData: DevelopmentProjectResponse = {
       description: null,
       weburl: "https://vaal.com.gh/agora/",
       photostorage: "local",
-      logo: "3d30c4a775d6448460f58316039938fe"
+      logo: "3d30c4a775d6448460f58316039938fe",
     },
     {
       projectid: 540,
@@ -120,7 +121,8 @@ const mockData: DevelopmentProjectResponse = {
       address: "East Legon Hills",
       city: "East Legon",
       region: "Greater Accra",
-      aboutproject: "Experience luxury living at Lakeside Gardens, a prestigious residential development featuring modern apartments with stunning lake views, premium amenities, and meticulously designed living spaces in the heart of East Legon.",
+      aboutproject:
+        "Experience luxury living at Lakeside Gardens, a prestigious residential development featuring modern apartments with stunning lake views, premium amenities, and meticulously designed living spaces in the heart of East Legon.",
       photo: "ebb8547f7216528a388afe4ce30a6d2d",
       projectstatus: "uncompleted",
       propertymanagement: "",
@@ -148,15 +150,16 @@ const mockData: DevelopmentProjectResponse = {
       description: null,
       weburl: "https://lakesidegardens.gh/",
       photostorage: "local",
-      logo: "4d30c4a775d6448460f58316039938ef"
+      logo: "4d30c4a775d6448460f58316039938ef",
     },
     {
       projectid: 541,
       projectname: "Heritage Villas",
       address: "Cantonments",
-      city: "Cantonments", 
+      city: "Cantonments",
       region: "Greater Accra",
-      aboutproject: "Heritage Villas offers exclusive luxury villas in the prestigious Cantonments area. Each villa features private gardens, premium finishes, and architectural excellence designed for discerning homeowners seeking the ultimate in luxury living.",
+      aboutproject:
+        "Heritage Villas offers exclusive luxury villas in the prestigious Cantonments area. Each villa features private gardens, premium finishes, and architectural excellence designed for discerning homeowners seeking the ultimate in luxury living.",
       photo: "fbb8547f7216528a388afe4ce30a6d3d",
       projectstatus: "completed",
       propertymanagement: "",
@@ -184,23 +187,23 @@ const mockData: DevelopmentProjectResponse = {
       description: null,
       weburl: "",
       photostorage: "local",
-      logo: "5d30c4a775d6448460f58316039938e0"
-    }
+      logo: "5d30c4a775d6448460f58316039938e0",
+    },
   ],
   seocontent: [],
-  unittypes: []
+  unittypes: [],
 };
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    
+
     // Try to call the MeQasa API first, fall back to mock data if it fails
     try {
       // Create form data in the same format as other MeQasa API calls
       const postParams = new URLSearchParams();
       postParams.set("app", "vercel");
-      
+
       // Add any additional parameters from the request body
       Object.entries(body).forEach(([key, value]) => {
         if (value !== null && value !== undefined) {
@@ -213,13 +216,16 @@ export async function POST(request: NextRequest) {
         postParams: Object.fromEntries(postParams.entries()),
       });
 
-      const response = await fetch("https://meqasa.com/real-estate-developments", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: postParams.toString(),
-      });
+      const response = await fetch(
+        "https://meqasa.com/real-estate-developments",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: postParams.toString(),
+        }
+      );
 
       if (response.ok) {
         const data: DevelopmentProjectResponse = await response.json();
@@ -227,7 +233,9 @@ export async function POST(request: NextRequest) {
         const processedData = processApiResponse(data);
         return NextResponse.json(processedData);
       } else {
-        console.warn(`API returned ${response.status}, falling back to mock data`);
+        console.warn(
+          `API returned ${response.status}, falling back to mock data`
+        );
       }
     } catch (fetchError) {
       console.warn("API fetch failed, falling back to mock data:", fetchError);
@@ -237,7 +245,6 @@ export async function POST(request: NextRequest) {
     const data = mockData;
     const processedData = processApiResponse(data);
     return NextResponse.json(processedData);
-
   } catch (error) {
     console.error("Error fetching development projects:", error);
     return NextResponse.json(
@@ -251,20 +258,33 @@ export async function POST(request: NextRequest) {
 function processApiResponse(data: DevelopmentProjectResponse) {
   return {
     ...data,
-    developers: data.developers?.map(dev => ({
-      ...dev,
-      logoUrl: dev.logo ? `${CLOUDFRONT_BASE}/uploads/imgs/${dev.logo}` : null,
-    })) || [],
-    projects: data.projects?.map(project => ({
-      ...project,
-      photoUrl: project.photo ? `${CLOUDFRONT_BASE}/tn5/uploads/imgs/${project.photo}` : null,
-      logoUrl: project.logo ? `${CLOUDFRONT_BASE}/uploads/imgs/${project.logo}` : null,
-      isFeatured: project.featured === 1,
-      isPublished: project.publish === 1,
-      status: project.projectstatus === "uncompleted" ? "ongoing" : 
-              project.projectstatus === "completed" ? "completed" : "new",
-      location: project.formatted_address || `${project.address}, ${project.city}`,
-      fullLocation: `${project.address}, ${project.city}, ${project.region}`,
-    })) || [],
+    developers:
+      data.developers?.map((dev) => ({
+        ...dev,
+        logoUrl: dev.logo
+          ? `${CLOUDFRONT_BASE}/uploads/imgs/${dev.logo}`
+          : null,
+      })) || [],
+    projects:
+      data.projects?.map((project) => ({
+        ...project,
+        photoUrl: project.photo
+          ? `${CLOUDFRONT_BASE}/tn5/uploads/imgs/${project.photo}`
+          : null,
+        logoUrl: project.logo
+          ? `${CLOUDFRONT_BASE}/uploads/imgs/${project.logo}`
+          : null,
+        isFeatured: project.featured === 1,
+        isPublished: project.publish === 1,
+        status:
+          project.projectstatus === "uncompleted"
+            ? "ongoing"
+            : project.projectstatus === "completed"
+              ? "completed"
+              : "new",
+        location:
+          project.formatted_address || `${project.address}, ${project.city}`,
+        fullLocation: `${project.address}, ${project.city}, ${project.region}`,
+      })) || [],
   };
 }

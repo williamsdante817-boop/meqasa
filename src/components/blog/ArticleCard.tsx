@@ -14,7 +14,11 @@ interface ArticleCardProps {
   className?: string;
 }
 
-function ArticlePlaceholder({ message = "Image not available" }: { message?: string }) {
+function ArticlePlaceholder({
+  message = "Image not available",
+}: {
+  message?: string;
+}) {
   return (
     <div
       className="w-full h-full bg-gray-100 flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300"
@@ -27,11 +31,11 @@ function ArticlePlaceholder({ message = "Image not available" }: { message?: str
   );
 }
 
-export function ArticleCard({ 
-  article, 
-  variant = "compact", 
+export function ArticleCard({
+  article,
+  variant = "compact",
   priority = false,
-  className = ""
+  className = "",
 }: ArticleCardProps) {
   const [imageError, setImageError] = useState(false);
   const [imageLoading, setImageLoading] = useState(true);
@@ -48,20 +52,24 @@ export function ArticleCard({
   // Different layouts based on variant
   const isFeatured = variant === "featured";
   const isList = variant === "list";
-  
+
   const cardClasses = `
     group transition-all duration-200 hover:shadow-lg hover:-translate-y-1
     ${isFeatured ? "h-full" : ""}
     ${className}
   `.trim();
 
-  const imageHeight = isFeatured ? "h-48 md:h-56" : isList ? "h-20 w-20" : "h-40";
+  const imageHeight = isFeatured
+    ? "h-48 md:h-56"
+    : isList
+      ? "h-20 w-20"
+      : "h-40";
 
   return (
     <Card className={cardClasses}>
       <CardContent className={`p-0 h-full ${isList ? "flex" : ""}`}>
         {/* Article Image */}
-        <div 
+        <div
           className={`
             relative overflow-hidden rounded-t-lg flex-shrink-0
             ${imageHeight}
@@ -83,14 +91,18 @@ export function ArticleCard({
                   object-cover transition-transform duration-300 group-hover:scale-105
                   ${imageLoading ? "opacity-0" : "opacity-100"}
                 `}
-                sizes={isFeatured ? "(min-width: 768px) 50vw, 100vw" : "(min-width: 768px) 25vw, 50vw"}
+                sizes={
+                  isFeatured
+                    ? "(min-width: 768px) 50vw, 100vw"
+                    : "(min-width: 768px) 25vw, 50vw"
+                }
                 onError={handleImageError}
                 onLoad={handleImageLoad}
                 priority={priority}
               />
             </>
           )}
-          
+
           {/* External link indicator */}
           <div className="absolute top-2 right-2 bg-black/60 rounded-full p-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
             <ExternalLink className="w-3 h-3 text-white" />
@@ -98,9 +110,13 @@ export function ArticleCard({
         </div>
 
         {/* Article Content */}
-        <div className={`p-4 flex-1 flex flex-col ${isList ? "justify-center" : ""}`}>
+        <div
+          className={`p-4 flex-1 flex flex-col ${isList ? "justify-center" : ""}`}
+        >
           {/* Source and Date */}
-          <div className={`flex items-center gap-2 text-xs sm:text-sm text-gray-500 mb-2 ${isList ? "mb-1" : ""}`}>
+          <div
+            className={`flex items-center gap-2 text-xs sm:text-sm text-gray-500 mb-2 ${isList ? "mb-1" : ""}`}
+          >
             <span className="font-medium">{article.source}</span>
             <span>•</span>
             <time dateTime={article.date}>{article.date}</time>
@@ -113,7 +129,7 @@ export function ArticleCard({
             rel="noopener noreferrer"
             className="group/link"
           >
-            <h3 
+            <h3
               className={`
                 font-semibold text-gray-900 group-hover/link:text-brand-primary 
                 transition-colors duration-200 line-clamp-2

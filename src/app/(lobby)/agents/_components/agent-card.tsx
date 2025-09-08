@@ -58,7 +58,6 @@ export function AgentCard({
   const [logoLoading, setLogoLoading] = useState(true);
   const [logoError, setLogoError] = useState(false);
 
-
   const agentName = name;
   const listingsCount = formatNumber(listings);
   const logoSrc = logo

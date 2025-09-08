@@ -16,7 +16,7 @@ export async function getFlexiBanner(): Promise<string> {
           "Content-Type": "application/json",
         },
         responseType: "text", // Ensure we get text response
-      },
+      }
     );
 
     console.log("Flexi banner response:", response);

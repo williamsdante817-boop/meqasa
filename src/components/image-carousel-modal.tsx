@@ -20,7 +20,7 @@ function ImagePlaceholder({ className }: { className?: string }) {
     <div
       className={cn(
         "w-full h-full flex items-center justify-center bg-gray-100",
-        className,
+        className
       )}
     >
       <ImageIcon className="w-8 h-8 text-gray-400" />
@@ -49,10 +49,10 @@ export function ImageCarouselModal({
   const [isLoading, setIsLoading] = useState(true);
   const [imgErrors, setImgErrors] = useState<Record<number, boolean>>({});
   const [touchStart, setTouchStart] = useState<{ x: number; y: number } | null>(
-    null,
+    null
   );
   const [touchEnd, setTouchEnd] = useState<{ x: number; y: number } | null>(
-    null,
+    null
   );
   const [isAnimating, setIsAnimating] = useState(false);
   const thumbnailStripRef = useRef<HTMLDivElement>(null);
@@ -62,13 +62,13 @@ export function ImageCarouselModal({
   // Memoize filtered images to prevent unnecessary re-renders
   const validImages = useMemo(
     () => images.filter((img): img is string => Boolean(img)),
-    [images],
+    [images]
   );
 
   // Compute full URLs early so cache checks are available to effects below
   const imageUrls = useMemo(
     () => validImages.map((img) => getImageUrl(img)),
-    [validImages, getImageUrl],
+    [validImages, getImageUrl]
   );
 
   // Reset states when modal opens with a new initial index or images change
@@ -77,7 +77,7 @@ export function ImageCarouselModal({
       const initial = Number.isFinite(initialIndex) ? initialIndex : 0;
       const safeInitialIndex = Math.max(
         0,
-        Math.min(initial, validImages.length - 1),
+        Math.min(initial, validImages.length - 1)
       );
       setCurrentIndex(safeInitialIndex);
       setImgErrors({});
@@ -116,7 +116,7 @@ export function ImageCarouselModal({
     const computeSpacer = () => {
       const spacer = Math.max(
         0,
-        container.clientWidth / 2 - THUMBNAIL_WIDTH / 2,
+        container.clientWidth / 2 - THUMBNAIL_WIDTH / 2
       );
       setThumbnailSpacerWidth(spacer);
     };
@@ -135,7 +135,7 @@ export function ImageCarouselModal({
 
     const timeoutId = setTimeout(() => {
       const activeThumb = container.querySelector<HTMLElement>(
-        `[data-thumb-index='${currentIndex}']`,
+        `[data-thumb-index='${currentIndex}']`
       );
       if (!activeThumb) return;
 
@@ -181,7 +181,7 @@ export function ImageCarouselModal({
       setCurrentIndex(index);
       setIsLoading(!isImagePreloaded(imageUrls[index]));
     },
-    [imageUrls],
+    [imageUrls]
   );
 
   // Touch event handlers for mobile swipe
@@ -253,7 +253,7 @@ export function ImageCarouselModal({
           break;
       }
     },
-    [handlePrevious, handleNext, onClose, validImages.length, imageUrls],
+    [handlePrevious, handleNext, onClose, validImages.length, imageUrls]
   );
 
   const getImageUrlWithFallback = useCallback(
@@ -261,7 +261,7 @@ export function ImageCarouselModal({
       if (!imagePath) return "";
       return getImageUrl(imagePath);
     },
-    [getImageUrl],
+    [getImageUrl]
   );
 
   // Keep convenience helper for rendering paths that may be empty
@@ -307,7 +307,7 @@ export function ImageCarouselModal({
         className={cn(
           "fixed inset-0 w-screen h-screen max-w-none max-h-none p-0 m-0 bg-black border-none flex flex-col translate-x-0 translate-y-0 left-0 top-0 !rounded-none",
           "transition-all duration-300 ease-out",
-          isAnimating ? "opacity-0" : "opacity-100",
+          isAnimating ? "opacity-0" : "opacity-100"
         )}
         onKeyDown={handleKeyDown}
         role="dialog"
@@ -323,7 +323,7 @@ export function ImageCarouselModal({
               "transition-all duration-300 ease-out",
               isAnimating
                 ? "opacity-0 translate-y-2"
-                : "opacity-100 translate-y-0",
+                : "opacity-100 translate-y-0"
             )}
           >
             {currentIndex + 1} / {validImages.length}
@@ -338,7 +338,7 @@ export function ImageCarouselModal({
               "transition-all duration-300 ease-out",
               isAnimating
                 ? "opacity-0 translate-y-2"
-                : "opacity-100 translate-y-0",
+                : "opacity-100 translate-y-0"
             )}
             onClick={onClose}
             aria-label="Close image gallery"
@@ -355,7 +355,7 @@ export function ImageCarouselModal({
               "transition-all duration-300 ease-out",
               isAnimating
                 ? "opacity-0 translate-x-2"
-                : "opacity-100 translate-x-0",
+                : "opacity-100 translate-x-0"
             )}
             onClick={handlePrevious}
             aria-label="Previous image"
@@ -370,7 +370,7 @@ export function ImageCarouselModal({
             className={cn(
               "relative flex items-center justify-center touch-pan-y overflow-hidden rounded-lg bg-gray-900",
               "transition-all duration-300 ease-out",
-              isAnimating ? "opacity-0 scale-95" : "opacity-100 scale-100",
+              isAnimating ? "opacity-0 scale-95" : "opacity-100 scale-100"
             )}
             style={{ width: "min(800px, 100%)", aspectRatio: "800 / 530" }}
             tabIndex={0}
@@ -400,7 +400,7 @@ export function ImageCarouselModal({
                   fill
                   className={cn(
                     "object-contain transition-opacity duration-300",
-                    isLoading ? "opacity-0" : "opacity-100",
+                    isLoading ? "opacity-0" : "opacity-100"
                   )}
                   onLoadingComplete={handleImageLoad}
                   onError={() => handleImageError(currentIndex)}
@@ -420,7 +420,7 @@ export function ImageCarouselModal({
               "transition-all duration-300 ease-out",
               isAnimating
                 ? "opacity-0 -translate-x-2"
-                : "opacity-100 translate-x-0",
+                : "opacity-100 translate-x-0"
             )}
             onClick={handleNext}
             aria-label="Next image"
@@ -438,7 +438,7 @@ export function ImageCarouselModal({
                 "transition-all duration-300 ease-out",
                 isAnimating
                   ? "opacity-0 translate-y-4"
-                  : "opacity-100 translate-y-0",
+                  : "opacity-100 translate-y-0"
               )}
               style={{
                 minHeight: THUMBNAIL_STRIP_HEIGHT,
@@ -463,7 +463,7 @@ export function ImageCarouselModal({
                     "relative flex-shrink-0 rounded-md overflow-hidden transition-all origin-center outline-none",
                     idx === currentIndex
                       ? "ring-2 ring-brand-blue ring-offset-2 ring-offset-black z-10"
-                      : "opacity-70 hover:opacity-100 focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2 focus-visible:ring-offset-black",
+                      : "opacity-70 hover:opacity-100 focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2 focus-visible:ring-offset-black"
                   )}
                   style={{ width: THUMBNAIL_WIDTH, height: THUMBNAIL_HEIGHT }}
                   aria-label={`Show image ${idx + 1}`}

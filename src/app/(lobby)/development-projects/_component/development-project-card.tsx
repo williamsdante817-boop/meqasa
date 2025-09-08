@@ -37,9 +37,9 @@ interface DevelopmentProjectCardProps {
   priority?: boolean;
 }
 
-export default function DevelopmentProjectCard({ 
-  project, 
-  priority = false 
+export default function DevelopmentProjectCard({
+  project,
+  priority = false,
 }: DevelopmentProjectCardProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [logoLoaded, setLogoLoaded] = useState(false);
@@ -63,7 +63,7 @@ export default function DevelopmentProjectCard({
     if (!project.unitcount || project.unitcount === 0) {
       return "Units available";
     }
-    return `${project.unitcount} unit${project.unitcount !== 1 ? 's' : ''}`;
+    return `${project.unitcount} unit${project.unitcount !== 1 ? "s" : ""}`;
   };
 
   return (
@@ -73,7 +73,9 @@ export default function DevelopmentProjectCard({
         href={project.weburl || `/development-projects/${project.projectid}`}
         className="absolute inset-0 z-10"
         aria-label={`View details for ${project.projectname}`}
-        {...(project.weburl ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+        {...(project.weburl
+          ? { target: "_blank", rel: "noopener noreferrer" }
+          : {})}
       />
 
       <CardHeader className="p-0 relative">
@@ -82,7 +84,7 @@ export default function DevelopmentProjectCard({
           {!imageLoaded && (
             <div className="absolute inset-0 z-20 bg-gray-100 animate-pulse" />
           )}
-          
+
           {/* Main Project Image */}
           <ImageWithFallback
             src={project.photoUrl || "/images/placeholder-development.jpg"}
@@ -103,10 +105,15 @@ export default function DevelopmentProjectCard({
 
           {/* Gradient overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-          
+
           {/* Status badge */}
           <div className="absolute top-3 left-3 z-30">
-            <Badge className={cn("text-xs font-semibold shadow-lg", getStatusColor(project.status))}>
+            <Badge
+              className={cn(
+                "text-xs font-semibold shadow-lg",
+                getStatusColor(project.status)
+              )}
+            >
               {project.status.charAt(0).toUpperCase() + project.status.slice(1)}
             </Badge>
           </div>
@@ -175,7 +182,7 @@ export default function DevelopmentProjectCard({
               {project.region}
             </span>
           </div>
-          
+
           {/* View Details Button - Relative positioning to stay above link overlay */}
           <Button
             variant="outline"
@@ -183,8 +190,14 @@ export default function DevelopmentProjectCard({
             className="relative z-20 text-brand-accent hover:bg-brand-primary hover:text-white transition-colors duration-200"
             asChild
           >
-            <Link href={project.weburl || `/development-projects/${project.projectid}`}
-                  {...(project.weburl ? { target: "_blank", rel: "noopener noreferrer" } : {})}>
+            <Link
+              href={
+                project.weburl || `/development-projects/${project.projectid}`
+              }
+              {...(project.weburl
+                ? { target: "_blank", rel: "noopener noreferrer" }
+                : {})}
+            >
               <Eye className="h-4 w-4 mr-1.5" />
               {project.weburl ? "Visit Site" : "View Details"}
             </Link>

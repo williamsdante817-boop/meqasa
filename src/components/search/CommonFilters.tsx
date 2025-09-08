@@ -97,7 +97,7 @@ export function CommonFilters({
                     >
                       {label}
                     </SelectItem>
-                  ),
+                  )
                 )}
               </SelectGroup>
             </SelectContent>
@@ -132,7 +132,7 @@ export function CommonFilters({
                     >
                       {label}
                     </SelectItem>
-                  ),
+                  )
                 )}
               </SelectGroup>
             </SelectContent>
@@ -167,7 +167,7 @@ export function CommonFilters({
                     >
                       {label}
                     </SelectItem>
-                  ),
+                  )
                 )}
               </SelectGroup>
             </SelectContent>
@@ -198,7 +198,7 @@ export function CommonFilters({
                     >
                       {label}
                     </SelectItem>
-                  ),
+                  )
                 )}
               </SelectGroup>
             </SelectContent>

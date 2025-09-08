@@ -20,6 +20,6 @@ export async function getFeaturedUnits(): Promise<Unit[]> {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
-    },
+    }
   );
 }

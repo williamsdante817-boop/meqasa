@@ -29,7 +29,7 @@ interface RetryConfig extends IAxiosRetryConfig {
   onRetry?: (
     retryCount: number,
     error: AxiosError,
-    requestConfig?: AxiosRequestConfig,
+    requestConfig?: AxiosRequestConfig
   ) => void;
   onMaxRetryTimesExceeded?: (error: AxiosError, retryCount: number) => void;
 }
@@ -142,7 +142,7 @@ const defaultRetryConfig: RetryConfig = {
         errorType: classifiedError.type,
         message: classifiedError.message,
         status: error.response?.status,
-      },
+      }
     );
   },
   onMaxRetryTimesExceeded: (error, retryCount) => {
@@ -153,7 +153,7 @@ const defaultRetryConfig: RetryConfig = {
         errorType: classifiedError.type,
         message: classifiedError.message,
         status: error.response?.status,
-      },
+      }
     );
   },
   shouldResetTimeout: false, // Don't reset timeout between retries
@@ -161,7 +161,7 @@ const defaultRetryConfig: RetryConfig = {
 
 // Create Axios instance with default configuration
 const createAxiosInstance = (
-  retryConfig?: Partial<RetryConfig>,
+  retryConfig?: Partial<RetryConfig>
 ): AxiosInstance => {
   const instance = axios.create({
     timeout: 10000, // 10 seconds timeout
@@ -187,7 +187,7 @@ const createAxiosInstance = (
           {
             params: config.params as Record<string, unknown>,
             data: config.data as unknown,
-          },
+          }
         );
       }
 
@@ -196,7 +196,7 @@ const createAxiosInstance = (
     (error: AxiosError) => {
       console.error("Request interceptor error:", error);
       return Promise.reject(error);
-    },
+    }
   );
 
   // Response interceptor for logging and error handling
@@ -215,7 +215,7 @@ const createAxiosInstance = (
             status: response.status,
             duration: `${duration}ms`,
             data: response.data as unknown,
-          },
+          }
         );
       }
 
@@ -236,11 +236,11 @@ const createAxiosInstance = (
           duration: `${duration}ms`,
           message: error.message,
           data: error.response?.data,
-        },
+        }
       );
 
       return Promise.reject(error);
-    },
+    }
   );
 
   return instance;
@@ -278,7 +278,7 @@ export class ApiClient {
   async post<T>(
     url: string,
     data?: unknown,
-    config?: AxiosRequestConfig,
+    config?: AxiosRequestConfig
   ): Promise<T> {
     return this.request<T>({ ...config, method: "POST", url, data });
   }
@@ -286,7 +286,7 @@ export class ApiClient {
   async put<T>(
     url: string,
     data?: unknown,
-    config?: AxiosRequestConfig,
+    config?: AxiosRequestConfig
   ): Promise<T> {
     return this.request<T>({ ...config, method: "PUT", url, data });
   }
@@ -298,7 +298,7 @@ export class ApiClient {
   async patch<T>(
     url: string,
     data?: unknown,
-    config?: AxiosRequestConfig,
+    config?: AxiosRequestConfig
   ): Promise<T> {
     return this.request<T>({ ...config, method: "PATCH", url, data });
   }

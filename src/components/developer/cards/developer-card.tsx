@@ -52,7 +52,6 @@ function DeveloperCardComponent({ developer, className }: DeveloperCardProps) {
   const [heroLoading, setHeroLoading] = useState(true);
   const [heroError, setHeroError] = useState(false);
 
-
   // Validate required props after hooks
   if (!developer?.developerid || !developer?.companyname) {
     return null;
@@ -78,7 +77,7 @@ function DeveloperCardComponent({ developer, className }: DeveloperCardProps) {
       analytics.trackEvent(
         "contact_developer_clicked",
         "user_interaction",
-        developer.companyname,
+        developer.companyname
       );
     }
     setIsOpen(true);

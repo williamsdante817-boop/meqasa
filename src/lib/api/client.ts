@@ -27,7 +27,9 @@ export class MeQasaApiClient {
     try {
       const fullConfig: AxiosRequestConfig = {
         ...config,
-        url: endpoint.startsWith("http") ? endpoint : `${this.baseUrl}${endpoint}`,
+        url: endpoint.startsWith("http")
+          ? endpoint
+          : `${this.baseUrl}${endpoint}`,
         headers: {
           ...defaultHeaders,
           ...config.headers,
@@ -72,15 +74,15 @@ export class MeQasaApiClient {
     context?: string
   ): Promise<T> {
     const formData = new URLSearchParams();
-    
+
     // Always include the app identifier for MeQasa API
     formData.append("app", "vercel");
-    
+
     // Add other data as form fields
     if (data) {
       Object.entries(data).forEach(([key, value]) => {
         if (value !== null && value !== undefined) {
-          if (typeof value === 'object' && value !== null) {
+          if (typeof value === "object" && value !== null) {
             formData.append(key, JSON.stringify(value));
           } else {
             formData.append(key, String(value));
@@ -241,7 +243,12 @@ export class MeQasaApiClient {
   }
 
   async getFlexiBanner<T>(config?: AxiosRequestConfig): Promise<T> {
-    return this.postForm<T>(endpoints.banners.flexi, {}, config, "Flexi Banner");
+    return this.postForm<T>(
+      endpoints.banners.flexi,
+      {},
+      config,
+      "Flexi Banner"
+    );
   }
 
   async getGridBanner<T>(config?: AxiosRequestConfig): Promise<T> {
@@ -305,7 +312,7 @@ export class MeQasaApiClient {
         status: "healthy",
         timestamp: Date.now(),
       };
-    } catch{
+    } catch {
       return {
         status: "unhealthy",
         timestamp: Date.now(),

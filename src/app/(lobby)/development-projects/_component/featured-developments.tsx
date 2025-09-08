@@ -29,30 +29,32 @@ interface FeaturedDevelopment {
 }
 
 export default function FeaturedDevelopments() {
-  const [featuredProjects, setFeaturedProjects] = useState<FeaturedDevelopment[]>([]);
+  const [featuredProjects, setFeaturedProjects] = useState<
+    FeaturedDevelopment[]
+  >([]);
   const [loading, setLoading] = useState(true);
   const [imageLoaded, setImageLoaded] = useState<Record<string, boolean>>({});
 
   // API call function
   const fetchFeaturedProjects = async (): Promise<FeaturedDevelopment[]> => {
     try {
-      const response = await fetch('/api/development-projects', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/development-projects", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({}),
       });
-      
+
       if (!response.ok) {
-        throw new Error('Failed to fetch projects');
+        throw new Error("Failed to fetch projects");
       }
-      
+
       const data: { projects?: FeaturedDevelopment[] } = await response.json();
       // Filter for featured projects and limit to 2
       return (data.projects || [])
         .filter((project: FeaturedDevelopment) => project.isFeatured)
         .slice(0, 2);
     } catch (error) {
-      console.error('Error fetching featured development projects:', error);
+      console.error("Error fetching featured development projects:", error);
       return [];
     }
   };
@@ -64,7 +66,7 @@ export default function FeaturedDevelopments() {
         const projects = await fetchFeaturedProjects();
         setFeaturedProjects(projects);
       } catch (error) {
-        console.error('Error loading featured projects:', error);
+        console.error("Error loading featured projects:", error);
         setFeaturedProjects([]);
       } finally {
         setLoading(false);
@@ -75,7 +77,7 @@ export default function FeaturedDevelopments() {
   }, []);
 
   const handleImageLoad = (projectId: number) => {
-    setImageLoaded(prev => ({ ...prev, [projectId]: true }));
+    setImageLoaded((prev) => ({ ...prev, [projectId]: true }));
   };
 
   const getCompletionStatus = (status: string) => {
@@ -100,7 +102,7 @@ export default function FeaturedDevelopments() {
             <div className="h-4 bg-gray-200 rounded w-96 animate-pulse" />
           </div>
         </div>
-        
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {Array.from({ length: 2 }).map((_, i) => (
             <div key={i} className="animate-pulse">
@@ -133,10 +135,11 @@ export default function FeaturedDevelopments() {
             </h2>
           </div>
           <p className="text-brand-muted">
-            Discover our hand-picked premium projects from Ghana&apos;s leading developers
+            Discover our hand-picked premium projects from Ghana&apos;s leading
+            developers
           </p>
         </div>
-        
+
         <Button
           variant="outline"
           asChild
@@ -152,26 +155,32 @@ export default function FeaturedDevelopments() {
       {/* Featured Projects Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {featuredProjects.map((project, index) => (
-          <Card 
-            key={project.projectid} 
+          <Card
+            key={project.projectid}
             className="group relative overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-500"
           >
             <Link
-              href={project.weburl || `/development-projects/${project.projectid}`}
+              href={
+                project.weburl || `/development-projects/${project.projectid}`
+              }
               className="absolute inset-0 z-10"
               aria-label={`View details for ${project.projectname}`}
-              {...(project.weburl ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+              {...(project.weburl
+                ? { target: "_blank", rel: "noopener noreferrer" }
+                : {})}
             />
-            
+
             <div className="relative">
               <AspectRatio ratio={16 / 10} className="relative overflow-hidden">
                 {/* Loading skeleton */}
                 {!imageLoaded[project.projectid] && (
                   <div className="absolute inset-0 z-20 bg-gray-100 animate-pulse" />
                 )}
-                
+
                 <ImageWithFallback
-                  src={project.photoUrl || "/images/placeholder-development.jpg"}
+                  src={
+                    project.photoUrl || "/images/placeholder-development.jpg"
+                  }
                   alt={`${project.projectname} featured development`}
                   fill
                   sizes="(min-width: 1024px) 50vw, 100vw"
@@ -186,10 +195,10 @@ export default function FeaturedDevelopments() {
                   fallbackAlt={`${project.projectname} - Image not available`}
                   onLoad={() => handleImageLoad(project.projectid)}
                 />
-                
+
                 {/* Gradient overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                
+
                 {/* Featured badge */}
                 <div className="absolute top-4 left-4 z-30">
                   <Badge className="bg-yellow-500 text-black font-semibold shadow-lg">
@@ -197,14 +206,14 @@ export default function FeaturedDevelopments() {
                     Featured
                   </Badge>
                 </div>
-                
+
                 {/* Status badge */}
                 <div className="absolute top-4 right-4 z-30">
                   <Badge className="bg-white/90 text-brand-accent font-semibold shadow-lg">
                     {getCompletionStatus(project.status)}
                   </Badge>
                 </div>
-                
+
                 {/* Project info overlay */}
                 <div className="absolute bottom-0 left-0 right-0 z-30 p-6 text-white">
                   <div className="space-y-3">
@@ -213,10 +222,11 @@ export default function FeaturedDevelopments() {
                         {project.projectname}
                       </h3>
                       <p className="text-white/90 text-sm font-medium">
-                        {formatNumber(project.pageviews)} views • {project.unitcount} units
+                        {formatNumber(project.pageviews)} views •{" "}
+                        {project.unitcount} units
                       </p>
                     </div>
-                    
+
                     <div className="flex items-center text-white/90">
                       <MapPin className="h-4 w-4 mr-1.5 flex-shrink-0" />
                       <span className="text-sm">{project.fullLocation}</span>
@@ -231,7 +241,7 @@ export default function FeaturedDevelopments() {
               <p className="text-brand-muted line-clamp-3 leading-relaxed">
                 {project.aboutproject}
               </p>
-              
+
               {/* Stats Row */}
               <div className="flex items-center justify-between py-3 border-y">
                 <div className="text-center">
@@ -240,14 +250,14 @@ export default function FeaturedDevelopments() {
                   </div>
                   <div className="text-xs text-brand-muted">Total Units</div>
                 </div>
-                
+
                 <div className="text-center">
                   <div className="text-lg font-bold text-brand-primary">
                     {formatNumber(project.pageviews)}
                   </div>
                   <div className="text-xs text-brand-muted">Page Views</div>
                 </div>
-                
+
                 <div className="text-center">
                   <div className="text-lg font-bold text-green-600">
                     {project.region}
@@ -255,7 +265,7 @@ export default function FeaturedDevelopments() {
                   <div className="text-xs text-brand-muted">Location</div>
                 </div>
               </div>
-              
+
               {/* Status info */}
               <div className="flex items-center gap-2">
                 <Building2 className="h-4 w-4 text-brand-accent flex-shrink-0" />
@@ -264,7 +274,8 @@ export default function FeaturedDevelopments() {
                     variant="outline"
                     className="text-xs font-medium bg-gray-50 text-gray-700"
                   >
-                    {project.status.charAt(0).toUpperCase() + project.status.slice(1)}
+                    {project.status.charAt(0).toUpperCase() +
+                      project.status.slice(1)}
                   </Badge>
                   {project.isFeatured && (
                     <Badge
@@ -276,31 +287,36 @@ export default function FeaturedDevelopments() {
                   )}
                 </div>
               </div>
-              
+
               {/* CTA Button */}
               <Button
                 variant="default"
                 className="w-full relative z-20 bg-brand-primary hover:bg-brand-primary/90"
                 asChild
               >
-                <Link href={project.weburl || `/development-projects/${project.projectid}`}
-                      {...(project.weburl ? { target: "_blank", rel: "noopener noreferrer" } : {})}>
+                <Link
+                  href={
+                    project.weburl ||
+                    `/development-projects/${project.projectid}`
+                  }
+                  {...(project.weburl
+                    ? { target: "_blank", rel: "noopener noreferrer" }
+                    : {})}
+                >
                   <Building2 className="h-4 w-4 mr-2" />
-                  {project.weburl ? "Visit Project Site" : "View Project Details"}
+                  {project.weburl
+                    ? "Visit Project Site"
+                    : "View Project Details"}
                 </Link>
               </Button>
             </CardContent>
           </Card>
         ))}
       </div>
-      
+
       {/* Mobile CTA */}
       <div className="md:hidden">
-        <Button
-          variant="outline"
-          asChild
-          className="w-full"
-        >
+        <Button variant="outline" asChild className="w-full">
           <Link href="/development-projects?featured=true">
             View All Featured Developments
             <ArrowRight className="h-4 w-4 ml-2" />

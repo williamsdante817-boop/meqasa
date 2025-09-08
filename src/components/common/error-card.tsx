@@ -34,7 +34,7 @@ export function ErrorCard({
       aria-atomic="true"
       className={cn(
         "flex w-full min-w-0 text-brand-accent rounded-lg flex-col items-center justify-center overflow-hidden p-10",
-        className,
+        className
       )}
       {...props}
     >
@@ -60,7 +60,7 @@ export function ErrorCard({
               buttonVariants({
                 variant: "default",
               }),
-              "bg-brand-accent text-white",
+              "bg-brand-accent text-white"
             )}
           >
             {retryLinkText}

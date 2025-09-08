@@ -13,8 +13,8 @@ const safetyTips = [
 /**
  * A component that renders a card containing safety tips.
  *
- * This component displays a list of safety tips aimed at guiding users on how to safely interact 
- * with agents and landlords. It includes a header with a title and an icon, followed by a list 
+ * This component displays a list of safety tips aimed at guiding users on how to safely interact
+ * with agents and landlords. It includes a header with a title and an icon, followed by a list
  * of tips presented in a styled card.
  *
  * @returns {JSX.Element} A section element containing safety tips in a styled card.

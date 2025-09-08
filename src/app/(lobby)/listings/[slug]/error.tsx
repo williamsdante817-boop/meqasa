@@ -12,7 +12,7 @@ interface PropertyErrorProps {
 
 export default function PropertyError({ error, reset }: PropertyErrorProps) {
   useEffect(() => {
-    logPropertyError(error, 'error_boundary');
+    logPropertyError(error, "error_boundary");
   }, [error]);
 
   const errorDetails = getErrorDetails(error);
@@ -20,10 +20,7 @@ export default function PropertyError({ error, reset }: PropertyErrorProps) {
   return (
     <main>
       <Shell>
-        <PropertyErrorUI 
-          errorDetails={errorDetails} 
-          onRetry={reset} 
-        />
+        <PropertyErrorUI errorDetails={errorDetails} onRetry={reset} />
       </Shell>
     </main>
   );

@@ -39,7 +39,7 @@ export function SearchDebugInfo({ mode, searchData }: SearchDebugInfoProps) {
           {isExpanded ? "−" : "+"}
         </button>
       </div>
-      
+
       {mode === "enhanced" && isExpanded && searchData && (
         <div className="space-y-1 border-t border-gray-700 pt-2">
           <div>Loading: {searchData.isLoading ? "🔄" : "✅"}</div>
@@ -50,11 +50,19 @@ export function SearchDebugInfo({ mode, searchData }: SearchDebugInfoProps) {
           <div>Results: {searchData.resultsCount ?? 0}</div>
         </div>
       )}
-      
+
       {isExpanded && (
         <div className="border-t border-gray-700 pt-2 mt-2 text-gray-400">
-          <div>Screen: {typeof window !== "undefined" && window.innerWidth < 768 ? "📱 Mobile" : "🖥️ Desktop"}</div>
-          <div>Viewport: {typeof window !== "undefined" ? `${window.innerWidth}px` : "SSR"}</div>
+          <div>
+            Screen:{" "}
+            {typeof window !== "undefined" && window.innerWidth < 768
+              ? "📱 Mobile"
+              : "🖥️ Desktop"}
+          </div>
+          <div>
+            Viewport:{" "}
+            {typeof window !== "undefined" ? `${window.innerWidth}px` : "SSR"}
+          </div>
         </div>
       )}
     </div>

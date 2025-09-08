@@ -72,13 +72,13 @@ const getStoredContactInfo = (): StoredContactInfo | null => {
 const setStoredContactInfo = (
   name: string,
   phone: string,
-  countryIso?: CountryCode,
+  countryIso?: CountryCode
 ): void => {
   if (typeof window === "undefined") return;
   try {
     localStorage.setItem(
       "meqasa_contact_info",
-      JSON.stringify({ name, phone, countryIso: countryIso?.toUpperCase() }),
+      JSON.stringify({ name, phone, countryIso: countryIso?.toUpperCase() })
     );
   } catch (error) {
     console.error("Error writing to localStorage:", error);
@@ -263,7 +263,7 @@ export default function ContactSection({
 
     if (!userNameToUse || !userPhoneToUse || !entityId) {
       console.error(
-        "❌ [ContactSection] No contact info or entity ID available",
+        "❌ [ContactSection] No contact info or entity ID available"
       );
       return;
     }
@@ -296,7 +296,7 @@ export default function ContactSection({
   const handleGetNumberWithSavedInfo = async () => {
     if (!state.userName || !state.userPhone || !entityId) {
       console.error(
-        "❌ [ContactSection] No saved contact info or entity ID available",
+        "❌ [ContactSection] No saved contact info or entity ID available"
       );
       return;
     }
@@ -365,7 +365,7 @@ export default function ContactSection({
         setStoredContactInfo(
           state.userName,
           state.userPhone,
-          state.userCountryIso,
+          state.userCountryIso
         );
         if (state.activeModal === "whatsapp") {
           const whatsappDigits = res.whatsappNumber.replace(/\D/g, "");
@@ -739,7 +739,7 @@ export default function ContactSection({
                     {phoneNumber
                       ? toInternationalDisplay(
                           phoneNumber,
-                          state.userCountryIso,
+                          state.userCountryIso
                         )
                       : ""}
                   </div>
@@ -748,7 +748,7 @@ export default function ContactSection({
                       WhatsApp:{" "}
                       {toInternationalDisplay(
                         whatsappNumber,
-                        state.userCountryIso,
+                        state.userCountryIso
                       )}
                     </div>
                   )}

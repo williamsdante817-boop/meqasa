@@ -19,17 +19,13 @@ export function LobbySkeleton() {
           <Skeleton className="w-full h-full" />
         </div>
 
-
         {/* Mobile Page Header - Only visible on mobile */}
         <PageHeader
           as="section"
           className="mx-auto items-center gap-2 text-center lg:hidden flex absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white z-10"
           withPadding
         >
-          <PageHeaderHeading
-            className="animate-pulse text-white"
-            as="h1"
-          >
+          <PageHeaderHeading className="animate-pulse text-white" as="h1">
             <Skeleton className="h-8 w-64 bg-white/20" />
           </PageHeaderHeading>
           <PageHeaderDescription className="max-w-[46.875rem] animate-pulse">

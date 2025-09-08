@@ -47,7 +47,7 @@ export function useAgentListingsPagination(
         throw new Error(`Failed to fetch listings: ${response.status}`);
       }
 
-      return await response.json() as AgentListingsPaginationResponse;
+      return (await response.json()) as AgentListingsPaginationResponse;
     },
     ...queryConfig.agentListings,
     // Only enable for pages beyond 1 (page 1 comes from server)

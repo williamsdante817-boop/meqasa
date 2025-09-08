@@ -2,17 +2,24 @@
 
 import React, { useState, useCallback, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Hash, Loader2, Search, AlertCircle, Zap, TrendingUp } from "lucide-react";
+import {
+  Hash,
+  Loader2,
+  Search,
+  AlertCircle,
+  Zap,
+  TrendingUp,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { 
+import {
   processProductionReferenceSearch,
   hybridReferenceNavigation,
   formatReferenceForDisplay,
   getReferenceSearchMetrics,
-  type ProductionReferenceResult 
+  type ProductionReferenceResult,
 } from "@/lib/production-reference-url-generator";
 
 interface ProductionReferenceSearchProps {
@@ -39,9 +46,12 @@ export function ProductionReferenceSearch({
   const [reference, setReference] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [searchResult, setSearchResult] = useState<ProductionReferenceResult | null>(null);
-  const [metrics, setMetrics] = useState<ReturnType<typeof getReferenceSearchMetrics> | null>(null);
-  
+  const [searchResult, setSearchResult] =
+    useState<ProductionReferenceResult | null>(null);
+  const [metrics, setMetrics] = useState<ReturnType<
+    typeof getReferenceSearchMetrics
+  > | null>(null);
+
   const router = useRouter();
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
   const searchStartTime = useRef<number | null>(null);
@@ -56,91 +66,95 @@ export function ProductionReferenceSearch({
     }
   }, [showPerformanceInfo]);
 
-  const handleReferenceSearch = useCallback(async (ref: string) => {
-    if (!ref.trim()) {
-      setError("Please enter a reference number");
-      return;
-    }
-
-    setError(null);
-    setIsLoading(true);
-    setSearchResult(null);
-    searchStartTime.current = performance.now();
-
-    try {
-      if (useHybridNavigation) {
-        // Hybrid approach: instant navigation + background enhancement
-        await hybridReferenceNavigation(
-          ref,
-          (url, source) => {
-            if (source === 'fallback') {
-              // Instant navigation with fallback
-              router.push(url);
-              setIsLoading(false);
-            } else if (source === 'enhanced') {
-              // Background enhancement - replace current URL
-              router.replace(url);
-            }
-          },
-          (errorMsg) => {
-            setError(errorMsg);
-            onError?.(errorMsg);
-            setIsLoading(false);
-          }
-        );
-
-        // Get final metrics
-        const finalMetrics = getReferenceSearchMetrics();
-        const formattedRef = formatReferenceForDisplay(ref);
-        
-        onSearch?.(formattedRef, '', finalMetrics);
-        setReference("");
-        setError(null);
-
-      } else {
-        // Standard API-first approach with production optimizations
-        const result = await processProductionReferenceSearch(ref, {
-          useHybrid: false,
-          maxRetries: 2,
-          timeout: 5000
-        });
-
-        if (!result.isValid || result.error) {
-          setError(result.error ?? "Invalid reference number");
-          onError?.(result.error ?? "Invalid reference number");
-          setIsLoading(false);
-          return;
-        }
-
-        // Navigate to the result URL
-        router.push(result.url);
-        
-        // Update state and metrics
-        setSearchResult(result);
-        const currentMetrics = getReferenceSearchMetrics();
-        setMetrics(currentMetrics);
-        
-        // Log analytics
-        console.log(`[Production Reference Search] ${result.reference} -> ${result.url} (${result.source}, ${result.responseTime?.toFixed(0)}ms)`);
-        
-        onSearch?.(result.reference, result.url, currentMetrics);
-        setReference("");
-        setError(null);
-        setIsLoading(false);
+  const handleReferenceSearch = useCallback(
+    async (ref: string) => {
+      if (!ref.trim()) {
+        setError("Please enter a reference number");
+        return;
       }
 
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Search failed";
-      setError(errorMessage);
-      onError?.(errorMessage);
-      setIsLoading(false);
-    }
-  }, [router, onSearch, onError, useHybridNavigation]);
+      setError(null);
+      setIsLoading(true);
+      setSearchResult(null);
+      searchStartTime.current = performance.now();
+
+      try {
+        if (useHybridNavigation) {
+          // Hybrid approach: instant navigation + background enhancement
+          await hybridReferenceNavigation(
+            ref,
+            (url, source) => {
+              if (source === "fallback") {
+                // Instant navigation with fallback
+                router.push(url);
+                setIsLoading(false);
+              } else if (source === "enhanced") {
+                // Background enhancement - replace current URL
+                router.replace(url);
+              }
+            },
+            (errorMsg) => {
+              setError(errorMsg);
+              onError?.(errorMsg);
+              setIsLoading(false);
+            }
+          );
+
+          // Get final metrics
+          const finalMetrics = getReferenceSearchMetrics();
+          const formattedRef = formatReferenceForDisplay(ref);
+
+          onSearch?.(formattedRef, "", finalMetrics);
+          setReference("");
+          setError(null);
+        } else {
+          // Standard API-first approach with production optimizations
+          const result = await processProductionReferenceSearch(ref, {
+            useHybrid: false,
+            maxRetries: 2,
+            timeout: 5000,
+          });
+
+          if (!result.isValid || result.error) {
+            setError(result.error ?? "Invalid reference number");
+            onError?.(result.error ?? "Invalid reference number");
+            setIsLoading(false);
+            return;
+          }
+
+          // Navigate to the result URL
+          router.push(result.url);
+
+          // Update state and metrics
+          setSearchResult(result);
+          const currentMetrics = getReferenceSearchMetrics();
+          setMetrics(currentMetrics);
+
+          // Log analytics
+          console.log(
+            `[Production Reference Search] ${result.reference} -> ${result.url} (${result.source}, ${result.responseTime?.toFixed(0)}ms)`
+          );
+
+          onSearch?.(result.reference, result.url, currentMetrics);
+          setReference("");
+          setError(null);
+          setIsLoading(false);
+        }
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : "Search failed";
+        setError(errorMessage);
+        onError?.(errorMessage);
+        setIsLoading(false);
+      }
+    },
+    [router, onSearch, onError, useHybridNavigation]
+  );
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setReference(value);
-    
+
     // Clear error when user starts typing
     if (error && value.trim()) {
       setError(null);
@@ -172,7 +186,7 @@ export function ProductionReferenceSearch({
   };
 
   const handleSearchClick = () => {
-   void  handleReferenceSearch(reference);
+    void handleReferenceSearch(reference);
   };
 
   // Cleanup on unmount
@@ -212,7 +226,7 @@ export function ProductionReferenceSearch({
           )}
         </div>
       )}
-      
+
       <div className="flex gap-2">
         <div className="flex-1 relative">
           <Input
@@ -241,8 +255,8 @@ export function ProductionReferenceSearch({
             )}
           </div>
         </div>
-        
-        <Button 
+
+        <Button
           onClick={handleSearchClick}
           disabled={!reference.trim() || isLoading}
           className={cn(
@@ -251,16 +265,12 @@ export function ProductionReferenceSearch({
           )}
           aria-label="Search for property"
         >
-          {isLoading ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            "Find"
-          )}
+          {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Find"}
         </Button>
       </div>
 
       {error && (
-        <div 
+        <div
           id="reference-error"
           className="flex items-center gap-2 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg p-3"
           role="alert"
@@ -274,7 +284,9 @@ export function ProductionReferenceSearch({
         <div className="flex items-center gap-2 text-sm text-blue-600 bg-blue-50 border border-blue-200 rounded-lg p-3">
           <Loader2 className="h-4 w-4 animate-spin flex-shrink-0" />
           <span>
-            {useHybridNavigation ? "Navigating instantly..." : "Searching for property..."}
+            {useHybridNavigation
+              ? "Navigating instantly..."
+              : "Searching for property..."}
           </span>
         </div>
       )}
@@ -302,7 +314,10 @@ export function ProductionReferenceSearch({
           </div>
           {searchResult && (
             <div className="pt-1 mt-2 border-t border-gray-300">
-              <div>Last Search: {searchResult.source} ({searchResult.responseTime?.toFixed(0)}ms)</div>
+              <div>
+                Last Search: {searchResult.source} (
+                {searchResult.responseTime?.toFixed(0)}ms)
+              </div>
             </div>
           )}
         </div>
@@ -312,15 +327,15 @@ export function ProductionReferenceSearch({
 }
 
 // Export simplified version for basic use cases
-export function SimpleProductionReferenceSearch({ 
+export function SimpleProductionReferenceSearch({
   className,
-  showPerformanceInfo = false 
-}: { 
+  showPerformanceInfo = false,
+}: {
   className?: string;
   showPerformanceInfo?: boolean;
 }) {
   return (
-    <ProductionReferenceSearch 
+    <ProductionReferenceSearch
       className={className}
       size="sm"
       placeholder="Enter property reference..."

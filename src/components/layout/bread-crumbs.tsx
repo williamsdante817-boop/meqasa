@@ -28,7 +28,7 @@ export function Breadcrumbs({
       aria-label="breadcrumbs"
       className={cn(
         "flex w-full items-center overflow-auto text-sm font-semibold text-brand-muted",
-        className,
+        className
       )}
       {...props}
     >
@@ -50,7 +50,7 @@ export function Breadcrumbs({
               <Link
                 href={segment.href}
                 className={cn(
-                  "truncate transition-colors hover:text-brand-accent text-brand-muted",
+                  "truncate transition-colors hover:text-brand-accent text-brand-muted"
                 )}
               >
                 {truncationLength > 0 && segment.title

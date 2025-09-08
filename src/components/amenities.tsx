@@ -29,10 +29,7 @@ export default function Amenities({ amenities = [] }: AmenitiesProps) {
               className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100 text-green-700 flex-shrink-0"
               aria-hidden="true"
             >
-              <Check
-                className="h-4 w-4"
-                aria-hidden="true"
-              />
+              <Check className="h-4 w-4" aria-hidden="true" />
             </div>
             <p
               className="text-sm font-medium text-brand-accent line-clamp-1 flex-1"

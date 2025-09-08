@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
       if (!contract || !locality) {
         return NextResponse.json(
           { error: "Missing required fields: contract and locality" },
-          { status: 400 },
+          { status: 400 }
         );
       }
 
@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
       if (!VALID_CONTRACTS.includes(contract as "rent" | "sale")) {
         return NextResponse.json(
           { error: "Invalid contract type. Must be 'rent' or 'sale'" },
-          { status: 400 },
+          { status: 400 }
         );
       }
 
@@ -166,11 +166,11 @@ export async function POST(request: NextRequest) {
           postParams.set("fhowshort", searchParams.fhowshort);
           console.log(
             "🔍 Sending fhowshort parameter:",
-            searchParams.fhowshort,
+            searchParams.fhowshort
           );
         } else {
           console.log(
-            "🔍 No fhowshort parameter sent - using default behavior",
+            "🔍 No fhowshort parameter sent - using default behavior"
           );
         }
       } else {
@@ -281,7 +281,7 @@ export async function POST(request: NextRequest) {
             error:
               "Missing required fields: contract, locality, searchId, and pageNumber",
           },
-          { status: 400 },
+          { status: 400 }
         );
       }
 
@@ -289,7 +289,7 @@ export async function POST(request: NextRequest) {
       if (!VALID_CONTRACTS.includes(contract as "rent" | "sale")) {
         return NextResponse.json(
           { error: "Invalid contract type. Must be 'rent' or 'sale'" },
-          { status: 400 },
+          { status: 400 }
         );
       }
 
@@ -297,7 +297,7 @@ export async function POST(request: NextRequest) {
       if (searchId <= 0 || pageNumber < 1) {
         return NextResponse.json(
           { error: "Invalid searchId or page number" },
-          { status: 400 },
+          { status: 400 }
         );
       }
 
@@ -463,14 +463,14 @@ export async function POST(request: NextRequest) {
     } else {
       return NextResponse.json(
         { error: "Invalid request type. Must be 'search' or 'loadMore'" },
-        { status: 400 },
+        { status: 400 }
       );
     }
   } catch (error) {
     console.error("Error in properties API route:", error);
     return NextResponse.json(
       { error: "Failed to fetch properties" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

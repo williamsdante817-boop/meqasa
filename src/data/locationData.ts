@@ -9,7 +9,7 @@ const ACCRA_CENTER = {
 // Helper function to generate nearby coordinates
 const generateNearbyCoordinates = (
   base: typeof ACCRA_CENTER,
-  distanceInKm: number,
+  distanceInKm: number
 ) => {
   const radius = 6371; // Earth's radius in km
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -57,7 +57,7 @@ const generateLocationData = (): CategoryData => {
       const distance = Math.random() * 3000; // Random distance up to 3km
       const coordinates = generateNearbyCoordinates(
         ACCRA_CENTER,
-        distance / 1000,
+        distance / 1000
       );
 
       return {

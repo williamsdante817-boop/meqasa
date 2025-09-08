@@ -10,7 +10,7 @@ export interface ViewNumberResponse {
 }
 
 export async function viewNumber(
-  req: ViewNumberRequest,
+  req: ViewNumberRequest
 ): Promise<ViewNumberResponse> {
   const formData = new FormData();
   formData.append("rfifromph", req.phone);

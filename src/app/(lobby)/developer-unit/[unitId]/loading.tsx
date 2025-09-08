@@ -43,7 +43,8 @@ export default function DeveloperUnitLoading() {
               <div className="flex gap-2 flex-wrap">
                 <Skeleton className="h-6 w-20 rounded-full" />
                 <Skeleton className="h-6 w-24 rounded-full" />
-                <Skeleton className="h-8 w-8 rounded-full" /> {/* Favorite button */}
+                <Skeleton className="h-8 w-8 rounded-full" />{" "}
+                {/* Favorite button */}
               </div>
             </div>
 
@@ -143,7 +144,10 @@ export default function DeveloperUnitLoading() {
               <Skeleton className="h-8 w-40 mb-6" />
               <div className="space-y-4">
                 {Array.from({ length: 9 }).map((_, i) => (
-                  <div key={i} className="flex justify-between items-center py-3 border-b border-gray-100">
+                  <div
+                    key={i}
+                    className="flex justify-between items-center py-3 border-b border-gray-100"
+                  >
                     <Skeleton className="h-4 w-20" />
                     <Skeleton className="h-4 w-32" />
                   </div>

@@ -4,16 +4,16 @@ import { Card, CardContent } from "./ui/card";
 import { Skeleton } from "./ui/skeleton";
 
 interface FeaturedPropertySkeletonProps {
-  className?: string
-  variant?: "default" | "compact"
+  className?: string;
+  variant?: "default" | "compact";
 }
 
 export default function FeaturedPropertySkeleton({
   className = "",
-  variant = "default"
+  variant = "default",
 }: FeaturedPropertySkeletonProps) {
-  const isCompact = variant === "compact"
-  const cardHeight = isCompact ? "h-[200px]" : "h-[230px] md:h-[321px]"
+  const isCompact = variant === "compact";
+  const cardHeight = isCompact ? "h-[200px]" : "h-[230px] md:h-[321px]";
 
   return (
     <Card
@@ -29,11 +29,11 @@ export default function FeaturedPropertySkeleton({
         }}
         aria-hidden="true"
       />
-      
+
       <CardContent className="p-0">
         {/* Main image skeleton - matches exact dimensions */}
-        <Skeleton 
-          variant="shimmer" 
+        <Skeleton
+          variant="shimmer"
           className={`${cardHeight === "h-[230px] md:h-[321px]" ? "h-[321px]" : "h-[200px]"} rounded-lg`}
           aria-label="Loading featured property image"
         />
@@ -45,8 +45,8 @@ export default function FeaturedPropertySkeleton({
               {/* Left content - project info */}
               <div className="text-white space-y-2">
                 {/* Project title skeleton */}
-                <Skeleton 
-                  variant="light" 
+                <Skeleton
+                  variant="light"
                   className={`${isCompact ? "h-5 w-32" : "h-6 w-48 md:h-7 md:w-56"} bg-white/20`}
                   aria-label="Loading project title"
                 />
@@ -54,14 +54,17 @@ export default function FeaturedPropertySkeleton({
                 {/* Location skeleton - matches the dot-separated layout */}
                 <div className="flex items-center gap-1 pt-2">
                   <Skeleton variant="light" className="h-4 w-20 bg-white/15" />
-                  <Skeleton variant="light" className="h-1 w-1 rounded-full bg-white/15" />
+                  <Skeleton
+                    variant="light"
+                    className="h-1 w-1 rounded-full bg-white/15"
+                  />
                   <Skeleton variant="light" className="h-4 w-16 bg-white/15" />
                 </div>
 
                 {/* CTA Button skeleton */}
                 <div className="mt-3">
-                  <Skeleton 
-                    variant="light" 
+                  <Skeleton
+                    variant="light"
                     className={`${isCompact ? "h-8 w-24" : "h-10 w-32"} bg-brand-primary/40 rounded-md`}
                     aria-label="Loading view project button"
                   />
@@ -70,7 +73,7 @@ export default function FeaturedPropertySkeleton({
 
               {/* Right content - logo skeleton */}
               <div className="flex items-end">
-                <Skeleton 
+                <Skeleton
                   variant="card"
                   className={`${isCompact ? "h-12 w-12" : "h-14 w-14 md:h-16 md:w-16"} rounded-md bg-white/20`}
                   aria-label="Loading developer logo"
@@ -80,8 +83,10 @@ export default function FeaturedPropertySkeleton({
           </div>
         </div>
       </CardContent>
-      
-      <span className="sr-only">Loading featured property project details, please wait...</span>
+
+      <span className="sr-only">
+        Loading featured property project details, please wait...
+      </span>
     </Card>
   );
 }

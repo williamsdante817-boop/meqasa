@@ -155,10 +155,10 @@ export function MobilePriceInput({
           <p className="text-sm font-medium text-gray-700 mb-3">Quick Select</p>
           <div className="grid grid-cols-2 gap-2">
             {[
-              { min: '0', max: '500000', label: 'Under 500K' },
-              { min: '500000', max: '1000000', label: '500K - 1M' },
-              { min: '1000000', max: '2000000', label: '1M - 2M' },
-              { min: '2000000', max: '', label: '2M+' }
+              { min: "0", max: "500000", label: "Under 500K" },
+              { min: "500000", max: "1000000", label: "500K - 1M" },
+              { min: "1000000", max: "2000000", label: "1M - 2M" },
+              { min: "2000000", max: "", label: "2M+" },
             ].map((priceRange) => (
               <button
                 type="button"

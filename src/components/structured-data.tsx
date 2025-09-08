@@ -4,7 +4,7 @@ export function StructuredData({ data }: { data: Record<string, unknown> }) {
     <script
       type="application/ld+json"
       dangerouslySetInnerHTML={{
-        __html: JSON.stringify(data, null, 2)
+        __html: JSON.stringify(data, null, 2),
       }}
     />
   );

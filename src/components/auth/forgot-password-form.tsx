@@ -10,9 +10,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-interface ForgotPasswordFormProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface ForgotPasswordFormProps
+  extends React.HTMLAttributes<HTMLDivElement> {}
 
-export function ForgotPasswordForm({ className, ...props }: ForgotPasswordFormProps) {
+export function ForgotPasswordForm({
+  className,
+  ...props
+}: ForgotPasswordFormProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [email, setEmail] = useState<string>("");
@@ -30,13 +34,13 @@ export function ForgotPasswordForm({ className, ...props }: ForgotPasswordFormPr
 
   async function onSubmit(event: React.SyntheticEvent) {
     event.preventDefault();
-    
+
     const emailError = validateEmail(email);
     if (emailError) {
       setError(emailError);
       return;
     }
-    
+
     setError("");
     setIsLoading(true);
 
@@ -63,7 +67,7 @@ export function ForgotPasswordForm({ className, ...props }: ForgotPasswordFormPr
         </p>
         <p className="text-xs text-brand-muted px-2">
           Didn&apos;t receive the email? Check your spam folder or{" "}
-          <button 
+          <button
             onClick={() => {
               setIsSuccess(false);
               setEmail("");
@@ -82,7 +86,10 @@ export function ForgotPasswordForm({ className, ...props }: ForgotPasswordFormPr
       <form onSubmit={onSubmit}>
         <div className="space-y-3 sm:space-y-4">
           <div>
-            <Label htmlFor="email" className="text-sm font-medium text-brand-accent">
+            <Label
+              htmlFor="email"
+              className="text-sm font-medium text-brand-accent"
+            >
               Email address
             </Label>
             <div className="mt-1 relative">
@@ -103,13 +110,12 @@ export function ForgotPasswordForm({ className, ...props }: ForgotPasswordFormPr
                 }}
                 className={cn(
                   "pl-10 h-11 sm:h-12 text-base border-brand-border focus:border-brand-primary focus:ring-brand-primary",
-                  error && "border-destructive focus:border-destructive focus:ring-destructive"
+                  error &&
+                    "border-destructive focus:border-destructive focus:ring-destructive"
                 )}
               />
             </div>
-            {error && (
-              <p className="mt-1 text-sm text-destructive">{error}</p>
-            )}
+            {error && <p className="mt-1 text-sm text-destructive">{error}</p>}
           </div>
 
           <Button

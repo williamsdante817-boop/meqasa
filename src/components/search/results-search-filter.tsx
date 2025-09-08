@@ -23,7 +23,7 @@ import { PriceRangeSelect } from "@/components/ui/price-range-select";
 import { MoreFiltersPopover } from "@/components/ui/more-filters-popover";
 import { SearchInputWithSuggestions } from "@/components/ui/search-input-with-suggestions";
 
-// Constants for better maintainability  
+// Constants for better maintainability
 const DEFAULT_LOCATION = "ghana";
 const DEFAULT_CONTRACT_TYPE = "sale";
 
@@ -32,7 +32,6 @@ interface ExtendedFormState extends FormState {
   listingType: string;
   howShort?: string; // Add short-let duration field
 }
-
 
 // Helper function to safely convert string to number or return empty string
 const safeNumber = (value: string | undefined): string => {
@@ -168,7 +167,10 @@ export function ResultSearchFilter() {
         <div className="px-4 pb-4 container mx-auto">
           <div className="flex flex-wrap gap-2">
             {Array.from({ length: 3 }).map((_, idx) => (
-              <div key={idx} className="h-8 w-20 bg-gray-100 animate-pulse rounded-full"></div>
+              <div
+                key={idx}
+                className="h-8 w-20 bg-gray-100 animate-pulse rounded-full"
+              ></div>
             ))}
           </div>
         </div>
@@ -183,12 +185,13 @@ export function ResultSearchFilter() {
   // Filter removal handlers for ActiveFilterChips
   const handleRemoveFilter = (filterKey: keyof ExtendedFormState) => {
     const resetValues: Partial<ExtendedFormState> = {};
-    
+
     // Get current page type from URL to handle land tab logic
     const pathSegments = pathname.split("/");
     const urlContractType = pathSegments[pathSegments.length - 1];
-    const isLandSearch = urlContractType === "sale" && formState.propertyType === "land";
-    
+    const isLandSearch =
+      urlContractType === "sale" && formState.propertyType === "land";
+
     switch (filterKey) {
       case "propertyType":
         // Keep land type for land searches, reset to "all" for others
@@ -218,7 +221,7 @@ export function ResultSearchFilter() {
       default:
         break;
     }
-    
+
     updateFormState(resetValues);
   };
 
@@ -226,8 +229,9 @@ export function ResultSearchFilter() {
     // Get current page type from URL to handle land tab logic
     const pathSegments = pathname.split("/");
     const urlContractType = pathSegments[pathSegments.length - 1];
-    const isLandSearch = urlContractType === "sale" && formState.propertyType === "land";
-    
+    const isLandSearch =
+      urlContractType === "sale" && formState.propertyType === "land";
+
     updateFormState({
       propertyType: isLandSearch ? "land" : "all", // Keep land type for land searches
       bedrooms: "- Any -",
@@ -239,7 +243,7 @@ export function ResultSearchFilter() {
       period: "- Any -",
       furnished: false,
       owner: false,
-      howShort: "- Any -"
+      howShort: "- Any -",
     });
   };
 
@@ -358,7 +362,7 @@ export function ResultSearchFilter() {
     } catch (err) {
       console.error("Search error:", err);
       setError(
-        "An error occurred while processing your search. Please try again.",
+        "An error occurred while processing your search. Please try again."
       );
     } finally {
       setIsSearching(false);
@@ -381,203 +385,209 @@ export function ResultSearchFilter() {
         {/* Mobile-responsive filter container with horizontal scrolling */}
         <div className="overflow-x-auto">
           <div className="flex items-center gap-2 p-4 container mx-auto min-w-fit">
-          {/* For Sale/Rent Dropdown - Hidden for short-let searches */}
-          {!isShortLetSearch() && (
-            <Select
-              value={formState.listingType}
-              onValueChange={(value) => updateFormState({ listingType: value })}
-            >
-              <SelectTrigger className="h-10 sm:h-12 w-28 sm:w-32 bg-white text-brand-accent border-gray-200 hover:bg-gray-50 shadow-none cursor-pointer text-sm sm:text-base flex-shrink-0">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectItem value="sale" className="text-brand-accent">
-                    For sale
-                  </SelectItem>
-                  <SelectItem value="rent" className="text-brand-accent">
-                    For rent
-                  </SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          )}
-
-          {/* Search Input */}
-          <SearchInputWithSuggestions
-            variant="results"
-            value={formState.search}
-            onChange={(value) => updateFormState({ search: value })}
-            placeholder="Location"
-            className="text-sm sm:text-base"
-            maxSuggestions={5}
-          />
-
-          {/* Property Type - Hidden for short-let searches */}
-          {!isShortLetSearch() && (
-            <Select
-              value={formState.propertyType}
-              onValueChange={(value) =>
-                updateFormState({ propertyType: value })
-              }
-            >
-              <SelectTrigger className="h-10 sm:h-12 w-32 sm:w-40 text-brand-accent bg-white border-gray-200 hover:bg-gray-50 shadow-none cursor-pointer text-sm sm:text-base flex-shrink-0">
-                <SelectValue placeholder="Type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectItem value="all" className="text-brand-accent">
-                    All Types
-                  </SelectItem>
-                  {siteConfig.selectOptions.propertyType.map(
-                    ({ value, label }) => (
-                      <SelectItem
-                        value={value}
-                        key={value}
-                        className="text-brand-accent"
-                      >
-                        {label}
-                      </SelectItem>
-                    ),
-                  )}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          )}
-
-          {/* Short-let Duration Selector - Only shown for short-let searches */}
-          {isShortLetSearch() && (
-            <Select
-              value={formState.howShort ?? "- Any -"}
-              onValueChange={(value) => updateFormState({ howShort: value })}
-            >
-              <SelectTrigger className="h-10 sm:h-12 w-32 sm:w-40 text-brand-accent bg-white border-gray-200 hover:bg-gray-50 shadow-none cursor-pointer text-sm sm:text-base flex-shrink-0">
-                <SelectValue placeholder="Duration" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectItem value="- Any -" className="text-brand-accent">
-                    Any Duration
-                  </SelectItem>
-                  {searchConfig?.selectOptions?.howShort?.map(
-                    ({ value, label }) => (
-                      <SelectItem
-                        value={value}
-                        key={value}
-                        className="text-brand-accent"
-                      >
-                        {label}
-                      </SelectItem>
-                    ),
-                  ) || []}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          )}
-
-          {/* Bedrooms - Hidden for land properties */}
-          {formState.propertyType !== "land" && (
-            <Select
-              value={formState.bedrooms || "- Any -"}
-              onValueChange={(value) => updateFormState({ bedrooms: value })}
-            >
-              <SelectTrigger className="h-10 sm:h-12 w-24 sm:w-32 text-brand-accent bg-white border-gray-200 hover:bg-gray-50 shadow-none cursor-pointer text-sm sm:text-base flex-shrink-0">
-                <SelectValue placeholder="Beds" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectItem value="- Any -" className="text-brand-accent">
-                    Any Beds
-                  </SelectItem>
-                  {siteConfig?.selectOptions?.bedrooms?.map(
-                    ({ value, label }) => (
-                      <SelectItem
-                        value={value}
-                        key={value}
-                        className="text-brand-accent"
-                      >
-                        {label}
-                      </SelectItem>
-                    ),
-                  ) || []}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          )}
-
-          {/* Bathrooms - Hidden for land properties */}
-          {formState.propertyType !== "land" && (
-            <Select
-              value={formState.bathrooms || "- Any -"}
-              onValueChange={(value) => updateFormState({ bathrooms: value })}
-            >
-              <SelectTrigger className="h-10 sm:h-12 w-24 sm:w-32 text-brand-accent bg-white border-gray-200 hover:bg-gray-50 shadow-none cursor-pointer text-sm sm:text-base flex-shrink-0">
-                <SelectValue placeholder="Baths" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectItem value="- Any -" className="text-brand-accent">
-                    Any Baths
-                  </SelectItem>
-                  {siteConfig?.selectOptions?.bathrooms?.map(
-                    ({ value, label }) => (
-                      <SelectItem
-                        value={value}
-                        key={value}
-                        className="text-brand-accent"
-                      >
-                        {label}
-                      </SelectItem>
-                    ),
-                  ) || []}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          )}
-
-          {/* Price Range */}
-          <PriceRangeSelect
-            minValue={formState.minPrice}
-            maxValue={formState.maxPrice}
-            onMinChange={(value) => updateFormState({ minPrice: value })}
-            onMaxChange={(value) => updateFormState({ maxPrice: value })}
-            priceRange={
-              searchConfig?.priceRange || { min: 0, max: 1000000, step: 10000 }
-            }
-            variant="default"
-            currency="GH₵"
-            title="Price Range"
-            showQuickSelections={true}
-          />
-
-          {/* More Filters - Mobile responsive */}
-          <div className="flex-shrink-0">
-            <MoreFiltersPopover
-              formState={formState}
-              updateFormState={updateFormState}
-            />
-          </div>
-
-          {/* Enhanced Search Button with Loading State - Mobile responsive */}
-          <Button
-            onClick={handleSearch}
-            disabled={isSearching}
-            className="h-10 sm:h-12 bg-brand-primary hover:bg-brand-primary-dark text-white px-3 sm:px-6 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 text-sm sm:text-base flex-shrink-0"
-          >
-            {isSearching ? (
-              <div className="flex items-center gap-1 sm:gap-2">
-                <div className="w-3 h-3 sm:w-4 sm:h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                <span className="hidden sm:inline">Searching...</span>
-                <span className="sm:hidden">...</span>
-              </div>
-            ) : (
-              <div className="flex items-center gap-1 sm:gap-2">
-                <Search className="h-3 w-3 sm:h-4 sm:w-4" />
-                <span className="hidden sm:inline">Update search</span>
-                <span className="sm:hidden">Search</span>
-              </div>
+            {/* For Sale/Rent Dropdown - Hidden for short-let searches */}
+            {!isShortLetSearch() && (
+              <Select
+                value={formState.listingType}
+                onValueChange={(value) =>
+                  updateFormState({ listingType: value })
+                }
+              >
+                <SelectTrigger className="h-10 sm:h-12 w-28 sm:w-32 bg-white text-brand-accent border-gray-200 hover:bg-gray-50 shadow-none cursor-pointer text-sm sm:text-base flex-shrink-0">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="sale" className="text-brand-accent">
+                      For sale
+                    </SelectItem>
+                    <SelectItem value="rent" className="text-brand-accent">
+                      For rent
+                    </SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             )}
-          </Button>
+
+            {/* Search Input */}
+            <SearchInputWithSuggestions
+              variant="results"
+              value={formState.search}
+              onChange={(value) => updateFormState({ search: value })}
+              placeholder="Location"
+              className="text-sm sm:text-base"
+              maxSuggestions={5}
+            />
+
+            {/* Property Type - Hidden for short-let searches */}
+            {!isShortLetSearch() && (
+              <Select
+                value={formState.propertyType}
+                onValueChange={(value) =>
+                  updateFormState({ propertyType: value })
+                }
+              >
+                <SelectTrigger className="h-10 sm:h-12 w-32 sm:w-40 text-brand-accent bg-white border-gray-200 hover:bg-gray-50 shadow-none cursor-pointer text-sm sm:text-base flex-shrink-0">
+                  <SelectValue placeholder="Type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="all" className="text-brand-accent">
+                      All Types
+                    </SelectItem>
+                    {siteConfig.selectOptions.propertyType.map(
+                      ({ value, label }) => (
+                        <SelectItem
+                          value={value}
+                          key={value}
+                          className="text-brand-accent"
+                        >
+                          {label}
+                        </SelectItem>
+                      )
+                    )}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            )}
+
+            {/* Short-let Duration Selector - Only shown for short-let searches */}
+            {isShortLetSearch() && (
+              <Select
+                value={formState.howShort ?? "- Any -"}
+                onValueChange={(value) => updateFormState({ howShort: value })}
+              >
+                <SelectTrigger className="h-10 sm:h-12 w-32 sm:w-40 text-brand-accent bg-white border-gray-200 hover:bg-gray-50 shadow-none cursor-pointer text-sm sm:text-base flex-shrink-0">
+                  <SelectValue placeholder="Duration" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="- Any -" className="text-brand-accent">
+                      Any Duration
+                    </SelectItem>
+                    {searchConfig?.selectOptions?.howShort?.map(
+                      ({ value, label }) => (
+                        <SelectItem
+                          value={value}
+                          key={value}
+                          className="text-brand-accent"
+                        >
+                          {label}
+                        </SelectItem>
+                      )
+                    ) || []}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            )}
+
+            {/* Bedrooms - Hidden for land properties */}
+            {formState.propertyType !== "land" && (
+              <Select
+                value={formState.bedrooms || "- Any -"}
+                onValueChange={(value) => updateFormState({ bedrooms: value })}
+              >
+                <SelectTrigger className="h-10 sm:h-12 w-24 sm:w-32 text-brand-accent bg-white border-gray-200 hover:bg-gray-50 shadow-none cursor-pointer text-sm sm:text-base flex-shrink-0">
+                  <SelectValue placeholder="Beds" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="- Any -" className="text-brand-accent">
+                      Any Beds
+                    </SelectItem>
+                    {siteConfig?.selectOptions?.bedrooms?.map(
+                      ({ value, label }) => (
+                        <SelectItem
+                          value={value}
+                          key={value}
+                          className="text-brand-accent"
+                        >
+                          {label}
+                        </SelectItem>
+                      )
+                    ) || []}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            )}
+
+            {/* Bathrooms - Hidden for land properties */}
+            {formState.propertyType !== "land" && (
+              <Select
+                value={formState.bathrooms || "- Any -"}
+                onValueChange={(value) => updateFormState({ bathrooms: value })}
+              >
+                <SelectTrigger className="h-10 sm:h-12 w-24 sm:w-32 text-brand-accent bg-white border-gray-200 hover:bg-gray-50 shadow-none cursor-pointer text-sm sm:text-base flex-shrink-0">
+                  <SelectValue placeholder="Baths" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="- Any -" className="text-brand-accent">
+                      Any Baths
+                    </SelectItem>
+                    {siteConfig?.selectOptions?.bathrooms?.map(
+                      ({ value, label }) => (
+                        <SelectItem
+                          value={value}
+                          key={value}
+                          className="text-brand-accent"
+                        >
+                          {label}
+                        </SelectItem>
+                      )
+                    ) || []}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            )}
+
+            {/* Price Range */}
+            <PriceRangeSelect
+              minValue={formState.minPrice}
+              maxValue={formState.maxPrice}
+              onMinChange={(value) => updateFormState({ minPrice: value })}
+              onMaxChange={(value) => updateFormState({ maxPrice: value })}
+              priceRange={
+                searchConfig?.priceRange || {
+                  min: 0,
+                  max: 1000000,
+                  step: 10000,
+                }
+              }
+              variant="default"
+              currency="GH₵"
+              title="Price Range"
+              showQuickSelections={true}
+            />
+
+            {/* More Filters - Mobile responsive */}
+            <div className="flex-shrink-0">
+              <MoreFiltersPopover
+                formState={formState}
+                updateFormState={updateFormState}
+              />
+            </div>
+
+            {/* Enhanced Search Button with Loading State - Mobile responsive */}
+            <Button
+              onClick={handleSearch}
+              disabled={isSearching}
+              className="h-10 sm:h-12 bg-brand-primary hover:bg-brand-primary-dark text-white px-3 sm:px-6 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 text-sm sm:text-base flex-shrink-0"
+            >
+              {isSearching ? (
+                <div className="flex items-center gap-1 sm:gap-2">
+                  <div className="w-3 h-3 sm:w-4 sm:h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <span className="hidden sm:inline">Searching...</span>
+                  <span className="sm:hidden">...</span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-1 sm:gap-2">
+                  <Search className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="hidden sm:inline">Update search</span>
+                  <span className="sm:hidden">Search</span>
+                </div>
+              )}
+            </Button>
           </div>
         </div>
 

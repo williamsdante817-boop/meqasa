@@ -23,29 +23,29 @@ export default function Loading() {
         <div className="flex items-center gap-2 p-4 container mx-auto overflow-x-auto">
           {/* For Sale/Rent Dropdown Skeleton */}
           <Skeleton className="h-10 sm:h-12 w-28 sm:w-32 flex-shrink-0 rounded-md" />
-          
+
           {/* Search Input Skeleton */}
           <Skeleton className="h-10 sm:h-12 flex-1 min-w-[120px] sm:min-w-[200px] rounded-md" />
-          
+
           {/* Property Type Skeleton */}
           <Skeleton className="h-10 sm:h-12 w-32 sm:w-40 flex-shrink-0 rounded-md" />
-          
+
           {/* Bedrooms Skeleton */}
           <Skeleton className="h-10 sm:h-12 w-24 sm:w-32 flex-shrink-0 rounded-md" />
-          
+
           {/* Bathrooms Skeleton */}
           <Skeleton className="h-10 sm:h-12 w-24 sm:w-32 flex-shrink-0 rounded-md" />
-          
+
           {/* Price Range Skeleton */}
           <Skeleton className="h-10 sm:h-12 w-28 sm:w-40 flex-shrink-0 rounded-md" />
-          
+
           {/* More Filters Skeleton */}
           <Skeleton className="h-10 sm:h-12 w-20 sm:w-32 flex-shrink-0 rounded-md" />
-          
+
           {/* Search Button Skeleton */}
           <Skeleton className="h-10 sm:h-12 w-20 sm:w-32 flex-shrink-0 rounded-md" />
         </div>
-        
+
         {/* Active Filter Chips Skeleton */}
         <div className="px-4 pb-4 container mx-auto">
           <div className="flex flex-wrap gap-2">
@@ -60,14 +60,14 @@ export default function Loading() {
         <PropertyTypeLinks />
         <div className="w-full">
           <Breadcrumbs className="capitalize" segments={segments} />
-          
+
           {/* Header Skeleton - matching actual structure with proper spacing */}
           <header className="space-y-6">
             <div>
               <Skeleton className="h-6 w-64 mb-2 md:h-7 md:w-80" />
               <Skeleton className="h-4 w-48 md:w-64" />
             </div>
-            
+
             {/* Production Reference Search Component Skeleton */}
             <div className="bg-gradient-to-r from-blue-50 to-green-50 border border-blue-200 rounded-lg p-4">
               <Skeleton className="h-10 max-w-md w-full" />
@@ -81,11 +81,11 @@ export default function Loading() {
               <div className="mb-6">
                 <Skeleton className="w-full h-24 rounded-lg" />
               </div>
-              
+
               {/* Search Results Skeleton */}
               <SearchResultsSkeleton />
             </div>
-            
+
             {/* Sidebar - matching actual StreamingSidebarBanners layout */}
             <div className="hidden lg:block">
               <aside className="w-full grid grid-cols-1 gap-8">
@@ -100,7 +100,7 @@ export default function Loading() {
           </div>
         </div>
       </Shell>
-      
+
       {/* Results Popup Skeleton - matching actual component */}
       <div className="fixed bottom-4 right-4 z-50 lg:hidden">
         <Skeleton className="w-16 h-16 rounded-full" />

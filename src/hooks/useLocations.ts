@@ -34,7 +34,7 @@ export const useLocations = () => {
             timeout: 5000,
             maximumAge: 0,
           });
-        },
+        }
       );
 
       const userLocation: Coordinates = {

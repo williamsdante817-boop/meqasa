@@ -120,7 +120,7 @@ export async function getUnitDetails(unitId: string): Promise<UnitDetails> {
     return data;
   } catch (error) {
     throw new Error(
-      `API fetch failed: ${error instanceof Error ? error.message : String(error)}`,
+      `API fetch failed: ${error instanceof Error ? error.message : String(error)}`
     );
   }
 }

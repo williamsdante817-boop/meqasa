@@ -26,7 +26,7 @@ export default function PropertyPlan({ className }: PropertyPlanProps) {
                 fill
                 className={cn(
                   "object-contain transition-opacity duration-300",
-                  isLoading ? "opacity-0" : "opacity-100",
+                  isLoading ? "opacity-0" : "opacity-100"
                 )}
                 priority
                 onError={() => setImgError(true)}

@@ -102,7 +102,7 @@ export default function AgentsLoading() {
                                     key={socialIndex}
                                     className="h-5 w-5 rounded"
                                   />
-                                ),
+                                )
                               )}
                             </div>
                           </div>

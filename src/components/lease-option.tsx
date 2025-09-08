@@ -40,9 +40,7 @@ function LeaseOptionCard({ option }: { option: string }) {
         <span className="text-xs font-medium">{duration}</span>
       </div>
       <div className="flex items-center gap-1 mb-1 text-brand-accent">
-        <span className="text-lg font-semibold">
-          GH₵ {price}
-        </span>
+        <span className="text-lg font-semibold">GH₵ {price}</span>
       </div>
       <div className="text-xs text-brand-muted">per {unit}</div>
     </div>
@@ -63,10 +61,12 @@ export default function LeaseOptions({ leaseOptions }: LeaseOptionsProps) {
             <h3 className="text-base font-semibold text-brand-accent lg:text-lg">
               Available Lease Options
             </h3>
-            <p className="text-sm text-blue-600">Flexible payment terms available</p>
+            <p className="text-sm text-blue-600">
+              Flexible payment terms available
+            </p>
           </div>
         </div>
-        
+
         <div
           className="grid grid-cols-2 lg:grid-cols-3 gap-4"
           role="list"

@@ -311,7 +311,7 @@ export function getSanitizationStats(html: string): {
   const originalTags = (html.match(/<[^>]+>/g) ?? []) as string[];
   const sanitizedTags = (sanitized.match(/<[^>]+>/g) ?? []) as string[];
   const removedTags = originalTags.filter(
-    (tag) => !sanitizedTags.includes(tag),
+    (tag) => !sanitizedTags.includes(tag)
   );
 
   return {

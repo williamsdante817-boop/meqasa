@@ -51,7 +51,7 @@ export function MobileSearchModal({
   // Filter management for mobile
   const handleRemoveFilter = (filterKey: keyof FormState) => {
     const resetValues: Partial<FormState> = {};
-    
+
     switch (filterKey) {
       case "propertyType":
         // Keep land type on land tab, reset to "all" for others
@@ -81,7 +81,7 @@ export function MobileSearchModal({
       default:
         break;
     }
-    
+
     updateFormState(activeTab, resetValues);
   };
 
@@ -104,8 +104,11 @@ export function MobileSearchModal({
   const getActiveFilterCount = (formState: FormState): number => {
     let count = 0;
     // Don't count "land" property type on land tab as it's the default
-    if (formState.propertyType && formState.propertyType !== "all" && 
-        !(activeTab === "land" && formState.propertyType === "land")) {
+    if (
+      formState.propertyType &&
+      formState.propertyType !== "all" &&
+      !(activeTab === "land" && formState.propertyType === "land")
+    ) {
       count++;
     }
     if (formState.bedrooms && formState.bedrooms !== "- Any -") count++;
@@ -162,7 +165,9 @@ export function MobileSearchModal({
       >
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-white sticky top-0 z-10">
-          <h2 id="search-modal-title" className="font-semibold text-gray-900">Search Properties</h2>
+          <h2 id="search-modal-title" className="font-semibold text-gray-900">
+            Search Properties
+          </h2>
           <Button
             variant="ghost"
             size="sm"
@@ -316,7 +321,6 @@ export function MobileSearchModal({
           {/* Enhanced Footer with Search Button */}
           <div className="p-4 border-t border-gray-200 bg-white sticky bottom-0">
             <div className="space-y-2">
-              
               <Button
                 type="submit"
                 form={`search-form-${activeTab}`}

@@ -1,4 +1,6 @@
-import EstablishmentItem, { type Establishment as EstablishmentItemType } from "./establishment-item";
+import EstablishmentItem, {
+  type Establishment as EstablishmentItemType,
+} from "./establishment-item";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { CategoryIcon } from "./category-icon";
 import type { ReactNode } from "react";
@@ -35,20 +37,20 @@ export default function CategorySection({
   establishments,
   icon,
 }: CategorySectionProps) {
-  const normalizeType = (cat: string): EstablishmentItemType['type'] => {
+  const normalizeType = (cat: string): EstablishmentItemType["type"] => {
     const c = cat.toLowerCase();
-    if (c.includes('airport')) return 'airport';
-    if (c.includes('school')) return 'school';
-    if (c.includes('hospital')) return 'hospital';
-    if (c.includes('bank')) return 'bank';
+    if (c.includes("airport")) return "airport";
+    if (c.includes("school")) return "school";
+    if (c.includes("hospital")) return "hospital";
+    if (c.includes("bank")) return "bank";
     // Map mall/cafe/restaurant/office/others to supermarket bucket
-    return 'supermarket';
+    return "supermarket";
   };
 
-  const toMeters = (distance: number | string, unit?: 'km' | 'mi'): number => {
-    const n = typeof distance === 'string' ? parseFloat(distance) : distance;
+  const toMeters = (distance: number | string, unit?: "km" | "mi"): number => {
+    const n = typeof distance === "string" ? parseFloat(distance) : distance;
     if (!isFinite(n)) return 0;
-    if (unit === 'mi') return n * 1609.34;
+    if (unit === "mi") return n * 1609.34;
     // default km
     return n * 1000;
   };
@@ -68,7 +70,7 @@ export default function CategorySection({
           const item: EstablishmentItemType = {
             id: String(est.id),
             name: est.name,
-            address: '',
+            address: "",
             distance: toMeters(est.distance, est.unit),
             type: normalizeType(category),
           };

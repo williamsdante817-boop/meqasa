@@ -12,7 +12,7 @@ export default function HeaderAdClient() {
   const isSearchRoute = pathname?.startsWith("/search") || false;
 
   const [leaderboardBanner, setLeaderboardBanner] = React.useState<string[]>(
-    [],
+    []
   );
 
   console.log("leaderboardBanner", leaderboardBanner);
@@ -63,7 +63,7 @@ export default function HeaderAdClient() {
           >
             <div
               dangerouslySetInnerHTML={buildRichInnerHtml(
-                String(leaderboardBanner),
+                String(leaderboardBanner)
               )}
             ></div>
           </Card>

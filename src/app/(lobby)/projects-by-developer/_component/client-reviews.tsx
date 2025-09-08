@@ -12,14 +12,16 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Star, Quote, ThumbsUp, MessageSquare, CheckCircle } from "lucide-react";
+import {
+  Star,
+  Quote,
+  ThumbsUp,
+  MessageSquare,
+  CheckCircle,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 // Enhanced mock data with realistic real estate reviews
@@ -32,10 +34,11 @@ const mockReviews = [
     rating: 5,
     date: "2024-01-15",
     project: "Eden Heights Apartments",
-    review: "Absolutely exceptional service! The team delivered exactly what was promised. The quality of construction and attention to detail exceeded our expectations. Our apartment complex has been fully occupied since completion.",
+    review:
+      "Absolutely exceptional service! The team delivered exactly what was promised. The quality of construction and attention to detail exceeded our expectations. Our apartment complex has been fully occupied since completion.",
     verified: true,
     helpful: 12,
-    category: "Construction Quality"
+    category: "Construction Quality",
   },
   {
     id: 2,
@@ -45,10 +48,11 @@ const mockReviews = [
     rating: 5,
     date: "2024-01-08",
     project: "Sunrise Villas",
-    review: "Professional team that guided us through every step of our first home purchase. Communication was excellent and they delivered on time. Highly recommend for anyone looking for quality homes.",
+    review:
+      "Professional team that guided us through every step of our first home purchase. Communication was excellent and they delivered on time. Highly recommend for anyone looking for quality homes.",
     verified: true,
     helpful: 8,
-    category: "Customer Service"
+    category: "Customer Service",
   },
   {
     id: 3,
@@ -58,10 +62,11 @@ const mockReviews = [
     rating: 4,
     date: "2023-12-20",
     project: "Golden Gate Commercial",
-    review: "Great investment opportunity. The location was perfect and the development timeline was met. Minor issues with finishing but overall very satisfied with the ROI.",
+    review:
+      "Great investment opportunity. The location was perfect and the development timeline was met. Minor issues with finishing but overall very satisfied with the ROI.",
     verified: true,
     helpful: 15,
-    category: "Investment Value"
+    category: "Investment Value",
   },
   {
     id: 4,
@@ -71,10 +76,11 @@ const mockReviews = [
     rating: 5,
     date: "2023-12-10",
     project: "Parkview Residences",
-    review: "Outstanding craftsmanship and innovative design. The smart home features and energy efficiency exceeded expectations. Living here has been an absolute joy.",
+    review:
+      "Outstanding craftsmanship and innovative design. The smart home features and energy efficiency exceeded expectations. Living here has been an absolute joy.",
     verified: true,
     helpful: 9,
-    category: "Design & Innovation"
+    category: "Design & Innovation",
   },
   {
     id: 5,
@@ -84,11 +90,12 @@ const mockReviews = [
     rating: 5,
     date: "2023-11-28",
     project: "Business Park Complex",
-    review: "Delivered our office complex ahead of schedule with premium finishes. Their project management was exceptional. Would definitely work with them again for future developments.",
+    review:
+      "Delivered our office complex ahead of schedule with premium finishes. Their project management was exceptional. Would definitely work with them again for future developments.",
     verified: true,
     helpful: 20,
-    category: "Project Management"
-  }
+    category: "Project Management",
+  },
 ];
 
 interface CarouselApi {
@@ -102,7 +109,9 @@ interface CarouselApi {
 }
 
 export default function ClientReviews() {
-  const [selectedReview, setSelectedReview] = useState<typeof mockReviews[0] | null>(null);
+  const [selectedReview, setSelectedReview] = useState<
+    (typeof mockReviews)[0] | null
+  >(null);
   const [api, setApi] = useState<CarouselApi | undefined>();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [canScrollPrev, setCanScrollPrev] = useState(false);
@@ -133,12 +142,12 @@ export default function ClientReviews() {
       setCanScrollNext(api.canScrollNext());
     };
 
-    api.on('select', updateState);
+    api.on("select", updateState);
     updateState();
 
     return () => {
       if (api?.off) {
-        api.off('select', updateState);
+        api.off("select", updateState);
       }
     };
   }, [api]);
@@ -148,7 +157,7 @@ export default function ClientReviews() {
     const now = new Date();
     const diffTime = Math.abs(now.getTime() - date.getTime());
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
+
     if (diffDays === 1) return "1 day ago";
     if (diffDays < 30) return `${diffDays} days ago`;
     if (diffDays < 365) return `${Math.floor(diffDays / 30)} months ago`;
@@ -171,8 +180,8 @@ export default function ClientReviews() {
 
   const slides = mockReviews.map((review) => (
     <CarouselItem className="basis-[320px] sm:basis-[350px]" key={review.id}>
-      <ReviewCard 
-        review={review} 
+      <ReviewCard
+        review={review}
         onSelect={setSelectedReview}
         getTimeAgo={getTimeAgo}
         renderStars={renderStars}
@@ -188,21 +197,32 @@ export default function ClientReviews() {
             <MessageSquare className="w-4 h-4 text-blue-600" />
           </div>
           <div>
-            <h2 id="reviews-heading" className="text-lg font-semibold text-brand-accent">
+            <h2
+              id="reviews-heading"
+              className="text-lg font-semibold text-brand-accent"
+            >
               Client Reviews
             </h2>
             <p className="text-sm text-brand-muted">
-              {mockReviews.length} verified reviews • {Math.round(mockReviews.reduce((acc, r) => acc + r.rating, 0) / mockReviews.length * 10) / 10} average rating
+              {mockReviews.length} verified reviews •{" "}
+              {Math.round(
+                (mockReviews.reduce((acc, r) => acc + r.rating, 0) /
+                  mockReviews.length) *
+                  10
+              ) / 10}{" "}
+              average rating
             </p>
           </div>
         </div>
-        
+
         <div className="hidden sm:flex items-center gap-2">
-          <div className="flex items-center gap-1">
-            {renderStars(5)}
-          </div>
+          <div className="flex items-center gap-1">{renderStars(5)}</div>
           <span className="text-sm font-medium text-brand-accent">
-            {Math.round(mockReviews.reduce((acc, r) => acc + r.rating, 0) / mockReviews.length * 10) / 10}
+            {Math.round(
+              (mockReviews.reduce((acc, r) => acc + r.rating, 0) /
+                mockReviews.length) *
+                10
+            ) / 10}
           </span>
         </div>
       </div>
@@ -218,19 +238,19 @@ export default function ClientReviews() {
             dragFree: true,
           }}
         >
-          <CarouselContent 
-            aria-label="Client reviews carousel" 
+          <CarouselContent
+            aria-label="Client reviews carousel"
             className="-ml-2 md:-ml-4"
           >
             {slides}
           </CarouselContent>
-          
+
           {/* Enhanced Navigation Controls */}
           <CarouselPrevious
             className={cn(
               "left-0 sm:left-4 hidden h-10 w-10 sm:h-12 sm:w-12 bg-white shadow-lg border-0 lg:flex transition-all duration-200",
-              canScrollPrev 
-                ? "hover:bg-gray-50 hover:scale-110 cursor-pointer opacity-100" 
+              canScrollPrev
+                ? "hover:bg-gray-50 hover:scale-110 cursor-pointer opacity-100"
                 : "opacity-40 cursor-not-allowed"
             )}
             aria-label="Previous review"
@@ -239,15 +259,15 @@ export default function ClientReviews() {
           <CarouselNext
             className={cn(
               "right-0 sm:right-4 hidden h-10 w-10 sm:h-12 sm:w-12 bg-white shadow-lg border-0 lg:flex transition-all duration-200",
-              canScrollNext 
-                ? "hover:bg-gray-50 hover:scale-110 cursor-pointer opacity-100" 
+              canScrollNext
+                ? "hover:bg-gray-50 hover:scale-110 cursor-pointer opacity-100"
                 : "opacity-40 cursor-not-allowed"
             )}
             aria-label="Next review"
             disabled={!canScrollNext}
           />
         </Carousel>
-        
+
         {/* Dot Indicators */}
         <div className="flex justify-center mt-6 gap-2">
           {mockReviews.map((_, index) => (
@@ -255,8 +275,8 @@ export default function ClientReviews() {
               key={index}
               className={cn(
                 "w-2 h-2 rounded-full transition-all duration-200",
-                currentSlide === index 
-                  ? "bg-blue-600 w-6" 
+                currentSlide === index
+                  ? "bg-blue-600 w-6"
                   : "bg-gray-300 hover:bg-gray-400"
               )}
               onClick={() => {
@@ -268,17 +288,17 @@ export default function ClientReviews() {
             />
           ))}
         </div>
-        
+
         {/* Progress Bar */}
         <div className="w-full bg-gray-200 rounded-full h-1 mt-4 overflow-hidden">
-          <div 
+          <div
             className="bg-blue-600 h-1 rounded-full transition-all duration-300 ease-out"
-            style={{ 
-              width: `${((currentSlide + 1) / mockReviews.length) * 100}%` 
+            style={{
+              width: `${((currentSlide + 1) / mockReviews.length) * 100}%`,
             }}
           />
         </div>
-        
+
         {/* Mobile Touch Instructions */}
         <div className="lg:hidden text-center mt-4">
           <p className="text-xs text-brand-muted">
@@ -289,7 +309,10 @@ export default function ClientReviews() {
 
       {/* Enhanced Dialog */}
       {selectedReview && (
-        <Dialog open={!!selectedReview} onOpenChange={() => setSelectedReview(null)}>
+        <Dialog
+          open={!!selectedReview}
+          onOpenChange={() => setSelectedReview(null)}
+        >
           <DialogContent className="sm:max-w-[500px] max-h-[80vh] overflow-y-auto">
             <DialogTitle className="sr-only">
               Review from {selectedReview.name}
@@ -304,17 +327,24 @@ export default function ClientReviews() {
                     className="object-cover"
                   />
                   <AvatarFallback className="bg-blue-100 text-blue-700 font-semibold">
-                    {selectedReview.name.split(' ').map(n => n[0]).join('')}
+                    {selectedReview.name
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
-                    <h3 className="font-semibold text-brand-accent">{selectedReview.name}</h3>
+                    <h3 className="font-semibold text-brand-accent">
+                      {selectedReview.name}
+                    </h3>
                     {selectedReview.verified && (
                       <CheckCircle className="w-4 h-4 text-green-500" />
                     )}
                   </div>
-                  <p className="text-sm text-brand-muted mb-2">{selectedReview.role}</p>
+                  <p className="text-sm text-brand-muted mb-2">
+                    {selectedReview.role}
+                  </p>
                   <div className="flex items-center gap-2">
                     <div className="flex items-center gap-1">
                       {renderStars(selectedReview.rating)}
@@ -328,7 +358,9 @@ export default function ClientReviews() {
 
               {/* Project Info */}
               <div className="bg-blue-50 p-3 rounded-lg">
-                <p className="text-sm font-medium text-blue-900">Project: {selectedReview.project}</p>
+                <p className="text-sm font-medium text-blue-900">
+                  Project: {selectedReview.project}
+                </p>
                 <Badge variant="secondary" className="mt-1 text-xs">
                   {selectedReview.category}
                 </Badge>
@@ -353,7 +385,9 @@ export default function ClientReviews() {
                   Helpful ({selectedReview.helpful})
                 </Button>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-brand-muted">Verified Purchase</span>
+                  <span className="text-xs text-brand-muted">
+                    Verified Purchase
+                  </span>
                   <CheckCircle className="w-4 h-4 text-green-500" />
                 </div>
               </div>
@@ -366,13 +400,18 @@ export default function ClientReviews() {
 }
 
 interface ReviewCardProps {
-  review: typeof mockReviews[0];
-  onSelect: (review: typeof mockReviews[0]) => void;
+  review: (typeof mockReviews)[0];
+  onSelect: (review: (typeof mockReviews)[0]) => void;
   getTimeAgo: (dateString: string) => string;
   renderStars: (rating: number) => React.ReactNode;
 }
 
-function ReviewCard({ review, onSelect, getTimeAgo, renderStars }: ReviewCardProps) {
+function ReviewCard({
+  review,
+  onSelect,
+  getTimeAgo,
+  renderStars,
+}: ReviewCardProps) {
   return (
     <div className="p-2 md:p-3">
       <Card
@@ -381,7 +420,7 @@ function ReviewCard({ review, onSelect, getTimeAgo, renderStars }: ReviewCardPro
         role="button"
         tabIndex={0}
         onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
+          if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
             onSelect(review);
           }
@@ -408,7 +447,7 @@ function ReviewCard({ review, onSelect, getTimeAgo, renderStars }: ReviewCardPro
             Project: <span className="font-medium">{review.project}</span>
           </div>
         </CardContent>
-        
+
         <CardFooter className="mt-4 p-0 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Avatar className="h-8 w-8 border">
@@ -418,7 +457,10 @@ function ReviewCard({ review, onSelect, getTimeAgo, renderStars }: ReviewCardPro
                 alt={`${review.name}'s profile picture`}
               />
               <AvatarFallback className="text-xs font-semibold bg-blue-100 text-blue-700">
-                {review.name.split(' ').map(n => n[0]).join('')}
+                {review.name
+                  .split(" ")
+                  .map((n) => n[0])
+                  .join("")}
               </AvatarFallback>
             </Avatar>
             <div>
@@ -433,7 +475,7 @@ function ReviewCard({ review, onSelect, getTimeAgo, renderStars }: ReviewCardPro
               <p className="text-xs text-brand-muted">{review.role}</p>
             </div>
           </div>
-          
+
           <div className="text-right">
             <div className="flex items-center gap-1 text-xs text-brand-muted">
               <ThumbsUp className="w-3 h-3" />

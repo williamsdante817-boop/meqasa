@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
       }
       return NextResponse.json(
         { error: "Missing required fields" },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
@@ -93,7 +93,7 @@ export async function POST(request: NextRequest) {
 
     // Use the same pattern as the working getListingDetails API call
     const formEncoded = new URLSearchParams(
-      requestData as Record<string, string>,
+      requestData as Record<string, string>
     );
     const response = await apiClient.post(
       "https://meqasa.com/ag-msg",
@@ -102,7 +102,7 @@ export async function POST(request: NextRequest) {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },
-      },
+      }
     );
 
     if (process.env.NODE_ENV !== "production") {
@@ -111,7 +111,7 @@ export async function POST(request: NextRequest) {
       console.log("📊 [send-message] Response type:", typeof response);
       console.log(
         "📊 [send-message] Response keys:",
-        Object.keys(response ?? {}),
+        Object.keys(response ?? {})
       );
     }
 
@@ -133,7 +133,7 @@ export async function POST(request: NextRequest) {
       }
       return NextResponse.json(
         { error: "Invalid response from server" },
-        { status: 500 },
+        { status: 500 }
       );
     }
   } catch (error) {
@@ -141,7 +141,7 @@ export async function POST(request: NextRequest) {
       console.error("❌ [send-message] Error details:", error);
       console.error(
         "❌ [send-message] Error message:",
-        (error as Error).message,
+        (error as Error).message
       );
       console.error("❌ [send-message] Error stack:", (error as Error).stack);
     }
@@ -151,7 +151,7 @@ export async function POST(request: NextRequest) {
         error: "Failed to send message",
         details: (error as Error).message,
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

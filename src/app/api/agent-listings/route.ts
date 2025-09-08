@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     if (!agentId || !agentName) {
       return NextResponse.json(
         { error: "Missing required fields: agentId and agentName" },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
@@ -79,7 +79,7 @@ export async function POST(request: NextRequest) {
     console.error("Error in agent listings API route:", error);
     return NextResponse.json(
       { error: "Failed to fetch agent listings" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

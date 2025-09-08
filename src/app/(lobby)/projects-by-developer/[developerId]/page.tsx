@@ -126,7 +126,7 @@ export async function generateMetadata({
 // Generate structured data for SEO
 function generateStructuredData(
   developer: DeveloperDetails,
-  developerId: string,
+  developerId: string
 ) {
   const companyName = developer.developer.companyname;
   const address = developer.developer.address;
@@ -351,11 +351,13 @@ export default async function DeveloperProfilePage({
                     className="pt-10 sm:pt-14 md:pt-20 pb-8 sm:pb-10 md:pb-0"
                     btnHidden
                   >
-                      <ExpandableDescription
-                        description={buildRichInnerHtml(developer.developer.about ?? "")}
-                        name={developer.developer.companyname}
-                        href={`/projects-by-developer/${developerId}`}
-                      />
+                    <ExpandableDescription
+                      description={buildRichInnerHtml(
+                        developer.developer.about ?? ""
+                      )}
+                      name={developer.developer.companyname}
+                      href={`/projects-by-developer/${developerId}`}
+                    />
                   </ContentSection>
                 </section>
 

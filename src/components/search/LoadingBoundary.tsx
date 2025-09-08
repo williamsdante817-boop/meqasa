@@ -6,16 +6,14 @@ interface LoadingBoundaryProps {
   className?: string;
 }
 
-export function LoadingBoundary({ 
-  children, 
-  fallback, 
-  className = "" 
+export function LoadingBoundary({
+  children,
+  fallback,
+  className = "",
 }: LoadingBoundaryProps) {
   return (
     <div className={className}>
-      <Suspense fallback={fallback}>
-        {children}
-      </Suspense>
+      <Suspense fallback={fallback}>{children}</Suspense>
     </div>
   );
 }
@@ -49,4 +47,4 @@ export function ContentLoadingBoundary({ children }: { children: ReactNode }) {
       {children}
     </LoadingBoundary>
   );
-} 
+}

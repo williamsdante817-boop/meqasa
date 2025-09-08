@@ -26,13 +26,17 @@ export default function SearchError({
             Something went wrong!
           </h2>
           <p className="text-brand-muted">
-            We encountered an error while loading the search results. Please try again.
+            We encountered an error while loading the search results. Please try
+            again.
           </p>
           <div className="flex gap-4 justify-center">
             <Button onClick={reset} variant="default">
               Try again
             </Button>
-            <Button onClick={() => window.location.href = "/"} variant="outline">
+            <Button
+              onClick={() => (window.location.href = "/")}
+              variant="outline"
+            >
               Go home
             </Button>
           </div>
@@ -40,4 +44,4 @@ export default function SearchError({
       </div>
     </Shell>
   );
-} 
+}

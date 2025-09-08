@@ -25,20 +25,25 @@ export function ActiveFilterChips({
   formState,
   onRemoveFilter,
   onClearAllFilters,
-  contractType = "rent"
+  contractType = "rent",
 }: ActiveFilterChipsProps) {
   const getActiveFilters = (): FilterChip[] => {
     const filters: FilterChip[] = [];
 
     // Property type filter (don't show "land" on land searches as it's the default)
-    if (formState.propertyType && formState.propertyType !== "all" && 
-        !(contractType === "land" && formState.propertyType === "land")) {
+    if (
+      formState.propertyType &&
+      formState.propertyType !== "all" &&
+      !(contractType === "land" && formState.propertyType === "land")
+    ) {
       filters.push({
         key: "propertyType",
         label: "Type",
-        value: formState.propertyType.charAt(0).toUpperCase() + formState.propertyType.slice(1),
+        value:
+          formState.propertyType.charAt(0).toUpperCase() +
+          formState.propertyType.slice(1),
         icon: Home,
-        color: "bg-blue-50 text-blue-700 border-blue-200"
+        color: "bg-blue-50 text-blue-700 border-blue-200",
       });
     }
 
@@ -49,9 +54,9 @@ export function ActiveFilterChips({
         filters.push({
           key: "bedrooms",
           label: "Beds",
-          value: `${bedsNum} bed${bedsNum === 1 ? '' : 's'}`,
+          value: `${bedsNum} bed${bedsNum === 1 ? "" : "s"}`,
           icon: Bed,
-          color: "bg-green-50 text-green-700 border-green-200"
+          color: "bg-green-50 text-green-700 border-green-200",
         });
       }
     }
@@ -63,9 +68,9 @@ export function ActiveFilterChips({
         filters.push({
           key: "bathrooms",
           label: "Baths",
-          value: `${bathsNum} bath${bathsNum === 1 ? '' : 's'}`,
+          value: `${bathsNum} bath${bathsNum === 1 ? "" : "s"}`,
           icon: Bath,
-          color: "bg-purple-50 text-purple-700 border-purple-200"
+          color: "bg-purple-50 text-purple-700 border-purple-200",
         });
       }
     }
@@ -73,12 +78,12 @@ export function ActiveFilterChips({
     // Price range filter
     const hasMinPrice = formState.minPrice && formState.minPrice.trim() !== "";
     const hasMaxPrice = formState.maxPrice && formState.maxPrice.trim() !== "";
-    
+
     if (hasMinPrice || hasMaxPrice) {
       let priceLabel = "";
       const minPriceNum = hasMinPrice ? parseInt(formState.minPrice) : null;
       const maxPriceNum = hasMaxPrice ? parseInt(formState.maxPrice) : null;
-      
+
       if (minPriceNum && maxPriceNum) {
         priceLabel = `GH₵${minPriceNum.toLocaleString()} - GH₵${maxPriceNum.toLocaleString()}`;
       } else if (minPriceNum) {
@@ -93,24 +98,28 @@ export function ActiveFilterChips({
           label: "Price",
           value: priceLabel,
           icon: DollarSign,
-          color: "bg-orange-50 text-orange-700 border-orange-200"
+          color: "bg-orange-50 text-orange-700 border-orange-200",
         });
       }
     }
 
     // Rent period filter
-    if (formState.period && formState.period !== "- Any -" && formState.period !== "any") {
+    if (
+      formState.period &&
+      formState.period !== "- Any -" &&
+      formState.period !== "any"
+    ) {
       const periodMap: Record<string, string> = {
         shortrent: "Short term",
-        longrent: "Long term"
+        longrent: "Long term",
       };
-      
+
       filters.push({
         key: "period",
         label: "Period",
         value: periodMap[formState.period] ?? formState.period,
         icon: Calendar,
-        color: "bg-indigo-50 text-indigo-700 border-indigo-200"
+        color: "bg-indigo-50 text-indigo-700 border-indigo-200",
       });
     }
 
@@ -121,7 +130,7 @@ export function ActiveFilterChips({
         label: "Feature",
         value: "Furnished",
         icon: Filter,
-        color: "bg-teal-50 text-teal-700 border-teal-200"
+        color: "bg-teal-50 text-teal-700 border-teal-200",
       });
     }
 
@@ -131,7 +140,7 @@ export function ActiveFilterChips({
         label: "Feature",
         value: "Owner Direct",
         icon: Filter,
-        color: "bg-teal-50 text-teal-700 border-teal-200"
+        color: "bg-teal-50 text-teal-700 border-teal-200",
       });
     }
 
@@ -161,35 +170,35 @@ export function ActiveFilterChips({
         <Filter className="h-4 w-4" />
         <span className="font-medium">Active filters:</span>
       </div>
-      
+
       <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-nowrap">
           {activeFilters.map((filter) => {
-          const IconComponent = filter.icon;
-          
-          return (
-            <Badge
-              key={filter.key}
-              variant="outline"
-              className={`${filter.color} border transition-all hover:shadow-sm flex-shrink-0 whitespace-nowrap`}
-            >
-              <IconComponent className="h-3 w-3 mr-1" />
-              <span className="text-xs font-medium">
-                {filter.label}: {filter.value}
-              </span>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-4 w-4 ml-1 p-0 hover:bg-black/10 rounded-full"
-                onClick={() => handleRemoveFilter(filter.key)}
-                aria-label={`Remove ${filter.label} filter`}
+            const IconComponent = filter.icon;
+
+            return (
+              <Badge
+                key={filter.key}
+                variant="outline"
+                className={`${filter.color} border transition-all hover:shadow-sm flex-shrink-0 whitespace-nowrap`}
               >
-                <X className="h-3 w-3" />
-              </Button>
-            </Badge>
-          );
+                <IconComponent className="h-3 w-3 mr-1" />
+                <span className="text-xs font-medium">
+                  {filter.label}: {filter.value}
+                </span>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-4 w-4 ml-1 p-0 hover:bg-black/10 rounded-full"
+                  onClick={() => handleRemoveFilter(filter.key)}
+                  aria-label={`Remove ${filter.label} filter`}
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+              </Badge>
+            );
           })}
-          
+
           {activeFilters.length > 1 && (
             <Button
               variant="ghost"

@@ -32,7 +32,7 @@ const SECTION_IDS = {
 
 const STATUS_BADGE_VARIANTS = {
   completed: "success",
-  ongoing: "warning", 
+  ongoing: "warning",
   default: "default",
 } as const;
 
@@ -169,14 +169,14 @@ function validateProjectData(data: DeveloperProject): {
 
 // Memoized project data transformers with safety checks
 function useProjectDataTransformers(projectData: DeveloperProject) {
-  console.log(projectData)
+  console.log(projectData);
   return useMemo(
     () => ({
       markup: sanitizeRichHtmlToInnerHtml(
-        projectData.project?.aboutproject ?? "",
+        projectData.project?.aboutproject ?? ""
       ),
       unityTypes: (projectData.unittypes ?? []).map(
-        (unitType) => unitType.type + " ",
+        (unitType) => unitType.type + " "
       ),
       projectType:
         (projectData.projecttypes ?? []).map((project) => project.type)[0] ??
@@ -228,7 +228,7 @@ function useProjectDataTransformers(projectData: DeveloperProject) {
         },
       ],
     }),
-    [projectData],
+    [projectData]
   );
 }
 
@@ -254,7 +254,7 @@ function PropertyContainerContent({
       [SECTION_IDS.LOCATION]: locationRef,
       [SECTION_IDS.AVAILABLE_UNITS]: availableUnitsRef,
     }),
-    [],
+    []
   );
 
   // Use memoized transformers - this hook MUST be called first
@@ -307,28 +307,28 @@ function PropertyContainerContent({
     ));
   }, [projectData.minmax, projectData.project.projectid]);
 
-     // Memoize units mapping - this hook MUST be called fourth
-   const mappedUnits = useMemo(() => {
-     if (!projectData.units || projectData.units.length === 0) return [];
+  // Memoize units mapping - this hook MUST be called fourth
+  const mappedUnits = useMemo(() => {
+    if (!projectData.units || projectData.units.length === 0) return [];
 
-     return projectData.units.map((unit) => ({
-       ...unit,
-       image: unit.coverphoto,
-       detailreq: `/developer-unit/${unit.unitid}`,
-       listingid: String(unit.unitid),
-       streetaddress: unit.address,
-       contract: unit.terms,
-       title: unit.title ?? unit.unitname,
-       garages: unit.garages?.toString() ?? "0",
-       price: unit.price?.toString() ?? "0",
-       bathroomcount: unit.baths?.toString() ?? "0",
-       bedroomcount: unit.beds?.toString() ?? "0",
-       summary: unit.title ?? unit.unitname,
-       pricepart1: unit.price?.toString() ?? "0",
-       pricepart2: unit.terms === "rent" ? "/month" : "",
-       featured: Boolean(unit.featured),
-     }));
-   }, [projectData.units]);
+    return projectData.units.map((unit) => ({
+      ...unit,
+      image: unit.coverphoto,
+      detailreq: `/developer-unit/${unit.unitid}`,
+      listingid: String(unit.unitid),
+      streetaddress: unit.address,
+      contract: unit.terms,
+      title: unit.title ?? unit.unitname,
+      garages: unit.garages?.toString() ?? "0",
+      price: unit.price?.toString() ?? "0",
+      bathroomcount: unit.baths?.toString() ?? "0",
+      bedroomcount: unit.beds?.toString() ?? "0",
+      summary: unit.title ?? unit.unitname,
+      pricepart1: unit.price?.toString() ?? "0",
+      pricepart2: unit.terms === "rent" ? "/month" : "",
+      featured: Boolean(unit.featured),
+    }));
+  }, [projectData.units]);
 
   // Validate data AFTER all hooks have been called
   const validation = validateProjectData(projectData);
@@ -385,13 +385,15 @@ function PropertyContainerContent({
                     aria-hidden="true"
                   />
                   {projectData.project.formatted_address ||
-                          projectData.project.city}
+                    projectData.project.city}
                 </div>
               </div>
 
               {priceRangeDisplay ?? (
                 <div className="mt-6 p-4 md:p-6 bg-gradient-to-r from-gray-50 to-gray-50 rounded-lg border border-gray-200 text-center">
-                  <p className="text-brand-muted text-sm">Price information not available</p>
+                  <p className="text-brand-muted text-sm">
+                    Price information not available
+                  </p>
                 </div>
               )}
 
@@ -404,8 +406,7 @@ function PropertyContainerContent({
                     className="pt-14 px-0 md:pt-20 pb-10 md:pb-0"
                     btnHidden
                   >
-                  
-                    <ExpandableDescription 
+                    <ExpandableDescription
                       description={markup}
                       name={projectData.project.companyname}
                       href=""
@@ -554,7 +555,7 @@ function PropertyContainerContent({
             description=""
             href="/listings"
             className={cn(
-              "py-14 px-0 md:pt-20 md:block lg:max-w-7xl lg:mx-auto [&_p]:px-4 [&_h2]:px-4",
+              "py-14 px-0 md:pt-20 md:block lg:max-w-7xl lg:mx-auto [&_p]:px-4 [&_h2]:px-4"
             )}
           >
             <PropertyListings

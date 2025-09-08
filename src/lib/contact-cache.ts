@@ -40,7 +40,7 @@ function safeWrite(cache: CacheShape): void {
 
 export function getStoredNumbers(
   contextKey: string,
-  ttlMs: number = DEFAULT_TTL_MS,
+  ttlMs: number = DEFAULT_TTL_MS
 ): CachedNumbersEntry | null {
   const cache = safeRead();
   const entry = cache[contextKey];
@@ -60,7 +60,7 @@ export function getStoredNumbers(
 export function setStoredNumbers(
   contextKey: string,
   stph2: string,
-  stph3: string,
+  stph3: string
 ): void {
   const cache = safeRead();
   cache[contextKey] = { stph2, stph3, savedAt: Date.now() };

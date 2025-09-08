@@ -11,7 +11,8 @@ import type { FeaturedProject, Unit } from "@/types";
 export function useFeaturedProjects(initialData?: FeaturedProject[]) {
   return useQuery({
     queryKey: queryKeys.projects.featured(),
-    queryFn: () => fetch("/api/homepage/featured-projects").then(r => r.json()),
+    queryFn: () =>
+      fetch("/api/homepage/featured-projects").then((r) => r.json()),
     ...queryConfig.homepageBanners, // Focus-based refresh, longer stale time
     initialData,
   });
@@ -24,7 +25,7 @@ export function useFeaturedProjects(initialData?: FeaturedProject[]) {
 export function useFeaturedUnits(initialData?: Unit[]) {
   return useQuery({
     queryKey: ["projects", "featured-units"] as const,
-    queryFn: () => fetch("/api/homepage/featured-units").then(r => r.json()),
+    queryFn: () => fetch("/api/homepage/featured-units").then((r) => r.json()),
     ...queryConfig.homepageBanners, // Focus-based refresh, longer stale time
     initialData,
   });

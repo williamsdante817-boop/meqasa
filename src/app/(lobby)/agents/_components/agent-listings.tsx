@@ -72,14 +72,22 @@ export function AgentListings({
     isLoading: isPaginationQueryLoading,
     error: paginationError,
     isFetching: isPaginationFetching,
-  } = useAgentListingsPagination(agentId, agentName, currentPage, ITEMS_PER_PAGE);
+  } = useAgentListingsPagination(
+    agentId,
+    agentName,
+    currentPage,
+    ITEMS_PER_PAGE
+  );
 
   // Determine what data to show - no useEffect needed!
-  const listings = currentPage === 1 ? initialListings : (paginationData?.listings ?? []);
-  const totalPages = currentPage === 1 
-    ? Math.ceil(totalCount / ITEMS_PER_PAGE) 
-    : (paginationData?.totalPages ?? 0);
-  const isLoading = currentPage > 1 ? (isPaginationQueryLoading || isPaginationFetching) : false;
+  const listings =
+    currentPage === 1 ? initialListings : (paginationData?.listings ?? []);
+  const totalPages =
+    currentPage === 1
+      ? Math.ceil(totalCount / ITEMS_PER_PAGE)
+      : (paginationData?.totalPages ?? 0);
+  const isLoading =
+    currentPage > 1 ? isPaginationQueryLoading || isPaginationFetching : false;
   const error = currentPage > 1 ? paginationError : null;
 
   // Calculate pagination range for display
@@ -102,7 +110,7 @@ export function AgentListings({
       // For page 1: scroll immediately (data already available)
       // For pages 2+: scroll after a short delay to let React Query finish
       const scrollDelay = currentPage === 1 ? 0 : 100;
-      
+
       setTimeout(() => {
         if (listingsTopRef.current) {
           listingsTopRef.current.scrollIntoView({ behavior: "smooth" });
@@ -140,7 +148,8 @@ export function AgentListings({
       {error && (
         <Alert className="mb-6 border-red-200 bg-red-50">
           <AlertDescription className="text-red-800">
-            {error instanceof Error ? error.message : String(error)}. Please try again.
+            {error instanceof Error ? error.message : String(error)}. Please try
+            again.
           </AlertDescription>
         </Alert>
       )}
@@ -163,15 +172,11 @@ export function AgentListings({
           </div>
 
           <p className="text-brand-muted text-sm mb-6">
-            {hasListings && totalCount > 0 ? (
-              totalCount <= ITEMS_PER_PAGE ? (
-                `Showing all ${totalCount} listings`
-              ) : (
-                `Showing ${startItem}-${endItem} of ${totalCount} listings`
-              )
-            ) : (
-              "No listings found"
-            )}
+            {hasListings && totalCount > 0
+              ? totalCount <= ITEMS_PER_PAGE
+                ? `Showing all ${totalCount} listings`
+                : `Showing ${startItem}-${endItem} of ${totalCount} listings`
+              : "No listings found"}
           </p>
         </div>
       </div>

@@ -33,12 +33,10 @@ export default function RootLayout({
       <body
         className={cn(
           "min-h-screen bg-gray-50 font-sans antialiased",
-          fontSans.variable,
+          fontSans.variable
         )}
       >
-        <QueryProvider>
-          {children}
-        </QueryProvider>
+        <QueryProvider>{children}</QueryProvider>
         <Toaster />
         <WebVitals />
         <SpeedInsights />

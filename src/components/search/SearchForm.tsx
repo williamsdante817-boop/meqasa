@@ -128,11 +128,11 @@ export function SearchForm({
   };
 
   return (
-    <form 
-      id={`search-form-${type}`} 
+    <form
+      id={`search-form-${type}`}
       onSubmit={handleSubmit}
       role="search"
-      aria-label={`Search for properties to ${type === 'buy' ? 'purchase' : type}`}
+      aria-label={`Search for properties to ${type === "buy" ? "purchase" : type}`}
     >
       <Input
         type="radio"

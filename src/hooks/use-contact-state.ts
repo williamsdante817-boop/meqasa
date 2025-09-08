@@ -40,7 +40,7 @@ const getOrCreateState = (contextKey: string): ContactState => {
  */
 export const generateContextKey = (
   pageType: "listing" | "project",
-  id: string,
+  id: string
 ): string => {
   return `${pageType}:${id}`;
 };
@@ -62,7 +62,7 @@ export const generateContextKey = (
  */
 export const useContactState = (contextKey: string) => {
   const [state, setState] = useState<ContactState>(() =>
-    getOrCreateState(contextKey),
+    getOrCreateState(contextKey)
   );
 
   useEffect(() => {

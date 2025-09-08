@@ -53,7 +53,7 @@ const PaginationLink = ({
         size,
       }),
       isActive && "shadow-none",
-      className,
+      className
     )}
     {...props}
   />

@@ -13,7 +13,7 @@ import type { MeqasaEmptyProject, MeqasaProject } from "@/types/meqasa";
 
 // Type guard to check if project is not empty
 function isMeqasaProject(
-  project: MeqasaProject | MeqasaEmptyProject,
+  project: MeqasaProject | MeqasaEmptyProject
 ): project is MeqasaProject {
   return !(project as MeqasaEmptyProject).empty;
 }
@@ -78,7 +78,7 @@ export function FeaturedPropertyVariantCard({
             alt={mainImageAlt}
             placeholder="blur"
             blurDataURL={`data:image/svg+xml;base64,${toBase64(
-              shimmer(728, 321),
+              shimmer(728, 321)
             )}`}
             sizes="728px"
             onError={() => setImgError(true)}

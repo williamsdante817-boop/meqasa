@@ -3,7 +3,7 @@
  * Handles geocoding and places search functionality
  */
 
-import type { NearestEstablishment } from '@/components/nearest-establishments';
+import type { NearestEstablishment } from "@/components/nearest-establishments";
 
 // Types for Google Maps API responses
 interface GoogleMapsCoordinates {
@@ -52,22 +52,22 @@ interface GoogleGeocodeResponse {
 
 // Establishment type mappings for Google Places API
 const ESTABLISHMENT_TYPE_MAPPINGS = {
-  schools: ['school', 'primary_school', 'secondary_school', 'university'],
-  supermarkets: ['supermarket', 'grocery_or_supermarket', 'store'],
-  banks: ['bank', 'atm', 'finance'],
-  hospitals: ['hospital', 'doctor', 'health'],
-  airports: ['airport']
+  schools: ["school", "primary_school", "secondary_school", "university"],
+  supermarkets: ["supermarket", "grocery_or_supermarket", "store"],
+  banks: ["bank", "atm", "finance"],
+  hospitals: ["hospital", "doctor", "health"],
+  airports: ["airport"],
 } as const;
 
 type EstablishmentType = keyof typeof ESTABLISHMENT_TYPE_MAPPINGS;
 
 // Configuration
 const GOOGLE_MAPS_CONFIG = {
-  baseUrl: 'https://maps.googleapis.com/maps/api',
+  baseUrl: "https://maps.googleapis.com/maps/api",
   defaultRadius: 5000, // 5km in meters
   maxResults: 10,
-  language: 'en',
-  region: 'gh' // Ghana
+  language: "en",
+  region: "gh", // Ghana
 };
 
 export interface GoogleMapsServiceOptions {
@@ -94,40 +94,44 @@ export class GoogleMapsService {
     this.maxResults = options.maxResults || GOOGLE_MAPS_CONFIG.maxResults;
 
     if (!this.apiKey) {
-      throw new Error('Google Maps API key is required');
+      throw new Error("Google Maps API key is required");
     }
   }
 
   /**
    * Convert location string to coordinates using Google Geocoding API
    */
-  async geocodeLocation(locationString: string): Promise<GoogleMapsCoordinates> {
+  async geocodeLocation(
+    locationString: string
+  ): Promise<GoogleMapsCoordinates> {
     try {
       const url = new URL(`${GOOGLE_MAPS_CONFIG.baseUrl}/geocode/json`);
-      url.searchParams.set('address', locationString);
-      url.searchParams.set('key', this.apiKey);
-      url.searchParams.set('region', GOOGLE_MAPS_CONFIG.region);
+      url.searchParams.set("address", locationString);
+      url.searchParams.set("key", this.apiKey);
+      url.searchParams.set("region", GOOGLE_MAPS_CONFIG.region);
 
       const response = await fetch(url.toString());
-      
+
       if (!response.ok) {
         throw new Error(`Geocoding request failed: ${response.status}`);
       }
 
       const data: GoogleGeocodeResponse = await response.json();
 
-      if (data.status !== 'OK' || !data.results.length) {
-        throw new Error(`Geocoding failed: ${data.status} - ${data.error_message || 'No results found'}`);
+      if (data.status !== "OK" || !data.results.length) {
+        throw new Error(
+          `Geocoding failed: ${data.status} - ${data.error_message || "No results found"}`
+        );
       }
 
       const location = data.results[0]?.geometry.location;
       if (!location) {
-        throw new Error('No location data found in geocoding response');
+        throw new Error("No location data found in geocoding response");
       }
 
       return location;
     } catch (error) {
-      console.error('Geocoding error:', error);
+      console.error("Geocoding error:", error);
       throw new Error(`Failed to geocode location: ${locationString}`);
     }
   }
@@ -141,29 +145,33 @@ export class GoogleMapsService {
     radius: number = this.radius
   ): Promise<GooglePlaceResult[]> {
     try {
-      const url = new URL(`${GOOGLE_MAPS_CONFIG.baseUrl}/place/nearbysearch/json`);
-      url.searchParams.set('location', `${coordinates.lat},${coordinates.lng}`);
-      url.searchParams.set('radius', radius.toString());
-      url.searchParams.set('type', placeType);
-      url.searchParams.set('key', this.apiKey);
-      url.searchParams.set('language', GOOGLE_MAPS_CONFIG.language);
+      const url = new URL(
+        `${GOOGLE_MAPS_CONFIG.baseUrl}/place/nearbysearch/json`
+      );
+      url.searchParams.set("location", `${coordinates.lat},${coordinates.lng}`);
+      url.searchParams.set("radius", radius.toString());
+      url.searchParams.set("type", placeType);
+      url.searchParams.set("key", this.apiKey);
+      url.searchParams.set("language", GOOGLE_MAPS_CONFIG.language);
 
       const response = await fetch(url.toString());
-      
+
       if (!response.ok) {
         throw new Error(`Places search request failed: ${response.status}`);
       }
 
       const data: GooglePlacesResponse = await response.json();
 
-      if (data.status !== 'OK' && data.status !== 'ZERO_RESULTS') {
-        throw new Error(`Places search failed: ${data.status} - ${data.error_message || 'Unknown error'}`);
+      if (data.status !== "OK" && data.status !== "ZERO_RESULTS") {
+        throw new Error(
+          `Places search failed: ${data.status} - ${data.error_message || "Unknown error"}`
+        );
       }
 
       return data.results || [];
     } catch (error) {
-      console.error('Places search error:', error);
-      throw new Error('Failed to search nearby places');
+      console.error("Places search error:", error);
+      throw new Error("Failed to search nearby places");
     }
   }
 
@@ -176,32 +184,36 @@ export class GoogleMapsService {
     radius: number = this.radius
   ): Promise<GooglePlaceResult[]> {
     try {
-      const url = new URL(`${GOOGLE_MAPS_CONFIG.baseUrl}/place/textsearch/json`);
-      url.searchParams.set('query', query);
-      url.searchParams.set('key', this.apiKey);
-      url.searchParams.set('language', GOOGLE_MAPS_CONFIG.language);
+      const url = new URL(
+        `${GOOGLE_MAPS_CONFIG.baseUrl}/place/textsearch/json`
+      );
+      url.searchParams.set("query", query);
+      url.searchParams.set("key", this.apiKey);
+      url.searchParams.set("language", GOOGLE_MAPS_CONFIG.language);
 
       if (location) {
-        url.searchParams.set('location', `${location.lat},${location.lng}`);
-        url.searchParams.set('radius', radius.toString());
+        url.searchParams.set("location", `${location.lat},${location.lng}`);
+        url.searchParams.set("radius", radius.toString());
       }
 
       const response = await fetch(url.toString());
-      
+
       if (!response.ok) {
         throw new Error(`Text search request failed: ${response.status}`);
       }
 
       const data: GooglePlacesResponse = await response.json();
 
-      if (data.status !== 'OK' && data.status !== 'ZERO_RESULTS') {
-        throw new Error(`Text search failed: ${data.status} - ${data.error_message || 'Unknown error'}`);
+      if (data.status !== "OK" && data.status !== "ZERO_RESULTS") {
+        throw new Error(
+          `Text search failed: ${data.status} - ${data.error_message || "Unknown error"}`
+        );
       }
 
       return data.results || [];
     } catch (error) {
-      console.error('Text search error:', error);
-      throw new Error('Failed to search places by text');
+      console.error("Text search error:", error);
+      throw new Error("Failed to search places by text");
     }
   }
 
@@ -258,7 +270,7 @@ export class GoogleMapsService {
     return {
       id: place.place_id,
       name: place.name,
-      address: place.vicinity || '',
+      address: place.vicinity || "",
       distance: Math.round(distance),
       travelTime,
       type: establishmentType,
@@ -266,20 +278,22 @@ export class GoogleMapsService {
       openNow: place.opening_hours?.open_now,
       coordinates: {
         lat: place.geometry.location.lat,
-        lng: place.geometry.location.lng
-      }
+        lng: place.geometry.location.lng,
+      },
     };
   }
 
   /**
    * Find all nearby establishments for a location
    */
-  async findNearbyEstablishments(params: NearbySearchParams): Promise<NearestEstablishment[]> {
+  async findNearbyEstablishments(
+    params: NearbySearchParams
+  ): Promise<NearestEstablishment[]> {
     try {
       // Step 1: Get coordinates if location is a string
       let coordinates: GoogleMapsCoordinates;
-      
-      if (typeof params.location === 'string') {
+
+      if (typeof params.location === "string") {
         coordinates = await this.geocodeLocation(params.location);
       } else {
         coordinates = params.location;
@@ -292,16 +306,26 @@ export class GoogleMapsService {
       // Step 2: Search for each establishment type
       for (const establishmentType of params.types) {
         const googleTypes = ESTABLISHMENT_TYPE_MAPPINGS[establishmentType];
-        
+
         for (const googleType of googleTypes) {
           try {
-            const places = await this.searchNearbyPlaces(coordinates, googleType, radius);
-            
+            const places = await this.searchNearbyPlaces(
+              coordinates,
+              googleType,
+              radius
+            );
+
             // Transform places to establishments
             const typeEstablishments = places
               .slice(0, maxResults) // Limit results per type
-              .map(place => this.transformPlaceToEstablishment(place, coordinates, establishmentType))
-              .filter(est => est.distance <= radius); // Ensure within radius
+              .map((place) =>
+                this.transformPlaceToEstablishment(
+                  place,
+                  coordinates,
+                  establishmentType
+                )
+              )
+              .filter((est) => est.distance <= radius); // Ensure within radius
 
             establishments.push(...typeEstablishments);
           } catch (error) {
@@ -313,20 +337,19 @@ export class GoogleMapsService {
 
       // Step 3: Sort by distance and remove duplicates
       const uniqueEstablishments = new Map<string, NearestEstablishment>();
-      
+
       establishments
         .sort((a, b) => a.distance - b.distance)
-        .forEach(est => {
+        .forEach((est) => {
           if (!uniqueEstablishments.has(est.id)) {
             uniqueEstablishments.set(est.id, est);
           }
         });
 
       return Array.from(uniqueEstablishments.values());
-
     } catch (error) {
-      console.error('Find nearby establishments error:', error);
-      throw new Error('Failed to find nearby establishments');
+      console.error("Find nearby establishments error:", error);
+      throw new Error("Failed to find nearby establishments");
     }
   }
 
@@ -351,31 +374,39 @@ export class GoogleMapsService {
           // Transform and add to results
           const typeEstablishments = places
             .slice(0, this.maxResults)
-            .map(place => this.transformPlaceToEstablishment(place, coordinates, establishmentType))
-            .filter(est => est.distance <= this.radius);
+            .map((place) =>
+              this.transformPlaceToEstablishment(
+                place,
+                coordinates,
+                establishmentType
+              )
+            )
+            .filter((est) => est.distance <= this.radius);
 
           establishments.push(...typeEstablishments);
         } catch (error) {
-          console.warn(`Failed to search for ${establishmentType} near ${locationString}:`, error);
+          console.warn(
+            `Failed to search for ${establishmentType} near ${locationString}:`,
+            error
+          );
         }
       }
 
       // Remove duplicates and sort by distance
       const uniqueEstablishments = new Map<string, NearestEstablishment>();
-      
+
       establishments
         .sort((a, b) => a.distance - b.distance)
-        .forEach(est => {
+        .forEach((est) => {
           if (!uniqueEstablishments.has(est.id)) {
             uniqueEstablishments.set(est.id, est);
           }
         });
 
       return Array.from(uniqueEstablishments.values());
-
     } catch (error) {
-      console.error('Search establishments by text error:', error);
-      throw new Error('Failed to search establishments by text');
+      console.error("Search establishments by text error:", error);
+      throw new Error("Failed to search establishments by text");
     }
   }
 }
@@ -383,7 +414,9 @@ export class GoogleMapsService {
 // Create singleton instance
 let googleMapsService: GoogleMapsService | null = null;
 
-export function createGoogleMapsService(options: GoogleMapsServiceOptions): GoogleMapsService {
+export function createGoogleMapsService(
+  options: GoogleMapsServiceOptions
+): GoogleMapsService {
   if (
     !googleMapsService ||
     (googleMapsService as any).apiKey !== options.apiKey // workaround for private property
@@ -397,7 +430,9 @@ export function getGoogleMapsService(): GoogleMapsService {
   if (!googleMapsService) {
     const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
     if (!apiKey) {
-      throw new Error('NEXT_PUBLIC_GOOGLE_MAPS_API_KEY environment variable is required');
+      throw new Error(
+        "NEXT_PUBLIC_GOOGLE_MAPS_API_KEY environment variable is required"
+      );
     }
     googleMapsService = new GoogleMapsService({ apiKey });
   }

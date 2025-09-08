@@ -5,7 +5,7 @@
 
 export const propertyTypes = [
   "house",
-  "apartment", 
+  "apartment",
   "office",
   "land",
   "townhouse",
@@ -15,30 +15,23 @@ export const propertyTypes = [
   "shop",
   "retail",
   "beach house",
-] as const
+] as const;
 
-export const contractTypes = [
-  "rent",
-  "sale", 
-  "short-stay"
-] as const
+export const contractTypes = ["rent", "sale", "short-stay"] as const;
 
 export const propertyStatuses = [
   "active",
   "pending",
   "sold",
   "rented",
-  "withdrawn"
-] as const
+  "withdrawn",
+] as const;
 
-export const currencies = [
-  "GHS",
-  "USD"
-] as const
+export const currencies = ["GHS", "USD"] as const;
 
 export const popularLocations = [
   "Accra",
-  "East Legon", 
+  "East Legon",
   "Tema",
   "Kasoa",
   "Spintex",
@@ -51,8 +44,8 @@ export const popularLocations = [
   "Airport Hills",
   "Adjiringanor",
   "Kwabenya",
-  "Tesano"
-] as const
+  "Tesano",
+] as const;
 
 export const bedroomOptions = [
   { value: "1", label: "1 Bedroom" },
@@ -60,7 +53,7 @@ export const bedroomOptions = [
   { value: "3", label: "3 Bedrooms" },
   { value: "4", label: "4 Bedrooms" },
   { value: "5", label: "5+ Bedrooms" },
-] as const
+] as const;
 
 export const bathroomOptions = [
   { value: "1", label: "1 Bathroom" },
@@ -68,7 +61,7 @@ export const bathroomOptions = [
   { value: "3", label: "3 Bathrooms" },
   { value: "4", label: "4 Bathrooms" },
   { value: "5", label: "5+ Bathrooms" },
-] as const
+] as const;
 
 export const priceRanges = {
   rent: [
@@ -87,12 +80,12 @@ export const priceRanges = {
     { value: "500000-1000000", label: "GH₵ 500,000 - 1,000,000" },
     { value: "1000000", label: "GH₵ 1,000,000+" },
   ],
-} as const
+} as const;
 
 export const propertyFeatures = [
   "Swimming Pool",
   "Gym",
-  "Garden", 
+  "Garden",
   "Parking",
   "Security",
   "Generator",
@@ -106,7 +99,7 @@ export const propertyFeatures = [
   "Playground",
   "24hr Water",
   "24hr Electricity",
-] as const
+] as const;
 
 // Property configuration for UI components
 export const propertyConfig = {
@@ -119,7 +112,7 @@ export const propertyConfig = {
   bathrooms: bathroomOptions,
   priceRanges,
   features: propertyFeatures,
-  
+
   // Default values
   defaults: {
     currency: "GHS" as const,
@@ -149,12 +142,12 @@ export const propertyConfig = {
       { value: "relevance", label: "Most Relevant" },
     ],
   },
-} as const
+} as const;
 
 // Type exports for TypeScript
-export type PropertyType = typeof propertyTypes[number]
-export type ContractType = typeof contractTypes[number] 
-export type PropertyStatus = typeof propertyStatuses[number]
-export type Currency = typeof currencies[number]
-export type PopularLocation = typeof popularLocations[number]
-export type PropertyFeature = typeof propertyFeatures[number]
+export type PropertyType = (typeof propertyTypes)[number];
+export type ContractType = (typeof contractTypes)[number];
+export type PropertyStatus = (typeof propertyStatuses)[number];
+export type Currency = (typeof currencies)[number];
+export type PopularLocation = (typeof popularLocations)[number];
+export type PropertyFeature = (typeof propertyFeatures)[number];

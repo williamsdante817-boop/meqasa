@@ -5,7 +5,7 @@ import {
   Pagination,
   PaginationContent,
   PaginationEllipsis,
-  PaginationItem
+  PaginationItem,
 } from "@/components/ui/pagination";
 import { usePagination } from "@/hooks/use-pagination";
 import React from "react";

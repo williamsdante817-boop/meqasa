@@ -24,7 +24,7 @@ export interface FeaturedListingsResponse {
 
 /**
  * Fetches the featured listings from the MeQasa server.
- * 
+ *
  * @deprecated Consider migrating to propertyDataFetchers.getFeaturedListings() for standardized types
  * @returns A promise that resolves with an object containing {@link FeaturedListingsResponse},
  *          with rentals and selling arrays, each containing {@link Listing} objects
@@ -35,11 +35,14 @@ export interface FeaturedListingsResponse {
 export async function getFeaturedListings(): Promise<FeaturedListingsResponse> {
   try {
     // Use the new standardized data fetcher
-    const standardizedResponse = await propertyDataFetchers.getFeaturedListings();
-    
+    const standardizedResponse =
+      await propertyDataFetchers.getFeaturedListings();
+
     // Transform standardized response back to legacy format for backward compatibility
-    const transformToLegacy = (properties: typeof standardizedResponse.rentals): Listing[] => {
-      return properties.map(property => {
+    const transformToLegacy = (
+      properties: typeof standardizedResponse.rentals
+    ): Listing[] => {
+      return properties.map((property) => {
         return {
           detailreq: property.reference,
           image: property.coverImage,

@@ -22,7 +22,7 @@ export function LatestListingsTab({
       { value: "rent", label: "For Rent", listings: rentListings },
       { value: "sale", label: "For Sale", listings: saleListings },
     ],
-    [rentListings, saleListings],
+    [rentListings, saleListings]
   );
 
   return (

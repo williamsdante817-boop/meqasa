@@ -29,7 +29,7 @@ export default function ListingLoading() {
               <Skeleton className="h-full w-full rounded-none" />
             </div>
           </div>
-          
+
           {/* Carousel navigation badge skeleton - exact positioning */}
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20">
             <div className="bg-black/70 text-white border-0 px-3 py-1 rounded">

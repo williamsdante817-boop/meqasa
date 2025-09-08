@@ -5,7 +5,13 @@ import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { X, Search, Filter } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -14,17 +20,21 @@ interface DevelopmentProjectsFiltersProps {
   searchParams: Record<string, string | string[] | undefined>;
 }
 
-export default function DevelopmentProjectsFilters({ 
-  searchParams 
+export default function DevelopmentProjectsFilters({
+  searchParams,
 }: DevelopmentProjectsFiltersProps) {
   const router = useRouter();
   const pathname = usePathname();
   const currentSearchParams = useSearchParams();
-  
-  const [searchQuery, setSearchQuery] = useState((searchParams.search as string) || "");
+
+  const [searchQuery, setSearchQuery] = useState(
+    (searchParams.search as string) || ""
+  );
   const [showAllFilters, setShowAllFilters] = useState(false);
 
-  const normalizeParam = (value: string | string[] | undefined): string | undefined => {
+  const normalizeParam = (
+    value: string | string[] | undefined
+  ): string | undefined => {
     if (Array.isArray(value)) {
       return value.join(", ");
     }
@@ -32,19 +42,22 @@ export default function DevelopmentProjectsFilters({
   };
 
   // Update URL with new search parameters
-  const updateSearchParams = useCallback((updates: Record<string, string | undefined>) => {
-    const params = new URLSearchParams(currentSearchParams.toString());
-    
-    Object.entries(updates).forEach(([key, value]) => {
-      if (value && value !== "") {
-        params.set(key, value);
-      } else {
-        params.delete(key);
-      }
-    });
+  const updateSearchParams = useCallback(
+    (updates: Record<string, string | undefined>) => {
+      const params = new URLSearchParams(currentSearchParams.toString());
 
-    router.push(`${pathname}?${params.toString()}`);
-  }, [currentSearchParams, pathname, router]);
+      Object.entries(updates).forEach(([key, value]) => {
+        if (value && value !== "") {
+          params.set(key, value);
+        } else {
+          params.delete(key);
+        }
+      });
+
+      router.push(`${pathname}?${params.toString()}`);
+    },
+    [currentSearchParams, pathname, router]
+  );
 
   // Clear all filters
   const clearAllFilters = () => {
@@ -66,27 +79,43 @@ export default function DevelopmentProjectsFilters({
   // Get active filters for display
   const getActiveFilters = () => {
     const filters = [];
-    
+
     const search = normalizeParam(searchParams.search);
     if (search) {
-      filters.push({ key: 'search', value: search, label: `Search: ${search}` });
+      filters.push({
+        key: "search",
+        value: search,
+        label: `Search: ${search}`,
+      });
     }
     const status = normalizeParam(searchParams.status);
     if (status) {
-      filters.push({ key: 'status', value: status, label: `Status: ${status}` });
+      filters.push({
+        key: "status",
+        value: status,
+        label: `Status: ${status}`,
+      });
     }
     const developer = normalizeParam(searchParams.developer);
     if (developer) {
-      filters.push({ key: 'developer', value: developer, label: `Developer: ${developer}` });
+      filters.push({
+        key: "developer",
+        value: developer,
+        label: `Developer: ${developer}`,
+      });
     }
     const location = normalizeParam(searchParams.location);
     if (location) {
-      filters.push({ key: 'location', value: location, label: `Location: ${location}` });
+      filters.push({
+        key: "location",
+        value: location,
+        label: `Location: ${location}`,
+      });
     }
     if (searchParams.featured) {
-      filters.push({ key: 'featured', value: 'true', label: 'Featured Only' });
+      filters.push({ key: "featured", value: "true", label: "Featured Only" });
     }
-    
+
     return filters;
   };
 
@@ -119,9 +148,9 @@ export default function DevelopmentProjectsFilters({
           className="gap-2"
         >
           <Filter className="h-4 w-4" />
-          {showAllFilters ? 'Hide Filters' : 'Show More Filters'}
+          {showAllFilters ? "Hide Filters" : "Show More Filters"}
         </Button>
-        
+
         {activeFilters.length > 0 && (
           <Button
             variant="ghost"
@@ -158,18 +187,23 @@ export default function DevelopmentProjectsFilters({
       )}
 
       {/* Extended Filters */}
-      <div className={cn(
-        "space-y-4 overflow-hidden transition-all duration-300",
-        showAllFilters ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-      )}>
+      <div
+        className={cn(
+          "space-y-4 overflow-hidden transition-all duration-300",
+          showAllFilters ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+        )}
+      >
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 pt-4 border-t">
-          
           {/* Status Filter */}
           <div className="space-y-2">
             <Label htmlFor="status">Project Status</Label>
             <Select
               value={(searchParams.status as string) || "all"}
-              onValueChange={(value) => updateSearchParams({ status: value === "all" ? undefined : value })}
+              onValueChange={(value) =>
+                updateSearchParams({
+                  status: value === "all" ? undefined : value,
+                })
+              }
             >
               <SelectTrigger>
                 <SelectValue placeholder="All statuses" />
@@ -188,16 +222,26 @@ export default function DevelopmentProjectsFilters({
             <Label htmlFor="developer">Developer</Label>
             <Select
               value={(searchParams.developer as string) || "all"}
-              onValueChange={(value) => updateSearchParams({ developer: value === "all" ? undefined : value })}
+              onValueChange={(value) =>
+                updateSearchParams({
+                  developer: value === "all" ? undefined : value,
+                })
+              }
             >
               <SelectTrigger>
                 <SelectValue placeholder="All developers" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All developers</SelectItem>
-                <SelectItem value="premier developments">Premier Developments</SelectItem>
-                <SelectItem value="skyline properties">Skyline Properties</SelectItem>
-                <SelectItem value="classic homes ltd">Classic Homes Ltd</SelectItem>
+                <SelectItem value="premier developments">
+                  Premier Developments
+                </SelectItem>
+                <SelectItem value="skyline properties">
+                  Skyline Properties
+                </SelectItem>
+                <SelectItem value="classic homes ltd">
+                  Classic Homes Ltd
+                </SelectItem>
                 <SelectItem value="devtraco plus">Devtraco Plus</SelectItem>
                 <SelectItem value="regimanuel gray">Regimanuel Gray</SelectItem>
               </SelectContent>
@@ -209,7 +253,11 @@ export default function DevelopmentProjectsFilters({
             <Label htmlFor="location">Location</Label>
             <Select
               value={(searchParams.location as string) || "all"}
-              onValueChange={(value) => updateSearchParams({ location: value === "all" ? undefined : value })}
+              onValueChange={(value) =>
+                updateSearchParams({
+                  location: value === "all" ? undefined : value,
+                })
+              }
             >
               <SelectTrigger>
                 <SelectValue placeholder="All locations" />
@@ -217,7 +265,9 @@ export default function DevelopmentProjectsFilters({
               <SelectContent>
                 <SelectItem value="all">All locations</SelectItem>
                 <SelectItem value="east legon">East Legon</SelectItem>
-                <SelectItem value="airport residential">Airport Residential</SelectItem>
+                <SelectItem value="airport residential">
+                  Airport Residential
+                </SelectItem>
                 <SelectItem value="cantonments">Cantonments</SelectItem>
                 <SelectItem value="trassaco estate">Trassaco Estate</SelectItem>
                 <SelectItem value="tema">Tema</SelectItem>
@@ -231,7 +281,11 @@ export default function DevelopmentProjectsFilters({
             <Label htmlFor="featured">Show Only</Label>
             <Select
               value={searchParams.featured ? "featured" : "all"}
-              onValueChange={(value) => updateSearchParams({ featured: value === "featured" ? "true" : undefined })}
+              onValueChange={(value) =>
+                updateSearchParams({
+                  featured: value === "featured" ? "true" : undefined,
+                })
+              }
             >
               <SelectTrigger>
                 <SelectValue placeholder="All projects" />

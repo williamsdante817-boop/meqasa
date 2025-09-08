@@ -16,9 +16,7 @@ interface PropertyScrollNavProps {
   sectionRefs: SectionRefs;
 }
 
-function PropertyScrollNavComponent({
-  sectionRefs,
-}: PropertyScrollNavProps) {
+function PropertyScrollNavComponent({ sectionRefs }: PropertyScrollNavProps) {
   const [activeSection, setActiveSection] = useState("floor-plan");
   const [isSticky, setIsSticky] = useState(false);
   const [isScrolling, setIsScrolling] = useState(false);
@@ -50,7 +48,7 @@ function PropertyScrollNavComponent({
         icon: <BuildingIcon className="h-5 w-5" />,
       },
     ],
-    [],
+    []
   );
 
   // Enhanced scroll to section function with better error handling
@@ -66,30 +64,31 @@ function PropertyScrollNavComponent({
           if (!domSection) {
             return;
           }
-          
+
           // Use DOM element as fallback
           const rect = domSection.getBoundingClientRect();
-          const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+          const scrollTop =
+            window.pageYOffset || document.documentElement.scrollTop;
           const propertyNavHeight = navRef.current?.offsetHeight ?? 64;
           const totalNavHeight = mainNavHeight + propertyNavHeight;
           const targetTop = rect.top + scrollTop - totalNavHeight;
-          
+
           setIsScrolling(true);
           setActiveSection(sectionId);
-          
+
           window.scrollTo({
             top: Math.max(0, targetTop),
             behavior: "smooth",
           });
-          
+
           if (scrollTimeoutRef.current) {
             clearTimeout(scrollTimeoutRef.current);
           }
-          
+
           scrollTimeoutRef.current = setTimeout(() => {
             setIsScrolling(false);
           }, 800);
-          
+
           return;
         }
 
@@ -99,7 +98,8 @@ function PropertyScrollNavComponent({
 
         // Get the section's position relative to the document
         const sectionRect = section.getBoundingClientRect();
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const scrollTop =
+          window.pageYOffset || document.documentElement.scrollTop;
         const sectionTop = sectionRect.top + scrollTop - totalNavHeight;
 
         // Immediately update active section to provide visual feedback
@@ -108,7 +108,10 @@ function PropertyScrollNavComponent({
 
         // Scroll to the section with bounds checking
         const targetTop = Math.max(0, sectionTop);
-        const maxScrollTop = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+        const maxScrollTop = Math.max(
+          0,
+          document.documentElement.scrollHeight - window.innerHeight
+        );
         const finalScrollTop = Math.min(targetTop, maxScrollTop);
 
         window.scrollTo({
@@ -129,7 +132,7 @@ function PropertyScrollNavComponent({
         setIsScrolling(false); // Ensure we don't get stuck in scrolling state
       }
     },
-    [sectionRefs, mainNavHeight],
+    [sectionRefs, mainNavHeight]
   );
 
   // Handle scroll event to detect when nav becomes sticky
@@ -164,7 +167,7 @@ function PropertyScrollNavComponent({
     // Calculate fixed root margin to avoid recreation
     const navHeight = navRef.current.offsetHeight || 64;
     const totalNavHeight = mainNavHeight + navHeight;
-    
+
     const observerOptions = {
       rootMargin: `-${totalNavHeight}px 0px -50% 0px`,
       threshold: [0, 0.25, 0.5, 0.75, 1],
@@ -173,7 +176,7 @@ function PropertyScrollNavComponent({
     let ticking = false;
     const observerCallback = (entries: IntersectionObserverEntry[]) => {
       if (ticking) return;
-      
+
       ticking = true;
       requestAnimationFrame(() => {
         // Skip updates during programmatic scrolling
@@ -183,9 +186,9 @@ function PropertyScrollNavComponent({
         }
 
         // Find the most visible section
-        let mostVisibleSection = '';
+        let mostVisibleSection = "";
         let maxVisibility = 0;
-        
+
         entries.forEach((entry) => {
           if (entry.isIntersecting && entry.intersectionRatio > maxVisibility) {
             mostVisibleSection = entry.target.id;
@@ -196,36 +199,36 @@ function PropertyScrollNavComponent({
         // Fallback: if no section is intersecting, find the closest one
         if (!mostVisibleSection) {
           const scrollY = window.scrollY;
-          let closestSection = '';
+          let closestSection = "";
           let minDistance = Infinity;
-          
+
           Object.entries(sectionRefs).forEach(([sectionId, ref]) => {
             if (ref.current) {
               const rect = ref.current.getBoundingClientRect();
               const sectionTop = rect.top + scrollY;
               const distance = Math.abs(sectionTop - scrollY - totalNavHeight);
-              
+
               if (distance < minDistance) {
                 minDistance = distance;
                 closestSection = sectionId;
               }
             }
           });
-          
+
           mostVisibleSection = closestSection;
         }
 
         if (mostVisibleSection) {
           setActiveSection(mostVisibleSection);
         }
-        
+
         ticking = false;
       });
     };
 
     const observer = new IntersectionObserver(
       observerCallback,
-      observerOptions,
+      observerOptions
     );
 
     // Observe all sections with error handling
@@ -243,25 +246,25 @@ function PropertyScrollNavComponent({
     if (observedElements.length > 0 && !activeSection) {
       const scrollY = window.scrollY;
       let initialSection = navItems[0]?.id ?? "site-plan"; // Default to first section
-      
+
       Object.entries(sectionRefs).forEach(([sectionId, ref]) => {
         if (ref.current) {
           const rect = ref.current.getBoundingClientRect();
           const sectionTop = rect.top + scrollY;
-          
+
           if (sectionTop <= scrollY + totalNavHeight + 100) {
             initialSection = sectionId;
           }
         }
       });
-      
+
       setActiveSection(initialSection);
     }
 
     return () => {
       observer.disconnect();
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sectionRefs, mainNavHeight, navItems, activeSection]);
 
   // Auto-scroll active navigation item into view with error handling
@@ -275,14 +278,15 @@ function PropertyScrollNavComponent({
       // This tells TypeScript we expect navRef.current to be non-null here
       // (since we already checked above)
       // No runtime change, just more succinct typing
-      // Example: navRef.current!.querySelector(...)      
-      if (activeButton && typeof activeButton.scrollIntoView === 'function') {
+      // Example: navRef.current!.querySelector(...)
+      if (activeButton && typeof activeButton.scrollIntoView === "function") {
         // Check if the element is not already in view
         const containerRect = navRef.current.getBoundingClientRect();
         const buttonRect = activeButton.getBoundingClientRect();
-        const isInView = buttonRect.left >= containerRect.left && 
-                        buttonRect.right <= containerRect.right;
-        
+        const isInView =
+          buttonRect.left >= containerRect.left &&
+          buttonRect.right <= containerRect.right;
+
         if (!isInView) {
           activeButton.scrollIntoView({
             behavior: "smooth",
@@ -292,29 +296,35 @@ function PropertyScrollNavComponent({
         }
       }
     } catch (error) {
-      console.warn('PropertyScrollNav: Error scrolling nav item into view:', error);
+      console.warn(
+        "PropertyScrollNav: Error scrolling nav item into view:",
+        error
+      );
     }
   }, [activeSection]);
 
   // Enhanced cleanup on unmount with error boundary
   useEffect(() => {
     // Validate navigation items on mount
-    const missingNavItems = navItems.filter(item => !sectionRefs[item.id]);
+    const missingNavItems = navItems.filter((item) => !sectionRefs[item.id]);
     if (missingNavItems.length > 0) {
-      console.warn('PropertyScrollNav: Missing section refs for:', missingNavItems.map(item => item.id));
+      console.warn(
+        "PropertyScrollNav: Missing section refs for:",
+        missingNavItems.map((item) => item.id)
+      );
     }
-    
+
     // Setup error handler for scroll events
     const handleError = (event: ErrorEvent) => {
-      if (event.message?.includes('PropertyScrollNav')) {
-        console.error('PropertyScrollNav: Unhandled error:', event.error);
+      if (event.message?.includes("PropertyScrollNav")) {
+        console.error("PropertyScrollNav: Unhandled error:", event.error);
       }
     };
-    
-    window.addEventListener('error', handleError);
-    
+
+    window.addEventListener("error", handleError);
+
     return () => {
-      window.removeEventListener('error', handleError);
+      window.removeEventListener("error", handleError);
       if (scrollTimeoutRef.current) {
         clearTimeout(scrollTimeoutRef.current);
         scrollTimeoutRef.current = null;
@@ -330,21 +340,24 @@ function PropertyScrollNavComponent({
         scrollToSection(sectionId);
         return;
       }
-      
+
       // Arrow key navigation
       if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
         e.preventDefault();
-        const currentIndex = navItems.findIndex(item => item.id === activeSection);
+        const currentIndex = navItems.findIndex(
+          (item) => item.id === activeSection
+        );
         if (currentIndex === -1) return;
-        
-        const nextIndex = e.key === "ArrowRight" 
-          ? Math.min(currentIndex + 1, navItems.length - 1)
-          : Math.max(currentIndex - 1, 0);
-          
+
+        const nextIndex =
+          e.key === "ArrowRight"
+            ? Math.min(currentIndex + 1, navItems.length - 1)
+            : Math.max(currentIndex - 1, 0);
+
         const nextSection = navItems[nextIndex];
         if (nextSection) {
           scrollToSection(nextSection.id);
-          
+
           // Focus the next button
           setTimeout(() => {
             const nextButton = navRef.current!.querySelector(
@@ -355,7 +368,7 @@ function PropertyScrollNavComponent({
         }
       }
     },
-    [scrollToSection, navItems, activeSection],
+    [scrollToSection, navItems, activeSection]
   );
 
   return (
@@ -366,13 +379,14 @@ function PropertyScrollNavComponent({
       aria-describedby="nav-instructions"
       className={cn(
         "sticky top-16 z-10 w-full bg-white border-y transition-all duration-200",
-        isSticky && "shadow-md",
+        isSticky && "shadow-md"
       )}
     >
       {/* Screen reader instructions */}
       <div id="nav-instructions" className="sr-only">
-        Use arrow keys to navigate between sections, Enter or Space to jump to section.
-        Current active section: {navItems.find(item => item.id === activeSection)?.label ?? 'None'}
+        Use arrow keys to navigate between sections, Enter or Space to jump to
+        section. Current active section:{" "}
+        {navItems.find((item) => item.id === activeSection)?.label ?? "None"}
       </div>
       <Shell>
         <div className="w-full">
@@ -403,7 +417,7 @@ function PropertyScrollNavComponent({
                     type="button"
                     aria-selected={isActive}
                     aria-controls={`${item.id}-section`}
-                    aria-current={isActive ? 'page' : undefined}
+                    aria-current={isActive ? "page" : undefined}
                     aria-describedby={`${item.id}-description`}
                     tabIndex={isActive ? 0 : -1}
                     data-section={item.id}
@@ -427,13 +441,24 @@ function PropertyScrollNavComponent({
                     )}
                   >
                     <span className="sr-only">
-                      {isActive ? 'Current section: ' : 'Navigate to '}{item.label} section
+                      {isActive ? "Current section: " : "Navigate to "}
+                      {item.label} section
                     </span>
-                    <span aria-hidden="true" role="img" className="mr-1.5 md:mr-2 flex-shrink-0">{item.icon}</span>
-                    <span aria-hidden="true" className="truncate">{item.label}</span>
+                    <span
+                      aria-hidden="true"
+                      role="img"
+                      className="mr-1.5 md:mr-2 flex-shrink-0"
+                    >
+                      {item.icon}
+                    </span>
+                    <span aria-hidden="true" className="truncate">
+                      {item.label}
+                    </span>
                     {/* Hidden description for screen readers */}
                     <span id={`${item.id}-description`} className="sr-only">
-                      {isActive ? 'You are currently viewing this section' : 'Click to scroll to this section'}
+                      {isActive
+                        ? "You are currently viewing this section"
+                        : "Click to scroll to this section"}
                     </span>
                   </button>
                 );
@@ -457,16 +482,19 @@ function PropertyScrollNavComponent({
 
 // Memoize component to prevent unnecessary re-renders
 // Only re-render when sectionRefs actually changes (deep comparison not needed since refs are stable)
-const PropertyScrollNav = memo(PropertyScrollNavComponent, (prevProps, nextProps) => {
-  // Custom comparison to check if sectionRefs object keys changed
-  const prevKeys = Object.keys(prevProps.sectionRefs).sort();
-  const nextKeys = Object.keys(nextProps.sectionRefs).sort();
-  
-  if (prevKeys.length !== nextKeys.length) return false;
-  
-  return prevKeys.every((key, index) => key === nextKeys[index]);
-});
+const PropertyScrollNav = memo(
+  PropertyScrollNavComponent,
+  (prevProps, nextProps) => {
+    // Custom comparison to check if sectionRefs object keys changed
+    const prevKeys = Object.keys(prevProps.sectionRefs).sort();
+    const nextKeys = Object.keys(nextProps.sectionRefs).sort();
 
-PropertyScrollNav.displayName = 'PropertyScrollNav';
+    if (prevKeys.length !== nextKeys.length) return false;
+
+    return prevKeys.every((key, index) => key === nextKeys[index]);
+  }
+);
+
+PropertyScrollNav.displayName = "PropertyScrollNav";
 
 export default PropertyScrollNav;

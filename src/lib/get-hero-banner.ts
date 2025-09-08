@@ -18,6 +18,6 @@ export async function getHeroBanner(): Promise<AdLink> {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
-    },
+    }
   );
 }

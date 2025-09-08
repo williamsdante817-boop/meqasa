@@ -27,8 +27,8 @@ interface DevelopmentProjectsGridProps {
   searchParams: Record<string, string | string[] | undefined>;
 }
 
-export default function DevelopmentProjectsGrid({ 
-  searchParams 
+export default function DevelopmentProjectsGrid({
+  searchParams,
 }: DevelopmentProjectsGridProps) {
   const [projects, setProjects] = useState<DevelopmentProject[]>([]);
   const [loading, setLoading] = useState(true);
@@ -39,20 +39,20 @@ export default function DevelopmentProjectsGrid({
   // API call function
   const fetchProjects = async (): Promise<DevelopmentProject[]> => {
     try {
-      const response = await fetch('/api/development-projects', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/development-projects", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({}),
       });
-      
+
       if (!response.ok) {
-        throw new Error('Failed to fetch projects');
+        throw new Error("Failed to fetch projects");
       }
-      
+
       const data: { projects?: DevelopmentProject[] } = await response.json();
       return data.projects ?? [];
     } catch (error) {
-      console.error('Error fetching development projects:', error);
+      console.error("Error fetching development projects:", error);
       return [];
     }
   };
@@ -62,31 +62,35 @@ export default function DevelopmentProjectsGrid({
     let filtered = [...allProjects];
 
     if (searchParams.featured) {
-      filtered = filtered.filter(project => project.isFeatured);
+      filtered = filtered.filter((project) => project.isFeatured);
     }
 
     if (searchParams.status) {
-      filtered = filtered.filter(project => project.status === searchParams.status);
+      filtered = filtered.filter(
+        (project) => project.status === searchParams.status
+      );
     }
 
     if (searchParams.location) {
-      filtered = filtered.filter(project => 
-        project.fullLocation.toLowerCase().includes(
-          (searchParams.location as string).toLowerCase()
-        ) || 
-        project.region.toLowerCase().includes(
-          (searchParams.location as string).toLowerCase()
-        )
+      filtered = filtered.filter(
+        (project) =>
+          project.fullLocation
+            .toLowerCase()
+            .includes((searchParams.location as string).toLowerCase()) ||
+          project.region
+            .toLowerCase()
+            .includes((searchParams.location as string).toLowerCase())
       );
     }
 
     if (searchParams.search) {
       const searchTerm = (searchParams.search as string).toLowerCase();
-      filtered = filtered.filter(project => 
-        project.projectname.toLowerCase().includes(searchTerm) ||
-        project.aboutproject.toLowerCase().includes(searchTerm) ||
-        project.fullLocation.toLowerCase().includes(searchTerm) ||
-        project.region.toLowerCase().includes(searchTerm)
+      filtered = filtered.filter(
+        (project) =>
+          project.projectname.toLowerCase().includes(searchTerm) ||
+          project.aboutproject.toLowerCase().includes(searchTerm) ||
+          project.fullLocation.toLowerCase().includes(searchTerm) ||
+          project.region.toLowerCase().includes(searchTerm)
       );
     }
 
@@ -103,7 +107,7 @@ export default function DevelopmentProjectsGrid({
         setProjects(filteredProjects);
         setHasMore(false); // For now, we load all projects at once
       } catch (error) {
-        console.error('Error loading projects:', error);
+        console.error("Error loading projects:", error);
         setProjects([]);
       } finally {
         setLoading(false);
@@ -116,7 +120,7 @@ export default function DevelopmentProjectsGrid({
   // Load more projects
   const loadMore = async () => {
     if (loadingMore || !hasMore) return;
-    
+
     setLoadingMore(true);
     try {
       // TODO: Replace with actual API call
@@ -129,12 +133,12 @@ export default function DevelopmentProjectsGrid({
       // setProjects(prev => [...prev, ...data.projects]);
       // setHasMore(data.hasMore);
       // setPage(prev => prev + 1);
-      
+
       // Simulate loading more
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       setHasMore(false); // No more to load in mock
     } catch (error) {
-      console.error('Error loading more projects:', error);
+      console.error("Error loading more projects:", error);
     } finally {
       setLoadingMore(false);
     }
@@ -172,17 +176,14 @@ export default function DevelopmentProjectsGrid({
       {/* Results Count */}
       <div className="flex items-center justify-between">
         <p className="text-sm text-brand-muted">
-          Showing {projects.length} project{projects.length !== 1 ? 's' : ''}
+          Showing {projects.length} project{projects.length !== 1 ? "s" : ""}
         </p>
       </div>
 
       {/* Projects Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {projects.map((project) => (
-          <DevelopmentProjectCard
-            key={project.projectid}
-            project={project}
-          />
+          <DevelopmentProjectCard key={project.projectid} project={project} />
         ))}
       </div>
 

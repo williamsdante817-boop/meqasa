@@ -45,7 +45,7 @@ export async function getLatestListings(): Promise<LatestListingsResponse> {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
-    },
+    }
   );
 
   const normalize = (items: RawListing[] | undefined): LatestListing[] =>

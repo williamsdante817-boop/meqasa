@@ -84,7 +84,7 @@ export interface ImageMetrics {
 
 // Validation helper functions
 export const validatePropertyShowcaseProps = (
-  props: unknown,
+  props: unknown
 ): PropertyShowcaseProps => {
   try {
     return PropertyShowcasePropsSchema.parse(props) as PropertyShowcaseProps;
@@ -113,7 +113,7 @@ export class PropertyShowcaseError extends Error {
   constructor(
     message: string,
     public code: string,
-    public context?: Record<string, unknown>,
+    public context?: Record<string, unknown>
   ) {
     super(message);
     this.name = "PropertyShowcaseError";
@@ -130,7 +130,7 @@ export type PropertyShowcaseErrorCode =
 export const createPropertyShowcaseError = (
   code: PropertyShowcaseErrorCode,
   message: string,
-  context?: Record<string, unknown>,
+  context?: Record<string, unknown>
 ): PropertyShowcaseError => {
   return new PropertyShowcaseError(message, code, context);
 };

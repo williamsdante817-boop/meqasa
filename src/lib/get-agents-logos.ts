@@ -18,6 +18,6 @@ export async function getAgentLogos(): Promise<BrokerDetail[]> {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
-    },
+    }
   );
 }

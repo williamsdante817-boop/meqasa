@@ -61,7 +61,9 @@ export function MobileMoreFilters({
     <div className="space-y-4">
       {/* Advanced Filters Header */}
       <div className="flex items-center justify-between pt-2 border-t border-gray-100">
-        <h3 className="text-base font-medium text-gray-700">Advanced Filters</h3>
+        <h3 className="text-base font-medium text-gray-700">
+          Advanced Filters
+        </h3>
         {hasActiveFilters && (
           <Button
             type="button"
@@ -83,14 +85,24 @@ export function MobileMoreFilters({
           onValueChange={(value) => updateFormState({ sort: value })}
         >
           <SelectTrigger className="h-12 bg-gray-50 border-gray-200 rounded-lg shadow-none text-base text-gray-700">
-            <SelectValue placeholder="Default sorting" className="text-base text-gray-700" />
+            <SelectValue
+              placeholder="Default sorting"
+              className="text-base text-gray-700"
+            />
           </SelectTrigger>
           <SelectContent className="z-[999999]" style={{ zIndex: 999999 }}>
-            <SelectItem value="default" className="h-12 text-base text-gray-700">
+            <SelectItem
+              value="default"
+              className="h-12 text-base text-gray-700"
+            >
               Default
             </SelectItem>
             {sortOptions.map(({ value, label }) => (
-              <SelectItem key={value} value={value} className="h-12 text-base text-gray-700">
+              <SelectItem
+                key={value}
+                value={value}
+                className="h-12 text-base text-gray-700"
+              >
                 {label}
               </SelectItem>
             ))}
@@ -100,20 +112,29 @@ export function MobileMoreFilters({
 
       {/* Rent Period */}
       <div className="flex flex-col gap-3 text-left">
-        <Label className="text-base font-medium text-gray-700">Rent Period</Label>
+        <Label className="text-base font-medium text-gray-700">
+          Rent Period
+        </Label>
         <Select
           value={formState.period}
           onValueChange={(value) => updateFormState({ period: value })}
         >
           <SelectTrigger className="h-12 bg-gray-50 border-gray-200 rounded-lg shadow-none text-base text-gray-700">
-            <SelectValue placeholder="Any period" className="text-base text-gray-700" />
+            <SelectValue
+              placeholder="Any period"
+              className="text-base text-gray-700"
+            />
           </SelectTrigger>
           <SelectContent className="z-[999999]">
             <SelectItem value="any" className="h-12 text-base text-gray-700">
               Any Period
             </SelectItem>
             {periodOptions.map(({ value, label }) => (
-              <SelectItem key={value} value={value} className="h-12 text-base text-gray-700">
+              <SelectItem
+                key={value}
+                value={value}
+                className="h-12 text-base text-gray-700"
+              >
                 {label}
               </SelectItem>
             ))}

@@ -76,13 +76,13 @@ const getStoredContactInfo = (): StoredContactInfo | null => {
 const setStoredContactInfo = (
   name: string,
   phone: string,
-  countryIso?: CountryCode,
+  countryIso?: CountryCode
 ): void => {
   if (typeof window === "undefined") return;
   try {
     localStorage.setItem(
       "meqasa_contact_info",
-      JSON.stringify({ name, phone, countryIso: countryIso?.toUpperCase() }),
+      JSON.stringify({ name, phone, countryIso: countryIso?.toUpperCase() })
     );
   } catch (error) {
     console.error("Error writing to localStorage:", error);
@@ -270,7 +270,6 @@ export default function ContactCard({
       return;
     }
 
-
     setBannerError("");
     dispatch({ type: "setField", field: "whatsAppLoading", value: true });
     try {
@@ -301,7 +300,7 @@ export default function ContactCard({
   const handleGetNumberWithSavedInfo = async () => {
     if (!state.userName || !state.userPhone || !entityId) {
       console.error(
-        "❌ [ContactCard] No saved contact info or entity ID available",
+        "❌ [ContactCard] No saved contact info or entity ID available"
       );
       return;
     }
@@ -375,7 +374,7 @@ export default function ContactCard({
         setStoredContactInfo(
           state.userName,
           state.userPhone,
-          state.userCountryIso,
+          state.userCountryIso
         );
         if (state.activeModal === "whatsapp") {
           const whatsappDigits = res.whatsappNumber.replace(/\D/g, "");
@@ -772,7 +771,7 @@ export default function ContactCard({
                           {phoneNumber
                             ? toInternationalDisplay(
                                 phoneNumber,
-                                state.userCountryIso,
+                                state.userCountryIso
                               )
                             : ""}
                         </div>
@@ -781,7 +780,7 @@ export default function ContactCard({
                             WhatsApp:{" "}
                             {toInternationalDisplay(
                               whatsappNumber,
-                              state.userCountryIso,
+                              state.userCountryIso
                             )}
                           </div>
                         )}
@@ -877,7 +876,7 @@ export default function ContactCard({
                                 : isValidPhoneNumber(phone, region)
                               : false;
                             setEmailPhoneError(
-                              possible ? "" : "Valid phone number is required",
+                              possible ? "" : "Valid phone number is required"
                             );
                           }}
                           containerStyle={{ width: "100%" }}

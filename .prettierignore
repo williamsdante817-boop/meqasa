@@ -1,0 +1,13 @@
+node_modules
+.next
+out
+coverage
+dist
+build
+.turbo
+.vercel
+**/*.snap
+**/*.min.*
+package-lock.json
+
+

@@ -22,16 +22,19 @@ export async function generateMetadata({
   const status = resolvedSearchParams.status;
 
   let title = "Development Projects in Ghana | MeQasa";
-  let description = "Explore premium real estate development projects in Ghana. Find luxury apartments, houses, and commercial developments from top developers.";
+  let description =
+    "Explore premium real estate development projects in Ghana. Find luxury apartments, houses, and commercial developments from top developers.";
 
   if (featured) {
     title = "Featured Development Projects in Ghana | MeQasa";
-    description = "Discover our featured real estate development projects in Ghana. Premium properties from verified developers.";
+    description =
+      "Discover our featured real estate development projects in Ghana. Premium properties from verified developers.";
   }
 
   if (status === "new") {
     title = "New Development Projects in Ghana | MeQasa";
-    description = "Explore the latest new development projects in Ghana. Fresh opportunities from leading real estate developers.";
+    description =
+      "Explore the latest new development projects in Ghana. Fresh opportunities from leading real estate developers.";
   }
 
   return {
@@ -127,7 +130,7 @@ export default async function DevelopmentProjectsPage({
       <div className="space-y-6">
         {/* Breadcrumbs */}
         <Breadcrumbs segments={segments} />
-        
+
         {/* Page Header */}
         <div className="space-y-4">
           <div className="space-y-2">
@@ -142,7 +145,11 @@ export default async function DevelopmentProjectsPage({
 
         {/* Featured Developments - Show only on main page or when featured=true */}
         {(!resolvedSearchParams.status || resolvedSearchParams.featured) && (
-          <Suspense fallback={<div className="animate-pulse bg-gray-100 h-64 rounded-lg" />}>
+          <Suspense
+            fallback={
+              <div className="animate-pulse bg-gray-100 h-64 rounded-lg" />
+            }
+          >
             <FeaturedDevelopments />
           </Suspense>
         )}
@@ -157,13 +164,18 @@ export default async function DevelopmentProjectsPage({
           </div>
 
           {/* Projects Grid */}
-          <Suspense fallback={
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="animate-pulse bg-gray-100 h-80 rounded-lg" />
-              ))}
-            </div>
-          }>
+          <Suspense
+            fallback={
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="animate-pulse bg-gray-100 h-80 rounded-lg"
+                  />
+                ))}
+              </div>
+            }
+          >
             <DevelopmentProjectsGrid searchParams={resolvedSearchParams} />
           </Suspense>
         </div>

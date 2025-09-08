@@ -42,6 +42,6 @@ export async function getAllAgents(): Promise<AgentsResponse> {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
-    },
+    }
   );
 }

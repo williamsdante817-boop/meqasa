@@ -68,7 +68,7 @@ export function MoreFiltersPopover({
                     <SelectItem value={value} key={`${value}-${index}`}>
                       {label}
                     </SelectItem>
-                  ),
+                  )
                 )}
               </SelectGroup>
             </SelectContent>
@@ -88,7 +88,7 @@ export function MoreFiltersPopover({
                     <SelectItem value={value} key={value + label}>
                       {label}
                     </SelectItem>
-                  ),
+                  )
                 )}
               </SelectGroup>
             </SelectContent>

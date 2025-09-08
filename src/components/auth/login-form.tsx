@@ -27,41 +27,41 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value
+      [name]: type === "checkbox" ? checked : value,
     }));
-    
+
     // Clear error when user starts typing
     if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: "" }));
+      setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
-    
+
     if (!formData.email) {
       newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = "Please enter a valid email address";
     }
-    
+
     if (!formData.password) {
       newErrors.password = "Password is required";
     } else if (formData.password.length < 6) {
       newErrors.password = "Password must be at least 6 characters";
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   async function onSubmit(event: React.SyntheticEvent) {
     event.preventDefault();
-    
+
     if (!validateForm()) return;
-    
+
     setIsLoading(true);
 
     // Simulate API call
@@ -86,7 +86,10 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
       <form onSubmit={onSubmit}>
         <div className="grid gap-3 lg:gap-4">
           <div className="grid gap-2">
-            <Label htmlFor="email" className="text-sm font-medium text-brand-accent">
+            <Label
+              htmlFor="email"
+              className="text-sm font-medium text-brand-accent"
+            >
               Email address
             </Label>
             <div className="relative">
@@ -104,7 +107,8 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
                 onChange={handleInputChange}
                 className={cn(
                   "pl-10 h-11 sm:h-12 text-base border-brand-border focus:border-brand-primary focus:ring-brand-primary",
-                  errors.email && "border-destructive focus:border-destructive focus:ring-destructive"
+                  errors.email &&
+                    "border-destructive focus:border-destructive focus:ring-destructive"
                 )}
               />
             </div>
@@ -112,10 +116,13 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
               <p className="text-sm text-destructive">{errors.email}</p>
             )}
           </div>
-          
+
           <div className="grid gap-2">
             <div className="flex items-center justify-between">
-              <Label htmlFor="password" className="text-sm font-medium text-brand-accent">
+              <Label
+                htmlFor="password"
+                className="text-sm font-medium text-brand-accent"
+              >
                 Password
               </Label>
               <Link
@@ -139,7 +146,8 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
                 onChange={handleInputChange}
                 className={cn(
                   "pl-10 pr-10 h-11 sm:h-12 text-base border-brand-border focus:border-brand-primary focus:ring-brand-primary",
-                  errors.password && "border-destructive focus:border-destructive focus:ring-destructive"
+                  errors.password &&
+                    "border-destructive focus:border-destructive focus:ring-destructive"
                 )}
               />
               <button
@@ -168,7 +176,10 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
               onChange={handleInputChange}
               className="h-4 w-4 rounded border-brand-border text-brand-primary focus:ring-brand-primary"
             />
-            <Label htmlFor="remember-me" className="text-sm text-brand-muted cursor-pointer">
+            <Label
+              htmlFor="remember-me"
+              className="text-sm text-brand-muted cursor-pointer"
+            >
               Keep me signed in
             </Label>
           </div>
@@ -195,7 +206,9 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
           <Separator className="w-full" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-white px-2 text-brand-muted">Or continue with</span>
+          <span className="bg-white px-2 text-brand-muted">
+            Or continue with
+          </span>
         </div>
       </div>
 

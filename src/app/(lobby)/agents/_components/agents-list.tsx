@@ -68,7 +68,7 @@ export function AgentsList({ agents }: AgentsListProps) {
   // Ensure agents is an array and has content
   const validAgents = useMemo(
     () => (Array.isArray(agents) ? agents : []),
-    [agents],
+    [agents]
   );
   const totalPages = Math.ceil(validAgents.length / PAGE_SIZE);
 
@@ -99,7 +99,7 @@ export function AgentsList({ agents }: AgentsListProps) {
         setCurrentPage(pageNumber);
       }
     },
-    [totalPages],
+    [totalPages]
   );
 
   // Don't show pagination if there's only one page or no agents

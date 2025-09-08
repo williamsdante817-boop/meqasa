@@ -11,7 +11,7 @@ import type { DeveloperDetails } from "@/types";
  * @throws An error if the request fails or the server returns an error.
  */
 export async function getDeveloperProfile(
-  developerId: number,
+  developerId: number
 ): Promise<DeveloperDetails> {
   const url = `https://meqasa.com/developer-developer/${developerId}?app=vercel`;
 

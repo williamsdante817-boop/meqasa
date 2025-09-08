@@ -63,7 +63,7 @@ export interface AgentListing {
  */
 export async function getAgentDetails(
   agentId: string | number,
-  agentName: string,
+  agentName: string
 ): Promise<AgentDetails> {
   const url = `https://meqasa.com/properties-listed-by-${encodeURIComponent(agentName)}?g=${encodeURIComponent(agentId)}&app=vercel`;
 

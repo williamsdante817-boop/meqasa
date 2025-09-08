@@ -18,7 +18,7 @@ export async function getHomepagePopup(): Promise<PopupDataWithUrls> {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
-    },
+    }
   );
 
   // Transform the data to include full URLs

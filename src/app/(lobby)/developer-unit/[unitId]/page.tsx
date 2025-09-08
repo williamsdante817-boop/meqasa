@@ -19,7 +19,10 @@ import SafetyTipsCard from "@/components/safety-tip";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import Shell from "@/layouts/shell";
-import { extractUnitData, hasCompressedData } from "@/lib/compressed-data-utils";
+import {
+  extractUnitData,
+  hasCompressedData,
+} from "@/lib/compressed-data-utils";
 import { getUnitDetails } from "@/lib/get-unit-details";
 import { buildInnerHtml, cn, formatNumber, slugify } from "@/lib/utils";
 import { BathIcon, BedIcon, ParkingSquare, Square } from "lucide-react";
@@ -36,13 +39,15 @@ export default async function DeveloperUnitPage({
 
   // Check for compressed data from search first (SSR-compatible)
   let unitDetails;
-  
+
   if (hasCompressedData(searchParamsResolved)) {
     // Extract compressed unit data
     unitDetails = extractUnitData(searchParamsResolved);
-    
+
     if (unitDetails) {
-      console.log(`✅ COMPRESSED DATA HIT: Using passed unit data, no API call needed!`);
+      console.log(
+        `✅ COMPRESSED DATA HIT: Using passed unit data, no API call needed!`
+      );
     } else {
       console.log(`⚠️ COMPRESSED DATA INVALID: Fetching from API`);
       unitDetails = await getUnitDetails(unitId);
@@ -170,13 +175,13 @@ export default async function DeveloperUnitPage({
           images={(() => {
             // duplicate last photo to ensure at least 5 images
             const photos: string[] = unitDetails.photos.map(
-              (photo) => photo.photo,
+              (photo) => photo.photo
             );
             if (photos.length >= 5) return photos;
             if (photos.length === 0) return Array<string>(5).fill("");
             const lastPhoto = photos[photos.length - 1] ?? photos[0] ?? "";
             const additionalPhotos: string[] = Array<string>(
-              5 - photos.length,
+              5 - photos.length
             ).fill(lastPhoto);
             return [...photos, ...additionalPhotos];
           })()}
@@ -188,9 +193,7 @@ export default async function DeveloperUnitPage({
           <div>
             <div className="flex items-start justify-between flex-wrap gap-3 md:flex-nowrap md:items-center md:gap-4">
               <div className="flex items-center">
-                <h2
-                  className="text-2xl font-extrabold text-brand-accent lg:text-3xl"
-                >
+                <h2 className="text-2xl font-extrabold text-brand-accent lg:text-3xl">
                   {unitDetails.unit.sellingprice
                     ? `GH₵ ${formatNumber(unitDetails.unit.sellingprice)}`
                     : "Price on Request"}
@@ -212,7 +215,7 @@ export default async function DeveloperUnitPage({
               <AddFavoriteButton listingId={Number(unitDetails.unit.unitid)} />
             </div>
             <div className="flex items-center gap-4 py-3">
-              <div 
+              <div
                 className="flex items-center gap-3 md:gap-6 flex-wrap"
                 role="list"
                 aria-label="Property features"
@@ -271,47 +274,53 @@ export default async function DeveloperUnitPage({
               <Badge variant="info" className="uppercase">
                 {unitDetails.unit.fullyfurnished ? "Furnished" : "Unfurnished"}
               </Badge>
-              <Badge variant="info" className="uppercase max-w-[280px] md:max-w-full">
+              <Badge
+                variant="info"
+                className="uppercase max-w-[280px] md:max-w-full"
+              >
                 <p className="truncate w-full">{unitDetails.unit.address}</p>
               </Badge>
             </div>
             <aside className="mb-6">
-                {unitDetails.unit.pageviews !== 0 && (
-                  <Card className="relative overflow-hidden border-l-3 border-l-orange-500 bg-gradient-to-r rounded-lg from-orange-50 to-amber-50 p-4 md:p-6">
-                    <div className="flex items-center gap-4 md:gap-6">
-                      <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-orange-100 text-orange-600">
-                        <Icons.trend className="h-6 w-6" />
+              {unitDetails.unit.pageviews !== 0 && (
+                <Card className="relative overflow-hidden border-l-3 border-l-orange-500 bg-gradient-to-r rounded-lg from-orange-50 to-amber-50 p-4 md:p-6">
+                  <div className="flex items-center gap-4 md:gap-6">
+                    <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-orange-100 text-orange-600">
+                      <Icons.trend className="h-6 w-6" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-2 flex-wrap">
+                        <Badge
+                          variant="warning"
+                          className="text-xs font-semibold flex-shrink-0"
+                        >
+                          🔥 TRENDING
+                        </Badge>
+                        <span className="text-xs text-orange-600 font-medium">
+                          High Interest Property
+                        </span>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-2 flex-wrap">
-                          <Badge variant="warning" className="text-xs font-semibold flex-shrink-0">
-                            🔥 TRENDING
-                          </Badge>
-                          <span className="text-xs text-orange-600 font-medium">
-                            High Interest Property
-                          </span>
-                        </div>
-                        <h3 className="text-brand-accent font-semibold text-base md:text-lg mb-2 leading-tight">
-                          This property is in high demand
-                        </h3>
-                        <div className="flex items-center gap-2 text-sm md:text-base flex-wrap">
-                          <span className="font-medium text-brand-accent flex-shrink-0">
-                            {`${formatNumber(unitDetails.unit.pageviews, { notation: "compact" })} views`}
-                          </span>
-                          <span className="text-brand-muted">•</span>
-                          <span className="text-orange-600 font-medium">
-                            Contact agent before it&apos;s gone!
-                          </span>
-                        </div>
+                      <h3 className="text-brand-accent font-semibold text-base md:text-lg mb-2 leading-tight">
+                        This property is in high demand
+                      </h3>
+                      <div className="flex items-center gap-2 text-sm md:text-base flex-wrap">
+                        <span className="font-medium text-brand-accent flex-shrink-0">
+                          {`${formatNumber(unitDetails.unit.pageviews, { notation: "compact" })} views`}
+                        </span>
+                        <span className="text-brand-muted">•</span>
+                        <span className="text-orange-600 font-medium">
+                          Contact agent before it&apos;s gone!
+                        </span>
                       </div>
                     </div>
-                    {/* Subtle background pattern */}
-                    <div className="absolute top-2 right-2 opacity-5">
-                      <Icons.trend className="h-16 w-16 md:h-20 md:w-20 text-orange-500" />
-                    </div>
-                  </Card>
-                )}
-              </aside>
+                  </div>
+                  {/* Subtle background pattern */}
+                  <div className="absolute top-2 right-2 opacity-5">
+                    <Icons.trend className="h-16 w-16 md:h-20 md:w-20 text-orange-500" />
+                  </div>
+                </Card>
+              )}
+            </aside>
             <ContentSection
               title="Description"
               description=""
@@ -319,11 +328,11 @@ export default async function DeveloperUnitPage({
               className="pt-14 md:pt-20 pb-10 md:pb-0"
               btnHidden
             >
-                  <ExpandableDescription
-                     description={buildInnerHtml(unitDetails.unit.description)}
-                     name={unitDetails.unit.companyname}
-                     href={developerHref}
-                   />
+              <ExpandableDescription
+                description={buildInnerHtml(unitDetails.unit.description)}
+                name={unitDetails.unit.companyname}
+                href={developerHref}
+              />
             </ContentSection>
             <ContentSection
               title="Explore More"
@@ -366,7 +375,7 @@ export default async function DeveloperUnitPage({
               >
                 <Amenities
                   amenities={unitDetails.features.map(
-                    (feature) => feature.feature,
+                    (feature) => feature.feature
                   )}
                 />
               </ContentSection>
@@ -384,9 +393,13 @@ export default async function DeveloperUnitPage({
               <PropertyPlan />
             </ContentSection>
 
-            <PropertyInsight 
+            <PropertyInsight
               location={unitDetails.unit.city ?? unitDetails.unit.address ?? ""}
-              bedroomType={unitDetails.unit.beds ? `${unitDetails.unit.beds}-bedroom` : undefined}
+              bedroomType={
+                unitDetails.unit.beds
+                  ? `${unitDetails.unit.beds}-bedroom`
+                  : undefined
+              }
             />
           </div>
           <aside className="hidden lg:block">
@@ -433,7 +446,7 @@ export default async function DeveloperUnitPage({
           href={similarSearchHref}
           className={cn(
             unitDetails.similarunits.length !== 0 ? "px-0 mb-6" : "px-4",
-            "pt-14 md:pt-20 lg:pt-24  md:block lg:max-w-7xl lg:mx-auto [&_p]:px-4 [&_h2]:px-4",
+            "pt-14 md:pt-20 lg:pt-24  md:block lg:max-w-7xl lg:mx-auto [&_p]:px-4 [&_h2]:px-4"
           )}
         >
           <PropertyListings

@@ -70,7 +70,7 @@ const links = {
   x: "https://twitter.com/meqasa",
   github: "https://github.com/meqasa",
   githubAccount: "https://github.com/meqasa",
-  discord: "https://discord.gg/meqasa", 
+  discord: "https://discord.gg/meqasa",
   calDotCom: "https://cal.com/meqasa",
 };
 
@@ -230,8 +230,7 @@ export const siteConfig: SiteConfig = {
     {
       title: "All Projects",
       href: "/development-projects",
-      description:
-        "Explore all real estate development projects in Ghana.",
+      description: "Explore all real estate development projects in Ghana.",
       items: [],
     },
     {

@@ -7,9 +7,9 @@ import Shell from "@/layouts/shell";
 export function HeroBannerSkeleton() {
   return (
     <div className="relative" role="status" aria-label="Loading hero banner">
-      <Skeleton 
-        variant="shimmer" 
-        className="hidden lg:block max-h-[305px] h-[305px] rounded-lg" 
+      <Skeleton
+        variant="shimmer"
+        className="hidden lg:block max-h-[305px] h-[305px] rounded-lg"
         aria-label="Loading banner image"
       />
       <span className="sr-only">Loading hero banner content...</span>
@@ -24,10 +24,10 @@ export function GridBannerSkeleton() {
       <Shell className="hidden md:block">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {Array.from({ length: 4 }).map((_, i) => (
-            <Skeleton 
+            <Skeleton
               key={i}
-              variant="shimmer" 
-              className="h-60 w-full rounded-lg" 
+              variant="shimmer"
+              className="h-60 w-full rounded-lg"
               aria-label={`Loading banner ${i + 1}`}
             />
           ))}
@@ -50,8 +50,16 @@ export function FeaturedProjectsSkeleton() {
       <div className="relative md:border md:rounded-lg md:p-6">
         <div className="w-full hidden md:flex items-center justify-end mb-4">
           <div className="flex max-w-[61.25rem] gap-6">
-            <Skeleton variant="card" className="h-12 w-12 rounded-full" aria-label="Loading navigation button" />
-            <Skeleton variant="card" className="h-12 w-12 rounded-full" aria-label="Loading navigation button" />
+            <Skeleton
+              variant="card"
+              className="h-12 w-12 rounded-full"
+              aria-label="Loading navigation button"
+            />
+            <Skeleton
+              variant="card"
+              className="h-12 w-12 rounded-full"
+              aria-label="Loading navigation button"
+            />
           </div>
         </div>
         <div className="relative w-full max-w-full pl-4 overflow-hidden ">
@@ -64,8 +72,15 @@ export function FeaturedProjectsSkeleton() {
                 <div className="bg-card border overflow-hidden rounded-lg text-card-foreground flex flex-col p-0 relative gap-0 shadow-none h-full">
                   {/* Header image area (16:9) with gradient overlay */}
                   <div className="p-0 w-full">
-                    <AspectRatio ratio={16 / 9} className="relative overflow-hidden rounded-t-lg">
-                      <Skeleton variant="shimmer" className="absolute inset-0 h-[192px] md:h-[256px] rounded-t-lg rounded-b-none" aria-label="Loading project image" />
+                    <AspectRatio
+                      ratio={16 / 9}
+                      className="relative overflow-hidden rounded-t-lg"
+                    >
+                      <Skeleton
+                        variant="shimmer"
+                        className="absolute inset-0 h-[192px] md:h-[256px] rounded-t-lg rounded-b-none"
+                        aria-label="Loading project image"
+                      />
                     </AspectRatio>
                   </div>
 
@@ -75,28 +90,56 @@ export function FeaturedProjectsSkeleton() {
                     <div className="absolute top-8 right-8">
                       <div className="flex items-center gap-3">
                         <div className="flex items-center justify-center w-20 h-20 rounded-lg">
-                          <Skeleton variant="card" className="h-full w-full rounded-sm" aria-label="Loading developer logo" />
+                          <Skeleton
+                            variant="card"
+                            className="h-full w-full rounded-sm"
+                            aria-label="Loading developer logo"
+                          />
                         </div>
                       </div>
                     </div>
 
                     {/* Title */}
-                    <Skeleton variant="text" size="lg" className="w-52 md:w-3/4 mb-2" aria-label="Loading project title" />
+                    <Skeleton
+                      variant="text"
+                      size="lg"
+                      className="w-52 md:w-3/4 mb-2"
+                      aria-label="Loading project title"
+                    />
 
                     {/* City */}
-                    <Skeleton variant="light" size="md" className="w-1/2 mb-6" aria-label="Loading project location" />
+                    <Skeleton
+                      variant="light"
+                      size="md"
+                      className="w-1/2 mb-6"
+                      aria-label="Loading project location"
+                    />
 
                     {/* Status row */}
                     <div className="flex items-center gap-2 mb-6">
-                      <Skeleton variant="light" className="h-6 w-20 rounded-sm bg-brand-badge-ongoing/20" />
-                      <Skeleton variant="light" className="h-1 w-1 rounded-full" />
+                      <Skeleton
+                        variant="light"
+                        className="h-6 w-20 rounded-sm bg-brand-badge-ongoing/20"
+                      />
+                      <Skeleton
+                        variant="light"
+                        className="h-1 w-1 rounded-full"
+                      />
                       <Skeleton variant="light" size="md" className="w-24" />
                     </div>
 
                     {/* Description */}
                     <div className="pr-32 space-y-2">
-                      <Skeleton variant="light" size="default" className="w-full" />
-                      <Skeleton variant="light" size="default" className="w-3/4" />
+                      <Skeleton
+                        variant="light"
+                        size="default"
+                        className="w-full"
+                      />
+                      <Skeleton
+                        variant="light"
+                        size="default"
+                        className="w-3/4"
+                      />
                     </div>
                   </div>
                 </div>
@@ -132,19 +175,44 @@ export function LatestListingsSkeleton() {
                       <div className="bg-card text-card-foreground flex flex-col border size-full rounded-xl p-0 relative gap-0 border-none shadow-none">
                         <div className="p-0 border-b border-b-gray-50 gap-0 rounded-xl">
                           <div className="relative w-full pb-[75%]">
-                            <Skeleton variant="shimmer" className="absolute inset-0 rounded-xl" aria-label="Loading listing image" />
+                            <Skeleton
+                              variant="shimmer"
+                              className="absolute inset-0 rounded-xl"
+                              aria-label="Loading listing image"
+                            />
                           </div>
                         </div>
                         <div className="px-0 pb-0 space-y-1">
                           <div className="pt-2">
-                            <Skeleton variant="text" size="default" className="w-3/4 mb-2" aria-label="Loading property title" />
-                            <Skeleton variant="text" size="lg" className="w-1/2 mb-1" aria-label="Loading property price" />
-                            <Skeleton variant="light" size="default" className="w-1/3 mb-1" aria-label="Loading property location" />
+                            <Skeleton
+                              variant="text"
+                              size="default"
+                              className="w-3/4 mb-2"
+                              aria-label="Loading property title"
+                            />
+                            <Skeleton
+                              variant="text"
+                              size="lg"
+                              className="w-1/2 mb-1"
+                              aria-label="Loading property price"
+                            />
+                            <Skeleton
+                              variant="light"
+                              size="default"
+                              className="w-1/3 mb-1"
+                              aria-label="Loading property location"
+                            />
                             <div className="flex items-center gap-1">
                               <Skeleton variant="light" className="h-4 w-8" />
-                              <Skeleton variant="light" className="h-3 w-3 rounded-full" />
+                              <Skeleton
+                                variant="light"
+                                className="h-3 w-3 rounded-full"
+                              />
                               <Skeleton variant="light" className="h-4 w-8" />
-                              <Skeleton variant="light" className="h-3 w-3 rounded-full" />
+                              <Skeleton
+                                variant="light"
+                                className="h-3 w-3 rounded-full"
+                              />
                               <Skeleton variant="light" className="h-4 w-12" />
                             </div>
                           </div>
@@ -190,19 +258,44 @@ export function FeaturedListingsSkeleton() {
                       <div className="text-card-foreground flex flex-col border size-full rounded-xl p-0 relative gap-0 border-none shadow-none bg-transparent">
                         <div className="p-0 border-b border-b-gray-50 gap-0 rounded-xl">
                           <div className="relative w-full pb-[75%]">
-                            <Skeleton variant="shimmer" className="absolute h-[154px] md:h-[172px]  inset-0 rounded-xl" aria-label="Loading featured listing image" />
+                            <Skeleton
+                              variant="shimmer"
+                              className="absolute h-[154px] md:h-[172px]  inset-0 rounded-xl"
+                              aria-label="Loading featured listing image"
+                            />
                           </div>
                         </div>
                         <div className="px-0 pb-0 space-y-1">
                           <div className="pt-2">
-                            <Skeleton variant="text" size="default" className="w-3/4 mb-2" aria-label="Loading featured property title" />
-                            <Skeleton variant="text" size="lg" className="w-1/2 mb-1" aria-label="Loading featured property price" />
-                            <Skeleton variant="light" size="default" className="w-1/3 mb-1" aria-label="Loading featured property location" />
+                            <Skeleton
+                              variant="text"
+                              size="default"
+                              className="w-3/4 mb-2"
+                              aria-label="Loading featured property title"
+                            />
+                            <Skeleton
+                              variant="text"
+                              size="lg"
+                              className="w-1/2 mb-1"
+                              aria-label="Loading featured property price"
+                            />
+                            <Skeleton
+                              variant="light"
+                              size="default"
+                              className="w-1/3 mb-1"
+                              aria-label="Loading featured property location"
+                            />
                             <div className="flex items-center gap-1">
                               <Skeleton variant="light" className="h-4 w-8" />
-                              <Skeleton variant="light" className="h-3 w-3 rounded-full" />
+                              <Skeleton
+                                variant="light"
+                                className="h-3 w-3 rounded-full"
+                              />
                               <Skeleton variant="light" className="h-4 w-8" />
-                              <Skeleton variant="light" className="h-3 w-3 rounded-full" />
+                              <Skeleton
+                                variant="light"
+                                className="h-3 w-3 rounded-full"
+                              />
                               <Skeleton variant="light" className="h-4 w-12" />
                             </div>
                           </div>

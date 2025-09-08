@@ -56,7 +56,7 @@ interface MeqasaSearchFormProps {
     totalCount: number,
     searchId: number,
     contract: string,
-    locality: string,
+    locality: string
   ) => void;
   onLoadMore: () => Promise<void>;
 }

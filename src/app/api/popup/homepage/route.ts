@@ -8,7 +8,7 @@ export async function GET() {
     if (!popupData) {
       return NextResponse.json(
         { error: "No popup data available" },
-        { status: 404 },
+        { status: 404 }
       );
     }
 
@@ -17,7 +17,7 @@ export async function GET() {
     console.error("Failed to fetch homepage popup:", error);
     return NextResponse.json(
       { error: "Failed to fetch popup data" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

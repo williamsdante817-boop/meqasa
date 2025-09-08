@@ -109,14 +109,15 @@ export const queryKeys = {
   properties: {
     all: ["properties"] as const,
     lists: () => [...queryKeys.properties.all, "list"] as const,
-    list: (filters: Record<string, unknown>) => 
+    list: (filters: Record<string, unknown>) =>
       [...queryKeys.properties.lists(), filters] as const,
     details: () => [...queryKeys.properties.all, "detail"] as const,
     detail: (id: string) => [...queryKeys.properties.details(), id] as const,
     featured: () => [...queryKeys.properties.all, "featured"] as const,
     latest: () => [...queryKeys.properties.all, "latest"] as const,
-    similar: (id: string) => [...queryKeys.properties.all, "similar", id] as const,
-    search: (params: Record<string, unknown>) => 
+    similar: (id: string) =>
+      [...queryKeys.properties.all, "similar", id] as const,
+    search: (params: Record<string, unknown>) =>
       [...queryKeys.properties.all, "search", params] as const,
   },
 
@@ -126,10 +127,17 @@ export const queryKeys = {
     lists: () => [...queryKeys.agents.all, "list"] as const,
     details: () => [...queryKeys.agents.all, "detail"] as const,
     detail: (id: string) => [...queryKeys.agents.details(), id] as const,
-    listings: (id: string) => [...queryKeys.agents.all, id, "listings"] as const,
+    listings: (id: string) =>
+      [...queryKeys.agents.all, id, "listings"] as const,
     // Paginated listings for agent pages
-    paginatedListings: (agentId: string | number, page: number) => 
-      [...queryKeys.agents.all, agentId, "listings", "paginated", page] as const,
+    paginatedListings: (agentId: string | number, page: number) =>
+      [
+        ...queryKeys.agents.all,
+        agentId,
+        "listings",
+        "paginated",
+        page,
+      ] as const,
   },
 
   // Developers
@@ -138,7 +146,8 @@ export const queryKeys = {
     lists: () => [...queryKeys.developers.all, "list"] as const,
     details: () => [...queryKeys.developers.all, "detail"] as const,
     detail: (id: string) => [...queryKeys.developers.details(), id] as const,
-    projects: (id: string) => [...queryKeys.developers.all, id, "projects"] as const,
+    projects: (id: string) =>
+      [...queryKeys.developers.all, id, "projects"] as const,
   },
 
   // Projects
@@ -172,11 +181,11 @@ export const queryKeys = {
   // Search functionality
   search: {
     all: ["search"] as const,
-    properties: (filters: Record<string, unknown>) => 
+    properties: (filters: Record<string, unknown>) =>
       [...queryKeys.search.all, "properties", filters] as const,
-    propertiesInfinite: (filters: Record<string, unknown>) => 
+    propertiesInfinite: (filters: Record<string, unknown>) =>
       [...queryKeys.search.all, "properties", "infinite", filters] as const,
-    suggestions: (type: string, query: string) => 
+    suggestions: (type: string, query: string) =>
       [...queryKeys.search.all, "suggestions", type, query] as const,
     history: () => [...queryKeys.search.all, "history"] as const,
   },
@@ -185,6 +194,7 @@ export const queryKeys = {
   blog: {
     all: ["blog"] as const,
     featured: () => [...queryKeys.blog.all, "featured"] as const,
-    category: (type: string) => [...queryKeys.blog.all, "category", type] as const,
+    category: (type: string) =>
+      [...queryKeys.blog.all, "category", type] as const,
   },
 } as const;

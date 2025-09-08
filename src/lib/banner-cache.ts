@@ -121,7 +121,7 @@ export function invalidateAllBannerCaches(): void {
 // Force refresh specific banner type
 export async function refreshBanner<T>(
   bannerType: keyof typeof CACHE_KEYS,
-  fetchFunction: () => Promise<T>,
+  fetchFunction: () => Promise<T>
 ): Promise<T | null> {
   const cacheKey = CACHE_KEYS[bannerType];
 

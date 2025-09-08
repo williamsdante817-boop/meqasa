@@ -15,7 +15,7 @@ export async function StreamingLatestListings({
     const raw: LatestListingsResponse = await latestListingsPromise;
 
     const isLatestListingsResponse = (
-      value: unknown,
+      value: unknown
     ): value is {
       rentals: LatestListingsResponse["rentals"];
       selling: LatestListingsResponse["selling"];
@@ -45,7 +45,7 @@ export async function StreamingLatestListings({
     }
 
     const toCardListing = (
-      l: LatestListingsResponse["rentals"][number],
+      l: LatestListingsResponse["rentals"][number]
     ): CardListing => {
       const detailreq = l.detailreq ?? "";
       const cleanPath = detailreq.replace(/^https?:\/\/[^/]+\//, "");

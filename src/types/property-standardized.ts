@@ -8,7 +8,7 @@ import type {
   Currency,
   PropertyFeature,
   PropertyStatus,
-  PropertyType
+  PropertyType,
 } from "@/config/property";
 
 // Core property data structure (standardized)
@@ -20,7 +20,7 @@ export interface Property {
   type: PropertyType;
   contract: ContractType;
   status: PropertyStatus;
-  
+
   // Location information
   location: {
     area: string;
@@ -30,7 +30,7 @@ export interface Property {
       lng: number;
     };
   };
-  
+
   // Property details
   details: {
     bedrooms: number;
@@ -41,7 +41,7 @@ export interface Property {
     furnished: boolean;
     negotiable: boolean;
   };
-  
+
   // Pricing
   pricing: {
     amount: number;
@@ -49,18 +49,18 @@ export interface Property {
     priceOnRequest: boolean;
     rentPeriod?: "month" | "week" | "day";
   };
-  
+
   // Media and assets
   media: {
     coverImage: string;
     images: string[];
     tourVideo?: string;
   };
-  
+
   // Features and amenities
   features: PropertyFeature[];
   amenities: string[];
-  
+
   // Agent/Owner information
   agent: {
     id: string;
@@ -74,20 +74,20 @@ export interface Property {
       email?: string;
     };
   };
-  
+
   // Timestamps
   dates: {
     listed: string;
     updated: string;
   };
-  
+
   // SEO and URLs
   seo: {
     slug: string;
     metaTitle?: string;
     metaDescription?: string;
   };
-  
+
   // Metrics
   metrics: {
     views: number;
@@ -311,7 +311,22 @@ export interface PropertyMetrics {
 }
 
 // Legacy property interface mapping (for backward compatibility)
-export interface LegacyListingDetails extends Omit<Property, 'id' | 'reference' | 'type' | 'contract' | 'location' | 'details' | 'pricing' | 'media' | 'agent' | 'dates' | 'seo' | 'metrics'> {
+export interface LegacyListingDetails
+  extends Omit<
+    Property,
+    | "id"
+    | "reference"
+    | "type"
+    | "contract"
+    | "location"
+    | "details"
+    | "pricing"
+    | "media"
+    | "agent"
+    | "dates"
+    | "seo"
+    | "metrics"
+  > {
   listingid: string;
   detailreq: string;
   location: string;
@@ -349,7 +364,9 @@ export interface LegacyListingDetails extends Omit<Property, 'id' | 'reference' 
 }
 
 // Transform legacy data to standardized format
-export function transformLegacyProperty(legacy: LegacyListingDetails): Property {
+export function transformLegacyProperty(
+  legacy: LegacyListingDetails
+): Property {
   return {
     id: legacy.listingid,
     reference: legacy.detailreq,
@@ -358,12 +375,12 @@ export function transformLegacyProperty(legacy: LegacyListingDetails): Property 
     type: legacy.type as PropertyType,
     contract: legacy.contract as ContractType,
     status: "active" as PropertyStatus,
-    
+
     location: {
       area: legacy.location,
       address: legacy.streetaddress,
     },
-    
+
     details: {
       bedrooms: parseInt(legacy.beds) || 0,
       bathrooms: parseInt(legacy.baths) || 0,
@@ -372,21 +389,21 @@ export function transformLegacyProperty(legacy: LegacyListingDetails): Property 
       furnished: legacy.isfurnished === "1",
       negotiable: legacy.isnegotiable === "1",
     },
-    
+
     pricing: {
       amount: parseFloat(legacy.price) || 0,
       currency: "GHS" as Currency,
       priceOnRequest: legacy.pdr === "1",
     },
-    
+
     media: {
       coverImage: legacy.image,
       images: legacy.imagelist,
     },
-    
+
     features: [],
     amenities: legacy.amenities || [],
-    
+
     agent: {
       id: legacy.owner.page,
       name: legacy.owner.name,
@@ -398,16 +415,16 @@ export function transformLegacyProperty(legacy: LegacyListingDetails): Property 
         phone: "", // Not available in legacy format
       },
     },
-    
+
     dates: {
       listed: legacy.datelisted,
       updated: legacy.datelisted,
     },
-    
+
     seo: {
-      slug: `${legacy.title.toLowerCase().replace(/\s+/g, '-')}-${legacy.listingid}`,
+      slug: `${legacy.title.toLowerCase().replace(/\s+/g, "-")}-${legacy.listingid}`,
     },
-    
+
     metrics: {
       views: 0,
       contactClicks: 0,

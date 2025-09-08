@@ -84,7 +84,7 @@ export function MainNav({ items }: MainNavProps) {
                     }
                     className={cn(
                       navigationMenuTriggerStyle(),
-                      "text-base font-semibold hover:text-brand-accent data-[state=open]:text-brand-accent",
+                      "text-base font-semibold hover:text-brand-accent data-[state=open]:text-brand-accent"
                     )}
                   >
                     {item.title}
@@ -113,7 +113,7 @@ const ListItem = React.forwardRef<
           ref={ref}
           className={cn(
             "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent text-brand-accent focus:bg-accent focus:text-accent-foreground",
-            className,
+            className
           )}
           {...props}
         >

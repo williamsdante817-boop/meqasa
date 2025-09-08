@@ -1,11 +1,11 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
-import type { Establishment } from './establishment-item';
+import { useState, useEffect, useCallback, useMemo } from "react";
+import type { Establishment } from "./establishment-item";
 import {
   getEstablishments,
   getEstablishmentTypeCounts,
   type EstablishmentFilters,
-  type LocationCoordinates
-} from './establishments-service';
+  type LocationCoordinates,
+} from "./establishments-service";
 
 export interface UseEstablishmentsOptions {
   projectLocation: LocationCoordinates;
@@ -17,13 +17,13 @@ export interface UseEstablishmentsOptions {
 export interface UseEstablishmentsReturn {
   establishments: Establishment[];
   filteredEstablishments: Establishment[];
-  typeCounts: Record<Establishment['type'], number>;
+  typeCounts: Record<Establishment["type"], number>;
   loading: boolean;
   error: string | null;
-  activeType: Establishment['type'] | 'all';
+  activeType: Establishment["type"] | "all";
   searchQuery: string;
   filters: EstablishmentFilters;
-  setActiveType: (type: Establishment['type'] | 'all') => void;
+  setActiveType: (type: Establishment["type"] | "all") => void;
   setSearchQuery: (query: string) => void;
   setFilters: (filters: EstablishmentFilters) => void;
   refetch: () => Promise<void>;
@@ -39,17 +39,19 @@ export function useEstablishments({
   projectLocation,
   neighborhood,
   autoFetch = true,
-  debounceMs = 300
+  debounceMs = 300,
 }: UseEstablishmentsOptions): UseEstablishmentsReturn {
   const [establishments, setEstablishments] = useState<Establishment[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [activeType, setActiveType] = useState<Establishment['type'] | 'all'>('all');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [activeType, setActiveType] = useState<Establishment["type"] | "all">(
+    "all"
+  );
+  const [searchQuery, setSearchQuery] = useState("");
   const [filters, setFilters] = useState<EstablishmentFilters>(DEFAULT_FILTERS);
 
-  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -66,7 +68,7 @@ export function useEstablishments({
 
       const combinedFilters: EstablishmentFilters = {
         ...filters,
-        type: activeType === 'all' ? undefined : activeType
+        type: activeType === "all" ? undefined : activeType,
       };
 
       const data = await getEstablishments(
@@ -77,9 +79,10 @@ export function useEstablishments({
 
       setEstablishments(data);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch establishments';
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to fetch establishments";
       setError(errorMessage);
-      console.error('Error fetching establishments:', err);
+      console.error("Error fetching establishments:", err);
     } finally {
       setLoading(false);
     }
@@ -88,14 +91,16 @@ export function useEstablishments({
   const filteredEstablishments = useMemo(() => {
     let filtered = establishments;
 
-    if (activeType !== 'all') {
-      filtered = filtered.filter(est => est.type === activeType);
+    if (activeType !== "all") {
+      filtered = filtered.filter((est) => est.type === activeType);
     }
 
     if (debouncedSearchQuery) {
       const q = debouncedSearchQuery.toLowerCase();
-      filtered = filtered.filter(est =>
-        est.name.toLowerCase().includes(q) || est.address.toLowerCase().includes(q)
+      filtered = filtered.filter(
+        (est) =>
+          est.name.toLowerCase().includes(q) ||
+          est.address.toLowerCase().includes(q)
       );
     }
 
@@ -113,8 +118,8 @@ export function useEstablishments({
   }, [filteredEstablishments]);
 
   const clearFilters = useCallback(() => {
-    setActiveType('all');
-    setSearchQuery('');
+    setActiveType("all");
+    setSearchQuery("");
     setFilters(DEFAULT_FILTERS);
   }, []);
 
@@ -144,6 +149,6 @@ export function useEstablishments({
     clearFilters,
     hasEstablishments,
     hasResults,
-    nearestEstablishment
+    nearestEstablishment,
   };
 }

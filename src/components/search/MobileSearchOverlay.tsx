@@ -35,17 +35,17 @@ export function MobileSearchOverlay() {
 
   // Separate form states for each tab
   const [rentFormState, setRentFormState] = useState<FormState>(
-    getDefaultFormState(),
+    getDefaultFormState()
   );
   const [buyFormState, setBuyFormState] = useState<FormState>(
-    getDefaultFormState(),
+    getDefaultFormState()
   );
   const [landFormState, setLandFormState] = useState<FormState>({
     ...getDefaultFormState(),
     propertyType: "land",
   });
   const [shortLetFormState, setShortLetFormState] = useState<FormState>(
-    getDefaultFormState(),
+    getDefaultFormState()
   );
 
   // Helper function to get current update function based on active tab

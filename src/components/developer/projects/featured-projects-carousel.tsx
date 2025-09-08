@@ -26,7 +26,7 @@ export default function FeaturedProjectsCarousel({
   const [api, setApi] = useState<CarouselApi | null>(null);
   const [shouldAutoplay, setShouldAutoplay] = useState(true);
   const plugin = useRef(
-    Autoplay({ delay, stopOnInteraction: false, stopOnMouseEnter: true }),
+    Autoplay({ delay, stopOnInteraction: false, stopOnMouseEnter: true })
   );
 
   // Respect reduced-motion preference

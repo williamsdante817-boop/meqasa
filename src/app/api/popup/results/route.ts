@@ -10,14 +10,14 @@ export async function GET(request: NextRequest) {
     if (!type || !contract) {
       return NextResponse.json(
         { error: "Missing required parameters: type and contract" },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
     if (contract !== "rent" && contract !== "sale") {
       return NextResponse.json(
         { error: "Contract must be either 'rent' or 'sale'" },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
     if (!popupData) {
       return NextResponse.json(
         { error: "No popup data available" },
-        { status: 404 },
+        { status: 404 }
       );
     }
 
@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
     console.error("Failed to fetch results popup:", error);
     return NextResponse.json(
       { error: "Failed to fetch popup data" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

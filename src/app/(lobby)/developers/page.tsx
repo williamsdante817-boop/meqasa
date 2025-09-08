@@ -38,7 +38,7 @@ async function DevelopersContent() {
         "developers_loaded",
         "page_performance",
         "developers_page",
-        developers.length,
+        developers.length
       );
     }
 

@@ -20,6 +20,6 @@ export async function getFeaturedProjects(): Promise<FeaturedProject[]> {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
-    },
+    }
   );
 }

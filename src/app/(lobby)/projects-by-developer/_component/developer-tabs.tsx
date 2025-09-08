@@ -7,7 +7,13 @@ import React, { useMemo, useState } from "react";
 import { ProjectCard } from "./project-card";
 import { PaginatedContent } from "@/components/paginated-content";
 import { Badge } from "@/components/ui/badge";
-import { Building2, Home, Clock, Search, SlidersHorizontal } from "lucide-react";
+import {
+  Building2,
+  Home,
+  Clock,
+  Search,
+  SlidersHorizontal,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -15,29 +21,36 @@ import { cn } from "@/lib/utils";
 export function DeveloperTabs({ developer }: { developer: DeveloperDetails }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStatus] = useState<string>("all");
-  const [sortOrder, setSortOrder] = useState<"newest" | "oldest" | "name">("newest");
+  const [sortOrder, setSortOrder] = useState<"newest" | "oldest" | "name">(
+    "newest"
+  );
 
   // Enhanced data processing with memoization for performance
   const { pastProjects, currentProjects, processedStats } = useMemo(() => {
     const allProjects = developer?.projects || [];
     const units = developer?.units || [];
 
-    const past = allProjects.filter(p => p.projectstatus === "completed");
-    const current = allProjects.filter(p => p.projectstatus !== "completed");
-    const ongoing = allProjects.filter(p => p.projectstatus === "ongoing");
+    const past = allProjects.filter((p) => p.projectstatus === "completed");
+    const current = allProjects.filter((p) => p.projectstatus !== "completed");
+    const ongoing = allProjects.filter((p) => p.projectstatus === "ongoing");
 
     const stats = {
       totalProjects: allProjects.length,
       completedProjects: past.length,
       ongoingProjects: ongoing.length,
       availableUnits: units.length,
-      avgProjectsPerYear: allProjects.length > 0 ? Math.round(allProjects.length / Math.max(new Date().getFullYear() - 2010, 1)) : 0
+      avgProjectsPerYear:
+        allProjects.length > 0
+          ? Math.round(
+              allProjects.length / Math.max(new Date().getFullYear() - 2010, 1)
+            )
+          : 0,
     };
 
     return {
       pastProjects: past,
       currentProjects: current,
-      processedStats: stats
+      processedStats: stats,
     };
   }, [developer?.projects, developer?.units]);
 
@@ -48,9 +61,9 @@ export function DeveloperTabs({ developer }: { developer: DeveloperDetails }) {
 
       // Search filtering
       if (searchQuery) {
-        filtered = filtered.filter(item => {
+        filtered = filtered.filter((item) => {
           const searchFields = [item.projectname, item.city];
-          return searchFields.some(field => 
+          return searchFields.some((field) =>
             field?.toLowerCase().includes(searchQuery.toLowerCase())
           );
         });
@@ -58,7 +71,9 @@ export function DeveloperTabs({ developer }: { developer: DeveloperDetails }) {
 
       // Status filtering for projects
       if (selectedStatus !== "all") {
-        filtered = filtered.filter(item => item.projectstatus === selectedStatus);
+        filtered = filtered.filter(
+          (item) => item.projectstatus === selectedStatus
+        );
       }
 
       // Sorting
@@ -82,9 +97,9 @@ export function DeveloperTabs({ developer }: { developer: DeveloperDetails }) {
 
       // Search filtering
       if (searchQuery) {
-        filtered = filtered.filter(item => {
+        filtered = filtered.filter((item) => {
           const searchFields = [item.title, item.city, item.address];
-          return searchFields.some(field => 
+          return searchFields.some((field) =>
             field?.toLowerCase().includes(searchQuery.toLowerCase())
           );
         });
@@ -123,12 +138,12 @@ export function DeveloperTabs({ developer }: { developer: DeveloperDetails }) {
   );
 
   // Enhanced empty state component
-  const EmptyStateCard = ({ 
-    title, 
-    description, 
-    icon: Icon, 
-    actionText, 
-    onAction 
+  const EmptyStateCard = ({
+    title,
+    description,
+    icon: Icon,
+    actionText,
+    onAction,
   }: {
     title: string;
     description: string;
@@ -155,19 +170,27 @@ export function DeveloperTabs({ developer }: { developer: DeveloperDetails }) {
       {/* Enhanced Stats Overview */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-100">
         <div className="text-center">
-          <div className="text-2xl font-bold text-brand-accent">{processedStats.totalProjects}</div>
+          <div className="text-2xl font-bold text-brand-accent">
+            {processedStats.totalProjects}
+          </div>
           <div className="text-sm text-brand-muted">Total Projects</div>
         </div>
         <div className="text-center">
-          <div className="text-2xl font-bold text-green-600">{processedStats.completedProjects}</div>
+          <div className="text-2xl font-bold text-green-600">
+            {processedStats.completedProjects}
+          </div>
           <div className="text-sm text-brand-muted">Completed</div>
         </div>
         <div className="text-center">
-          <div className="text-2xl font-bold text-orange-600">{processedStats.ongoingProjects}</div>
+          <div className="text-2xl font-bold text-orange-600">
+            {processedStats.ongoingProjects}
+          </div>
           <div className="text-sm text-brand-muted">Ongoing</div>
         </div>
         <div className="text-center">
-          <div className="text-2xl font-bold text-blue-600">{processedStats.availableUnits}</div>
+          <div className="text-2xl font-bold text-blue-600">
+            {processedStats.availableUnits}
+          </div>
           <div className="text-sm text-brand-muted">Available Units</div>
         </div>
       </div>
@@ -185,7 +208,7 @@ export function DeveloperTabs({ developer }: { developer: DeveloperDetails }) {
             />
           </div>
         </div>
-        
+
         <div className="flex flex-wrap gap-2 items-center">
           <div className="flex items-center gap-2">
             <SlidersHorizontal className="w-4 h-4 text-gray-500" />
@@ -228,7 +251,7 @@ export function DeveloperTabs({ developer }: { developer: DeveloperDetails }) {
               {currentProjects?.length || 0}
             </Badge>
           </TabsTrigger>
-          
+
           <TabsTrigger
             value="available"
             className="group relative text-sm text-brand-muted data-[state=active]:text-brand-accent transition-all duration-200"
@@ -247,7 +270,7 @@ export function DeveloperTabs({ developer }: { developer: DeveloperDetails }) {
               {developer?.units?.length || 0}
             </Badge>
           </TabsTrigger>
-          
+
           <TabsTrigger
             value="past"
             className="group relative text-sm text-brand-muted data-[state=active]:text-brand-accent transition-all duration-200"
@@ -286,7 +309,11 @@ export function DeveloperTabs({ developer }: { developer: DeveloperDetails }) {
               itemsPerPage={6}
               renderItem={renderProjectCard}
               gridClassName="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-8"
-              emptyMessage={searchQuery ? `No current projects match "${searchQuery}"` : "No Current Projects"}
+              emptyMessage={
+                searchQuery
+                  ? `No current projects match "${searchQuery}"`
+                  : "No Current Projects"
+              }
               showPagination={currentProjects && currentProjects.length > 6}
             />
           )}
@@ -310,7 +337,11 @@ export function DeveloperTabs({ developer }: { developer: DeveloperDetails }) {
               itemsPerPage={6}
               renderItem={renderUnitCard}
               gridClassName="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-8"
-              emptyMessage={searchQuery ? `No units match "${searchQuery}"` : "No Available Units"}
+              emptyMessage={
+                searchQuery
+                  ? `No units match "${searchQuery}"`
+                  : "No Available Units"
+              }
               showPagination={developer.units && developer.units.length > 6}
             />
           )}
@@ -334,7 +365,11 @@ export function DeveloperTabs({ developer }: { developer: DeveloperDetails }) {
               itemsPerPage={6}
               renderItem={renderProjectCard}
               gridClassName="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-8"
-              emptyMessage={searchQuery ? `No past projects match "${searchQuery}"` : "No Past Projects"}
+              emptyMessage={
+                searchQuery
+                  ? `No past projects match "${searchQuery}"`
+                  : "No Past Projects"
+              }
               showPagination={pastProjects && pastProjects.length > 6}
             />
           )}

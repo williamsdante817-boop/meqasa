@@ -7,24 +7,24 @@ export default {
   trailingComma: "es5",
   tabWidth: 2,
   useTabs: false,
-  
+
   // Line formatting
   printWidth: 80,
   endOfLine: "lf",
-  
+
   // JSX/TSX specific
   jsxSingleQuote: false,
-  
+
   // Bracket spacing
   bracketSpacing: true,
   bracketSameLine: false,
-  
+
   // Arrow function parentheses
   arrowParens: "always",
-  
+
   // Plugin configurations
   plugins: [],
-  
+
   // File-specific overrides
   overrides: [
     {

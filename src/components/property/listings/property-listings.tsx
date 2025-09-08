@@ -62,7 +62,7 @@ export default function PropertyListings({
         aria-label="Property listings carousel"
       >
         <CarouselContent
-          className="-ml-1" 
+          className="-ml-1"
           role="list"
           aria-label="Property listings"
         >

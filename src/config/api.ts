@@ -9,7 +9,7 @@ export const apiConfig = {
   timeout: 30000, // 30 seconds
   retryAttempts: 3,
   retryDelay: 1000, // 1 second
-} as const
+} as const;
 
 // API endpoints
 export const endpoints = {
@@ -22,7 +22,7 @@ export const endpoints = {
     similar: "/similar-properties",
   },
 
-  // Project endpoints  
+  // Project endpoints
   projects: {
     featured: "/featured-projects",
     details: "/project-details",
@@ -32,7 +32,7 @@ export const endpoints = {
   // Agent endpoints
   agents: {
     list: "/agents",
-    details: "/agent-details", 
+    details: "/agent-details",
     listings: "/agent-listings",
   },
 
@@ -57,20 +57,20 @@ export const endpoints = {
     callback: "/request-callback",
   },
 
-  // User endpoints  
+  // User endpoints
   user: {
     favorites: "/user/favorites",
     searches: "/user/searches",
     alerts: "/user/alerts",
   },
-} as const
+} as const;
 
 // Request headers
 export const defaultHeaders = {
   "Content-Type": "application/json",
-  "Accept": "application/json",
+  Accept: "application/json",
   "X-Client": "meqasa-web",
-} as const
+} as const;
 
 // Response status codes
 export const statusCodes = {
@@ -84,7 +84,7 @@ export const statusCodes = {
   conflict: 409,
   internalServerError: 500,
   serviceUnavailable: 503,
-} as const
+} as const;
 
 // API error messages
 export const apiErrors = {
@@ -96,7 +96,7 @@ export const apiErrors = {
   forbidden: "You don't have permission to access this resource.",
   validationError: "Please check your input and try again.",
   unknown: "An unexpected error occurred. Please try again.",
-} as const
+} as const;
 
 // Rate limiting configuration
 export const rateLimits = {
@@ -106,13 +106,13 @@ export const rateLimits = {
   },
   contact: {
     requests: 5,
-    window: 60 * 1000, // 1 minute  
+    window: 60 * 1000, // 1 minute
   },
   general: {
     requests: 1000,
     window: 60 * 1000, // 1 minute
   },
-} as const
+} as const;
 
 // Cache configuration for different endpoints
 export const cacheConfig = {
@@ -136,9 +136,9 @@ export const cacheConfig = {
     ttl: 15 * 60, // 15 minutes
     staleWhileRevalidate: true,
   },
-} as const
+} as const;
 
 // Type exports
-export type Endpoint = typeof endpoints
-export type StatusCode = typeof statusCodes[keyof typeof statusCodes]
-export type ApiError = typeof apiErrors[keyof typeof apiErrors]
+export type Endpoint = typeof endpoints;
+export type StatusCode = (typeof statusCodes)[keyof typeof statusCodes];
+export type ApiError = (typeof apiErrors)[keyof typeof apiErrors];

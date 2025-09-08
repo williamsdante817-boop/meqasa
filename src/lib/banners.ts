@@ -52,7 +52,7 @@ export async function getBanner(type: keyof typeof BANNER_CONFIGS) {
           "Content-Type": "application/x-www-form-urlencoded",
           // Remove cache-busting headers to allow caching
         },
-      },
+      }
     );
 
     const result = {
@@ -92,7 +92,7 @@ export async function getHeroBanner() {
           Pragma: "no-cache",
           Expires: "0",
         },
-      },
+      }
     );
 
     return {
@@ -127,7 +127,7 @@ export async function getResultsHeroBanner() {
           Pragma: "no-cache",
           Expires: "0",
         },
-      },
+      }
     );
 
     return {
@@ -160,7 +160,7 @@ export async function getLeaderboardBanner() {
           // Remove cache-busting headers
         },
         responseType: "text",
-      },
+      }
     );
 
     // Cache the result for 7 minutes
@@ -192,7 +192,7 @@ export async function getFlexiBanner() {
           // Remove cache-busting headers
         },
         responseType: "text",
-      },
+      }
     );
 
     // Cache the result for 7 minutes
@@ -224,7 +224,7 @@ export async function getRectangleBanners() {
           "Content-Type": "application/x-www-form-urlencoded",
           // Remove cache-busting headers
         },
-      },
+      }
     );
 
     const result = data.map((banner) => ({

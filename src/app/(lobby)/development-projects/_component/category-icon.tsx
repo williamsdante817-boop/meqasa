@@ -7,7 +7,7 @@ import {
   Plane,
   ShoppingCart,
   UtensilsCrossed,
-  type LucideIcon
+  type LucideIcon,
 } from "lucide-react";
 
 type CategoryType =

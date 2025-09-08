@@ -53,7 +53,7 @@ export function ResultsCard({ result }: { result: MeqasaListing }) {
   const listingIdMatch = /-(\d+)$/.exec(cleanPath);
   const listingId = parseInt(
     listingIdMatch?.[1] ?? result.listingid ?? "0",
-    10,
+    10
   );
 
   const agentImageUrl = result.owner.image?.startsWith("http")
@@ -66,7 +66,11 @@ export function ResultsCard({ result }: { result: MeqasaListing }) {
     <Card className="flex flex-col gap-4 rounded-lg py-0 text-brand-accent shadow-none transition-all duration-300 hover:shadow-md md:flex-row md:border md:border-brand-border md:p-4 md:hover:shadow-sm md:hover:border-brand-primary/30">
       <CardHeader className="min-w-[256px] sm:min-w-[300px] p-0 relative">
         <div className="relative min-h-[202px] sm:min-h-[225px] min-w-[256px] sm:min-w-[300px] overflow-hidden rounded-lg group-hover:scale-[1.02] transition-transform duration-300">
-          <Link href={detailsLink} className="absolute inset-0 z-10" aria-label={`View details for ${result.summary}`}>
+          <Link
+            href={detailsLink}
+            className="absolute inset-0 z-10"
+            aria-label={`View details for ${result.summary}`}
+          >
             <AspectRatio ratio={4 / 3}>
               {/* Loading Skeleton - only show when image hasn't loaded */}
               {!imageLoaded && (
@@ -95,10 +99,9 @@ export function ResultsCard({ result }: { result: MeqasaListing }) {
 
           {/* Top Ad Badge */}
           {result.istopad && (
-              <Badge className="absolute left-4 top-4 z-30 h-6 bg-brand-accent text-white uppercase tracking-wide shadow-sm">
+            <Badge className="absolute left-4 top-4 z-30 h-6 bg-brand-accent text-white uppercase tracking-wide shadow-sm">
               {result.availability}
             </Badge>
- 
           )}
 
           {/* Favorite Button - Enhanced positioning */}
@@ -109,7 +112,7 @@ export function ResultsCard({ result }: { result: MeqasaListing }) {
           )}
 
           {/* Photo Count Button */}
-            <Badge
+          <Badge
             className="absolute bottom-3 right-3 z-30 bg-black/70 text-white text-xs sm:text-sm hover:bg-black/90 transition-colors duration-200"
             aria-label={`View ${result.photocount} photos`}
           >
@@ -154,9 +157,12 @@ export function ResultsCard({ result }: { result: MeqasaListing }) {
               {result.bedroomcount && (
                 <div className="flex items-center gap-1 whitespace-nowrap">
                   <span className="font-medium">
-                    {result.bedroomcount} Bed{parseInt(result.bedroomcount) !== 1 ? 's' : ''}
+                    {result.bedroomcount} Bed
+                    {parseInt(result.bedroomcount) !== 1 ? "s" : ""}
                   </span>
-                  {(result.bathroomcount || result.garagecount || result.floorarea) && (
+                  {(result.bathroomcount ||
+                    result.garagecount ||
+                    result.floorarea) && (
                     <Dot className="h-3 w-3 sm:h-4 sm:w-4 text-brand-accent flex-shrink-0" />
                   )}
                 </div>
@@ -164,7 +170,8 @@ export function ResultsCard({ result }: { result: MeqasaListing }) {
               {result.bathroomcount && (
                 <div className="flex items-center gap-1 whitespace-nowrap">
                   <span className="font-medium">
-                    {result.bathroomcount} Bath{parseInt(result.bathroomcount) !== 1 ? 's' : ''}
+                    {result.bathroomcount} Bath
+                    {parseInt(result.bathroomcount) !== 1 ? "s" : ""}
                   </span>
                   {(result.garagecount || result.floorarea) && (
                     <Dot className="h-3 w-3 sm:h-4 sm:w-4 text-brand-accent flex-shrink-0" />
@@ -189,9 +196,7 @@ export function ResultsCard({ result }: { result: MeqasaListing }) {
             </div>
 
             {/* Top Ad Badge for Mobile */}
-            {result.istopad && (
-              <TopAdBadge size="sm" />
-            )}
+            {result.istopad && <TopAdBadge size="sm" />}
           </div>
         </div>
 
@@ -265,7 +270,7 @@ export function ResultsCard({ result }: { result: MeqasaListing }) {
               href={detailsLink}
               className={cn(
                 buttonVariants({ variant: "default", size: "sm" }),
-                "w-28 sm:w-32 font-semibold bg-brand-primary hover:bg-brand-primary-dark text-white transition-all duration-200 hover:shadow-md active:scale-95",
+                "w-28 sm:w-32 font-semibold bg-brand-primary hover:bg-brand-primary-dark text-white transition-all duration-200 hover:shadow-md active:scale-95"
               )}
             >
               <span className="hidden sm:inline">View details</span>

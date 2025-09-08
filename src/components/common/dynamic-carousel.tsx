@@ -107,7 +107,7 @@ const CarouselSlide = ({
                 height={420}
                 className={cn(
                   "h-full w-full cursor-pointer object-cover transition-opacity duration-300",
-                  isLoading ? "opacity-0" : "opacity-100",
+                  isLoading ? "opacity-0" : "opacity-100"
                 )}
                 sizes="(max-width: 640px) 100vw, (max-width: 768px) 100vw, (max-width: 1024px) 50vw, 400px"
                 priority={index === 0}
@@ -167,7 +167,7 @@ export function DynamicCarousel({
           break;
       }
     },
-    [api, count],
+    [api, count]
   );
 
   const handleImageClick = useCallback((index: number) => {
@@ -200,12 +200,12 @@ export function DynamicCarousel({
     isDeveloper
       ? "border-b border-orange-400 bg-slate-50"
       : "flex justify-center border-b border-orange-400 lg:bg-brand-secondary",
-    "relative h-[280px] w-full overflow-hidden lg:max-h-[400px] lg:min-h-[400px]",
+    "relative h-[280px] w-full overflow-hidden lg:max-h-[400px] lg:min-h-[400px]"
   );
 
   const carouselClass = cn(
     isDeveloper ? "w-full max-w-full" : "w-full max-w-xl",
-    "lg:max-h-[400px] lg:min-h-[400px]",
+    "lg:max-h-[400px] lg:min-h-[400px]"
   );
 
   return (
@@ -239,13 +239,13 @@ export function DynamicCarousel({
             aria-label="Previous slide"
             className={cn(
               "absolute left-6 top-1/2 -translate-y-1/2 z-10 h-11 w-11 items-center justify-center bg-white text-accent-foreground shadow-md cursor-pointer focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary focus-visible:outline-none",
-              "hidden md:flex",
+              "hidden md:flex"
             )}
           />
           <CarouselNext
             aria-label="Next slide"
             className={cn(
-              "absolute right-6 top-1/2 -translate-y-1/2 z-10 h-11 w-11 items-center justify-center bg-white text-accent-foreground shadow-sm cursor-pointer focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary focus-visible:outline-none hidden md:flex",
+              "absolute right-6 top-1/2 -translate-y-1/2 z-10 h-11 w-11 items-center justify-center bg-white text-accent-foreground shadow-sm cursor-pointer focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary focus-visible:outline-none hidden md:flex"
             )}
           />
         </Carousel>

@@ -64,7 +64,7 @@ class Logger {
   private formatMessage(
     level: LogLevel,
     message: string,
-    context?: LogContext,
+    context?: LogContext
   ): string {
     const baseContext = this.getBaseContext();
     const fullContext = { ...baseContext, ...context };
@@ -76,7 +76,7 @@ class Logger {
         ...fullContext,
       },
       null,
-      this.isDevelopment ? 2 : 0,
+      this.isDevelopment ? 2 : 0
     );
   }
 
@@ -149,7 +149,7 @@ class Logger {
   private sendToExternalService(
     level: LogLevel,
     message: string,
-    context?: LogContext,
+    context?: LogContext
   ): void {
     // This is where you'd integrate with Sentry, LogRocket, etc.
     // For now, we'll just store it for potential batch sending
@@ -165,7 +165,7 @@ class Logger {
 
       // Store in localStorage for potential batch sending
       const logs = JSON.parse(
-        localStorage.getItem("pending_logs") ?? "[]",
+        localStorage.getItem("pending_logs") ?? "[]"
       ) as LogEntry[];
       logs.push(logEntry);
 
@@ -187,7 +187,7 @@ class Logger {
 
     try {
       return JSON.parse(
-        localStorage.getItem("pending_logs") ?? "[]",
+        localStorage.getItem("pending_logs") ?? "[]"
       ) as LogEntry[];
     } catch {
       return [];
@@ -213,5 +213,5 @@ export const logWarn = (message: string, context?: LogContext) =>
 export const logError = (
   message: string,
   error?: unknown,
-  context?: LogContext,
+  context?: LogContext
 ) => logger.error(message, error, context);

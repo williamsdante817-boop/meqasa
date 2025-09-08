@@ -10,9 +10,13 @@ interface AgentDetailsErrorProps {
   reset: () => void;
 }
 
-export default function AgentDetailsError({ error, reset }: AgentDetailsErrorProps) {
-  const isNotFound = error.message.toLowerCase().includes("not found") || 
-                    error.message.toLowerCase().includes("not available");
+export default function AgentDetailsError({
+  error,
+  reset,
+}: AgentDetailsErrorProps) {
+  const isNotFound =
+    error.message.toLowerCase().includes("not found") ||
+    error.message.toLowerCase().includes("not available");
 
   return (
     <div>
@@ -34,9 +38,11 @@ export default function AgentDetailsError({ error, reset }: AgentDetailsErrorPro
           <div className="max-w-lg w-full">
             <ErrorCard
               icon={UserX}
-              title={isNotFound ? "Agent Not Found" : "Unable to Load Agent Details"}
+              title={
+                isNotFound ? "Agent Not Found" : "Unable to Load Agent Details"
+              }
               description={
-                isNotFound 
+                isNotFound
                   ? "The agent you're looking for doesn't exist or may have been removed from our platform."
                   : "We're having trouble loading this agent's information right now. This could be due to a network issue or temporary server problem."
               }
@@ -52,11 +58,17 @@ export default function AgentDetailsError({ error, reset }: AgentDetailsErrorPro
                   Technical Details
                 </summary>
                 <div className="text-sm text-gray-600 space-y-2">
-                  <p><strong>Error:</strong> {error.message}</p>
+                  <p>
+                    <strong>Error:</strong> {error.message}
+                  </p>
                   {error.digest && (
-                    <p><strong>Digest:</strong> {error.digest}</p>
+                    <p>
+                      <strong>Digest:</strong> {error.digest}
+                    </p>
                   )}
-                  <p><strong>Stack:</strong></p>
+                  <p>
+                    <strong>Stack:</strong>
+                  </p>
                   <pre className="text-xs bg-gray-200 p-2 rounded overflow-x-auto">
                     {error.stack}
                   </pre>

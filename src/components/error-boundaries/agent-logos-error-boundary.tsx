@@ -28,7 +28,7 @@ export class AgentLogosErrorBoundary extends Component<Props, State> {
     console.error(
       "Agent Logos Error Boundary caught an error:",
       error,
-      errorInfo,
+      errorInfo
     );
   }
 

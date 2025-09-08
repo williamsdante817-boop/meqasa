@@ -81,7 +81,7 @@ export function AgentPropertyCard({ listing }: { listing: AgentListing }) {
                 fill
                 className={cn(
                   "object-cover rounded-t-lg md:rounded-lg transition-opacity duration-300",
-                  isLoading ? "opacity-0" : "opacity-100",
+                  isLoading ? "opacity-0" : "opacity-100"
                 )}
                 sizes="(max-width: 640px) 100vw, (max-width: 768px) 256px, (max-width: 1024px) 300px, 256px"
                 quality={90}
@@ -191,7 +191,7 @@ export function AgentPropertyCard({ listing }: { listing: AgentListing }) {
                 href={detailsLink}
                 className={cn(
                   buttonVariants({ variant: "default", size: "sm" }),
-                  "w-32 font-semibold bg-brand-primary hover:bg-brand-primary",
+                  "w-32 font-semibold bg-brand-primary hover:bg-brand-primary"
                 )}
                 aria-label={`View full details for ${listing.summary ?? "property"}`}
               >

@@ -86,7 +86,7 @@ export default function MortgageCalculator({ price }: { price: string }) {
   }, [propertyPrice, downPayment]);
 
   const handlePropertyPriceChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
+    e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const value = parseFloat(e.target.value) || 0;
     // Prevent negative values

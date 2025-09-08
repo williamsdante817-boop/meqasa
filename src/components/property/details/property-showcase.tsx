@@ -10,7 +10,8 @@ import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 
 // Light gray base64 placeholder - simplified to avoid parsing issues
-const PLACEHOLDER_BLUR = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIHZpZXdCb3g9IjAgMCAxMCAxMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjRjNGNEY2Ii8+Cjwvc3ZnPgo=';
+const PLACEHOLDER_BLUR =
+  "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIHZpZXdCb3g9IjAgMCAxMCAxMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjRjNGNEY2Ii8+Cjwvc3ZnPgo=";
 
 // Image URL generation function
 const getImageUrl = (imagePath: string) => {
@@ -33,7 +34,10 @@ const getImageUrl = (imagePath: string) => {
   return `${baseUrl}/uploads/imgs/${imagePath}`;
 };
 
-function ImagePlaceholder({ className = "", message = "Image not available" }: { 
+function ImagePlaceholder({
+  className = "",
+  message = "Image not available",
+}: {
   className?: string;
   message?: string;
 }) {
@@ -64,7 +68,7 @@ function ImagePlaceholder({ className = "", message = "Image not available" }: {
 // Skeleton component that matches the exact PropertyShowcase layout
 function PropertyShowcaseSkeleton({ maxImages = 4 }: { maxImages?: number }) {
   const rightImageCount = Math.min(3, maxImages - 1); // Up to 3 right images
-  
+
   return (
     <div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
@@ -123,7 +127,7 @@ function PropertyShowcaseImages({ images }: { images: string[] }) {
   useEffect(() => {
     if (!gridImages.length) return;
     const urls = [gridImages[0]!, ...gridImages.slice(1, 4)].map((p) =>
-      getImageUrl(p),
+      getImageUrl(p)
     );
     const extra = images.slice(4, 6).map((p) => getImageUrl(p));
     void preloadImages([...urls, ...extra]);
@@ -211,15 +215,25 @@ function PropertyShowcaseImages({ images }: { images: string[] }) {
                 </motion.div>
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 pointer-events-none" />
                 {/* Hover overlay with subtle zoom icon */}
-                <motion.div 
+                <motion.div
                   className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
                   initial={{ scale: 0.8 }}
                   whileHover={{ scale: 1 }}
                   transition={{ duration: 0.2 }}
                 >
                   <div className="bg-white/90 backdrop-blur-sm rounded-full p-3 shadow-lg">
-                    <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                    <svg
+                      className="w-6 h-6 text-gray-700"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"
+                      />
                     </svg>
                   </div>
                 </motion.div>
@@ -243,10 +257,10 @@ function PropertyShowcaseImages({ images }: { images: string[] }) {
                 aria-label={`Additional property image ${actualIndex + 1}`}
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ 
-                  delay: 0.2 + (index * 0.1), 
-                  duration: 0.4, 
-                  ease: "easeOut" 
+                transition={{
+                  delay: 0.2 + index * 0.1,
+                  duration: 0.4,
+                  ease: "easeOut",
                 }}
               >
                 {imgErrors[actualIndex] ? (
@@ -301,13 +315,13 @@ function PropertyShowcaseImages({ images }: { images: string[] }) {
                       />
                     </motion.div>
                     {showMoreOverlay && (
-                      <motion.div 
+                      <motion.div
                         className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent text-white flex items-center justify-center backdrop-blur-[1px]"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.3 }}
                       >
-                        <motion.span 
+                        <motion.span
                           className="text-lg font-semibold drop-shadow-lg"
                           initial={{ y: 10, opacity: 0 }}
                           animate={{ y: 0, opacity: 1 }}
@@ -327,7 +341,7 @@ function PropertyShowcaseImages({ images }: { images: string[] }) {
       </div>
 
       {/* See more photos button */}
-      <motion.div 
+      <motion.div
         className="text-left mt-4"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -345,11 +359,11 @@ function PropertyShowcaseImages({ images }: { images: string[] }) {
           <motion.span
             initial={{ x: 0 }}
             animate={{ x: [0, 3, 0] }}
-            transition={{ 
-              repeat: Infinity, 
-              duration: 2, 
+            transition={{
+              repeat: Infinity,
+              duration: 2,
               ease: "easeInOut",
-              repeatDelay: 3 
+              repeatDelay: 3,
             }}
           >
             →
@@ -377,7 +391,10 @@ interface PropertyShowcaseProps {
   className?: string;
 }
 
-export default function PropertyShowcase({ images, className = "" }: PropertyShowcaseProps) {
+export default function PropertyShowcase({
+  images,
+  className = "",
+}: PropertyShowcaseProps) {
   // Ensure we have a stable array on the server side
   const stableImages = images?.filter(Boolean) ?? [];
 

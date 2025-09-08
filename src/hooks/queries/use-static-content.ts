@@ -12,7 +12,7 @@ import type { StaticData } from "@/lib/static-data";
 export function useHeroBanner(initialData?: AdLink) {
   return useQuery({
     queryKey: queryKeys.static.banner("hero"),
-    queryFn: () => fetch("/api/homepage/hero-banner").then(r => r.json()),
+    queryFn: () => fetch("/api/homepage/hero-banner").then((r) => r.json()),
     ...queryConfig.homepageBanners, // Focus-based refresh, no background polling
     initialData,
   });
@@ -25,7 +25,7 @@ export function useHeroBanner(initialData?: AdLink) {
 export function useFlexiBanner(initialData?: string) {
   return useQuery({
     queryKey: queryKeys.static.banner("flexi"),
-    queryFn: () => fetch("/api/homepage/flexi-banner").then(r => r.json()),
+    queryFn: () => fetch("/api/homepage/flexi-banner").then((r) => r.json()),
     ...queryConfig.homepageBanners, // Focus-based refresh, no background polling
     initialData,
   });
@@ -39,10 +39,11 @@ export function useFlexiBanner(initialData?: string) {
 export function useStaticData(initialData?: StaticData) {
   const query = useQuery({
     queryKey: queryKeys.static.config(),
-    queryFn: () => fetch("/api/homepage/static-data").then(r => r.json()),
+    queryFn: () => fetch("/api/homepage/static-data").then((r) => r.json()),
     ...queryConfig.longCache,
     // Static data can be cached very long
-    staleTime: process.env.NODE_ENV === "development" ? 5 * 60 * 1000 : 30 * 60 * 1000, // 5min dev, 30min prod
+    staleTime:
+      process.env.NODE_ENV === "development" ? 5 * 60 * 1000 : 30 * 60 * 1000, // 5min dev, 30min prod
     initialData,
     // Static content like agent logos rarely changes - disable all client-side fetching
     enabled: false, // Disable all fetching - rely only on initialData

@@ -39,7 +39,7 @@ export class PropertyError extends Error {
 
 export function createPropertyError(
   error: unknown,
-  context?: string,
+  context?: string
 ): PropertyError {
   if (error instanceof PropertyError) {
     return error;
@@ -53,7 +53,7 @@ export function createPropertyError(
     return new PropertyError(
       PropertyErrorType.INVALID_SLUG,
       "Invalid property URL format",
-      error instanceof Error ? error : undefined,
+      error instanceof Error ? error : undefined
     );
   }
 
@@ -62,7 +62,7 @@ export function createPropertyError(
     return new PropertyError(
       PropertyErrorType.LISTING_NOT_PUBLISHED,
       "Listing is not currently published",
-      error instanceof Error ? error : undefined,
+      error instanceof Error ? error : undefined
     );
   }
 
@@ -70,7 +70,7 @@ export function createPropertyError(
     return new PropertyError(
       PropertyErrorType.PROPERTY_NOT_FOUND,
       "Property listing not found",
-      error instanceof Error ? error : undefined,
+      error instanceof Error ? error : undefined
     );
   }
 
@@ -83,7 +83,7 @@ export function createPropertyError(
     return new PropertyError(
       PropertyErrorType.CONNECTION_ERROR,
       "Network connection failed",
-      error instanceof Error ? error : undefined,
+      error instanceof Error ? error : undefined
     );
   }
 
@@ -95,7 +95,7 @@ export function createPropertyError(
     return new PropertyError(
       PropertyErrorType.RATE_LIMIT_ERROR,
       "Too many requests made",
-      error instanceof Error ? error : undefined,
+      error instanceof Error ? error : undefined
     );
   }
 
@@ -108,7 +108,7 @@ export function createPropertyError(
     return new PropertyError(
       PropertyErrorType.SERVER_ERROR,
       "Server error occurred",
-      error instanceof Error ? error : undefined,
+      error instanceof Error ? error : undefined
     );
   }
 
@@ -121,7 +121,7 @@ export function createPropertyError(
     return new PropertyError(
       PropertyErrorType.AUTHENTICATION_ERROR,
       "Authentication required",
-      error instanceof Error ? error : undefined,
+      error instanceof Error ? error : undefined
     );
   }
 
@@ -129,7 +129,7 @@ export function createPropertyError(
     return new PropertyError(
       PropertyErrorType.CORS_ERROR,
       "Cross-origin request blocked",
-      error instanceof Error ? error : undefined,
+      error instanceof Error ? error : undefined
     );
   }
 
@@ -141,14 +141,14 @@ export function createPropertyError(
     return new PropertyError(
       PropertyErrorType.MALFORMED_DATA,
       "Invalid data format received",
-      error instanceof Error ? error : undefined,
+      error instanceof Error ? error : undefined
     );
   }
 
   return new PropertyError(
     PropertyErrorType.UNKNOWN_ERROR,
     "An unexpected error occurred",
-    error instanceof Error ? error : undefined,
+    error instanceof Error ? error : undefined
   );
 }
 
@@ -291,7 +291,7 @@ export function logPropertyError(error: unknown, context?: string): void {
       : createPropertyError(error, context);
 
   // Only log detailed errors in development or when debugging is enabled
-  if (process.env.NODE_ENV === 'development' || process.env.DEBUG_ERRORS) {
+  if (process.env.NODE_ENV === "development" || process.env.DEBUG_ERRORS) {
     console.error("Property page error:", {
       type: propertyError.type,
       message: propertyError.message,
@@ -301,25 +301,24 @@ export function logPropertyError(error: unknown, context?: string): void {
     });
   } else {
     // In production, log minimal info to console and send to monitoring service
-    console.error(`Property error: ${propertyError.type} - ${propertyError.message}`);
+    console.error(
+      `Property error: ${propertyError.type} - ${propertyError.message}`
+    );
   }
 
   // In production, send to error monitoring service
-  if (process.env.NODE_ENV === 'production' && typeof window !== 'undefined') {
+  if (process.env.NODE_ENV === "production" && typeof window !== "undefined") {
     // Example integrations (uncomment as needed):
-    
     // Sentry
     // if (window.Sentry) {
     //   window.Sentry.captureException(propertyError, {
     //     tags: { context, errorType: propertyError.type },
     //   });
     // }
-    
     // LogRocket
     // if (window.LogRocket) {
     //   window.LogRocket.captureException(propertyError);
     // }
-    
     // Custom analytics
     // if (window.gtag) {
     //   window.gtag('event', 'exception', {

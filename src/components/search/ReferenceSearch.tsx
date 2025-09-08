@@ -7,22 +7,22 @@ import { Hash, Loader2, Search, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { 
-  processReferenceSearch, 
+import {
+  processReferenceSearch,
   formatReferenceForDisplay,
-  type ReferenceSearchResult 
+  type ReferenceSearchResult,
 } from "@/lib/reference-url-generator";
-import { 
+import {
   processUnifiedReferenceSearch,
-  type UnifiedSearchResult 
+  type UnifiedSearchResult,
 } from "@/lib/unified-reference-search";
-import { 
+import {
   processProductionReferenceSearch,
-  type ProductionReferenceResult 
+  type ProductionReferenceResult,
 } from "@/lib/production-reference-url-generator";
-import { 
+import {
   processUnitReferenceSearch,
-  type UnitReferenceSearchResult 
+  type UnitReferenceSearchResult,
 } from "@/lib/unit-reference-url-generator";
 import { buildCompressedUrl } from "@/lib/compressed-data-utils";
 
@@ -35,7 +35,7 @@ interface ReferenceSearchProps {
   showLabel?: boolean;
   // New unified search options
   enableUnifiedSearch?: boolean; // Enable property + unit search
-  searchTimeout?: number;        // Search timeout in ms
+  searchTimeout?: number; // Search timeout in ms
   includeAlternatives?: boolean; // Show alternative results
 }
 
@@ -47,8 +47,8 @@ export function ReferenceSearch({
   size = "default",
   showLabel = false,
   // New unified search options with defaults
-  enableUnifiedSearch = true,  // Enable by default for new functionality
-  searchTimeout = 8000,        // 8 second timeout
+  enableUnifiedSearch = true, // Enable by default for new functionality
+  searchTimeout = 8000, // 8 second timeout
   includeAlternatives = false,
 }: ReferenceSearchProps) {
   const [reference, setReference] = useState("");
@@ -58,119 +58,135 @@ export function ReferenceSearch({
   const [suggestion, setSuggestion] = useState<string | null>(null); // Show helpful suggestions
   const router = useRouter();
 
-  const handleReferenceSearch = useCallback(async (ref: string) => {
-    if (!ref.trim()) {
-      setError("Please enter a reference number");
-      return;
-    }
-
-    setError(null);
-    setSuggestion(null);
-    setIsLoading(true);
-    setSearchType("properties and units");
-
-    try {
-      let result: ReferenceSearchResult | UnifiedSearchResult | ProductionReferenceResult | UnitReferenceSearchResult;
-
-      if (enableUnifiedSearch) {
-        // First try the working production property search
-        setSearchType("property");
-        result = await processProductionReferenceSearch(ref, {
-          useHybrid: false,
-          maxRetries: 2,
-          timeout: searchTimeout || 5000
-        });
-        
-        // If property search failed, try unit search
-        if (!result.isValid) {
-          setSearchType("unit");
-          const unitResult = await processUnitReferenceSearch(ref);
-          
-          if (unitResult.isValid) {
-            // Convert unit result to compatible ProductionReferenceResult format
-            result = {
-              reference: unitResult.reference,
-              url: unitResult.url,
-              isValid: unitResult.isValid,
-              source: unitResult.source || 'fallback',
-              responseTime: unitResult.responseTime,
-              error: unitResult.error,
-              unitData: unitResult.unitData, // Include the unit data!
-            } as ProductionReferenceResult;
-            setSearchType("unit");
-          }
-          // If both failed, keep the property error as the primary error
-        }
-      } else {
-        // Use the working production property search for backward compatibility
-        result = await processProductionReferenceSearch(ref, {
-          useHybrid: false,
-          maxRetries: 2,
-          timeout: searchTimeout || 5000
-        });
-        setSearchType("property");
-      }
-
-      if (!result.isValid || result.error) {
-        setError(result.error ?? "Reference not found");
-        onError?.(result.error ?? "Reference not found");
-        setIsLoading(false);
+  const handleReferenceSearch = useCallback(
+    async (ref: string) => {
+      if (!ref.trim()) {
+        setError("Please enter a reference number");
         return;
       }
 
-      // Pass data via compressed URL parameters (SSR-compatible)
-      const propertyData = (result as any).propertyData;
-      const unitData = (result as any).unitData;
-      let navigationUrl = result.url;
-      
-      console.log(`🔍 Checking data to compress:`, {
-        hasPropertyData: !!propertyData,
-        hasUnitData: !!unitData,
-        searchType: searchType
-      });
-      
-      if (propertyData) {
-        // Compress property data and build URL
-        navigationUrl = buildCompressedUrl(result.url, propertyData);
-        console.log(`🗜️ Built compressed URL for property data`);
-      } else if (unitData) {
-        // Compress unit data and build URL  
-        navigationUrl = buildCompressedUrl(result.url, unitData);
-        console.log(`🗜️ Built compressed URL for unit data`);
-      } else {
-        console.warn(`⚠️ No data to compress - neither property nor unit data available`);
-      }
-      
-      router.push(navigationUrl);
-      
-      // Enhanced logging for analytics/debugging
-      const searchInfo = enableUnifiedSearch 
-        ? `${(result as UnifiedSearchResult).searchType} search: ${result.reference} -> ${result.url}`
-        : `Property search: ${result.reference} -> ${result.url}`;
-      console.log(searchInfo);
-      
-      // Call success callback if provided
-      onSearch?.(result.reference, result.url);
-      
-      // Clear the input after successful search
-      setReference("");
       setError(null);
       setSuggestion(null);
-      setIsLoading(false);
+      setIsLoading(true);
+      setSearchType("properties and units");
 
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Search failed";
-      setError(errorMessage);
-      onError?.(errorMessage);
-      setIsLoading(false);
-      setSearchType(null);
-    }
-  }, [router, onSearch, onError, enableUnifiedSearch, searchTimeout, includeAlternatives]);
+      try {
+        let result:
+          | ReferenceSearchResult
+          | UnifiedSearchResult
+          | ProductionReferenceResult
+          | UnitReferenceSearchResult;
+
+        if (enableUnifiedSearch) {
+          // First try the working production property search
+          setSearchType("property");
+          result = await processProductionReferenceSearch(ref, {
+            useHybrid: false,
+            maxRetries: 2,
+            timeout: searchTimeout || 5000,
+          });
+
+          // If property search failed, try unit search
+          if (!result.isValid) {
+            setSearchType("unit");
+            const unitResult = await processUnitReferenceSearch(ref);
+
+            if (unitResult.isValid) {
+              // Convert unit result to compatible ProductionReferenceResult format
+              result = {
+                reference: unitResult.reference,
+                url: unitResult.url,
+                isValid: unitResult.isValid,
+                source: unitResult.source || "fallback",
+                responseTime: unitResult.responseTime,
+                error: unitResult.error,
+                unitData: unitResult.unitData, // Include the unit data!
+              } as ProductionReferenceResult;
+              setSearchType("unit");
+            }
+            // If both failed, keep the property error as the primary error
+          }
+        } else {
+          // Use the working production property search for backward compatibility
+          result = await processProductionReferenceSearch(ref, {
+            useHybrid: false,
+            maxRetries: 2,
+            timeout: searchTimeout || 5000,
+          });
+          setSearchType("property");
+        }
+
+        if (!result.isValid || result.error) {
+          setError(result.error ?? "Reference not found");
+          onError?.(result.error ?? "Reference not found");
+          setIsLoading(false);
+          return;
+        }
+
+        // Pass data via compressed URL parameters (SSR-compatible)
+        const propertyData = (result as any).propertyData;
+        const unitData = (result as any).unitData;
+        let navigationUrl = result.url;
+
+        console.log(`🔍 Checking data to compress:`, {
+          hasPropertyData: !!propertyData,
+          hasUnitData: !!unitData,
+          searchType: searchType,
+        });
+
+        if (propertyData) {
+          // Compress property data and build URL
+          navigationUrl = buildCompressedUrl(result.url, propertyData);
+          console.log(`🗜️ Built compressed URL for property data`);
+        } else if (unitData) {
+          // Compress unit data and build URL
+          navigationUrl = buildCompressedUrl(result.url, unitData);
+          console.log(`🗜️ Built compressed URL for unit data`);
+        } else {
+          console.warn(
+            `⚠️ No data to compress - neither property nor unit data available`
+          );
+        }
+
+        router.push(navigationUrl);
+
+        // Enhanced logging for analytics/debugging
+        const searchInfo = enableUnifiedSearch
+          ? `${(result as UnifiedSearchResult).searchType} search: ${result.reference} -> ${result.url}`
+          : `Property search: ${result.reference} -> ${result.url}`;
+        console.log(searchInfo);
+
+        // Call success callback if provided
+        onSearch?.(result.reference, result.url);
+
+        // Clear the input after successful search
+        setReference("");
+        setError(null);
+        setSuggestion(null);
+        setIsLoading(false);
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : "Search failed";
+        setError(errorMessage);
+        onError?.(errorMessage);
+        setIsLoading(false);
+        setSearchType(null);
+      }
+    },
+    [
+      router,
+      onSearch,
+      onError,
+      enableUnifiedSearch,
+      searchTimeout,
+      includeAlternatives,
+    ]
+  );
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setReference(value);
-    
+
     // Clear error and suggestions when user starts typing
     if (error && value.trim()) {
       setError(null);
@@ -213,7 +229,7 @@ export function ReferenceSearch({
           </span>
         </div>
       )}
-      
+
       <div className="flex gap-2">
         <div className="flex-1 relative">
           <Input
@@ -228,7 +244,11 @@ export function ReferenceSearch({
               error && "border-red-500 focus:border-red-500 focus:ring-red-500"
             )}
             disabled={isLoading}
-            aria-label={enableUnifiedSearch ? "Property or unit reference number" : "Property reference number"}
+            aria-label={
+              enableUnifiedSearch
+                ? "Property or unit reference number"
+                : "Property reference number"
+            }
             aria-describedby={error ? "reference-error" : undefined}
           />
           <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
@@ -241,8 +261,8 @@ export function ReferenceSearch({
             )}
           </div>
         </div>
-        
-        <Button 
+
+        <Button
           onClick={handleSearchClick}
           disabled={!reference.trim() || isLoading}
           className={cn(
@@ -251,16 +271,12 @@ export function ReferenceSearch({
           )}
           aria-label="Search for property"
         >
-          {isLoading ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            "Find"
-          )}
+          {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Find"}
         </Button>
       </div>
 
       {error && (
-        <div 
+        <div
           id="reference-error"
           className="flex items-center gap-2 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg p-3"
           role="alert"
@@ -274,10 +290,9 @@ export function ReferenceSearch({
         <div className="flex items-center gap-2 text-sm text-blue-600 bg-blue-50 border border-blue-200 rounded-lg p-3">
           <Loader2 className="h-4 w-4 animate-spin flex-shrink-0" />
           <span>
-            {enableUnifiedSearch 
+            {enableUnifiedSearch
               ? `Searching ${searchType || "properties and units"}...`
-              : "Searching for property..."
-            }
+              : "Searching for property..."}
           </span>
         </div>
       )}
@@ -291,10 +306,9 @@ export function ReferenceSearch({
 
       {reference && !error && !isLoading && !suggestion && (
         <div className="text-xs text-muted-foreground">
-          {enableUnifiedSearch 
+          {enableUnifiedSearch
             ? `Will search properties and units for: ${formatReferenceForDisplay(reference)}`
-            : `Will search for: ${formatReferenceForDisplay(reference)}`
-          }
+            : `Will search for: ${formatReferenceForDisplay(reference)}`}
         </div>
       )}
     </div>
@@ -304,7 +318,7 @@ export function ReferenceSearch({
 // Export a simplified version for basic use cases
 export function SimpleReferenceSearch({ className }: { className?: string }) {
   return (
-    <ReferenceSearch 
+    <ReferenceSearch
       className={className}
       size="sm"
       placeholder="Enter property or unit reference..."
@@ -322,7 +336,7 @@ export function SimpleReferenceSearch({ className }: { className?: string }) {
 // Export backward-compatible property-only search
 export function PropertyReferenceSearch({ className }: { className?: string }) {
   return (
-    <ReferenceSearch 
+    <ReferenceSearch
       className={className}
       size="sm"
       placeholder="Enter property reference..."

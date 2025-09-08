@@ -1,16 +1,16 @@
-"use client"
+"use client";
 
-import { Skeleton } from "@/components/ui/skeleton"
-import { cn } from "@/lib/utils"
+import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
 interface LoadingBoundaryProps {
-  className?: string
-  children?: React.ReactNode
-  isLoading?: boolean
-  loadingText?: string
-  loadingComponent?: React.ReactNode
-  rows?: number
-  variant?: "default" | "grid" | "list" | "card"
+  className?: string;
+  children?: React.ReactNode;
+  isLoading?: boolean;
+  loadingText?: string;
+  loadingComponent?: React.ReactNode;
+  rows?: number;
+  variant?: "default" | "grid" | "list" | "card";
 }
 
 const LoadingVariants = {
@@ -25,7 +25,7 @@ const LoadingVariants = {
       </div>
     </div>
   ),
-  
+
   grid: ({ rows = 6 }: { rows?: number }) => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {Array.from({ length: rows }).map((_, i) => (
@@ -42,12 +42,18 @@ const LoadingVariants = {
       ))}
     </div>
   ),
-  
+
   list: ({ rows = 5 }: { rows?: number }) => (
     <div className="space-y-6">
       {Array.from({ length: rows }).map((_, i) => (
-        <div key={i} className="flex gap-4 p-4 border border-gray-100 rounded-lg">
-          <Skeleton variant="shimmer" className="h-24 w-32 rounded-md flex-shrink-0" />
+        <div
+          key={i}
+          className="flex gap-4 p-4 border border-gray-100 rounded-lg"
+        >
+          <Skeleton
+            variant="shimmer"
+            className="h-24 w-32 rounded-md flex-shrink-0"
+          />
           <div className="flex-1 space-y-2">
             <Skeleton variant="text" size="lg" className="w-4/5" />
             <Skeleton variant="text" size="md" className="w-1/2" />
@@ -61,11 +67,14 @@ const LoadingVariants = {
       ))}
     </div>
   ),
-  
+
   card: ({ rows = 4 }: { rows?: number }) => (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       {Array.from({ length: rows }).map((_, i) => (
-        <div key={i} className="border border-gray-100 rounded-lg p-4 space-y-3">
+        <div
+          key={i}
+          className="border border-gray-100 rounded-lg p-4 space-y-3"
+        >
           <Skeleton variant="shimmer" className="h-32 w-full rounded-md" />
           <Skeleton variant="text" size="md" className="w-4/5" />
           <Skeleton variant="light" size="default" className="w-3/5" />
@@ -76,8 +85,8 @@ const LoadingVariants = {
         </div>
       ))}
     </div>
-  )
-}
+  ),
+};
 
 export function LoadingBoundary({
   className,
@@ -86,14 +95,14 @@ export function LoadingBoundary({
   loadingText = "Loading content...",
   loadingComponent,
   rows = 6,
-  variant = "default"
+  variant = "default",
 }: LoadingBoundaryProps) {
   if (!isLoading && children) {
-    return <>{children}</>
+    return <>{children}</>;
   }
 
   return (
-    <div 
+    <div
       className={cn("w-full", className)}
       role="status"
       aria-label={loadingText}
@@ -102,28 +111,28 @@ export function LoadingBoundary({
       {loadingComponent ?? LoadingVariants[variant]({ rows })}
       <span className="sr-only">{loadingText}</span>
     </div>
-  )
+  );
 }
 
 // Specialized loading components for common use cases
 export function PropertyGridLoading({ count = 6 }: { count?: number }) {
   return (
-    <LoadingBoundary 
-      variant="grid" 
-      rows={count} 
-      loadingText="Loading properties..." 
+    <LoadingBoundary
+      variant="grid"
+      rows={count}
+      loadingText="Loading properties..."
     />
-  )
+  );
 }
 
 export function PropertyListLoading({ count = 5 }: { count?: number }) {
   return (
-    <LoadingBoundary 
-      variant="list" 
-      rows={count} 
-      loadingText="Loading property listings..." 
+    <LoadingBoundary
+      variant="list"
+      rows={count}
+      loadingText="Loading property listings..."
     />
-  )
+  );
 }
 
 export function SearchResultsLoading({ count = 8 }: { count?: number }) {
@@ -137,15 +146,15 @@ export function SearchResultsLoading({ count = 8 }: { count?: number }) {
           <Skeleton variant="light" className="h-9 w-24" />
         </div>
       </div>
-      
+
       {/* Search results loading */}
-      <LoadingBoundary 
-        variant="list" 
-        rows={count} 
-        loadingText="Loading search results..." 
+      <LoadingBoundary
+        variant="list"
+        rows={count}
+        loadingText="Loading search results..."
       />
     </div>
-  )
+  );
 }
 
 export function DashboardLoading() {
@@ -156,11 +165,14 @@ export function DashboardLoading() {
         <Skeleton variant="text" size="2xl" className="w-1/3" />
         <Skeleton variant="light" size="default" className="w-1/2" />
       </div>
-      
+
       {/* Stats cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {Array.from({ length: 3 }).map((_, i) => (
-          <div key={i} className="p-6 border border-gray-100 rounded-lg space-y-3">
+          <div
+            key={i}
+            className="p-6 border border-gray-100 rounded-lg space-y-3"
+          >
             <div className="flex items-center justify-between">
               <Skeleton variant="light" className="h-4 w-20" />
               <Skeleton variant="light" className="h-6 w-6 rounded-md" />
@@ -170,9 +182,13 @@ export function DashboardLoading() {
           </div>
         ))}
       </div>
-      
+
       {/* Main content */}
-      <LoadingBoundary variant="grid" rows={6} loadingText="Loading dashboard content..." />
+      <LoadingBoundary
+        variant="grid"
+        rows={6}
+        loadingText="Loading dashboard content..."
+      />
     </div>
-  )
+  );
 }

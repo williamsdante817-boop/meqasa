@@ -11,10 +11,11 @@ import type { BlogResponse } from "@/types/blog";
 export function useFeaturedBlog(initialData?: BlogResponse) {
   return useQuery({
     queryKey: queryKeys.blog.featured(),
-    queryFn: () => fetch("/api/blog/featured").then(r => r.json()),
+    queryFn: () => fetch("/api/blog/featured").then((r) => r.json()),
     ...queryConfig.static, // Long cache time since blog posts don't change frequently
     // Override stale time for blog content
-    staleTime: process.env.NODE_ENV === "development" ? 2 * 60 * 1000 : 30 * 60 * 1000, // 2min dev, 30min prod
+    staleTime:
+      process.env.NODE_ENV === "development" ? 2 * 60 * 1000 : 30 * 60 * 1000, // 2min dev, 30min prod
     initialData,
     retry: (failureCount, _error) => {
       // Don't retry too aggressively for blog content

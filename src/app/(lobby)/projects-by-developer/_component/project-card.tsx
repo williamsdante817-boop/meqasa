@@ -42,7 +42,7 @@ export function ProjectCard({
                     ? "bg-brand-badge-completed text-white"
                     : status?.toLowerCase() === "ongoing"
                       ? "bg-brand-badge-ongoing text-white"
-                      : "bg-brand-badge-muted text-white",
+                      : "bg-brand-badge-muted text-white"
                 )}
               >
                 {status}

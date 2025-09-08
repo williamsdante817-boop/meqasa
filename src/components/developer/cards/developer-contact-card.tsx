@@ -83,13 +83,13 @@ const getStoredContactInfo = (): StoredContactInfo | null => {
 const setStoredContactInfo = (
   name: string,
   phone: string,
-  countryIso?: CountryCode,
+  countryIso?: CountryCode
 ): void => {
   if (typeof window === "undefined") return;
   try {
     localStorage.setItem(
       "meqasa_contact_info",
-      JSON.stringify({ name, phone, countryIso: countryIso?.toUpperCase() }),
+      JSON.stringify({ name, phone, countryIso: countryIso?.toUpperCase() })
     );
   } catch (error) {
     console.error("Error writing to localStorage:", error);
@@ -191,12 +191,12 @@ export function DeveloperContactCard({
       // Clear any pending timeouts
       setCopiedNumber(false);
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [developerId, contextKey]);
 
   const handleInputChange = (
     field: keyof ContactFormState,
-    value: string | boolean,
+    value: string | boolean
   ) => {
     setContactForm((prev) => ({ ...prev, [field]: value }));
     // Clear error when user starts typing
@@ -303,7 +303,7 @@ export function DeveloperContactCard({
       setStoredContactInfo(
         contactForm.name,
         contactForm.phone,
-        contactForm.countryIso,
+        contactForm.countryIso
       );
 
       // Store the phone numbers in cache
@@ -382,7 +382,7 @@ export function DeveloperContactCard({
       setStoredContactInfo(
         contactForm.name,
         contactForm.phone,
-        contactForm.countryIso,
+        contactForm.countryIso
       );
 
       // Store the phone numbers in cache
@@ -476,7 +476,6 @@ export function DeveloperContactCard({
       setIsLoading(false);
     }
   };
-
 
   const handleUseDifferentInfo = () => {
     clearStoredContactInfo();
@@ -615,7 +614,7 @@ export function DeveloperContactCard({
                 <span className="font-mono text-sm font-medium">
                   {toInternationalDisplay(
                     agentInfo.phoneNumber,
-                    contactForm.countryIso,
+                    contactForm.countryIso
                   )}
                 </span>
                 <Button
@@ -639,7 +638,7 @@ export function DeveloperContactCard({
                 <span className="font-mono text-sm font-medium">
                   {toInternationalDisplay(
                     agentInfo.whatsappNumber,
-                    contactForm.countryIso,
+                    contactForm.countryIso
                   )}
                 </span>
               </div>
@@ -865,7 +864,7 @@ export function DeveloperContactCard({
                     ) {
                       handleInputChange(
                         "countryIso",
-                        (country.iso2 as string).toUpperCase() as CountryCode,
+                        (country.iso2 as string).toUpperCase() as CountryCode
                       );
                     }
                   }}
@@ -973,7 +972,7 @@ export function DeveloperContactCard({
                     ) {
                       handleInputChange(
                         "countryIso",
-                        (country.iso2 as string).toUpperCase() as CountryCode,
+                        (country.iso2 as string).toUpperCase() as CountryCode
                       );
                     }
                   }}
@@ -1110,7 +1109,7 @@ export function DeveloperContactCard({
                             "countryIso",
                             (
                               country.iso2 as string
-                            ).toUpperCase() as CountryCode,
+                            ).toUpperCase() as CountryCode
                           );
                         }
                       }}

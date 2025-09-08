@@ -14,9 +14,9 @@ const config = {
       "@/components/ui",
     ],
   },
-  
+
   // Bundle analysis is configured below via wrapper when ANALYZE=true
-  
+
   // Image optimizations
   images: {
     remotePatterns: [
@@ -74,19 +74,21 @@ const config = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     qualities: [75, 85, 90, 95],
   },
-  
+
   // Production optimizations
   poweredByHeader: false,
-  
+
   // Compression
   compress: true,
 };
 
 // If ANALYZE=true, wrap config with bundle analyzer
 let finalConfig = config;
-if (process.env.ANALYZE === 'true') {
+if (process.env.ANALYZE === "true") {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const withBundleAnalyzer = require('@next/bundle-analyzer')({ enabled: true });
+  const withBundleAnalyzer = require("@next/bundle-analyzer")({
+    enabled: true,
+  });
   finalConfig = withBundleAnalyzer(finalConfig);
 }
 

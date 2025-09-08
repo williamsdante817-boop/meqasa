@@ -15,7 +15,7 @@ export interface ResultsPopupParams {
  * @returns A promise that resolves with the popup data including full URLs.
  */
 export async function getResultsPopup(
-  params: ResultsPopupParams,
+  params: ResultsPopupParams
 ): Promise<PopupDataWithUrls> {
   const url = "https://meqasa.com/rp-11";
 
@@ -30,7 +30,7 @@ export async function getResultsPopup(
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
-    },
+    }
   );
 
   // Transform the data to include full URLs

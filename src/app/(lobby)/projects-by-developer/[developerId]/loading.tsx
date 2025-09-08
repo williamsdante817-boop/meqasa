@@ -25,13 +25,13 @@ export default function Loading() {
             <div className="text-white drop-shadow-lg">
               {/* Company name - h1 with proper text sizing */}
               <Skeleton className="h-8 sm:h-9 md:h-10 w-48 sm:w-56 md:w-64 mb-2 sm:mb-3 bg-white/20 rounded" />
-              
+
               {/* Active status with CheckCircle icon */}
               <div className="flex items-center mb-2">
                 <Skeleton className="w-4 h-4 sm:w-5 sm:h-5 rounded-full mr-2 bg-green-400/20 flex-shrink-0" />
                 <Skeleton className="h-3 sm:h-4 w-32 sm:w-36 bg-white/20 rounded" />
               </div>
-              
+
               {/* Location with MapPin icon */}
               <div className="flex items-center">
                 <Skeleton className="w-5 h-5 rounded-full mr-2 bg-brand-primary/20 flex-shrink-0" />
@@ -79,19 +79,22 @@ export default function Loading() {
                 {/* Project Cards Grid - matching exact grid structure from ProjectCard */}
                 <div className="grid grid-cols-2 gap-4 lg:gap-8">
                   {Array.from({ length: 6 }).map((_, i) => (
-                    <div key={`project-${i}`} className="group relative h-full overflow-hidden rounded-lg border-0 bg-transparent p-0 shadow-none">
+                    <div
+                      key={`project-${i}`}
+                      className="group relative h-full overflow-hidden rounded-lg border-0 bg-transparent p-0 shadow-none"
+                    >
                       {/* ProjectCard structure - CardHeader p-0 gap-0 */}
                       <div className="p-0 gap-0">
                         {/* AspectRatio 16/9 */}
                         <div className="aspect-[16/9] relative overflow-hidden rounded-lg">
                           <Skeleton className="h-[180px] w-full rounded-lg lg:h-[254px] transition-transform duration-300" />
-                          
+
                           {/* Status Badge and Project Name - absolute bottom-3 left-3 z-20 lg:bottom-4 lg:left-4 */}
                           <div className="absolute bottom-3 left-3 z-20 lg:bottom-4 lg:left-4">
                             <Skeleton className="h-6 w-20 rounded-sm mb-2 bg-white/30" />
                             <Skeleton className="h-5 w-32 lg:h-6 lg:w-40 bg-white/40 rounded" />
                           </div>
-                          
+
                           {/* Gradient Overlay - matching exact gradient */}
                           <div className="absolute inset-0 z-10 rounded-lg bg-gradient-to-b from-transparent via-transparent to-slate-900/60" />
                         </div>
@@ -99,7 +102,7 @@ export default function Loading() {
                     </div>
                   ))}
                 </div>
-                
+
                 {/* Pagination Skeleton - conditional based on items > 6 */}
                 <div className="flex items-center justify-center gap-2 mt-8">
                   <Skeleton className="h-8 w-8 rounded" />
@@ -141,7 +144,10 @@ export default function Loading() {
                           <Skeleton className="h-4 w-32" />
                           <div className="flex items-center gap-1">
                             {Array.from({ length: 5 }).map((_, j) => (
-                              <Skeleton key={j} className="h-4 w-4 rounded-full" />
+                              <Skeleton
+                                key={j}
+                                className="h-4 w-4 rounded-full"
+                              />
                             ))}
                           </div>
                         </div>
@@ -173,14 +179,14 @@ export default function Loading() {
                   <Skeleton className="h-4 w-24" />
                 </div>
               </div>
-              
+
               {/* Contact Actions */}
               <div className="space-y-3">
                 <Skeleton className="h-10 w-full rounded-lg" />
                 <Skeleton className="h-10 w-full rounded-lg" />
                 <Skeleton className="h-10 w-full rounded-lg" />
               </div>
-              
+
               {/* Additional Info */}
               <div className="pt-4 border-t space-y-2">
                 <div className="flex items-center gap-2">
@@ -192,7 +198,7 @@ export default function Loading() {
                   <Skeleton className="h-4 w-28" />
                 </div>
               </div>
-              
+
               {/* Social Links */}
               <div className="pt-4 border-t">
                 <div className="flex items-center gap-3">

@@ -227,7 +227,7 @@ const OptimizedAgentLogo: React.FC<OptimizedAgentLogoProps> = ({
         height={50}
         className={cn(
           "h-full w-full object-contain transition-opacity duration-300",
-          isLoading ? "opacity-0" : "opacity-100",
+          isLoading ? "opacity-0" : "opacity-100"
         )}
         onLoad={handleLoad}
         onError={handleError}

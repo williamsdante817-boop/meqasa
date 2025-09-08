@@ -158,7 +158,7 @@ export default async function SearchPage({
   const generateDynamicHeading = (
     type: string,
     location: string,
-    searchParams: Record<string, string>,
+    searchParams: Record<string, string>
   ): string => {
     const typeDisplay =
       type === "rent" ? "Rental" : type === "sale" ? "Sale" : type;
@@ -211,7 +211,7 @@ export default async function SearchPage({
     type: string,
     location: string,
     resultCount: number,
-    searchParams: Record<string, string>,
+    searchParams: Record<string, string>
   ): string => {
     const locationDisplay = location === "ghana" ? "Ghana" : location;
 
@@ -329,14 +329,14 @@ export default async function SearchPage({
                     type,
                     location,
                     searchData.resultcount,
-                    resolvedSearchParams,
+                    resolvedSearchParams
                   )}
                 </p>
               </div>
-              
+
               {/* Unified Reference Search Component - Properties + Units */}
               <div className="bg-gradient-to-r from-blue-50 to-green-50 border border-blue-200 rounded-lg p-4">
-                <ReferenceSearch 
+                <ReferenceSearch
                   showLabel={true}
                   size="default"
                   className="max-w-md"

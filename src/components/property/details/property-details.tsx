@@ -6,7 +6,7 @@ interface PropertyDetail {
   title: string;
   value: string | number | boolean | null | undefined;
   formatter?: (
-    value: string | number | boolean | null | undefined,
+    value: string | number | boolean | null | undefined
   ) => ReactNode;
 }
 
@@ -23,9 +23,7 @@ export default function PropertyDetailsTable({
   // Filter out any details that should not be displayed
   const filteredDetails = details.filter(
     (detail) =>
-      detail.value !== undefined &&
-      detail.value !== null &&
-      detail.value !== "",
+      detail.value !== undefined && detail.value !== null && detail.value !== ""
   );
 
   // Format the value based on its type or using a custom formatter

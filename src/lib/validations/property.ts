@@ -6,12 +6,12 @@
 import { z } from "zod";
 import { isValidPhoneNumber } from "libphonenumber-js";
 import type { CountryCode } from "libphonenumber-js";
-import { 
+import {
   propertyTypes,
   contractTypes,
   propertyStatuses,
   currencies,
-  propertyFeatures
+  propertyFeatures,
 } from "@/config/property";
 
 // Base schemas for property configuration enums
@@ -22,26 +22,32 @@ export const currencySchema = z.enum(currencies);
 export const propertyFeatureSchema = z.enum(propertyFeatures);
 
 // International phone number validation using libphonenumber-js
-const internationalPhoneSchema = z.string()
+const internationalPhoneSchema = z
+  .string()
   .min(1, "Phone number is required")
-  .refine((phone) => {
-    try {
-      return isValidPhoneNumber(phone);
-    } catch {
-      return false;
+  .refine(
+    (phone) => {
+      try {
+        return isValidPhoneNumber(phone);
+      } catch {
+        return false;
+      }
+    },
+    {
+      message: "Please enter a valid international phone number",
     }
-  }, {
-    message: "Please enter a valid international phone number"
-  });
+  );
 
 // Location schema
 export const locationSchema = z.object({
   area: z.string().min(1, "Area is required"),
   address: z.string().min(1, "Address is required"),
-  coordinates: z.object({
-    lat: z.number().min(-90).max(90),
-    lng: z.number().min(-180).max(180),
-  }).optional(),
+  coordinates: z
+    .object({
+      lat: z.number().min(-90).max(90),
+      lng: z.number().min(-180).max(180),
+    })
+    .optional(),
 });
 
 // Property details schema
@@ -91,10 +97,12 @@ export const agentSchema = z.object({
 export const propertySchema = z.object({
   id: z.string().min(1, "Property ID is required"),
   reference: z.string().min(1, "Property reference is required"),
-  title: z.string()
+  title: z
+    .string()
     .min(10, "Title must be at least 10 characters")
     .max(100, "Title must be less than 100 characters"),
-  description: z.string()
+  description: z
+    .string()
     .min(50, "Description must be at least 50 characters")
     .max(2000, "Description must be less than 2000 characters"),
   type: propertyTypeSchema,
@@ -155,24 +163,32 @@ export const propertySearchParamsSchema = z.object({
   type: z.union([propertyTypeSchema, z.array(propertyTypeSchema)]).optional(),
   contract: contractTypeSchema.optional(),
   location: z.string().optional(),
-  bedrooms: z.object({
-    min: z.number().int().min(0).optional(),
-    max: z.number().int().max(20).optional(),
-  }).optional(),
-  bathrooms: z.object({
-    min: z.number().int().min(0).optional(),
-    max: z.number().int().max(20).optional(),
-  }).optional(),
-  price: z.object({
-    min: z.number().min(0).optional(),
-    max: z.number().min(0).optional(),
-    currency: currencySchema.optional(),
-  }).optional(),
+  bedrooms: z
+    .object({
+      min: z.number().int().min(0).optional(),
+      max: z.number().int().max(20).optional(),
+    })
+    .optional(),
+  bathrooms: z
+    .object({
+      min: z.number().int().min(0).optional(),
+      max: z.number().int().max(20).optional(),
+    })
+    .optional(),
+  price: z
+    .object({
+      min: z.number().min(0).optional(),
+      max: z.number().min(0).optional(),
+      currency: currencySchema.optional(),
+    })
+    .optional(),
   features: z.array(propertyFeatureSchema).optional(),
   furnished: z.boolean().optional(),
   page: z.number().int().min(1).default(1),
   limit: z.number().int().min(1).max(100).default(20),
-  sortBy: z.enum(["date_desc", "date_asc", "price_asc", "price_desc", "relevance"]).default("date_desc"),
+  sortBy: z
+    .enum(["date_desc", "date_asc", "price_asc", "price_desc", "relevance"])
+    .default("date_desc"),
   q: z.string().optional(),
 });
 
@@ -182,15 +198,19 @@ export const propertyContactFormSchema = z.object({
   propertyTitle: z.string().min(1, "Property title is required"),
   contactType: z.enum(["inquiry", "viewing", "callback"]),
   visitor: z.object({
-    name: z.string()
+    name: z
+      .string()
       .min(2, "Name must be at least 2 characters")
       .max(50, "Name must be less than 50 characters")
-      .regex(/^[a-zA-Z\s'-]+$/, "Name must contain only letters, spaces, hyphens, and apostrophes"),
-    email: z.string()
-      .email("Please enter a valid email address"),
+      .regex(
+        /^[a-zA-Z\s'-]+$/,
+        "Name must contain only letters, spaces, hyphens, and apostrophes"
+      ),
+    email: z.string().email("Please enter a valid email address"),
     phone: internationalPhoneSchema,
   }),
-  message: z.string()
+  message: z
+    .string()
     .min(10, "Message must be at least 10 characters")
     .max(500, "Message must be less than 500 characters"),
   preferredContact: z.enum(["phone", "email", "whatsapp"]).optional(),
@@ -207,24 +227,30 @@ export const propertyUnitSchema = z.object({
   bathrooms: z.number().int().min(0),
   floorArea: z.number().positive(),
   pricing: z.object({
-    selling: z.object({
-      amount: z.number().min(0),
-      currency: currencySchema,
-    }).optional(),
-    renting: z.object({
-      amount: z.number().min(0),
-      currency: currencySchema,
-      period: z.enum(["month", "week", "day"]),
-    }).optional(),
+    selling: z
+      .object({
+        amount: z.number().min(0),
+        currency: currencySchema,
+      })
+      .optional(),
+    renting: z
+      .object({
+        amount: z.number().min(0),
+        currency: currencySchema,
+        period: z.enum(["month", "week", "day"]),
+      })
+      .optional(),
   }),
   features: z.array(propertyFeatureSchema),
   available: z.boolean(),
   coverImage: z.string().url(),
-  floorPlan: z.object({
-    imageUrl: z.string().url(),
-    sqft: z.number().positive(),
-    sqm: z.number().positive(),
-  }).optional(),
+  floorPlan: z
+    .object({
+      imageUrl: z.string().url(),
+      sqft: z.number().positive(),
+      sqm: z.number().positive(),
+    })
+    .optional(),
   project: z.object({
     id: z.string().min(1),
     name: z.string().min(1),
@@ -256,11 +282,13 @@ export const propertyProjectSchema = z.object({
   units: z.object({
     total: z.number().int().min(0),
     available: z.number().int().min(0),
-    types: z.array(z.object({
-      type: propertyTypeSchema,
-      count: z.number().int().min(0),
-      priceFrom: z.number().min(0),
-    })),
+    types: z.array(
+      z.object({
+        type: propertyTypeSchema,
+        count: z.number().int().min(0),
+        priceFrom: z.number().min(0),
+      })
+    ),
   }),
   completion: z.object({
     status: z.enum(["completed", "under_construction", "planned"]),
@@ -274,18 +302,22 @@ export const propertyProjectSchema = z.object({
 });
 
 // Form validation helpers
-export const createPropertyFormSchema = propertySchema.omit({
-  id: true,
-  dates: true,
-  metrics: true,
-  seo: true,
-}).extend({
-  seo: z.object({
-    slug: z.string().optional(),
-    metaTitle: z.string().max(60).optional(),
-    metaDescription: z.string().max(160).optional(),
-  }).optional(),
-});
+export const createPropertyFormSchema = propertySchema
+  .omit({
+    id: true,
+    dates: true,
+    metrics: true,
+    seo: true,
+  })
+  .extend({
+    seo: z
+      .object({
+        slug: z.string().optional(),
+        metaTitle: z.string().max(60).optional(),
+        metaDescription: z.string().max(160).optional(),
+      })
+      .optional(),
+  });
 
 export const updatePropertyFormSchema = createPropertyFormSchema.partial();
 
@@ -312,7 +344,10 @@ export function validatePropertyContactForm(data: unknown) {
   return propertyContactFormSchema.safeParse(data);
 }
 
-export function validateInternationalPhone(phone: string, defaultCountry?: string): boolean {
+export function validateInternationalPhone(
+  phone: string,
+  defaultCountry?: string
+): boolean {
   try {
     // Only pass defaultCountry if it's a valid CountryCode string
     return defaultCountry

@@ -16,21 +16,27 @@ function createQueryClient() {
         // Real estate data freshness strategy
         staleTime: isProduction ? 5 * 60 * 1000 : 30 * 1000, // 5min prod, 30s dev
         gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
-        
+
         // Error handling
         retry: (failureCount, error: unknown) => {
           // Don't retry on client errors (4xx)
-          if (error && typeof error === 'object' && 'status' in error && typeof error.status === 'number' && error.status >= 400 && error.status < 500) {
+          if (
+            error &&
+            typeof error === "object" &&
+            "status" in error &&
+            typeof error.status === "number" &&
+            error.status >= 400 &&
+            error.status < 500
+          ) {
             return false;
           }
           // Retry up to 3 times for server errors
           return failureCount < 3;
         },
-        
+
         // Retry delay with exponential backoff
-        retryDelay: (attemptIndex) => 
-          Math.min(1000 * 2 ** attemptIndex, 30000),
-        
+        retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+
         // Conservative refetching for production
         refetchOnWindowFocus: isDevelopment,
         refetchOnReconnect: true,
@@ -55,9 +61,9 @@ export function getQueryClient(): QueryClient {
     // Server: always create a new query client
     return createQueryClient();
   }
-  
+
   // Browser: create singleton
   clientSingleton ??= createQueryClient();
-  
+
   return clientSingleton;
 }

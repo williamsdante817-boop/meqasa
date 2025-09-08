@@ -28,7 +28,7 @@ export default function UnitCard({ unit }: { unit: SimilarUnit | Unit }) {
   const imageAlt = useMemo(
     () =>
       `${unit.title} - ${unit.beds} bedroom, ${unit.baths} bathroom property in ${unit.city}`,
-    [unit.title, unit.beds, unit.baths, unit.city],
+    [unit.title, unit.beds, unit.baths, unit.city]
   );
 
   return (
@@ -43,7 +43,10 @@ export default function UnitCard({ unit }: { unit: SimilarUnit | Unit }) {
         className="block focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent focus:ring-accent rounded-lg transition-all duration-200"
       >
         <CardHeader className="!p-0 border-b border-b-gray-100 gap-0 rounded-lg shadow-none">
-          <AspectRatio ratio={4 / 3} className="relative overflow-hidden rounded-lg">
+          <AspectRatio
+            ratio={4 / 3}
+            className="relative overflow-hidden rounded-lg"
+          >
             {imageLoading && (
               <Skeleton className="absolute inset-0 z-10 rounded-lg h-[256px]" />
             )}

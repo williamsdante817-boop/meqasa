@@ -41,7 +41,7 @@ export function AlertCard({
       aria-label={ariaLabel ?? title ?? defaultTitle}
       className={cn(
         "flex flex-col items-center justify-center space-y-4 p-4 sm:p-8 md:p-16",
-        className,
+        className
       )}
       {...props}
     >

@@ -27,7 +27,7 @@ export function isValidPopupData(popupData: PopupDataWithUrls): boolean {
  */
 export async function getPopupData(
   pageType: "homepage" | "results",
-  resultsParams?: ResultsPopupParams,
+  resultsParams?: ResultsPopupParams
 ): Promise<PopupDataWithUrls | null> {
   try {
     if (pageType === "homepage") {

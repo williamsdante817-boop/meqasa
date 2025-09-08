@@ -18,7 +18,15 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Icons } from "@/components/icons";
-import { Home, Search, Heart, Phone, Users, Building2, MapPin } from "lucide-react";
+import {
+  Home,
+  Search,
+  Heart,
+  Phone,
+  Users,
+  Building2,
+  MapPin,
+} from "lucide-react";
 
 interface MobileNavProps {
   items?: MainNavItem[];
@@ -33,12 +41,42 @@ export function MobileNav({ items: _ }: MobileNavProps) {
 
   // Simplified mobile nav items - focus on primary actions
   const quickActions = [
-    { title: "Search Properties", href: "/", icon: Search, description: "Find your dream home" },
-    { title: "Saved Properties", href: "/favorites", icon: Heart, description: "View saved listings" },
-    { title: "Agents", href: "/agents", icon: Users, description: "Browse real estate agents" },
-    { title: "Developers", href: "/developers", icon: Building2, description: "View development projects" },
-    { title: "All Projects", href: "/projects", icon: MapPin, description: "Explore all projects" },
-    { title: "Contact", href: "/contact", icon: Phone, description: "Get in touch with us" },
+    {
+      title: "Search Properties",
+      href: "/",
+      icon: Search,
+      description: "Find your dream home",
+    },
+    {
+      title: "Saved Properties",
+      href: "/favorites",
+      icon: Heart,
+      description: "View saved listings",
+    },
+    {
+      title: "Agents",
+      href: "/agents",
+      icon: Users,
+      description: "Browse real estate agents",
+    },
+    {
+      title: "Developers",
+      href: "/developers",
+      icon: Building2,
+      description: "View development projects",
+    },
+    {
+      title: "All Projects",
+      href: "/projects",
+      icon: MapPin,
+      description: "Explore all projects",
+    },
+    {
+      title: "Contact",
+      href: "/contact",
+      icon: Phone,
+      description: "Get in touch with us",
+    },
   ];
 
   // Primary navigation categories - simplified for mobile
@@ -50,28 +88,37 @@ export function MobileNav({ items: _ }: MobileNavProps) {
         { title: "Houses", href: "/search/rent?q=ghana&ftype=house" },
         { title: "Apartments", href: "/search/rent?q=ghana&ftype=apartment" },
         { title: "Office Spaces", href: "/search/rent?q=ghana&ftype=office" },
-        { title: "Short Let", href: "/search/rent?q=ghana&frentperiod=shortrent" },
-      ]
+        {
+          title: "Short Let",
+          href: "/search/rent?q=ghana&frentperiod=shortrent",
+        },
+      ],
     },
     {
-      title: "For Sale", 
+      title: "For Sale",
       icon: Building2,
       items: [
         { title: "Houses", href: "/search/sale?q=ghana&ftype=house" },
         { title: "Apartments", href: "/search/sale?q=ghana&ftype=apartment" },
         { title: "Office Spaces", href: "/search/sale?q=ghana&ftype=office" },
         { title: "Commercial", href: "/search/sale?q=ghana&ftype=commercial" },
-      ]
+      ],
     },
     {
       title: "Land",
       icon: MapPin,
       items: [
         { title: "Residential Land", href: "/search/sale?q=ghana&ftype=land" },
-        { title: "Commercial Land", href: "/search/sale?q=ghana&ftype=commercial" },
-        { title: "Industrial Land", href: "/search/sale?q=ghana&ftype=industrial" },
-      ]
-    }
+        {
+          title: "Commercial Land",
+          href: "/search/sale?q=ghana&ftype=commercial",
+        },
+        {
+          title: "Industrial Land",
+          href: "/search/sale?q=ghana&ftype=industrial",
+        },
+      ],
+    },
   ];
 
   return (
@@ -105,10 +152,7 @@ export function MobileNav({ items: _ }: MobileNavProps) {
             onClick={() => setOpen(false)}
             aria-label="Home"
           >
-            <Icons.logo
-              className="mr-2 size-6 text-white"
-              aria-hidden="true"
-            />
+            <Icons.logo className="mr-2 size-6 text-white" aria-hidden="true" />
             <span className="font-bold text-white text-lg">
               {siteConfig.name}
             </span>
@@ -134,7 +178,7 @@ export function MobileNav({ items: _ }: MobileNavProps) {
                     >
                       <IconComponent className="h-6 w-6 text-brand-primary stroke-[1.5] mb-2 group-hover:scale-110 transition-transform" />
                       <span className="text-xs font-medium text-center text-gray-700">
-                        {action.title.split(' ')[0]}
+                        {action.title.split(" ")[0]}
                       </span>
                     </Link>
                   );
@@ -151,8 +195,8 @@ export function MobileNav({ items: _ }: MobileNavProps) {
                 {primaryCategories.map((category, index) => {
                   const IconComponent = category.icon;
                   return (
-                    <AccordionItem 
-                      value={category.title} 
+                    <AccordionItem
+                      value={category.title}
                       key={index}
                       className="border rounded-lg bg-white shadow-none"
                     >
@@ -163,7 +207,9 @@ export function MobileNav({ items: _ }: MobileNavProps) {
                       >
                         <div className="flex items-center gap-3">
                           <IconComponent className="h-5 w-5 text-brand-primary stroke-[1.5]" />
-                          <span className="font-medium text-gray-900">{category.title}</span>
+                          <span className="font-medium text-gray-900">
+                            {category.title}
+                          </span>
                         </div>
                       </AccordionTrigger>
                       <AccordionContent className="px-4 pb-3">
@@ -201,8 +247,12 @@ export function MobileNav({ items: _ }: MobileNavProps) {
                     >
                       <IconComponent className="h-5 w-5 text-brand-primary stroke-[1.5]" />
                       <div>
-                        <span className="font-medium text-gray-900">{action.title}</span>
-                        <p className="text-xs text-gray-500">{action.description}</p>
+                        <span className="font-medium text-gray-900">
+                          {action.title}
+                        </span>
+                        <p className="text-xs text-gray-500">
+                          {action.description}
+                        </p>
                       </div>
                     </Link>
                   );
@@ -240,7 +290,7 @@ function MobileLink({
         "text-foreground/70 transition-colors hover:text-foreground",
         href.includes(segment) && "text-foreground",
         disabled && "pointer-events-none opacity-60",
-        className,
+        className
       )}
       onClick={() => setOpen(false)}
       {...props}

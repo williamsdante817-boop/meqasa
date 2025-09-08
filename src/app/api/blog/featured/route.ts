@@ -22,7 +22,7 @@ export async function GET() {
       throw new Error(`Blog API responded with status: ${response.status}`);
     }
 
-    const rawData = await response.json() as unknown;
+    const rawData = (await response.json()) as unknown;
 
     // Handle double-encoded JSON string response
     let data: BlogResponse;

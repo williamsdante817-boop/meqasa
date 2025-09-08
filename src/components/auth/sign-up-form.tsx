@@ -9,7 +9,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Icons } from "@/components/icons";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
@@ -18,7 +24,8 @@ interface SignUpFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 export function SignUpForm({ className, ...props }: SignUpFormProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] =
+    useState<boolean>(false);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -33,78 +40,83 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value
+      [name]: type === "checkbox" ? checked : value,
     }));
-    
+
     // Clear error when user starts typing
     if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: "" }));
+      setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
 
   const handleSelectChange = (name: string, value: string) => {
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
     if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: "" }));
+      setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
-    
+
     if (!formData.firstName.trim()) {
       newErrors.firstName = "First name is required";
     }
-    
+
     if (!formData.lastName.trim()) {
       newErrors.lastName = "Last name is required";
     }
-    
+
     if (!formData.email) {
       newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = "Please enter a valid email address";
     }
-    
+
     if (!formData.phone.trim()) {
       newErrors.phone = "Phone number is required";
-    } else if (!/^[\+]?[(]?[\+]?\d{3}\)?[-\s\.]?\d{3}[-\s\.]?\d{4,6}$/.test(formData.phone.replace(/\s/g, ""))) {
+    } else if (
+      !/^[\+]?[(]?[\+]?\d{3}\)?[-\s\.]?\d{3}[-\s\.]?\d{4,6}$/.test(
+        formData.phone.replace(/\s/g, "")
+      )
+    ) {
       newErrors.phone = "Please enter a valid phone number";
     }
-    
+
     if (!formData.password) {
       newErrors.password = "Password is required";
     } else if (formData.password.length < 8) {
       newErrors.password = "Password must be at least 8 characters";
     } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password)) {
-      newErrors.password = "Password must contain uppercase, lowercase, and number";
+      newErrors.password =
+        "Password must contain uppercase, lowercase, and number";
     }
-    
+
     if (!formData.confirmPassword) {
       newErrors.confirmPassword = "Please confirm your password";
     } else if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match";
     }
-    
+
     if (!formData.userType) {
       newErrors.userType = "Please select your account type";
     }
-    
+
     if (!formData.agreeToTerms) {
       newErrors.agreeToTerms = "You must agree to the terms and conditions";
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   async function onSubmit(event: React.SyntheticEvent) {
     event.preventDefault();
-    
+
     if (!validateForm()) return;
-    
+
     setIsLoading(true);
 
     // Simulate API call
@@ -131,7 +143,10 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
           {/* Name fields */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="grid gap-2">
-              <Label htmlFor="firstName" className="text-sm font-medium text-brand-accent">
+              <Label
+                htmlFor="firstName"
+                className="text-sm font-medium text-brand-accent"
+              >
                 First name
               </Label>
               <div className="relative">
@@ -148,7 +163,8 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
                   onChange={handleInputChange}
                   className={cn(
                     "pl-10 h-11 sm:h-12 text-base border-brand-border focus:border-brand-primary focus:ring-brand-primary",
-                    errors.firstName && "border-destructive focus:border-destructive focus:ring-destructive"
+                    errors.firstName &&
+                      "border-destructive focus:border-destructive focus:ring-destructive"
                   )}
                 />
               </div>
@@ -156,9 +172,12 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
                 <p className="text-sm text-destructive">{errors.firstName}</p>
               )}
             </div>
-            
+
             <div className="grid gap-2">
-              <Label htmlFor="lastName" className="text-sm font-medium text-brand-accent">
+              <Label
+                htmlFor="lastName"
+                className="text-sm font-medium text-brand-accent"
+              >
                 Last name
               </Label>
               <div className="relative">
@@ -175,7 +194,8 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
                   onChange={handleInputChange}
                   className={cn(
                     "pl-10 h-11 sm:h-12 text-base border-brand-border focus:border-brand-primary focus:ring-brand-primary",
-                    errors.lastName && "border-destructive focus:border-destructive focus:ring-destructive"
+                    errors.lastName &&
+                      "border-destructive focus:border-destructive focus:ring-destructive"
                   )}
                 />
               </div>
@@ -187,7 +207,10 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
 
           {/* Email */}
           <div className="grid gap-2">
-            <Label htmlFor="email" className="text-sm font-medium text-brand-accent">
+            <Label
+              htmlFor="email"
+              className="text-sm font-medium text-brand-accent"
+            >
               Email address
             </Label>
             <div className="relative">
@@ -205,7 +228,8 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
                 onChange={handleInputChange}
                 className={cn(
                   "pl-10 h-11 sm:h-12 text-base border-brand-border focus:border-brand-primary focus:ring-brand-primary",
-                  errors.email && "border-destructive focus:border-destructive focus:ring-destructive"
+                  errors.email &&
+                    "border-destructive focus:border-destructive focus:ring-destructive"
                 )}
               />
             </div>
@@ -216,7 +240,10 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
 
           {/* Phone */}
           <div className="grid gap-2">
-            <Label htmlFor="phone" className="text-sm font-medium text-brand-accent">
+            <Label
+              htmlFor="phone"
+              className="text-sm font-medium text-brand-accent"
+            >
               Phone number
             </Label>
             <div className="relative">
@@ -232,7 +259,8 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
                 onChange={handleInputChange}
                 className={cn(
                   "pl-10 h-11 sm:h-12 text-base border-brand-border focus:border-brand-primary focus:ring-brand-primary",
-                  errors.phone && "border-destructive focus:border-destructive focus:ring-destructive"
+                  errors.phone &&
+                    "border-destructive focus:border-destructive focus:ring-destructive"
                 )}
               />
             </div>
@@ -243,18 +271,24 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
 
           {/* User Type */}
           <div className="grid gap-2">
-            <Label htmlFor="userType" className="text-sm font-medium text-brand-accent">
+            <Label
+              htmlFor="userType"
+              className="text-sm font-medium text-brand-accent"
+            >
               I am a
             </Label>
-            <Select 
-              value={formData.userType} 
+            <Select
+              value={formData.userType}
               onValueChange={(value) => handleSelectChange("userType", value)}
               disabled={isLoading}
             >
-              <SelectTrigger className={cn(
-                "h-11 sm:h-12 text-base border-brand-border focus:border-brand-primary focus:ring-brand-primary",
-                errors.userType && "border-destructive focus:border-destructive focus:ring-destructive"
-              )}>
+              <SelectTrigger
+                className={cn(
+                  "h-11 sm:h-12 text-base border-brand-border focus:border-brand-primary focus:ring-brand-primary",
+                  errors.userType &&
+                    "border-destructive focus:border-destructive focus:ring-destructive"
+                )}
+              >
                 <SelectValue placeholder="Select account type" />
               </SelectTrigger>
               <SelectContent>
@@ -270,10 +304,13 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
               <p className="text-sm text-destructive">{errors.userType}</p>
             )}
           </div>
-          
+
           {/* Password fields */}
           <div className="grid gap-2">
-            <Label htmlFor="password" className="text-sm font-medium text-brand-accent">
+            <Label
+              htmlFor="password"
+              className="text-sm font-medium text-brand-accent"
+            >
               Password
             </Label>
             <div className="relative">
@@ -290,7 +327,8 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
                 onChange={handleInputChange}
                 className={cn(
                   "pl-10 pr-10 h-11 sm:h-12 text-base border-brand-border focus:border-brand-primary focus:ring-brand-primary",
-                  errors.password && "border-destructive focus:border-destructive focus:ring-destructive"
+                  errors.password &&
+                    "border-destructive focus:border-destructive focus:ring-destructive"
                 )}
               />
               <button
@@ -311,7 +349,10 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="confirmPassword" className="text-sm font-medium text-brand-accent">
+            <Label
+              htmlFor="confirmPassword"
+              className="text-sm font-medium text-brand-accent"
+            >
               Confirm password
             </Label>
             <div className="relative">
@@ -328,7 +369,8 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
                 onChange={handleInputChange}
                 className={cn(
                   "pl-10 pr-10 h-11 sm:h-12 text-base border-brand-border focus:border-brand-primary focus:ring-brand-primary",
-                  errors.confirmPassword && "border-destructive focus:border-destructive focus:ring-destructive"
+                  errors.confirmPassword &&
+                    "border-destructive focus:border-destructive focus:ring-destructive"
                 )}
               />
               <button
@@ -344,7 +386,9 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
               </button>
             </div>
             {errors.confirmPassword && (
-              <p className="text-sm text-destructive">{errors.confirmPassword}</p>
+              <p className="text-sm text-destructive">
+                {errors.confirmPassword}
+              </p>
             )}
           </div>
 
@@ -358,8 +402,12 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
               onChange={handleInputChange}
               className="mt-1 h-4 w-4 rounded border-brand-border text-brand-primary focus:ring-brand-primary"
             />
-            <Label htmlFor="agree-terms" className="text-sm text-brand-muted cursor-pointer leading-5">
-              I agree to the Terms of Service and Privacy Policy, and I consent to receive marketing communications from MeQasa.
+            <Label
+              htmlFor="agree-terms"
+              className="text-sm text-brand-muted cursor-pointer leading-5"
+            >
+              I agree to the Terms of Service and Privacy Policy, and I consent
+              to receive marketing communications from MeQasa.
             </Label>
           </div>
           {errors.agreeToTerms && (
@@ -388,7 +436,9 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
           <Separator className="w-full" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-white px-2 text-brand-muted">Or sign up with</span>
+          <span className="bg-white px-2 text-brand-muted">
+            Or sign up with
+          </span>
         </div>
       </div>
 

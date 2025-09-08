@@ -154,13 +154,13 @@ export function PremiumPlusPropertyCard({
 
           {/* Photo count indicator */}
           {data.photocount && parseInt(data.photocount) > 1 && (
-             <Badge
-            className="absolute bottom-3 right-3 z-30 bg-black/70 text-white text-xs hover:bg-black/90 transition-colors duration-200"
-            aria-label={`View ${data.photocount} photos`}
-          >
-            <Camera className="mr-1.5 h-3 w-3" />
-            <span>{data.photocount}</span>
-          </Badge>
+            <Badge
+              className="absolute bottom-3 right-3 z-30 bg-black/70 text-white text-xs hover:bg-black/90 transition-colors duration-200"
+              aria-label={`View ${data.photocount} photos`}
+            >
+              <Camera className="mr-1.5 h-3 w-3" />
+              <span>{data.photocount}</span>
+            </Badge>
           )}
         </div>
       </CardHeader>
@@ -176,7 +176,7 @@ export function PremiumPlusPropertyCard({
         {/* Location */}
         {data.streetaddress && (
           <p className="text-sm sm:text-base text-brand-muted line-clamp-1 capitalize">
-         {data.streetaddress}
+            {data.streetaddress}
           </p>
         )}
 
@@ -185,7 +185,7 @@ export function PremiumPlusPropertyCard({
           {bedroomCount > 0 && (
             <div className="flex items-center gap-1">
               <span className="font-medium">
-                {bedroomCount} Bed{bedroomCount !== 1 ? 's' : ''}
+                {bedroomCount} Bed{bedroomCount !== 1 ? "s" : ""}
               </span>
               {(bathroomCount > 0 || garageCount > 0) && (
                 <Dot className="h-3 w-3 text-brand-accent flex-shrink-0" />
@@ -195,7 +195,7 @@ export function PremiumPlusPropertyCard({
           {bathroomCount > 0 && (
             <div className="flex items-center gap-1">
               <span className="font-medium">
-                {bathroomCount} Bath{bathroomCount !== 1 ? 's' : ''}
+                {bathroomCount} Bath{bathroomCount !== 1 ? "s" : ""}
               </span>
               {garageCount > 0 && (
                 <Dot className="h-3 w-3 text-brand-accent flex-shrink-0" />
@@ -205,7 +205,7 @@ export function PremiumPlusPropertyCard({
           {garageCount > 0 && (
             <div className="flex items-center gap-1">
               <span className="font-medium">{garageCount} Parking</span>
-              {floorArea !== '-' && (
+              {floorArea !== "-" && (
                 <>
                   <Dot className="h-3 w-3 text-brand-accent flex-shrink-0" />
                   <span className="font-medium">{floorArea} m²</span>
@@ -217,7 +217,7 @@ export function PremiumPlusPropertyCard({
 
         {/* Description if available */}
         {data.description && (
-          <p 
+          <p
             className="line-clamp-2 text-sm text-brand-muted leading-relaxed sm:text-base"
             dangerouslySetInnerHTML={buildInnerHtml(data.description)}
           />
@@ -255,7 +255,7 @@ export function PremiumPlusPropertyCard({
           </Avatar>
 
           <div className="flex flex-col">
-            {ownerName !== 'Agent' && (
+            {ownerName !== "Agent" && (
               <span className="text-sm font-medium text-brand-accent line-clamp-1 sm:text-base md:hidden">
                 {ownerName}
               </span>
@@ -308,7 +308,7 @@ export function PremiumPlusPropertyCard({
             href={detailsLink}
             className={cn(
               buttonVariants({ variant: "default", size: "sm" }),
-              "w-24 sm:w-32 font-semibold bg-brand-primary hover:bg-brand-primary-dark text-white transition-all duration-200 hover:shadow-md",
+              "w-24 sm:w-32 font-semibold bg-brand-primary hover:bg-brand-primary-dark text-white transition-all duration-200 hover:shadow-md"
             )}
             aria-label={`View details for ${summary}`}
           >

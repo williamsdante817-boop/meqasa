@@ -78,8 +78,8 @@ export function SearchResults({
     resultcount: initialTotal,
     searchid: initialSearchId,
   };
-  
-  const initialSearchState: MeqasaSearchResponse = initialSearchData 
+
+  const initialSearchState: MeqasaSearchResponse = initialSearchData
     ? {
         ...initialSearchData,
         results: initialResults,
@@ -525,7 +525,7 @@ export function SearchResults({
                     </PaginationItem>
                     {getPaginationItems(
                       currentPage,
-                      Math.ceil(totalResults / 20),
+                      Math.ceil(totalResults / 20)
                     ).map((item, idx) => (
                       <PaginationItem key={idx}>
                         {item === "start-ellipsis" ||

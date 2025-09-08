@@ -25,7 +25,7 @@ export async function StreamingFeaturedListings({
     }
 
     const toCardListing = (
-      l: FeaturedListingsResponse["rentals"][number],
+      l: FeaturedListingsResponse["rentals"][number]
     ): CardListing => {
       const detailreq = l.detailreq ?? "";
       const cleanPath = detailreq.replace(/^https?:\/\/[^/]+\//, "");
@@ -35,8 +35,9 @@ export async function StreamingFeaturedListings({
       // Use the original price data which is already cleaned by our transformer
       // The get-featured-listings.ts now uses propertyDataFetchers which applies extractNumericPrice
       const priceAmount = parseFloat(String(l.price || "0")) || 0;
-      const formattedPriceAmount = priceAmount > 0 ? formatNumberToCedis(priceAmount) : "Price on request";
-      
+      const formattedPriceAmount =
+        priceAmount > 0 ? formatNumberToCedis(priceAmount) : "Price on request";
+
       return {
         detailreq: l.detailreq,
         image: l.image,

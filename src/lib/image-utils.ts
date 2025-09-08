@@ -50,7 +50,7 @@ export const getOptimizedImageUrl = (imagePath: string | undefined): string => {
 
 // Get responsive image sizes for different breakpoints
 export const getResponsiveImageSizes = (
-  containerType: "main" | "thumbnail" | "grid" = "main",
+  containerType: "main" | "thumbnail" | "grid" = "main"
 ): string => {
   switch (containerType) {
     case "main":
@@ -68,7 +68,7 @@ export const getResponsiveImageSizes = (
 export const getOptimalImageDimensions = (
   containerType: "main" | "thumbnail" | "grid" = "main",
   customWidth?: number,
-  customHeight?: number,
+  customHeight?: number
 ): { width: number; height: number } => {
   if (customWidth && customHeight) {
     return { width: customWidth, height: customHeight };
@@ -101,7 +101,7 @@ export const isValidImagePath = (imagePath: string | undefined): boolean => {
 
 // Filter and validate image array
 export const sanitizeImageArray = (
-  images: (string | undefined | null)[],
+  images: (string | undefined | null)[]
 ): string[] => {
   return images
     .filter((img): img is string => Boolean(img))
@@ -112,7 +112,7 @@ export const sanitizeImageArray = (
 // Generate srcset for responsive images
 export const generateSrcSet = (
   imagePath: string,
-  widths: number[] = [400, 800, 1200, 1600],
+  widths: number[] = [400, 800, 1200, 1600]
 ): string => {
   return widths
     .map((width) => {
@@ -137,7 +137,7 @@ class ImagePreloader {
 
   async preloadImage(
     url: string,
-    options: { priority?: boolean } = {},
+    options: { priority?: boolean } = {}
   ): Promise<void> {
     if (!url || this.preloadCache.has(url)) {
       return Promise.resolve();
@@ -189,7 +189,7 @@ class ImagePreloader {
 
   async preloadImages(
     urls: string[],
-    options: { priority?: boolean[]; batchSize?: number } = {},
+    options: { priority?: boolean[]; batchSize?: number } = {}
   ): Promise<void> {
     const { priority = [], batchSize = 4 } = options;
 
@@ -197,7 +197,7 @@ class ImagePreloader {
     for (let i = 0; i < urls.length; i += batchSize) {
       const batch = urls.slice(i, i + batchSize);
       const batchPromises = batch.map((url, index) =>
-        this.preloadImage(url, { priority: priority[i + index] ?? false }),
+        this.preloadImage(url, { priority: priority[i + index] ?? false })
       );
 
       await Promise.allSettled(batchPromises);
@@ -221,12 +221,12 @@ export const imagePreloader = ImagePreloader.getInstance();
 // Helper functions that use the singleton
 export const preloadImageOptimized = (
   url: string,
-  options?: { priority?: boolean },
+  options?: { priority?: boolean }
 ) => imagePreloader.preloadImage(url, options);
 
 export const preloadImagesOptimized = (
   urls: string[],
-  options?: { priority?: boolean[]; batchSize?: number },
+  options?: { priority?: boolean[]; batchSize?: number }
 ) => imagePreloader.preloadImages(urls, options);
 
 export const isImagePreloadedOptimized = (url: string) =>

@@ -9,7 +9,10 @@ import {
   sanitizeRichHtmlToInnerHtml,
 } from "./dom-sanitizer";
 import type { PropertyType, Currency, ContractType } from "@/config/property";
-import { parsePhoneNumberFromString, isValidPhoneNumber } from "libphonenumber-js";
+import {
+  parsePhoneNumberFromString,
+  isValidPhoneNumber,
+} from "libphonenumber-js";
 import type { CountryCode } from "libphonenumber-js";
 
 export function cn(...inputs: ClassValue[]) {
@@ -19,7 +22,7 @@ export function cn(...inputs: ClassValue[]) {
 // Formatter for currency to GHS (Ghanaian Cedi)
 function createNumberFormatter(
   locale?: string,
-  config?: Intl.NumberFormatOptions,
+  config?: Intl.NumberFormatOptions
 ) {
   return new Intl.NumberFormat(locale, config);
 }
@@ -35,7 +38,7 @@ export const formatToGhsCurrency = createNumberFormatter("en-GH", {
 
 export function formatPrice(
   price: number | string,
-  opts: Intl.NumberFormatOptions = {},
+  opts: Intl.NumberFormatOptions = {}
 ) {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -47,7 +50,7 @@ export function formatPrice(
 
 export function formatNumber(
   number: number | string,
-  opts: Intl.NumberFormatOptions = {},
+  opts: Intl.NumberFormatOptions = {}
 ) {
   return new Intl.NumberFormat("en-US", {
     style: opts.style ?? "decimal",
@@ -60,7 +63,7 @@ export function formatNumber(
 
 export function formatDate(
   date: Date | string | number,
-  opts: Intl.DateTimeFormatOptions = {},
+  opts: Intl.DateTimeFormatOptions = {}
 ) {
   return new Intl.DateTimeFormat("en-US", {
     month: opts.month ?? "long",
@@ -73,7 +76,7 @@ export function formatDate(
 export function formatBytes(
   bytes: number,
   decimals = 0,
-  sizeType: "accurate" | "normal" = "normal",
+  sizeType: "accurate" | "normal" = "normal"
 ) {
   const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
   const accurateSizes = ["Bytes", "KiB", "MiB", "GiB", "TiB"];
@@ -105,7 +108,7 @@ export function unslugify(str: string) {
 export function toTitleCase(str: string) {
   return str.replace(
     /\w\S*/g,
-    (txt) => txt.charAt(0).toUpperCase() + txt.slice(1).toLowerCase(),
+    (txt) => txt.charAt(0).toUpperCase() + txt.slice(1).toLowerCase()
   );
 }
 
@@ -122,7 +125,7 @@ export function truncate(str: string, length: number) {
 // Utility
 export function extractSlugAndId(
   path: string,
-  prefix: string,
+  prefix: string
 ): [string, string] {
   const remaining = path.replace(prefix, "");
   const match = /(.+)-(\d+)$/.exec(remaining);
@@ -140,7 +143,7 @@ export function isMacOs() {
 export function formatNumberToCedis(
   value: string | number,
   locale = "en-GH",
-  options: Intl.NumberFormatOptions = {},
+  options: Intl.NumberFormatOptions = {}
 ) {
   const defaultOptions: Intl.NumberFormatOptions = {
     style: "currency",
@@ -191,7 +194,7 @@ export function toBase64(str: string) {
 // DEPRECATED: Use sanitizeHtml from dom-sanitizer instead
 export function sanitizeHtmlString(html: string): string {
   console.warn(
-    "sanitizeHtmlString is deprecated. Use sanitizeHtml from dom-sanitizer instead.",
+    "sanitizeHtmlString is deprecated. Use sanitizeHtml from dom-sanitizer instead."
   );
   return sanitizeHtml(html);
 }
@@ -200,7 +203,7 @@ export function sanitizeHtmlString(html: string): string {
 // DEPRECATED: Use sanitizeToInnerHtml from dom-sanitizer instead
 export function toInnerHtml(html: string): { __html: string } {
   console.warn(
-    "toInnerHtml is deprecated. Use sanitizeToInnerHtml from dom-sanitizer instead.",
+    "toInnerHtml is deprecated. Use sanitizeToInnerHtml from dom-sanitizer instead."
   );
   return sanitizeToInnerHtml(html);
 }
@@ -209,7 +212,7 @@ export function toInnerHtml(html: string): { __html: string } {
 // DEPRECATED: Use sanitizeRichHtml from dom-sanitizer instead
 export function sanitizeRichHtmlString(html: string): string {
   console.warn(
-    "sanitizeRichHtmlString is deprecated. Use sanitizeRichHtml from dom-sanitizer instead.",
+    "sanitizeRichHtmlString is deprecated. Use sanitizeRichHtml from dom-sanitizer instead."
   );
   return sanitizeRichHtml(html);
 }
@@ -231,50 +234,53 @@ export function formatPropertyPrice(
   contractType?: ContractType
 ): string {
   const numericPrice = Number(price);
-  
+
   if (numericPrice === 0) return "Price on request";
-  
+
   let formattedPrice: string;
-  
+
   if (currency === "GHS") {
     formattedPrice = formatNumberToCedis(numericPrice, "en-GH", {
       maximumSignificantDigits: 3,
-      notation: numericPrice >= 1000000 ? "compact" : "standard"
+      notation: numericPrice >= 1000000 ? "compact" : "standard",
     });
   } else {
     formattedPrice = formatPrice(numericPrice, {
       currency,
-      notation: numericPrice >= 1000000 ? "compact" : "standard"
+      notation: numericPrice >= 1000000 ? "compact" : "standard",
     });
   }
-  
+
   if (contractType === "rent") {
     return `${formattedPrice}/month`;
   }
-  
+
   return formattedPrice;
 }
 
 export function formatPropertyArea(area: number | string): string {
   const numericArea = Number(area);
   if (numericArea <= 0) return "";
-  
+
   return `${formatNumber(numericArea)} sqft`;
 }
 
-export function formatPropertyLocation(location: string, area?: string): string {
+export function formatPropertyLocation(
+  location: string,
+  area?: string
+): string {
   if (!location) return "";
-  
+
   const parts = [location];
   if (area && area !== location) {
     parts.push(area);
   }
-  
+
   return parts.join(", ");
 }
 
 export function generatePropertySlug(
-  title: string, 
+  title: string,
   propertyType: PropertyType,
   location?: string
 ): string {
@@ -282,7 +288,7 @@ export function generatePropertySlug(
   if (location) {
     parts.push(location);
   }
-  
+
   return slugify(parts.join(" "));
 }
 
@@ -291,17 +297,39 @@ export function extractPropertyReference(url: string): string | null {
   return match?.[1] ?? null;
 }
 
-export function validateInternationalPhone(phone: string, defaultCountry?: string): boolean {
+export function validateInternationalPhone(
+  phone: string,
+  defaultCountry?: string
+): boolean {
   try {
-    return isValidPhoneNumber(phone, defaultCountry as CountryCode | { defaultCountry?: CountryCode; defaultCallingCode?: string } | undefined);
+    return isValidPhoneNumber(
+      phone,
+      defaultCountry as
+        | CountryCode
+        | { defaultCountry?: CountryCode; defaultCallingCode?: string }
+        | undefined
+    );
   } catch {
     return false;
   }
 }
 
-export function formatInternationalPhone(phone: string, defaultCountry?: string): string {
+export function formatInternationalPhone(
+  phone: string,
+  defaultCountry?: string
+): string {
   try {
-    const phoneNumber = parsePhoneNumberFromString(phone, defaultCountry as CountryCode | { defaultCountry?: CountryCode; defaultCallingCode?: string; extract?: boolean } | undefined);
+    const phoneNumber = parsePhoneNumberFromString(
+      phone,
+      defaultCountry as
+        | CountryCode
+        | {
+            defaultCountry?: CountryCode;
+            defaultCallingCode?: string;
+            extract?: boolean;
+          }
+        | undefined
+    );
     if (phoneNumber?.isValid()) {
       return phoneNumber.formatInternational();
     }
@@ -311,9 +339,22 @@ export function formatInternationalPhone(phone: string, defaultCountry?: string)
   }
 }
 
-export function formatNationalPhone(phone: string, defaultCountry?: string): string {
+export function formatNationalPhone(
+  phone: string,
+  defaultCountry?: string
+): string {
   try {
-    const phoneNumber = parsePhoneNumberFromString(phone, defaultCountry as CountryCode | { defaultCountry?: CountryCode; defaultCallingCode?: string; extract?: boolean } | undefined);
+    const phoneNumber = parsePhoneNumberFromString(
+      phone,
+      defaultCountry as
+        | CountryCode
+        | {
+            defaultCountry?: CountryCode;
+            defaultCallingCode?: string;
+            extract?: boolean;
+          }
+        | undefined
+    );
     if (phoneNumber?.isValid()) {
       return phoneNumber.formatNational();
     }
@@ -323,9 +364,22 @@ export function formatNationalPhone(phone: string, defaultCountry?: string): str
   }
 }
 
-export function getPhoneCountryCode(phone: string, defaultCountry?: string): string | undefined {
+export function getPhoneCountryCode(
+  phone: string,
+  defaultCountry?: string
+): string | undefined {
   try {
-    const phoneNumber = parsePhoneNumberFromString(phone, defaultCountry as CountryCode | { defaultCountry?: CountryCode; defaultCallingCode?: string; extract?: boolean } | undefined);
+    const phoneNumber = parsePhoneNumberFromString(
+      phone,
+      defaultCountry as
+        | CountryCode
+        | {
+            defaultCountry?: CountryCode;
+            defaultCallingCode?: string;
+            extract?: boolean;
+          }
+        | undefined
+    );
     return phoneNumber?.country;
   } catch {
     return undefined;
@@ -334,19 +388,19 @@ export function getPhoneCountryCode(phone: string, defaultCountry?: string): str
 
 export function getPropertyTypeLabel(type: PropertyType): string {
   const labels: Record<PropertyType, string> = {
-    "house": "House",
-    "apartment": "Apartment",
-    "office": "Office",
-    "land": "Land",
-    "townhouse": "Townhouse", 
+    house: "House",
+    apartment: "Apartment",
+    office: "Office",
+    land: "Land",
+    townhouse: "Townhouse",
     "commercial space": "Commercial Space",
-    "warehouse": "Warehouse",
+    warehouse: "Warehouse",
     "guest house": "Guest House",
-    "shop": "Shop",
-    "retail": "Retail",
+    shop: "Shop",
+    retail: "Retail",
     "beach house": "Beach House",
   };
-  
+
   return labels[type] || toTitleCase(type);
 }
 
@@ -354,7 +408,7 @@ export function formatPropertyFeatures(features: string[]): string {
   if (features.length === 0) return "";
   if (features.length === 1) return features[0]!;
   if (features.length === 2) return features.join(" • ");
-  
+
   return `${features.slice(0, 2).join(" • ")} +${features.length - 2} more`;
 }
 
@@ -377,12 +431,12 @@ export function formatPropertyBathrooms(bathrooms: number): string {
 
 export function getPropertyStatusBadgeColor(status: string): string {
   const colors: Record<string, string> = {
-    "active": "bg-green-100 text-green-800",
-    "pending": "bg-yellow-100 text-yellow-800", 
-    "sold": "bg-red-100 text-red-800",
-    "rented": "bg-blue-100 text-blue-800",
-    "withdrawn": "bg-gray-100 text-gray-800",
+    active: "bg-green-100 text-green-800",
+    pending: "bg-yellow-100 text-yellow-800",
+    sold: "bg-red-100 text-red-800",
+    rented: "bg-blue-100 text-blue-800",
+    withdrawn: "bg-gray-100 text-gray-800",
   };
-  
+
   return colors[status] ?? "bg-gray-100 text-gray-800";
 }

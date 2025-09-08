@@ -2,7 +2,7 @@ import type { DeveloperProject } from "@/types";
 import { apiClient } from "./axios-client";
 
 export async function getDeveloperProject(
-  projectId: number,
+  projectId: number
 ): Promise<DeveloperProject> {
   const url = `https://meqasa.com/developer-projects/profile/${projectId}?app=vercel`;
   return await apiClient.get<DeveloperProject>(url, {

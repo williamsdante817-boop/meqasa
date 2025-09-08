@@ -39,13 +39,11 @@ interface HomepageClientProps {
 export function HomepageClient({ initialData }: HomepageClientProps) {
   // Use React Query hooks with initial data from server
   const featuredListingsQuery = useFeaturedListings(
-    initialData.featuredListings,
+    initialData.featuredListings
   );
-  const latestListingsQuery = useLatestListings(
-    initialData.latestListings,
-  );
+  const latestListingsQuery = useLatestListings(initialData.latestListings);
   const featuredProjectsQuery = useFeaturedProjects(
-    initialData.featuredProjects,
+    initialData.featuredProjects
   );
   const featuredUnitsQuery = useFeaturedUnits(initialData.featuredUnits);
   const heroBannerQuery = useHeroBanner(initialData.heroBanner);
@@ -57,12 +55,18 @@ export function HomepageClient({ initialData }: HomepageClientProps) {
   // For staticData, always use initial data since we've disabled refetching entirely
   const resolvedData = {
     staticData: initialData.staticData, // Always use initial - never refetch
-    featuredProjects: (featuredProjectsQuery.data ?? initialData.featuredProjects) as typeof initialData.featuredProjects,
-    featuredUnits: (featuredUnitsQuery.data ?? initialData.featuredUnits) as typeof initialData.featuredUnits,
-    featuredListings: (featuredListingsQuery.data ?? initialData.featuredListings) as typeof initialData.featuredListings,
-    latestListings: (latestListingsQuery.data ?? initialData.latestListings) as typeof initialData.latestListings,
-    heroBanner: (heroBannerQuery.data ?? initialData.heroBanner) as typeof initialData.heroBanner,
-    flexiBanner: (flexiBannerQuery.data ?? initialData.flexiBanner) as typeof initialData.flexiBanner,
+    featuredProjects: (featuredProjectsQuery.data ??
+      initialData.featuredProjects) as typeof initialData.featuredProjects,
+    featuredUnits: (featuredUnitsQuery.data ??
+      initialData.featuredUnits) as typeof initialData.featuredUnits,
+    featuredListings: (featuredListingsQuery.data ??
+      initialData.featuredListings) as typeof initialData.featuredListings,
+    latestListings: (latestListingsQuery.data ??
+      initialData.latestListings) as typeof initialData.latestListings,
+    heroBanner: (heroBannerQuery.data ??
+      initialData.heroBanner) as typeof initialData.heroBanner,
+    flexiBanner: (flexiBannerQuery.data ??
+      initialData.flexiBanner) as typeof initialData.flexiBanner,
     blogData: initialData.blogData, // Always use initial blog data
   };
 

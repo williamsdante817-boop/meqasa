@@ -68,7 +68,7 @@ export default function FeaturedPropertyCard({
             {!imageLoaded && (
               <div className="absolute inset-0 z-20 bg-gray-100 animate-pulse" />
             )}
-            
+
             <ImageWithFallback
               src={photoUrl}
               alt={`${projectname} property image`}
@@ -100,7 +100,7 @@ export default function FeaturedPropertyCard({
                       ? "bg-green-500 text-white"
                       : status?.toLowerCase() === "ongoing"
                         ? "bg-yellow-500 text-white"
-                        : "bg-gray-500 text-white",
+                        : "bg-gray-500 text-white"
                   )}
                 >
                   {status}
@@ -147,7 +147,7 @@ export default function FeaturedPropertyCard({
           >
             {projectname}
           </CardTitle>
-          
+
           <div className="flex items-start gap-2 mb-4 text-brand-muted">
             <p className="text-sm sm:text-base line-clamp-1 capitalize !px-0">
               {city}
@@ -157,16 +157,20 @@ export default function FeaturedPropertyCard({
           <div className="flex items-start gap-2 mb-4 min-w-0">
             {/* Unit Types as Badges */}
             <div className="flex flex-wrap gap-1.5">
-              {unittypes?.split(/[,|;]/)?.filter(type => type.trim())?.map((unitType, index) => (
-                <Badge
-                  key={index}
-                  variant="outline"
-                  className="text-xs sm:text-sm font-medium bg-gray-50 text-gray-700 border border-gray-300 hover:bg-gray-100 transition-colors duration-200 capitalize"
-                >
-                  {unitType.trim()}
-                </Badge>
-              ))}
-              {!unittypes?.split(/[,|;]/)?.filter(type => type.trim())?.length && (
+              {unittypes
+                ?.split(/[,|;]/)
+                ?.filter((type) => type.trim())
+                ?.map((unitType, index) => (
+                  <Badge
+                    key={index}
+                    variant="outline"
+                    className="text-xs sm:text-sm font-medium bg-gray-50 text-gray-700 border border-gray-300 hover:bg-gray-100 transition-colors duration-200 capitalize"
+                  >
+                    {unitType.trim()}
+                  </Badge>
+                ))}
+              {!unittypes?.split(/[,|;]/)?.filter((type) => type.trim())
+                ?.length && (
                 <Badge
                   variant="outline"
                   className="text-xs font-medium bg-gray-50 text-gray-500 border border-gray-300"

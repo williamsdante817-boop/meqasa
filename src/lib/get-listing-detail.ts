@@ -29,7 +29,7 @@ export async function getListingDetails(id: string): Promise<SimilarListings> {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
-    },
+    }
   );
 
   // Check if the API returned a fail status (even with 200 HTTP status)

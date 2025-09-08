@@ -2,7 +2,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export function AgentListingsSkeleton() {
   return (
-    <div className="mb-8 grid grid-cols-1 gap-8" role="status" aria-label="Loading agent listings">
+    <div
+      className="mb-8 grid grid-cols-1 gap-8"
+      role="status"
+      aria-label="Loading agent listings"
+    >
       {Array.from({ length: 5 }).map((_, index) => (
         <div
           key={index}
@@ -12,9 +16,9 @@ export function AgentListingsSkeleton() {
         >
           {/* Image skeleton */}
           <div className="min-w-[256px] p-0">
-            <Skeleton 
-              variant="shimmer" 
-              className="relative min-h-[202px] min-w-[256px] rounded-2xl" 
+            <Skeleton
+              variant="shimmer"
+              className="relative min-h-[202px] min-w-[256px] rounded-2xl"
               aria-label="Loading property image"
             />
           </div>
@@ -23,31 +27,44 @@ export function AgentListingsSkeleton() {
           <div className="flex flex-col justify-between px-4 pb-4 lg:p-0">
             <div>
               {/* Title skeleton */}
-              <Skeleton 
-                variant="text" 
-                size="lg" 
-                className="w-full mb-3" 
+              <Skeleton
+                variant="text"
+                size="lg"
+                className="w-full mb-3"
                 aria-label="Loading property title"
               />
 
               {/* Price skeleton */}
               <div className="flex items-center gap-2 pt-3 mb-3">
-                <Skeleton variant="text" className="h-5 w-24 bg-brand-accent/20" />
+                <Skeleton
+                  variant="text"
+                  className="h-5 w-24 bg-brand-accent/20"
+                />
                 <Skeleton variant="light" className="h-4 w-16" />
               </div>
 
               {/* Description skeleton */}
               <div className="pt-3 mb-3">
-                <Skeleton variant="light" size="default" className="w-full mb-2" />
+                <Skeleton
+                  variant="light"
+                  size="default"
+                  className="w-full mb-2"
+                />
                 <Skeleton variant="light" size="default" className="w-3/4" />
               </div>
 
               {/* Property details skeleton */}
               <div className="flex items-center gap-1 pt-2">
                 <Skeleton variant="light" className="h-4 w-16" />
-                <Skeleton variant="light" className="h-3 w-3 rounded-full bg-brand-accent/20" />
+                <Skeleton
+                  variant="light"
+                  className="h-3 w-3 rounded-full bg-brand-accent/20"
+                />
                 <Skeleton variant="light" className="h-4 w-20" />
-                <Skeleton variant="light" className="h-3 w-3 rounded-full bg-brand-accent/20" />
+                <Skeleton
+                  variant="light"
+                  className="h-3 w-3 rounded-full bg-brand-accent/20"
+                />
                 <Skeleton variant="light" className="h-4 w-24" />
               </div>
             </div>
@@ -58,12 +75,17 @@ export function AgentListingsSkeleton() {
                 <Skeleton variant="card" className="h-11 w-11 rounded-full" />
                 <Skeleton variant="light" className="h-4 w-20" />
               </div>
-              <Skeleton variant="light" className="h-9 w-32 bg-brand-primary/20 rounded" />
+              <Skeleton
+                variant="light"
+                className="h-9 w-32 bg-brand-primary/20 rounded"
+              />
             </div>
           </div>
         </div>
       ))}
-      <span className="sr-only">Loading agent property listings, please wait...</span>
+      <span className="sr-only">
+        Loading agent property listings, please wait...
+      </span>
     </div>
   );
 }

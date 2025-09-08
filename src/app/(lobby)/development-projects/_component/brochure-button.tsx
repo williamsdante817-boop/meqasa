@@ -22,22 +22,16 @@ export default function BrochureButton({
     if (onClick) {
       onClick();
     } else if (href) {
-      window.open(href, '_blank');
+      window.open(href, "_blank");
     }
   };
 
   return (
     <>
       {trigger ? (
-        <div onClick={handleClick}>
-          {trigger}
-        </div>
+        <div onClick={handleClick}>{trigger}</div>
       ) : (
-        <Button 
-          className={className} 
-          variant="default"
-          onClick={handleClick}
-        >
+        <Button className={className} variant="default" onClick={handleClick}>
           {showIcon && <FileText className="w-4 h-4 mr-2" />}
           Get Brochure
         </Button>

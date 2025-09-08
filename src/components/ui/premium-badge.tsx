@@ -17,8 +17,7 @@ const badgeConfig = {
     icon: Crown,
     baseClasses:
       "bg-brand-badge-ongoing text-white shadow-sm border border-amber-300/30",
-    hoverClasses:
-      "hover:shadow-md",
+    hoverClasses: "hover:shadow-md",
     borderClasses: "",
     textClasses: "font-semibold text-xs uppercase tracking-wide",
   },
@@ -27,8 +26,7 @@ const badgeConfig = {
     icon: Star,
     baseClasses:
       "bg-brand-primary text-white shadow-sm border border-rose-300/30",
-    hoverClasses:
-      "hover:shadow-md",
+    hoverClasses: "hover:shadow-md",
     borderClasses: "",
     textClasses: "font-semibold text-xs uppercase tracking-wide",
   },
@@ -37,8 +35,7 @@ const badgeConfig = {
     icon: Zap,
     baseClasses:
       "bg-orange-50 text-orange-500 shadow-sm border border-orange-300",
-    hoverClasses:
-      "hover:shadow-md", 
+    hoverClasses: "hover:shadow-md",
     borderClasses: "",
     textClasses: "font-semibold text-xs uppercase tracking-wide",
   },
@@ -72,37 +69,24 @@ export function PremiumBadge({
         config.hoverClasses,
         config.textClasses,
         sizeClasses[size],
-        className,
+        className
       )}
     >
-      <Icon
-        className={cn(
-          iconSizes[size],
-          "flex-shrink-0",
-        )}
-      />
-      <span className="leading-none">
-        {config.label}
-      </span>
+      <Icon className={cn(iconSizes[size], "flex-shrink-0")} />
+      <span className="leading-none">{config.label}</span>
     </div>
   );
 }
 
 // Individual badge components for convenience
-export function PremiumPlusBadge(
-  props: Omit<PremiumBadgeProps, "type">,
-) {
+export function PremiumPlusBadge(props: Omit<PremiumBadgeProps, "type">) {
   return <PremiumBadge {...props} type="premium-plus" />;
 }
 
-export function PremiumBadgeComponent(
-  props: Omit<PremiumBadgeProps, "type">,
-) {
+export function PremiumBadgeComponent(props: Omit<PremiumBadgeProps, "type">) {
   return <PremiumBadge {...props} type="premium" />;
 }
 
-export function TopAdBadge(
-  props: Omit<PremiumBadgeProps, "type">,
-) {
+export function TopAdBadge(props: Omit<PremiumBadgeProps, "type">) {
   return <PremiumBadge {...props} type="top-ad" />;
 }

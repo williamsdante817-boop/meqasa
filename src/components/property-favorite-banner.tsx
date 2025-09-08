@@ -62,23 +62,26 @@ export default function PropertyFavoritesBanner({
         <div className="flex items-center gap-4">
           <div className="flex-1">
             <h3 className="text-lg font-semibold text-brand-accent mb-2">
-              Save This {propertyType === 'listing' ? 'Property' : 'Project'}
+              Save This {propertyType === "listing" ? "Property" : "Project"}
             </h3>
             <p className="text-brand-muted mb-4">
-              Add to favorites to compare with other properties and track price changes
+              Add to favorites to compare with other properties and track price
+              changes
             </p>
             <div
               className={cn(
                 "inline-flex items-center gap-3 bg-white border border-rose-200 rounded-lg px-4 py-3 relative cursor-pointer transition-all hover:shadow-md",
                 isFavorite && "border-rose-300 bg-rose-50 shadow-sm",
-                "hover:border-rose-300 hover:bg-rose-50",
+                "hover:border-rose-300 hover:bg-rose-50"
               )}
               onClick={toggleFavorite}
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
               role="button"
               tabIndex={0}
-              aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+              aria-label={
+                isFavorite ? "Remove from favorites" : "Add to favorites"
+              }
             >
               <AnimatePresence mode="wait">
                 {filled || isFavorite ? (
@@ -92,7 +95,7 @@ export default function PropertyFavoritesBanner({
                     <Heart
                       className={cn(
                         "h-5 w-5 text-brand-primary",
-                        isFavorite && "fill-current",
+                        isFavorite && "fill-current"
                       )}
                     />
                   </motion.div>
@@ -109,7 +112,7 @@ export default function PropertyFavoritesBanner({
                 )}
               </AnimatePresence>
               <span className="font-medium text-brand-accent">
-                {isFavorite ? 'Added to Favorites!' : 'Add to Favorites'}
+                {isFavorite ? "Added to Favorites!" : "Add to Favorites"}
               </span>
             </div>
           </div>

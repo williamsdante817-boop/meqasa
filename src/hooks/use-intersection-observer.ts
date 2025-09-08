@@ -1,4 +1,4 @@
-import { useEffect, useState, type RefObject } from 'react';
+import { useEffect, useState, type RefObject } from "react";
 
 interface UseIntersectionObserverOptions {
   threshold?: number | number[];
@@ -14,7 +14,7 @@ export function useIntersectionObserver(
   const {
     threshold = 0.1,
     root = null,
-    rootMargin = '0px',
+    rootMargin = "0px",
     freezeOnceVisible = false,
   } = options;
 
@@ -22,9 +22,9 @@ export function useIntersectionObserver(
 
   useEffect(() => {
     const element = elementRef.current;
-    
+
     // Return early if element doesn't exist or IntersectionObserver isn't supported
-    if (!element || typeof IntersectionObserver === 'undefined') {
+    if (!element || typeof IntersectionObserver === "undefined") {
       return;
     }
 
