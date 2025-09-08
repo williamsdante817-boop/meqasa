@@ -13,7 +13,7 @@ export default function Amenities({ amenities = [] }: AmenitiesProps) {
   }
 
   return (
-    <Card className="border-gray-200 bg-gradient-to-r rounded-lg from-gray-50 to-gray-50 p-4 md:p-6">
+    <Card className="border-gray-200 bg-gradient-to-r rounded-lg from-gray-50 to-gray-50 p-4 md:p-6 mb-6">
       <div
         className="grid grid-cols-2 lg:grid-cols-3 gap-4"
         role="list"

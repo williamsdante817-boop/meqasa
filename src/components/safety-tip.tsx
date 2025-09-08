@@ -22,7 +22,7 @@ const safetyTips = [
 
 export default function SafetyTipsCard() {
   return (
-    <section className="md:mt-20" aria-labelledby="safety-tips-heading">
+    <section className="mt-6 md:mt-20" aria-labelledby="safety-tips-heading">
       <Card className="border-amber-200 bg-gradient-to-r from-amber-50 to-yellow-50 rounded-lg p-4 md:p-5 relative overflow-hidden">
         <div className="flex items-start gap-4">
           <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-amber-100 text-amber-600">
