@@ -193,7 +193,7 @@ async function searchPrimaryFirst(
           primaryResult,
       };
     }
-  } catch (error) {
+  } catch {
     // Primary search failed, continue to fallback
   }
 
@@ -221,7 +221,7 @@ async function searchPrimaryFirst(
           fallbackResult,
       };
     }
-  } catch (error) {
+  } catch {
     // Both searches failed
   }
 
@@ -303,7 +303,7 @@ async function searchParallel(
       propertyResult: propertyResult as ReferenceSearchResult,
       unitResult: unitResult as UnitReferenceSearchResult,
     };
-  } catch (error) {
+  } catch {
     return {
       reference: detection.reference,
       url: "",
@@ -419,7 +419,7 @@ async function findAlternativeResults(
         },
       ];
     }
-  } catch (error) {
+  } catch {
     // Ignore errors in alternative search
   }
 

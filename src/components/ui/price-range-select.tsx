@@ -44,7 +44,7 @@ export function PriceRangeSelect({
   variant = "default",
   className = "",
   showQuickSelections = true,
-  placeholder = { min: "Min price", max: "Max price" },
+  placeholder: _placeholder = { min: "Min price", max: "Max price" },
 }: PriceRangeSelectProps) {
   const getDisplayText = () => {
     const min = minValue ? Number.parseInt(minValue) : null;

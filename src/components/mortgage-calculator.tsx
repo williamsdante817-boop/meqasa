@@ -300,7 +300,7 @@ export default function MortgageCalculator({ price }: { price: string }) {
       <Card className="rounded-lg">
         <CardContent className="p-4">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-lg font-medium text-brand-accent">
+            <h2 className="text-xl font-semibold text-brand-accent">
               Mortgage Breakdown
             </h2>
             <span className="text-sm text-brand-muted">

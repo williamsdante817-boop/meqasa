@@ -84,7 +84,7 @@ export class MeQasaApiClient {
         if (value !== null && value !== undefined) {
           if (typeof value === "object" && value !== null) {
             formData.append(key, JSON.stringify(value));
-          } else {
+          } else if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
             formData.append(key, String(value));
           }
         }

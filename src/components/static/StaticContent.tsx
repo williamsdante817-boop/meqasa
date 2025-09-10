@@ -65,7 +65,7 @@ export function StaticBlogSection({ staticData }: StaticContentProps) {
 export function StaticMarketNews({ staticData }: StaticContentProps) {
   return (
     <aside className="hidden md:block flex-1 mt-28" aria-label="Market News">
-      <h3 className="text-2xl font-bold text-brand-accent mb-6">Market News</h3>
+      <h2 className="leading-tight tracking-tighter text-brand-accent text-2xl lg:text-3xl font-bold mb-6">Market News</h2>
       <div role="list">
         {staticData.blogData.slice(0, 3).map((blog, index) => (
           <div key={index} role="listitem">

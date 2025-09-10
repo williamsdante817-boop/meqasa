@@ -15,6 +15,7 @@ export const siteConfig = {
   url: "https://meqasa.com",
   ogImage: "https://meqasa.com/og-image.jpg",
   creator: "@meqasa",
+  email: "info@meqasa.com",
   keywords: [
     "Ghana property",
     "houses for rent Ghana",
@@ -394,6 +395,279 @@ export function createStructuredDataScript(
   return `<script type="application/ld+json">${JSON.stringify(data, null, 2)}</script>`;
 }
 
+// Generate metadata for listing detail page (for API response format)
+export function generateListingDetailMetadata(listingDetail: any, slug: string): Metadata {
+  if (!listingDetail) {
+    return {
+      title: "Property Not Found | MeQasa - Ghana's Leading Real Estate Marketplace",
+      description: "The requested property listing could not be found. Browse thousands of verified properties for rent and sale on MeQasa.",
+      openGraph: {
+        title: "Property Not Found | MeQasa",
+        description: "The requested property listing could not be found.",
+        type: "website",
+        url: `/listings/${slug}`,
+        siteName: siteConfig.name,
+      },
+      twitter: {
+        card: "summary",
+        title: "Property Not Found | MeQasa",
+        description: "The requested property listing could not be found.",
+      },
+      robots: {
+        index: false,
+        follow: true,
+      },
+    };
+  }
+
+  // Extract price for meta description
+  const priceText = listingDetail.price
+    ? listingDetail.price.replace(/<[^>]*>/g, "").trim()
+    : "Contact for pricing";
+
+  // Create SEO-optimized title
+  const title = `${listingDetail.title || `${listingDetail.beds} Bedroom ${listingDetail.type}`} for ${listingDetail.contract} in ${listingDetail.locationstring} | ${siteConfig.name}`;
+
+  // Create detailed description for SEO
+  const description = `${listingDetail.title || `${listingDetail.beds} bedroom ${listingDetail.type.toLowerCase()}`} for ${listingDetail.contract} in ${listingDetail.locationstring}, Ghana. ${listingDetail.beds ? `${listingDetail.beds} bed` : ""}${listingDetail.baths ? `, ${listingDetail.baths} bath` : ""}${listingDetail.floorarea ? ` property with ${listingDetail.floorarea} sqm` : ""}. ${priceText}. Verified listing on MeQasa.`;
+
+  // Comprehensive keywords for SEO
+  const keywords = [
+    listingDetail.title,
+    `${listingDetail.type} for ${listingDetail.contract}`,
+    `${listingDetail.locationstring} properties`,
+    `${listingDetail.location} real estate`,
+    `${listingDetail.beds} bedroom ${listingDetail.type}`,
+    `${listingDetail.contract} ${listingDetail.locationstring}`,
+    "MeQasa Ghana",
+    "Ghana real estate",
+    "property listing Ghana",
+    "verified properties Ghana",
+    listingDetail.contract === "rent"
+      ? "rental property Ghana"
+      : "property for sale Ghana",
+    `${listingDetail.locationstring} ${listingDetail.contract}`,
+  ].filter(Boolean);
+
+  // Generate image URLs
+  const imageUrl = listingDetail.imagelist?.[0]
+    ? `https://meqasa.com/uploads/imgs/${listingDetail.imagelist[0]}`
+    : null;
+
+  const images = imageUrl
+    ? [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: `${listingDetail.title || `${listingDetail.type} for ${listingDetail.contract}`} in ${listingDetail.locationstring}`,
+          type: "image/jpeg",
+        },
+        {
+          url: imageUrl,
+          width: 800,
+          height: 600,
+          alt: `${listingDetail.title || `${listingDetail.type} for ${listingDetail.contract}`} in ${listingDetail.locationstring}`,
+          type: "image/jpeg",
+        },
+      ]
+    : [];
+
+  return {
+    title,
+    description,
+    keywords: keywords.join(", "),
+    authors: [{ name: siteConfig.name, url: siteConfig.url }],
+    creator: siteConfig.name,
+    publisher: siteConfig.name,
+    category: "Real Estate",
+    classification: "Real Estate Listing",
+    metadataBase: new URL(siteConfig.url),
+    alternates: {
+      canonical: `/listings/${slug}`,
+    },
+    openGraph: {
+      type: "website",
+      locale: "en_GH",
+      url: `/listings/${slug}`,
+      siteName: siteConfig.name,
+      title,
+      description,
+      images,
+      countryName: "Ghana",
+    },
+    twitter: {
+      card: "summary_large_image",
+      site: siteConfig.creator,
+      creator: siteConfig.creator,
+      title,
+      description,
+      images: imageUrl ? [imageUrl] : [],
+    },
+    robots: {
+      index: true,
+      follow: true,
+      noarchive: false,
+      nosnippet: false,
+      noimageindex: false,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
+    },
+    verification: {
+      google: process.env.GOOGLE_SITE_VERIFICATION,
+    },
+    other: {
+      "property:price": priceText,
+      "property:location": listingDetail.locationstring,
+      "property:type": listingDetail.type,
+      "property:contract": listingDetail.contract,
+      "property:bedrooms": listingDetail.beds,
+      "property:bathrooms": listingDetail.baths,
+      ...(listingDetail.floorarea && {
+        "property:area": `${listingDetail.floorarea} sqm`,
+      }),
+    },
+  };
+}
+
+// Generate structured data for listing detail page
+export function generateListingDetailStructuredData(listingDetail: any, slug: string) {
+  const cleanPrice = listingDetail.price
+    ? listingDetail.price.replace(/<[^>]*>/g, "").replace(/[^\d.,]/g, "")
+    : null;
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "RealEstateListing",
+    "@id": `${siteConfig.url}/listings/${slug}`,
+    name:
+      listingDetail.title ||
+      `${listingDetail.beds ? `${listingDetail.beds} Bedroom ` : ""}${listingDetail.type} for ${listingDetail.contract}`,
+    description:
+      listingDetail.description ||
+      `${listingDetail.title || `${listingDetail.beds} bedroom ${listingDetail.type.toLowerCase()}`} for ${listingDetail.contract} in ${listingDetail.locationstring}, Ghana. ${listingDetail.beds ? `${listingDetail.beds} bed` : ""}${listingDetail.baths ? `, ${listingDetail.baths} bath` : ""}${listingDetail.floorarea ? ` property with ${listingDetail.floorarea} sqm` : ""}.`,
+    url: `${siteConfig.url}/listings/${slug}`,
+    image:
+      listingDetail.imagelist?.map(
+        (img: string) => `https://meqasa.com/uploads/imgs/${img}`
+      ) || [],
+    datePublished: new Date().toISOString(),
+    dateModified: new Date().toISOString(),
+    author: {
+      "@type": "Organization",
+      name: siteConfig.name,
+      url: siteConfig.url,
+      logo: {
+        "@type": "ImageObject",
+        url: `${siteConfig.url}/logo.png`,
+      },
+    },
+    publisher: {
+      "@type": "Organization",
+      name: siteConfig.name,
+      url: siteConfig.url,
+      logo: {
+        "@type": "ImageObject",
+        url: `${siteConfig.url}/logo.png`,
+      },
+    },
+    offers: {
+      "@type": "Offer",
+      availability: "https://schema.org/InStock",
+      price: cleanPrice ?? undefined,
+      priceCurrency: "GHS",
+      priceSpecification: cleanPrice
+        ? {
+            "@type": "PriceSpecification",
+            price: cleanPrice,
+            priceCurrency: "GHS",
+            unitCode: listingDetail.contract === "rent" ? "MON" : undefined,
+          }
+        : undefined,
+      businessFunction:
+        listingDetail.contract === "rent"
+          ? "http://purl.org/goodrelations/v1#LeaseOut"
+          : "http://purl.org/goodrelations/v1#Sell",
+      offeredBy: {
+        "@type": "RealEstateAgent",
+        name: listingDetail.owner.name,
+        url: listingDetail.owner.page
+          ? `https://meqasa.com${listingDetail.owner.page}`
+          : undefined,
+        image:
+          (listingDetail.owner.logo ?? listingDetail.owner.profilepic)
+            ? `https://meqasa.com${listingDetail.owner.logo ?? listingDetail.owner.profilepic}`
+            : undefined,
+      },
+    },
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: listingDetail.streetaddress ?? listingDetail.location,
+      addressLocality: listingDetail.locationstring,
+      addressRegion: listingDetail.locationstring.includes("Accra")
+        ? "Greater Accra"
+        : undefined,
+      addressCountry: "GH",
+      postalCode: undefined,
+    },
+    numberOfRooms: parseInt(listingDetail.beds) || undefined,
+    numberOfBedrooms: parseInt(listingDetail.beds) || undefined,
+    numberOfBathrooms: parseInt(listingDetail.baths) || undefined,
+    floorSize: listingDetail.floorarea
+      ? {
+          "@type": "QuantitativeValue",
+          value: parseFloat(listingDetail.floorarea),
+          unitCode: "MTK",
+          unitText: "square meters",
+        }
+      : undefined,
+    propertyType: listingDetail.type,
+    category:
+      listingDetail.contract === "rent"
+        ? "Rental Property"
+        : "Property for Sale",
+    additionalType: `https://schema.org/${listingDetail.type === "house" ? "House" : listingDetail.type === "apartment" ? "Apartment" : "Accommodation"}`,
+    amenityFeature:
+      listingDetail.amenities?.map((amenity: string) => ({
+        "@type": "LocationFeatureSpecification",
+        name: amenity,
+        value: true,
+      })) || [],
+    petsAllowed: undefined,
+    smokingAllowed: undefined,
+    tourBookingPage: `${siteConfig.url}/listings/${slug}`,
+    potentialAction: [
+      {
+        "@type": "ViewAction",
+        target: `${siteConfig.url}/listings/${slug}`,
+        name: "View Property Details",
+      },
+      {
+        "@type": "ContactAction",
+        target: `mailto:${siteConfig.email}`,
+        name: "Contact Agent",
+      },
+    ],
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `${siteConfig.url}/listings/${slug}`,
+    },
+    isAccessibleForFree: false,
+    keywords: [
+      listingDetail.type,
+      listingDetail.contract,
+      listingDetail.locationstring,
+      "Ghana real estate",
+      "MeQasa",
+    ].join(", "),
+  };
+}
+
 const seoUtils = {
   siteConfig,
   generatePropertyStructuredData,
@@ -403,6 +677,8 @@ const seoUtils = {
   generatePropertyMetadata,
   generatePropertyListingMetadata,
   generateHomepageMetadata,
+  generateListingDetailMetadata,
+  generateListingDetailStructuredData,
   createStructuredDataScript,
 };
 

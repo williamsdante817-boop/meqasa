@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { ImageWithFallback } from "@/components/common/image-with-fallback";
-import { MapPin, Building2, Home, Eye } from "lucide-react";
+import { MapPin, Building2, Eye } from "lucide-react";
 import Link from "next/link";
 import { cn, formatNumber } from "@/lib/utils";
 import { useState } from "react";

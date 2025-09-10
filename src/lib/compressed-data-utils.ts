@@ -47,8 +47,8 @@ export function compressDataForUrl<T>(data: T): string {
     }
 
     return urlSafe;
-  } catch (error) {
-    console.error("Failed to compress data for URL:", error);
+  } catch (_error) {
+    console.error("Failed to compress data for URL:", _error);
     throw new Error("Data compression failed");
   }
 }
@@ -176,7 +176,7 @@ export function getCleanUrl(currentUrl: string): string {
     urlObj.searchParams.delete("v");
 
     return urlObj.pathname + (urlObj.search || "");
-  } catch (error) {
+  } catch {
     // Fallback: simple string manipulation
     return currentUrl.split("?")[0] || currentUrl;
   }
@@ -222,7 +222,7 @@ export function estimateCompressionRatio<T>(data: T): number {
     const jsonString = JSON.stringify(data);
     const compressed = pako.deflate(jsonString);
     return Math.round((1 - compressed.length / jsonString.length) * 100);
-  } catch (error) {
+  } catch {
     return 0;
   }
 }
@@ -250,7 +250,7 @@ export function getCompressionStats<T>(data: T) {
       ),
       urlFriendly: urlSafe.length < COMPRESSION_CONFIG.MAX_URL_LENGTH,
     };
-  } catch (error) {
+  } catch {
     return null;
   }
 }

@@ -19,6 +19,7 @@ interface MobileCommonFiltersProps {
   hideBedBath?: boolean;
   showAreaRange?: boolean;
   isShortLet?: boolean;
+  contractType?: "rent" | "buy" | "short-let" | "land";
   formState: FormState;
   updateFormState: (updates: Partial<FormState>) => void;
 }
@@ -29,7 +30,6 @@ const fallbackOptions = {
     { value: "house", label: "House" },
     { value: "apartment", label: "Apartment" },
     { value: "office", label: "Office" },
-    { value: "land", label: "Land" },
   ],
   bedrooms: [
     { value: "1", label: "1 Bedroom" },
@@ -60,6 +60,7 @@ export function MobileCommonFilters({
   hideBedBath = false,
   showAreaRange = false,
   isShortLet = false,
+  contractType = "rent",
   formState,
   updateFormState,
 }: MobileCommonFiltersProps) {
@@ -264,6 +265,7 @@ export function MobileCommonFilters({
         <MobileMoreFilters
           formState={formState}
           updateFormState={updateFormState}
+          contractType={contractType}
         />
       )}
     </div>

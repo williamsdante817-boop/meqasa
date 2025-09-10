@@ -263,7 +263,7 @@ class SessionDataCache {
       if (typeof window !== "undefined") {
         sessionStorage.removeItem(this.getStorageKey(cacheKey));
       }
-    } catch (error) {
+    } catch {
       // Silent fail - not critical
     }
   }
@@ -293,7 +293,7 @@ class SessionDataCache {
       } else {
         return url.get("cached");
       }
-    } catch (error) {
+    } catch {
       return null;
     }
   }
@@ -306,7 +306,7 @@ class SessionDataCache {
       const urlObj = new URL(currentUrl, window.location.origin);
       urlObj.searchParams.delete("cached");
       return urlObj.pathname + (urlObj.search || "");
-    } catch (error) {
+    } catch {
       return currentUrl.split("?")[0] || currentUrl; // Fallback
     }
   }

@@ -16,7 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { ListFilterPlus } from "lucide-react";
+import { SlidersHorizontal } from "lucide-react";
 
 interface FilterOption {
   value: string;
@@ -44,6 +44,7 @@ interface MoreFiltersPopoverProps {
   variant?: "default" | "compact" | "home";
   className?: string;
   title?: string;
+  contractType?: "rent" | "buy" | "short-let" | "land";
 }
 
 // Default filter options
@@ -69,8 +70,29 @@ export function MoreFiltersPopover({
   variant = "default",
   className = "",
   title = "More filters",
+  contractType = "rent",
 }: MoreFiltersPopoverProps) {
   const filterConfig = { ...defaultConfig, ...config };
+
+  // Determine the correct text based on contract type
+  const getOwnerText = () => {
+    switch (contractType) {
+      case "buy":
+        return {
+          title: "For Sale by Owner",
+          description: "Properties sold directly by the owner"
+        };
+      case "rent":
+      case "short-let":
+      default:
+        return {
+          title: "For Rent by Owner",
+          description: "Properties rented directly by the owner"
+        };
+    }
+  };
+
+  const ownerText = getOwnerText();
 
   const getTriggerClassName = () => {
     const base = "transition-all duration-200 group";
@@ -80,7 +102,7 @@ export function MoreFiltersPopover({
         // Use custom className if provided (for search component Select matching), otherwise use default home styles
         return (
           className ||
-          `flex min-w-[150px] h-5 max-w-[150px] cursor-pointer items-center rounded-lg text-base font-medium text-white`
+          `flex min-w-[150px] h-5 max-w-[150px] cursor-pointer items-center justify-between rounded-lg text-base font-medium text-white whitespace-nowrap`
         );
       case "compact":
         return `h-10 shadow-none bg-white border-gray-200 hover:bg-gray-50 hover:border-brand-primary/50 text-brand-accent font-normal text-sm px-2 flex-shrink-0 ${base}`;
@@ -117,41 +139,44 @@ export function MoreFiltersPopover({
         {/* Filter Controls Section */}
         <div className="space-y-5">
           <div className="grid grid-cols-1 gap-5">
-            <div className="space-y-3">
-              <Label className="text-sm font-medium text-brand-accent">
-                Rent Period
-              </Label>
-              <Select
-                value={formState.period}
-                onValueChange={(value) => updateFormState({ period: value })}
-              >
-                <SelectTrigger className="h-12 shadow-none cursor-pointer border-gray-200 focus:border-brand-primary hover:border-gray-300 bg-gray-50/50 focus:bg-white text-sm font-medium transition-all duration-200">
-                  <SelectValue placeholder="Select period" />
-                </SelectTrigger>
-                <SelectContent
-                  className="bg-white border border-gray-200 shadow-xl rounded-lg"
-                  style={{ zIndex: 99999 }}
+            {/* Rent Period - Only show for rent tab */}
+            {contractType === "rent" && (
+              <div className="space-y-3">
+                <Label className="text-sm font-medium text-brand-accent">
+                  Rent Period
+                </Label>
+                <Select
+                  value={formState.period}
+                  onValueChange={(value) => updateFormState({ period: value })}
                 >
-                  <SelectGroup>
-                    <SelectItem
-                      value="- Any -"
-                      className="text-sm py-3 hover:bg-brand-primary/5"
-                    >
-                      Any Period
-                    </SelectItem>
-                    {filterConfig.period?.map(({ value, label }, index) => (
+                  <SelectTrigger className="h-12 shadow-none cursor-pointer border-gray-200 focus:border-brand-primary hover:border-gray-300 bg-gray-50/50 focus:bg-white text-sm font-medium transition-all duration-200">
+                    <SelectValue placeholder="Select period" />
+                  </SelectTrigger>
+                  <SelectContent
+                    className="bg-white border border-gray-200 shadow-xl rounded-lg"
+                    style={{ zIndex: 99999 }}
+                  >
+                    <SelectGroup>
                       <SelectItem
-                        key={`${value}-${index}`}
-                        value={value}
+                        value="- Any -"
                         className="text-sm py-3 hover:bg-brand-primary/5"
                       >
-                        {label}
+                        Any Period
                       </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
+                      {filterConfig.period?.map(({ value, label }, index) => (
+                        <SelectItem
+                          key={`${value}-${index}`}
+                          value={value}
+                          className="text-sm py-3 hover:bg-brand-primary/5"
+                        >
+                          {label}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
 
             <div className="space-y-3">
               <Label className="text-sm font-medium text-brand-accent">
@@ -185,57 +210,59 @@ export function MoreFiltersPopover({
           </div>
         </div>
 
-        {/* Property Features Section */}
-        <div className="space-y-4 border-t border-gray-100 pt-5">
-          <Label className="text-sm font-semibold text-brand-accent">
-            Property Features
-          </Label>
-          <div className="">
-            <div className="flex items-start space-x-4 p-3 rounded-lg hover:bg-gray-50/50 transition-colors duration-200">
-              <Checkbox
-                id="furnished-results"
-                checked={formState.furnished}
-                onCheckedChange={(checked) =>
-                  updateFormState({ furnished: !!checked })
-                }
-                className="mt-0.5 h-5 w-5 border-2 border-gray-300 data-[state=checked]:bg-brand-primary data-[state=checked]:border-brand-primary transition-all duration-200"
-              />
-              <div className="flex-1">
-                <Label
-                  htmlFor="furnished-results"
-                  className="text-sm font-medium cursor-pointer text-brand-accent leading-tight"
-                >
-                  Furnished Properties
-                </Label>
-                <p className="text-xs text-brand-muted">
-                  Properties that come with furniture included
-                </p>
+        {/* Property Features Section - Hide furnished and owner options for land */}
+        {contractType !== "land" && (
+          <div className="space-y-4 border-t border-gray-100 pt-5">
+            <Label className="text-sm font-semibold text-brand-accent">
+              Property Features
+            </Label>
+            <div className="">
+              <div className="flex items-start space-x-4 p-3 rounded-lg hover:bg-gray-50/50 transition-colors duration-200">
+                <Checkbox
+                  id="furnished-results"
+                  checked={formState.furnished}
+                  onCheckedChange={(checked) =>
+                    updateFormState({ furnished: !!checked })
+                  }
+                  className="mt-0.5 h-5 w-5 border-2 border-gray-300 data-[state=checked]:bg-brand-primary data-[state=checked]:border-brand-primary transition-all duration-200"
+                />
+                <div className="flex-1">
+                  <Label
+                    htmlFor="furnished-results"
+                    className="text-sm font-medium cursor-pointer text-brand-accent leading-tight"
+                  >
+                    Furnished Properties
+                  </Label>
+                  <p className="text-xs text-brand-muted">
+                    Properties that come with furniture included
+                  </p>
+                </div>
               </div>
-            </div>
 
-            <div className="flex items-start space-x-4 p-3 rounded-lg hover:bg-gray-50/50 transition-colors duration-200">
-              <Checkbox
-                id="owner-results"
-                checked={formState.owner}
-                onCheckedChange={(checked) =>
-                  updateFormState({ owner: !!checked })
-                }
-                className="mt-0.5 h-5 w-5 border-2 border-gray-300 data-[state=checked]:bg-brand-primary data-[state=checked]:border-brand-primary transition-all duration-200"
-              />
-              <div className="flex-1">
-                <Label
-                  htmlFor="owner-results"
-                  className="text-sm font-medium cursor-pointer text-brand-accent leading-tight"
-                >
-                  For Sale by Owner
-                </Label>
-                <p className="text-xs text-brand-muted">
-                  Properties sold directly by the owner
-                </p>
+              <div className="flex items-start space-x-4 p-3 rounded-lg hover:bg-gray-50/50 transition-colors duration-200">
+                <Checkbox
+                  id="owner-results"
+                  checked={formState.owner}
+                  onCheckedChange={(checked) =>
+                    updateFormState({ owner: !!checked })
+                  }
+                  className="mt-0.5 h-5 w-5 border-2 border-gray-300 data-[state=checked]:bg-brand-primary data-[state=checked]:border-brand-primary transition-all duration-200"
+                />
+                <div className="flex-1">
+                  <Label
+                    htmlFor="owner-results"
+                    className="text-sm font-medium cursor-pointer text-brand-accent leading-tight"
+                  >
+                    {ownerText.title}
+                  </Label>
+                  <p className="text-xs text-brand-muted">
+                    {ownerText.description}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     );
   };
@@ -245,16 +272,17 @@ export function MoreFiltersPopover({
       // For home variant, render as div but styled to match Select triggers when className is provided
       return (
         <div className={getTriggerClassName()}>
-          {title} <ListFilterPlus className="ml-2 h-5 w-5" />
+          <span className="flex-shrink-0">{title}</span>
+          <SlidersHorizontal className="ml-2 h-4 w-4 flex-shrink-0" />
         </div>
       );
     }
 
     return (
       <Button variant="outline" className={getTriggerClassName()}>
-        <span className="hidden sm:inline">{title}</span>
-        <span className="sm:hidden">More</span>
-        <ListFilterPlus className="ml-1 sm:ml-2 h-4 w-4 transition-transform duration-200 group-hover:rotate-12" />
+        <span className="hidden sm:inline flex-shrink-0">{title}</span>
+        <span className="sm:hidden flex-shrink-0">More</span>
+        <SlidersHorizontal className="ml-1 sm:ml-2 h-4 w-4 flex-shrink-0" />
       </Button>
     );
   };

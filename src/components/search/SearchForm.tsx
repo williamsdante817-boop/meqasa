@@ -1,6 +1,5 @@
 "use client";
 
-import { Input } from "@/components/ui/input";
 import { type FormState } from "@/types/search";
 import { SearchInput } from "./SearchInput";
 import { useRouter, usePathname } from "next/navigation";
@@ -134,15 +133,7 @@ export function SearchForm({
       role="search"
       aria-label={`Search for properties to ${type === "buy" ? "purchase" : type}`}
     >
-      <Input
-        type="radio"
-        value={type}
-        name={type}
-        className="hidden"
-        checked
-        readOnly
-        aria-hidden="true"
-      />
+      <input type="hidden" name="searchType" value={type} />
       <SearchInput
         onSubmit={(e) => e.preventDefault()}
         searchValue={formState.search}

@@ -21,6 +21,7 @@ interface CommonFiltersProps {
   hideBedBath?: boolean;
   showAreaRange?: boolean;
   isShortLet?: boolean; // New prop to identify short-let search
+  contractType?: "rent" | "buy" | "short-let" | "land";
   formState: FormState;
   updateFormState: (updates: Partial<FormState>) => void;
 }
@@ -31,7 +32,6 @@ const fallbackOptions = {
     { value: "house", label: "House" },
     { value: "apartment", label: "Apartment" },
     { value: "office", label: "Office" },
-    { value: "land", label: "Land" },
   ],
   bedrooms: [
     { value: "1", label: "1 Bedroom" },
@@ -62,6 +62,7 @@ export function CommonFilters({
   hideBedBath = false,
   showAreaRange = false,
   isShortLet = false, // New prop with default value
+  contractType = "rent",
   formState,
   updateFormState,
 }: CommonFiltersProps) {
@@ -75,6 +76,7 @@ export function CommonFilters({
           <Select
             value={formState.propertyType}
             onValueChange={(value) => updateFormState({ propertyType: value })}
+            aria-label="Property type filter"
           >
             <SelectTrigger className="h-5 min-w-[150px] max-w-[150px] cursor-pointer rounded-none border-0 bg-transparent py-0 text-base font-medium shadow-none text-white focus:border-0 focus:ring-0 focus:ring-transparent">
               <SelectValue placeholder="Type" />
@@ -102,7 +104,7 @@ export function CommonFilters({
               </SelectGroup>
             </SelectContent>
           </Select>
-          <Separator orientation="vertical" className="h-[20px] bg-[#9A9EB5]" />
+          <Separator orientation="vertical" className="h-[20px] bg-brand-separator" />
         </>
       )}
       {isShortLet && (
@@ -110,6 +112,7 @@ export function CommonFilters({
           <Select
             value={formState.howShort ?? "- Any -"}
             onValueChange={(value) => updateFormState({ howShort: value })}
+            aria-label="Rental duration filter"
           >
             <SelectTrigger className="h-5 min-w-[150px] max-w-[150px] cursor-pointer rounded-none border-0 bg-transparent py-0 text-base font-medium shadow-none text-white focus:border-0 focus:ring-0 focus:ring-transparent">
               <SelectValue placeholder="Duration" />
@@ -137,7 +140,7 @@ export function CommonFilters({
               </SelectGroup>
             </SelectContent>
           </Select>
-          <Separator orientation="vertical" className="h-[20px] bg-[#9A9EB5]" />
+          <Separator orientation="vertical" className="h-[20px] bg-brand-separator" />
         </>
       )}
       {!hideBedBath && formState.propertyType !== "land" && (
@@ -145,8 +148,9 @@ export function CommonFilters({
           <Select
             value={formState.bedrooms}
             onValueChange={(value) => updateFormState({ bedrooms: value })}
+            aria-label="Bedroom count filter"
           >
-            <SelectTrigger className="h-5 min-w-[150px] max-w-fit cursor-pointer rounded-none border-0 bg-transparent py-0 text-base font-medium shadow-none text-white focus:border-0 focus:ring-0 focus:ring-transparent">
+            <SelectTrigger className="h-5 min-w-[150px] max-w-[150px] cursor-pointer rounded-none border-0 bg-transparent py-0 text-base font-medium shadow-none text-white focus:border-0 focus:ring-0 focus:ring-transparent">
               <SelectValue placeholder="Beds" />
             </SelectTrigger>
             <SelectContent>
@@ -172,12 +176,13 @@ export function CommonFilters({
               </SelectGroup>
             </SelectContent>
           </Select>
-          <Separator orientation="vertical" className="h-[20px] bg-[#9A9EB5]" />
+          <Separator orientation="vertical" className="h-[20px] bg-brand-separator" />
           <Select
             value={formState.bathrooms}
             onValueChange={(value) => updateFormState({ bathrooms: value })}
+            aria-label="Bathroom count filter"
           >
-            <SelectTrigger className="h-5 min-w-[150px] max-w-fit cursor-pointer rounded-none border-0 bg-transparent py-0 text-base font-medium shadow-none text-white focus:border-0 focus:ring-0 focus:ring-transparent">
+            <SelectTrigger className="h-5 min-w-[150px] max-w-[150px] cursor-pointer rounded-none border-0 bg-transparent py-0 text-base font-medium shadow-none text-white focus:border-0 focus:ring-0 focus:ring-transparent">
               <SelectValue placeholder="Baths" />
             </SelectTrigger>
             <SelectContent>
@@ -203,7 +208,7 @@ export function CommonFilters({
               </SelectGroup>
             </SelectContent>
           </Select>
-          <Separator orientation="vertical" className="h-[20px] bg-[#9A9EB5]" />
+          <Separator orientation="vertical" className="h-[20px] bg-brand-separator" />
         </>
       )}
       <PriceRangeSelect
@@ -223,7 +228,7 @@ export function CommonFilters({
 
       {(showAreaRange || formState.propertyType === "land") && (
         <>
-          <Separator orientation="vertical" className="h-[20px] bg-[#9A9EB5]" />
+          <Separator orientation="vertical" className="h-[20px] bg-brand-separator" />
           <PriceInput
             title="Area range"
             unit="m²"
@@ -242,12 +247,13 @@ export function CommonFilters({
 
       {showMoreFilters && (
         <>
-          <Separator orientation="vertical" className="h-[20px] bg-[#9A9EB5]" />
+          <Separator orientation="vertical" className="h-[20px] bg-brand-separator" />
           <MoreFiltersPopover
             formState={formState}
             updateFormState={updateFormState}
+            contractType={contractType}
             variant="home"
-            className="h-5 min-w-[150px] max-w-[150px] cursor-pointer rounded-none border-0 bg-transparent py-0 text-base font-medium shadow-none text-white focus:border-0 focus:ring-0 focus:ring-transparent"
+            className="flex h-5 min-w-[150px] max-w-[150px] cursor-pointer items-center justify-between rounded-none border-0 bg-transparent py-0 text-base font-medium shadow-none text-white whitespace-nowrap focus:border-0 focus:ring-0 focus:ring-transparent"
           />
         </>
       )}

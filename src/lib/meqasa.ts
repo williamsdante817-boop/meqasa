@@ -22,12 +22,18 @@ export async function searchProperties(
   // For client-side, relative URLs work fine
   const resolveBaseUrl = (): string => {
     if (isServer) {
-      // In development, use localhost
       if (process.env.NODE_ENV === "development") {
         return "http://localhost:3000";
       }
-      // In production, use relative URL to avoid circular references
-      return "";
+      // Production: Use Vercel URL or fallback to configured site URL
+      if (process.env.VERCEL_URL) {
+        return `https://${process.env.VERCEL_URL}`;
+      }
+      if (process.env.NEXT_PUBLIC_SITE_URL) {
+        return process.env.NEXT_PUBLIC_SITE_URL;
+      }
+      // Final fallback for production
+      return "https://meqasa.com";
     }
     // Client-side always uses relative URLs
     return "";
@@ -51,7 +57,21 @@ export async function searchProperties(
   });
 
   if (!response.ok) {
-    throw new Error("Failed to search properties");
+    // Enhanced error logging for production debugging
+    const error = new Error(`Failed to search properties: ${response.status} ${response.statusText}`);
+    console.error("searchProperties error:", {
+      error: error.message,
+      contract,
+      locality,
+      apiUrl,
+      isServer,
+      environment: process.env.NODE_ENV,
+      vercelUrl: process.env.VERCEL_URL,
+      siteUrl: process.env.NEXT_PUBLIC_SITE_URL,
+      status: response.status,
+      statusText: response.statusText,
+    });
+    throw error;
   }
 
   return response.json() as Promise<MeqasaSearchResponse>;
@@ -75,12 +95,18 @@ export async function loadMoreProperties(
   // For client-side, relative URLs work fine
   const resolveBaseUrl = (): string => {
     if (isServer) {
-      // In development, use localhost
       if (process.env.NODE_ENV === "development") {
         return "http://localhost:3000";
       }
-      // In production, use relative URL to avoid circular references
-      return "";
+      // Production: Use Vercel URL or fallback to configured site URL
+      if (process.env.VERCEL_URL) {
+        return `https://${process.env.VERCEL_URL}`;
+      }
+      if (process.env.NEXT_PUBLIC_SITE_URL) {
+        return process.env.NEXT_PUBLIC_SITE_URL;
+      }
+      // Final fallback for production
+      return "https://meqasa.com";
     }
     // Client-side always uses relative URLs
     return "";
@@ -104,7 +130,22 @@ export async function loadMoreProperties(
   });
 
   if (!response.ok) {
-    throw new Error("Failed to load more properties");
+    // Enhanced error logging for production debugging
+    const error = new Error(`Failed to load more properties: ${response.status} ${response.statusText}`);
+    console.error("loadMoreProperties error:", {
+      error: error.message,
+      contract,
+      locality,
+      apiUrl,
+      isServer,
+      environment: process.env.NODE_ENV,
+      vercelUrl: process.env.VERCEL_URL,
+      siteUrl: process.env.NEXT_PUBLIC_SITE_URL,
+      status: response.status,
+      statusText: response.statusText,
+      params,
+    });
+    throw error;
   }
 
   return response.json() as Promise<MeqasaSearchResponse>;

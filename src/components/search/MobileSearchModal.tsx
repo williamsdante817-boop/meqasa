@@ -30,7 +30,10 @@ export function MobileSearchModal({
   updateFormState,
 }: MobileSearchModalProps) {
   const [activeTab, setActiveTab] = useState("rent");
+  const [announcement, setAnnouncement] = useState("");
   const modalRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const lastFocusedElementRef = useRef<HTMLElement | null>(null);
 
   // Get current form state based on active tab
   const getCurrentFormState = (): FormState => {
@@ -48,41 +51,54 @@ export function MobileSearchModal({
     }
   };
 
-  // Filter management for mobile
+  // Filter management for mobile with screen reader announcements
   const handleRemoveFilter = (filterKey: keyof FormState) => {
     const resetValues: Partial<FormState> = {};
+    let filterName = "";
 
     switch (filterKey) {
       case "propertyType":
         // Keep land type on land tab, reset to "all" for others
         resetValues.propertyType = activeTab === "land" ? "land" : "all";
+        filterName = "Property type";
         break;
       case "bedrooms":
         resetValues.bedrooms = "- Any -";
+        filterName = "Bedrooms";
         break;
       case "bathrooms":
         resetValues.bathrooms = "- Any -";
+        filterName = "Bathrooms";
         break;
       case "minPrice":
         resetValues.minPrice = "";
+        filterName = "Minimum price";
         break;
       case "maxPrice":
         resetValues.maxPrice = "";
+        filterName = "Maximum price";
         break;
       case "period":
         resetValues.period = "- Any -";
+        filterName = "Period";
         break;
       case "furnished":
         resetValues.furnished = false;
+        filterName = "Furnished";
         break;
       case "owner":
         resetValues.owner = false;
+        filterName = "Owner";
         break;
       default:
         break;
     }
 
     updateFormState(activeTab, resetValues);
+    
+    // Announce filter removal to screen readers
+    setAnnouncement(`${filterName} filter removed`);
+    setTimeout(() => setAnnouncement(""), 1000);
   };
 
   const handleClearAllFilters = () => {
@@ -98,6 +114,10 @@ export function MobileSearchModal({
       furnished: false,
       owner: false,
     });
+    
+    // Announce all filters cleared to screen readers
+    setAnnouncement("All filters cleared");
+    setTimeout(() => setAnnouncement(""), 1000);
   };
 
   // Count active filters for badge
@@ -120,22 +140,66 @@ export function MobileSearchModal({
     return count;
   };
 
-  // Handle escape key
+  // Focus management and keyboard handling
   useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!isOpen) return;
+
+      // Handle escape key
       if (e.key === "Escape") {
         onClose();
+        return;
+      }
+
+      // Handle tab key for focus trapping
+      if (e.key === "Tab") {
+        const modal = modalRef.current;
+        if (!modal) return;
+
+        const focusableElements = modal.querySelectorAll(
+          'button, input, select, textarea, a[href], [tabindex]:not([tabindex="-1"])'
+        );
+        const focusableArray = Array.from(focusableElements) as HTMLElement[];
+        const firstFocusable = focusableArray[0];
+        const lastFocusable = focusableArray[focusableArray.length - 1];
+
+        if (e.shiftKey) {
+          // Shift + Tab - moving backwards
+          if (document.activeElement === firstFocusable) {
+            e.preventDefault();
+            lastFocusable?.focus();
+          }
+        } else {
+          // Tab - moving forwards
+          if (document.activeElement === lastFocusable) {
+            e.preventDefault();
+            firstFocusable?.focus();
+          }
+        }
       }
     };
 
     if (isOpen) {
-      document.addEventListener("keydown", handleEscape);
-      // Prevent body scroll when modal is open
+      // Store the element that was focused before the modal opened
+      lastFocusedElementRef.current = document.activeElement as HTMLElement;
+      
+      document.addEventListener("keydown", handleKeyDown);
       document.body.style.overflow = "hidden";
+      
+      // Focus the close button when modal opens
+      setTimeout(() => {
+        closeButtonRef.current?.focus();
+      }, 100);
+    } else {
+      // Restore focus to the element that was focused before modal opened
+      if (lastFocusedElementRef.current) {
+        lastFocusedElementRef.current.focus();
+        lastFocusedElementRef.current = null;
+      }
     }
 
     return () => {
-      document.removeEventListener("keydown", handleEscape);
+      document.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = "unset";
     };
   }, [isOpen, onClose]);
@@ -169,6 +233,7 @@ export function MobileSearchModal({
             Search Properties
           </h2>
           <Button
+            ref={closeButtonRef}
             variant="ghost"
             size="sm"
             onClick={onClose}
@@ -179,35 +244,56 @@ export function MobileSearchModal({
           </Button>
         </div>
 
+        {/* Screen Reader Live Region for Announcements */}
+        <div
+          aria-live="polite"
+          aria-atomic="true"
+          className="sr-only"
+          role="status"
+        >
+          {announcement}
+        </div>
+
         {/* Tab Navigation */}
         <Tabs
           value={activeTab}
-          onValueChange={setActiveTab}
+          onValueChange={(value) => {
+            setActiveTab(value);
+            // Announce tab change to screen readers
+            const tabNames = {
+              rent: "Rent",
+              buy: "Buy",
+              land: "Land",
+              "short-let": "Short Let"
+            };
+            setAnnouncement(`Switched to ${tabNames[value as keyof typeof tabNames]} tab`);
+            setTimeout(() => setAnnouncement(""), 1000);
+          }}
           className="flex flex-col h-full"
         >
           <div className="px-4 pt-2 pb-1 bg-white border-b border-gray-100 sticky top-[69px] z-10">
             <TabsList className="grid w-full grid-cols-4 bg-gray-100 p-1 rounded-lg">
               <TabsTrigger
                 value="rent"
-                className="font-semibold text-sm data-[state=active]:bg-white data-[state=active]:text-rose-500 data-[state=active]:shadow-sm"
+                className="font-semibold text-sm data-[state=active]:bg-white data-[state=active]:text-brand-primary data-[state=active]:shadow-sm"
               >
                 Rent
               </TabsTrigger>
               <TabsTrigger
                 value="buy"
-                className="font-semibold text-sm data-[state=active]:bg-white data-[state=active]:text-rose-500 data-[state=active]:shadow-sm"
+                className="font-semibold text-sm data-[state=active]:bg-white data-[state=active]:text-brand-primary data-[state=active]:shadow-sm"
               >
                 Buy
               </TabsTrigger>
               <TabsTrigger
                 value="land"
-                className="font-semibold text-sm data-[state=active]:bg-white data-[state=active]:text-rose-500 data-[state=active]:shadow-sm"
+                className="font-semibold text-sm data-[state=active]:bg-white data-[state=active]:text-brand-primary data-[state=active]:shadow-sm"
               >
                 Land
               </TabsTrigger>
               <TabsTrigger
                 value="short-let"
-                className="font-semibold text-sm data-[state=active]:bg-white data-[state=active]:text-rose-500 data-[state=active]:shadow-sm"
+                className="font-semibold text-sm data-[state=active]:bg-white data-[state=active]:text-brand-primary data-[state=active]:shadow-sm"
               >
                 Short Let
               </TabsTrigger>
@@ -242,6 +328,7 @@ export function MobileSearchModal({
                 >
                   <MobileCommonFilters
                     showMoreFilters
+                    contractType="rent"
                     formState={rentFormState}
                     updateFormState={(updates) =>
                       updateFormState("rent", updates)
@@ -257,6 +344,8 @@ export function MobileSearchModal({
                   updateFormState={(updates) => updateFormState("buy", updates)}
                 >
                   <MobileCommonFilters
+                    showMoreFilters
+                    contractType="buy"
                     formState={buyFormState}
                     updateFormState={(updates) =>
                       updateFormState("buy", updates)
@@ -274,8 +363,10 @@ export function MobileSearchModal({
                   }
                 >
                   <MobileCommonFilters
+                    showMoreFilters
                     hidePropertyType
                     showAreaRange
+                    contractType="land"
                     formState={landFormState}
                     updateFormState={(updates) =>
                       updateFormState("land", updates)
@@ -296,6 +387,7 @@ export function MobileSearchModal({
                     showMoreFilters
                     hidePropertyType
                     isShortLet
+                    contractType="short-let"
                     formState={shortLetFormState}
                     updateFormState={(updates) =>
                       updateFormState("short-let", updates)
@@ -324,7 +416,8 @@ export function MobileSearchModal({
               <Button
                 type="submit"
                 form={`search-form-${activeTab}`}
-                className="w-full h-12 bg-rose-500 hover:bg-rose-600 text-white font-semibold rounded-lg transition-all duration-200 active:scale-95"
+                variant="brand-primary"
+                className="w-full h-12 font-semibold rounded-lg"
               >
                 <Search className="h-5 w-5 mr-2" />
                 Search Properties

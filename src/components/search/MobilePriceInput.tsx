@@ -122,7 +122,7 @@ export function MobilePriceInput({
             placeholder={placeholder.min}
             className={cn(
               "h-12 pl-12 bg-gray-50 border-gray-200 rounded-lg",
-              "focus:bg-white focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20",
+              "focus:bg-white focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20",
               "text-base placeholder:text-gray-500 placeholder:text-base"
             )}
           />
@@ -142,7 +142,7 @@ export function MobilePriceInput({
             placeholder={placeholder.max}
             className={cn(
               "h-12 pl-12 bg-gray-50 border-gray-200 rounded-lg",
-              "focus:bg-white focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20",
+              "focus:bg-white focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20",
               "text-base placeholder:text-gray-500 placeholder:text-base"
             )}
           />

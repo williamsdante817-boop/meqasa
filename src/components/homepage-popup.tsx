@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -15,12 +15,14 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { logError } from "@/lib/logger";
 import type { PopupDataWithUrls } from "@/types";
 
 export function HomepagePopup() {
   const [popupData, setPopupData] = useState<PopupDataWithUrls | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const linkRef = useRef<HTMLAnchorElement>(null);
 
   useEffect(() => {
     const fetchPopup = async () => {
@@ -45,7 +47,7 @@ export function HomepagePopup() {
           }
         }
       } catch (error) {
-        console.error("Failed to fetch popup data:", error);
+        logError("Failed to fetch popup data", error, { component: "HomepagePopup" });
       } finally {
         setIsLoading(false);
       }
@@ -55,6 +57,17 @@ export function HomepagePopup() {
     const timer = setTimeout(() => void fetchPopup(), 1000);
     return () => clearTimeout(timer);
   }, []);
+
+  // Focus management when dialog opens
+  useEffect(() => {
+    if (isOpen && linkRef.current) {
+      // Focus the link when dialog opens for keyboard accessibility
+      const focusTimeout = setTimeout(() => {
+        linkRef.current?.focus();
+      }, 100);
+      return () => clearTimeout(focusTimeout);
+    }
+  }, [isOpen]);
 
   if (isLoading || !popupData) {
     return null;
@@ -69,10 +82,12 @@ export function HomepagePopup() {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Link
+                    ref={linkRef}
                     href={popupData.linkUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block cursor-pointer"
+                    className="block cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-lg"
+                    aria-describedby="popup-description"
                   >
                     <Image
                       src={popupData.imageUrl}
@@ -85,6 +100,9 @@ export function HomepagePopup() {
                     <DialogTitle className="sr-only absolute bottom-0 left-0 right-0 bg-black/70 text-white p-4 text-sm">
                       {popupData.title}
                     </DialogTitle>
+                    <div id="popup-description" className="sr-only">
+                      Click to visit {popupData.title}. Opens in a new window.
+                    </div>
                   </Link>
                 </TooltipTrigger>
                 <TooltipContent className="z-[150]">

@@ -50,12 +50,12 @@ export const InfiniteMovingCards = ({
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [isPaused, setIsPaused] = useState(false);
 
-  // Set animation duration
+  // Set animation duration - only when speed changes, not on every render
   useEffect(() => {
     if (scrollerRef.current) {
       const duration =
         speed === "fast" ? "30s" : speed === "normal" ? "60s" : "70s";
-      scrollerRef.current.style.animationDuration = duration;
+      scrollerRef.current.style.setProperty('--duration', duration);
     }
   }, [speed]);
 
@@ -80,6 +80,14 @@ export const InfiniteMovingCards = ({
     }
   };
 
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    // Pause/resume carousel with spacebar
+    if (event.code === "Space") {
+      event.preventDefault();
+      setIsPaused(!isPaused);
+    }
+  };
+
   const handleCardClick = (_item: Item) => {
     // The Link should handle navigation automatically
   };
@@ -94,6 +102,12 @@ export const InfiniteMovingCards = ({
       className={cn("relative w-full overflow-hidden", className)}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
+      role="region"
+      aria-label="Partner company logos carousel. Press space to pause or resume."
+      aria-live="polite"
+      aria-atomic="false"
       style={{
         minHeight: "200px",
         zIndex: 10, // Ensure it's above other elements
@@ -102,14 +116,12 @@ export const InfiniteMovingCards = ({
       {/* Scrolling container */}
       <div
         ref={scrollerRef}
-        className="flex gap-4 py-8 animate-marquee"
+        className="flex gap-4 py-8 animate-marquee-persistent"
+        role="list"
+        aria-label={`${items.length} partner companies`}
         style={{
           width: "max-content",
           minWidth: "100%",
-          // Fallback animation if Tailwind doesn't work
-          animation:
-            scrollerRef.current?.style.animation ??
-            "marquee 60s linear infinite",
         }}
       >
         {/* Duplicate items for seamless loop */}
@@ -122,6 +134,7 @@ export const InfiniteMovingCards = ({
             <Card
               key={`${item.first}-${index}`}
               className="flex-shrink-0 w-[120px] h-[120px] rounded-lg overflow-hidden"
+              role="listitem"
             >
               <TooltipProvider>
                 <Tooltip>

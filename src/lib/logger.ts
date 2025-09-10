@@ -176,8 +176,10 @@ class Logger {
 
       localStorage.setItem("pending_logs", JSON.stringify(logs));
     } catch (e) {
-      // Silently fail if logging fails
-      console.warn("Failed to store log entry:", e);
+      // Silently fail if logging fails - no console output in production
+      if (this.isDevelopment) {
+        console.warn("Failed to store log entry:", e);
+      }
     }
   }
 

@@ -4,7 +4,7 @@ import React from "react";
 export default function SeoText() {
   return (
     <aside
-      className="pt-20 text-sm leading-6 text-brand-muted lg:text-base"
+      className="pt-14 md:pt-20 lg:pt-24 text-sm leading-6 text-brand-muted lg:text-base"
       aria-labelledby="seo-text-heading"
       role="complementary"
     >

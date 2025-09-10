@@ -133,7 +133,7 @@ class UnifiedSearchCache {
     try {
       if (typeof window === "undefined") return;
       sessionStorage.removeItem(this.getStorageKey(cacheKey));
-    } catch (error) {
+    } catch {
       // Silent fail - not critical
     }
   }

@@ -17,6 +17,7 @@ import { searchConfig } from "@/config/search";
 interface MobileMoreFiltersProps {
   formState: FormState;
   updateFormState: (updates: Partial<FormState>) => void;
+  contractType?: "rent" | "buy" | "short-let" | "land";
 }
 
 // Fallback options
@@ -37,10 +38,31 @@ const fallbackPeriodOptions = [
 export function MobileMoreFilters({
   formState,
   updateFormState,
+  contractType = "rent",
 }: MobileMoreFiltersProps) {
   const config = searchConfig?.selectOptions;
   const sortOptions = config?.sort || fallbackSortOptions;
   const periodOptions = config?.period || fallbackPeriodOptions;
+
+  // Determine the correct text based on contract type
+  const getOwnerText = () => {
+    switch (contractType) {
+      case "buy":
+        return {
+          title: "For Sale By Owner",
+          description: "Properties sold directly by owners"
+        };
+      case "rent":
+      case "short-let":
+      default:
+        return {
+          title: "For Rent By Owner", 
+          description: "Properties rented directly by owners"
+        };
+    }
+  };
+
+  const ownerText = getOwnerText();
 
   const resetFilters = () => {
     updateFormState({
@@ -110,84 +132,88 @@ export function MobileMoreFilters({
         </Select>
       </div>
 
-      {/* Rent Period */}
-      <div className="flex flex-col gap-3 text-left">
-        <Label className="text-base font-medium text-gray-700">
-          Rent Period
-        </Label>
-        <Select
-          value={formState.period}
-          onValueChange={(value) => updateFormState({ period: value })}
-        >
-          <SelectTrigger className="h-12 bg-gray-50 border-gray-200 rounded-lg shadow-none text-base text-gray-700">
-            <SelectValue
-              placeholder="Any period"
-              className="text-base text-gray-700"
-            />
-          </SelectTrigger>
-          <SelectContent className="z-[999999]">
-            <SelectItem value="any" className="h-12 text-base text-gray-700">
-              Any Period
-            </SelectItem>
-            {periodOptions.map(({ value, label }) => (
-              <SelectItem
-                key={value}
-                value={value}
-                className="h-12 text-base text-gray-700"
-              >
-                {label}
+      {/* Rent Period - Only show for rent tab */}
+      {contractType === "rent" && (
+        <div className="flex flex-col gap-3 text-left">
+          <Label className="text-base font-medium text-gray-700">
+            Rent Period
+          </Label>
+          <Select
+            value={formState.period}
+            onValueChange={(value) => updateFormState({ period: value })}
+          >
+            <SelectTrigger className="h-12 bg-gray-50 border-gray-200 rounded-lg shadow-none text-base text-gray-700">
+              <SelectValue
+                placeholder="Any period"
+                className="text-base text-gray-700"
+              />
+            </SelectTrigger>
+            <SelectContent className="z-[999999]">
+              <SelectItem value="any" className="h-12 text-base text-gray-700">
+                Any Period
               </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+              {periodOptions.map(({ value, label }) => (
+                <SelectItem
+                  key={value}
+                  value={value}
+                  className="h-12 text-base text-gray-700"
+                >
+                  {label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      )}
 
-      {/* Toggle Filters */}
-      <div className="space-y-4">
-        {/* Furnished */}
-        <div className="flex items-center space-x-3">
-          <Checkbox
-            id="furnished"
-            checked={formState.furnished}
-            onCheckedChange={(checked: boolean) =>
-              updateFormState({ furnished: checked })
-            }
-          />
-          <div className="space-y-1 text-left">
-            <Label
-              htmlFor="furnished"
-              className="text-base font-medium text-gray-700 cursor-pointer"
-            >
-              Furnished Properties Only
-            </Label>
-            <p className="text-xs text-gray-500">
-              Show only furnished properties
-            </p>
+      {/* Toggle Filters - Hide furnished and owner options for land */}
+      {contractType !== "land" && (
+        <div className="space-y-4">
+          {/* Furnished */}
+          <div className="flex items-center space-x-3">
+            <Checkbox
+              id="furnished"
+              checked={formState.furnished}
+              onCheckedChange={(checked: boolean) =>
+                updateFormState({ furnished: checked })
+              }
+            />
+            <div className="space-y-1 text-left">
+              <Label
+                htmlFor="furnished"
+                className="text-base font-medium text-gray-700 cursor-pointer"
+              >
+                Furnished Properties Only
+              </Label>
+              <p className="text-xs text-gray-500">
+                Show only furnished properties
+              </p>
+            </div>
+          </div>
+
+          {/* Owner */}
+          <div className="flex items-center space-x-3">
+            <Checkbox
+              id="owner"
+              checked={formState.owner}
+              onCheckedChange={(checked: boolean) =>
+                updateFormState({ owner: checked })
+              }
+            />
+            <div className="space-y-1 text-left">
+              <Label
+                htmlFor="owner"
+                className="text-base font-medium text-gray-700 cursor-pointer"
+              >
+                {ownerText.title}
+              </Label>
+              <p className="text-xs text-gray-500">
+                {ownerText.description}
+              </p>
+            </div>
           </div>
         </div>
-
-        {/* Owner */}
-        <div className="flex items-center space-x-3">
-          <Checkbox
-            id="owner"
-            checked={formState.owner}
-            onCheckedChange={(checked: boolean) =>
-              updateFormState({ owner: checked })
-            }
-          />
-          <div className="space-y-1 text-left">
-            <Label
-              htmlFor="owner"
-              className="text-base font-medium text-gray-700 cursor-pointer"
-            >
-              For Sale By Owner
-            </Label>
-            <p className="text-xs text-gray-500">
-              Properties sold directly by owners
-            </p>
-          </div>
-        </div>
-      </div>
+      )}
     </div>
   );
 }

@@ -11,6 +11,25 @@ export default {
   ],
   theme: {
     extend: {
+      colors: {
+        brand: {
+          primary: "hsl(var(--brand-primary))",
+          "primary-dark": "hsl(var(--brand-primary-dark))",
+          "primary-light": "hsl(var(--brand-primary-light))",
+          secondary: "hsl(var(--brand-secondary))",
+          "secondary-light": "hsl(var(--brand-secondary-light))",
+          "secondary-dark": "hsl(var(--brand-secondary-dark))",
+          accent: "hsl(var(--brand-accent))",
+          gray: "hsl(var(--brand-gray))",
+          blue: "hsl(var(--brand-blue))",
+          "blue-light": "hsl(var(--brand-blue-light))",
+          "blue-dark": "hsl(var(--brand-blue-dark))",
+          muted: "hsl(var(--brand-muted))",
+          "muted-dark": "hsl(var(--brand-muted-dark))",
+          border: "hsl(var(--brand-border))",
+          "border-light": "hsl(var(--brand-border-light))",
+        },
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",

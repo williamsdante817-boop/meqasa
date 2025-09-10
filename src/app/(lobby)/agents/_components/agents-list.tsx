@@ -11,6 +11,7 @@ import {
   PaginationPrevious,
   PaginationEllipsis,
 } from "@/components/ui/pagination";
+import { logInfo } from "@/lib/logger";
 
 type AgentSocials = {
   linkedin: string | null;
@@ -78,7 +79,11 @@ export function AgentsList({ agents }: AgentsListProps) {
     return validAgents.slice(startIndex, endIndex);
   }, [validAgents, currentPage]);
 
-  console.log("AgentsListProps", agents);
+  logInfo("Agents list loaded", {
+    count: agents.length,
+    validCount: validAgents.length,
+    component: "AgentsList",
+  });
 
   // Reset to first page when agents data changes
   useEffect(() => {
@@ -94,7 +99,11 @@ export function AgentsList({ agents }: AgentsListProps) {
 
   const handlePageChange = useCallback(
     (pageNumber: number) => {
-      console.log("handlePageChange called with:", pageNumber);
+      logInfo("Page change requested", {
+        pageNumber,
+        totalPages,
+        component: "AgentsList",
+      });
       if (pageNumber >= 1 && pageNumber <= totalPages) {
         setCurrentPage(pageNumber);
       }
@@ -158,7 +167,6 @@ export function AgentsList({ agents }: AgentsListProps) {
             <PaginationItem>
               <PaginationPrevious
                 onClick={(e) => {
-                  console.log("Previous button clicked");
                   e.preventDefault();
                   e.stopPropagation();
                   if (currentPage > 1) {
@@ -187,7 +195,6 @@ export function AgentsList({ agents }: AgentsListProps) {
                 ) : (
                   <PaginationLink
                     onClick={(e) => {
-                      console.log("Page number clicked:", item);
                       e.preventDefault();
                       e.stopPropagation();
                       if (currentPage !== item) {
@@ -213,7 +220,6 @@ export function AgentsList({ agents }: AgentsListProps) {
             <PaginationItem>
               <PaginationNext
                 onClick={(e) => {
-                  console.log("Next button clicked");
                   e.preventDefault();
                   e.stopPropagation();
                   if (currentPage < totalPages) {

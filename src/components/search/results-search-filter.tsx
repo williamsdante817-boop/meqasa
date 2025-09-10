@@ -565,6 +565,9 @@ export function ResultSearchFilter() {
               <MoreFiltersPopover
                 formState={formState}
                 updateFormState={updateFormState}
+                contractType={
+                  formState.listingType === "rent" ? "rent" : "buy"
+                }
               />
             </div>
 

@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 
 export interface DevelopmentProjectResponse {
   hero: {
@@ -207,7 +207,9 @@ export async function POST(request: NextRequest) {
       // Add any additional parameters from the request body
       Object.entries(body).forEach(([key, value]) => {
         if (value !== null && value !== undefined) {
-          postParams.set(key, String(value));
+          if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
+            postParams.set(key, String(value));
+          }
         }
       });
 

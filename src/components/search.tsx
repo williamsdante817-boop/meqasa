@@ -9,6 +9,7 @@ import { type FormState } from "@/types/search";
 import { useState } from "react";
 import { CommonFilters } from "./search/CommonFilters";
 import { PriceRangeSelect } from "@/components/ui/price-range-select";
+import { MoreFiltersPopover } from "@/components/ui/more-filters-popover";
 import { SearchForm } from "./search/SearchForm";
 
 // Default form state for each tab
@@ -44,23 +45,6 @@ export function SearchFilter() {
   const [shortLetFormState, setShortLetFormState] = useState<FormState>(
     getDefaultFormState()
   );
-
-  // Helper function to get current form state based on active tab
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const getCurrentFormState = (tab: string): FormState => {
-    switch (tab) {
-      case "rent":
-        return rentFormState;
-      case "buy":
-        return buyFormState;
-      case "land":
-        return landFormState;
-      case "short-let":
-        return shortLetFormState;
-      default:
-        return rentFormState;
-    }
-  };
 
   // Helper function to get current update function based on active tab
   const getCurrentUpdateFunction = (tab: string) => {
@@ -98,25 +82,25 @@ export function SearchFilter() {
             <TabsList className="grid h-fit w-full grid-cols-4 bg-white p-1.5 text-b-accent">
               <TabsTrigger
                 value="rent"
-                className="font-bold data-[state=active]:bg-rose-500 data-[state=active]:text-white lg:text-base text-brand-accent"
+                className="font-bold data-[state=active]:bg-brand-primary data-[state=active]:text-white lg:text-base text-brand-accent"
               >
                 Rent
               </TabsTrigger>
               <TabsTrigger
                 value="buy"
-                className="font-bold data-[state=active]:bg-rose-500 data-[state=active]:text-white lg:text-base text-brand-accent"
+                className="font-bold data-[state=active]:bg-brand-primary data-[state=active]:text-white lg:text-base text-brand-accent"
               >
                 Buy
               </TabsTrigger>
               <TabsTrigger
                 value="land"
-                className="font-bold data-[state=active]:bg-rose-500 data-[state=active]:text-white lg:text-base text-brand-accent"
+                className="font-bold data-[state=active]:bg-brand-primary data-[state=active]:text-white lg:text-base text-brand-accent"
               >
                 Land
               </TabsTrigger>
               <TabsTrigger
                 value="short-let"
-                className="font-bold data-[state=active]:bg-rose-500 data-[state=active]:text-white lg:text-brand-accent"
+                className="font-bold data-[state=active]:bg-brand-primary data-[state=active]:text-white lg:text-brand-accent"
               >
                 Short Let
               </TabsTrigger>
@@ -130,6 +114,8 @@ export function SearchFilter() {
               updateFormState={(updates) => updateFormState("buy", updates)}
             >
               <CommonFilters
+                showMoreFilters
+                contractType="buy"
                 formState={buyFormState}
                 updateFormState={(updates) => updateFormState("buy", updates)}
               />
@@ -143,6 +129,7 @@ export function SearchFilter() {
             >
               <CommonFilters
                 showMoreFilters
+                contractType="rent"
                 formState={rentFormState}
                 updateFormState={(updates) => updateFormState("rent", updates)}
               />
@@ -203,6 +190,17 @@ export function SearchFilter() {
                     updateFormState("land", { maxArea: value })
                   }
                 />
+                <Separator
+                  orientation="vertical"
+                  className="h-[20px] bg-[#9A9EB5]"
+                />
+                <MoreFiltersPopover
+                  formState={landFormState}
+                  updateFormState={(updates) => updateFormState("land", updates)}
+                  contractType="land"
+                  variant="home"
+                  className="flex h-5 min-w-[150px] max-w-[150px] cursor-pointer items-center justify-between rounded-none border-0 bg-transparent py-0 text-base font-medium shadow-none text-white whitespace-nowrap focus:border-0 focus:ring-0 focus:ring-transparent"
+                />
               </div>
             </SearchForm>
           </TabsContent>
@@ -218,6 +216,7 @@ export function SearchFilter() {
                 showMoreFilters
                 hidePropertyType
                 isShortLet
+                contractType="short-let"
                 formState={shortLetFormState}
                 updateFormState={(updates) =>
                   updateFormState("short-let", updates)

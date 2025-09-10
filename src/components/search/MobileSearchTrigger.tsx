@@ -26,7 +26,7 @@ export function MobileSearchTrigger({
 
   return (
     <button
-      className="lgs:hidden flex justify-between h-12 items-center bg-white shadow-elegant border-rose-300 border w-[80%] mx-auto rounded-lg mt-4 px-4 py-2 hover:shadow-lg transition-shadow cursor-pointer"
+      className="lgs:hidden flex justify-between h-12 items-center bg-white shadow-elegant border-brand-primary border w-[80%] mx-auto rounded-lg mt-4 px-4 py-2 hover:shadow-lg transition-shadow cursor-pointer"
       onClick={handleClick}
       style={{ pointerEvents: "auto" }}
       aria-label="Open search filters"

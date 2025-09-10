@@ -1,6 +1,7 @@
 import ContentSection from "@/components/layout/content-section";
 import FeaturedProjectsCarousel from "@/components/developer/projects/featured-projects-carousel";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { logError } from "@/lib/logger";
 import type { getFeaturedProjects } from "@/lib/get-featured-projects";
 
 interface StreamingFeaturedProjectsProps {
@@ -68,7 +69,7 @@ export async function StreamingFeaturedProjects({
       </ContentSection>
     );
   } catch (error) {
-    console.error("Failed to load featured projects:", error);
+    logError("Failed to load featured projects", error, { component: "StreamingFeaturedProjects" });
     return (
       <ContentSection
         title="Featured Projects"

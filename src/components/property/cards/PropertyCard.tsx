@@ -4,9 +4,15 @@ import type { MeqasaListing } from "@/types/meqasa";
 
 interface PropertyCardProps {
   property: MeqasaListing;
+  priority?: boolean;
+  index?: number;
 }
 
-export default function PropertyCard({ property }: PropertyCardProps) {
+export default function PropertyCard({ 
+  property, 
+  priority = false,
+  index = 0 
+}: PropertyCardProps) {
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("en-GH", {
       style: "currency",
@@ -31,7 +37,10 @@ export default function PropertyCard({ property }: PropertyCardProps) {
           fill
           className="object-cover rounded-t-lg"
           sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 300px"
-          priority
+          priority={priority && index < 4}
+          loading={priority && index < 4 ? undefined : "lazy"}
+          placeholder="blur"
+          blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAEAAQDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
         />
         {property.availability === "furnished" && (
           <span className="absolute top-2 right-2 bg-[#cf007a] text-white px-2 py-1 rounded text-sm">

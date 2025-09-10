@@ -7,6 +7,8 @@ import { AgentsFAQ } from "./_components/agent-faqs";
 import { AgentsList } from "./_components/agents-list";
 import type { Metadata } from "next";
 import { siteConfig } from "@/config/site";
+import { logInfo, logError } from "@/lib/logger";
+import { StructuredData } from "@/components/structured-data";
 
 // Generate metadata for SEO
 export async function generateMetadata(): Promise<Metadata> {
@@ -74,39 +76,40 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function AgentsPage() {
-  const { list } = await getAllAgents();
-  const agents = list ?? [];
+  try {
+    const { list } = await getAllAgents();
+    const agents = list ?? [];
 
-  console.log("Agents Data:", agents);
+    logInfo("Agents data loaded successfully", {
+      count: agents.length,
+      component: "AgentsPage",
+    });
 
   return (
     <>
       {/* Structured Data for SEO */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "ItemList",
-            name: "Real Estate Agents and Brokers",
-            description:
-              "Comprehensive list of professional real estate agents and brokers in Ghana",
-            url: `${siteConfig.url}/agents`,
-            numberOfItems: agents.length ?? 0,
-            itemListElement: agents.map((agent, index) => ({
-              "@type": "ListItem",
-              position: index + 1,
-              item: {
-                "@type": "RealEstateAgent",
-                name: agent.name ?? agent.company,
-                description: `Professional real estate agent on MeQasa`,
-                url: `${siteConfig.url}/agents/${encodeURIComponent(agent.name)}`,
-                image: agent.logo
-                  ? `${siteConfig.url}/uploads/imgs/${agent.logo}`
-                  : undefined,
-              },
-            })),
-          }),
+      <StructuredData
+        data={{
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          name: "Real Estate Agents and Brokers",
+          description:
+            "Comprehensive list of professional real estate agents and brokers in Ghana",
+          url: `${siteConfig.url}/agents`,
+          numberOfItems: agents.length ?? 0,
+          itemListElement: agents.map((agent, index) => ({
+            "@type": "ListItem",
+            position: index + 1,
+            item: {
+              "@type": "RealEstateAgent",
+              name: agent.name ?? agent.company,
+              description: `Professional real estate agent on MeQasa`,
+              url: `${siteConfig.url}/agents/${encodeURIComponent(agent.name)}`,
+              image: agent.logo
+                ? `${siteConfig.url}/uploads/imgs/${agent.logo}`
+                : undefined,
+            },
+          })),
         }}
       />
       <Shell>
@@ -174,5 +177,12 @@ export default async function AgentsPage() {
         </div>
       </Shell>
     </>
-  );
+    );
+  } catch (error) {
+    logError("Failed to load agents page", error, {
+      component: "AgentsPage",
+      action: "getAllAgents",
+    });
+    throw error;
+  }
 }

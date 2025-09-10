@@ -25,7 +25,7 @@ export function MobileSearchInput({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="h-12 pl-10 pr-4 text-base bg-gray-50 border-gray-200 rounded-lg text-gray-700 placeholder:text-gray-500 focus:bg-white focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20"
+        className="h-12 pl-10 pr-4 text-base bg-gray-50 border-gray-200 rounded-lg text-gray-700 placeholder:text-gray-500 focus:bg-white focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
       />
     </div>
   );

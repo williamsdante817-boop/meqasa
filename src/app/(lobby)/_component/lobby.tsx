@@ -1,4 +1,19 @@
-import { HomepagePopup } from "@/components/homepage-popup";
+import dynamic from "next/dynamic";
+import { StreamingErrorBoundary } from "@/components/streaming/StreamingErrorBoundary";
+
+// Dynamic imports for non-critical components (remove ssr: false for Server Components)
+const HomepagePopup = dynamic(
+  () => import("@/components/homepage-popup").then((mod) => ({ 
+    default: mod.HomepagePopup 
+  })),
+  {
+    loading: () => (
+      <div className="sr-only" role="status">
+        Loading popup...
+      </div>
+    ),
+  }
+);
 
 import { SearchFilter } from "@/components/search";
 import {
@@ -13,13 +28,20 @@ import {
   GridBannerSkeleton,
   HeroBannerSkeleton,
 } from "@/components/streaming/LoadingSkeletons";
-import { StreamingErrorBoundary } from "@/components/streaming/StreamingErrorBoundary";
 import { StreamingFeaturedListings } from "@/components/streaming/StreamingFeaturedListings";
 import { StreamingFeaturedProjects } from "@/components/streaming/StreamingFeaturedProjects";
 import { StreamingGridBanner } from "@/components/streaming/StreamingGridBanner";
 import { StreamingHeroBanner } from "@/components/streaming/StreamingHeroBanner";
 import { StreamingLatestListings } from "@/components/streaming/StreamingLatestListings";
-import { StreamingBlog } from "@/components/streaming/StreamingBlog";
+// Dynamic import for blog section (below fold)
+const StreamingBlog = dynamic(
+  () => import("@/components/streaming/StreamingBlog").then((mod) => ({
+    default: mod.StreamingBlog
+  })),
+  {
+    loading: () => <div className="py-14 animate-pulse bg-gray-50" />,
+  }
+);
 import type { FeaturedListingsResponse } from "@/lib/get-featured-listings";
 import type { LatestListingsResponse } from "@/lib/get-latest-listing";
 import type { StaticData } from "@/lib/static-data";
@@ -98,7 +120,15 @@ async function LobbyContent({
         <StaticLocationSection staticData={staticData} />
         <StaticFooterContent />
       </div>
-      <HomepagePopup />
+      <StreamingErrorBoundary 
+        errorFallback={
+          <div className="sr-only" role="status">
+            Homepage popup failed to load
+          </div>
+        }
+      >
+        <HomepagePopup />
+      </StreamingErrorBoundary>
     </main>
   );
 }

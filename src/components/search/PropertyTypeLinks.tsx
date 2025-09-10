@@ -111,7 +111,7 @@ export default function PropertyTypeLinks() {
       aria-label="Property type navigation"
     >
       <nav className="space-y-6">
-        {propertyCategories.map((category, categoryIndex) => (
+        {propertyCategories.map((category, _categoryIndex) => (
           <div key={category.title} className="space-y-3">
             {/* Category Header */}
             <div className="flex items-center gap-2 px-2">

@@ -26,6 +26,7 @@ import {
 import { getUnitDetails } from "@/lib/get-unit-details";
 import { buildInnerHtml, cn, formatNumber, slugify } from "@/lib/utils";
 import { BathIcon, BedIcon, ParkingSquare, Square } from "lucide-react";
+import { logInfo } from "@/lib/logger";
 import ProjectVideo from "../../development-projects/_component/project-video";
 export default async function DeveloperUnitPage({
   params,
@@ -45,11 +46,15 @@ export default async function DeveloperUnitPage({
     unitDetails = extractUnitData(searchParamsResolved);
 
     if (unitDetails) {
-      console.log(
-        `✅ COMPRESSED DATA HIT: Using passed unit data, no API call needed!`
-      );
+      logInfo("Using compressed unit data (cache hit)", {
+        unitId,
+        component: "DeveloperUnitPage",
+      });
     } else {
-      console.log(`⚠️ COMPRESSED DATA INVALID: Fetching from API`);
+      logInfo("Compressed data invalid, fetching from API", {
+        unitId,
+        component: "DeveloperUnitPage",
+      });
       unitDetails = await getUnitDetails(unitId);
     }
   } else {
@@ -112,7 +117,11 @@ export default async function DeveloperUnitPage({
     },
   ];
 
-  console.log("unitDetails", unitDetails.similarunits);
+  logInfo("Unit details loaded", {
+    unitId: unitDetails?.unit?.unitid,
+    similarUnitsCount: unitDetails?.similarunits?.length || 0,
+    component: "DeveloperUnitPage",
+  });
 
   // Construct developer-aware hrefs similar to listings page
   const contract = unitDetails.unit.terms?.toLowerCase() ?? "";

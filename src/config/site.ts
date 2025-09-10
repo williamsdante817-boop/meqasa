@@ -587,7 +587,7 @@ export const siteConfig: SiteConfig = {
       { value: "house", label: "House" },
       { value: "apartment", label: "Apartment" },
       { value: "office", label: "Office" },
-      { value: "land", label: "Land" },
+      // Note: "land" removed - users should use the dedicated Land tab
       { value: "townhouse", label: "Townhouse" },
       { value: "commercial space", label: "Commercial" },
       { value: "warehouse", label: "Warehouse" },

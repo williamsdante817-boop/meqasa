@@ -5,6 +5,7 @@ import { AlertCard } from "@/components/common/alert-card";
 import { AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import Shell from "@/layouts/shell";
+import { logError } from "@/lib/logger";
 
 interface StreamingErrorBoundaryProps {
   children: React.ReactNode;
@@ -36,18 +37,13 @@ class StreamingErrorBoundaryClass extends React.Component<
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error("Streaming component error:", error, errorInfo);
+    logError("Streaming component error", error, {
+      component: "StreamingErrorBoundary",
+      errorInfo,
+    });
 
-    // Production error tracking (you can replace with your preferred service)
-    if (typeof window !== "undefined") {
-      // Send to error tracking service (Sentry, LogRocket, etc.)
-      // analytics.track('component_error', {
-      //   component: 'StreamingGridBanner',
-      //   error: error.message,
-      //   stack: error.stack,
-      //   errorInfo
-      // });
-    }
+    // Production error tracking is now handled by our logging service
+    // which can be extended to integrate with Sentry, LogRocket, etc.
   }
 
   handleRetry = () => {

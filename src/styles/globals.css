@@ -63,6 +63,8 @@
   --brand-badge-verified: 161 76% 41%;
   --brand-badge-ongoing: 44 100% 52%;
   --brand-badge-completed: 137 63% 39%;
+  --brand-separator: 233 15% 68%;
+  --brand-search-overlay: rgba(11, 17, 52, 0.65);
 }
 
 .dark {
@@ -154,6 +156,8 @@
   --color-brand-badge-verified: hsl(var(--brand-badge-verified));
   --color-brand-badge-ongoing: hsl(var(--brand-badge-ongoing));
   --color-brand-badge-completed: hsl(var(--brand-badge-completed));
+  --color-brand-separator: hsl(var(--brand-separator));
+  --color-brand-search-overlay: var(--brand-search-overlay);
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -246,6 +250,16 @@
 /* Use plain CSS classes (avoids @utility linter warnings) */
 .animate-marquee {
   animation: marquee var(--duration, 60s) linear infinite;
+}
+
+/* Persistent marquee animation that survives React re-renders */
+.animate-marquee-persistent {
+  animation: marquee var(--duration, 60s) linear infinite;
+  animation-fill-mode: both;
+  will-change: transform;
+  /* Ensure animation continues smoothly during re-renders */
+  backface-visibility: hidden;
+  perspective: 1000px;
 }
 
 .animate-shimmer {

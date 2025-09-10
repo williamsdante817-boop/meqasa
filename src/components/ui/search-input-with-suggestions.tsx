@@ -182,7 +182,7 @@ export function SearchInputWithSuggestions({
   variant = "home",
   value,
   onChange,
-  onSubmit,
+  onSubmit: _onSubmit,
   placeholder = "Search for location",
   showButton = false,
   buttonText = "Search",
@@ -857,7 +857,8 @@ export function SearchInputWithSuggestions({
         {showButton && (
           <Button
             type="submit"
-            className="my-1.5 mr-1.5 hidden h-12 w-[115px] rounded-lg bg-rose-500 hover:bg-rose-500/90 font-bold md:block"
+            variant="brand-primary"
+            className="my-1.5 mr-1.5 hidden h-12 w-[115px] rounded-lg font-bold md:block"
           >
             {buttonText}
           </Button>

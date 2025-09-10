@@ -38,15 +38,9 @@ export function ArticleCard({
   className = "",
 }: ArticleCardProps) {
   const [imageError, setImageError] = useState(false);
-  const [imageLoading, setImageLoading] = useState(true);
 
   const handleImageError = () => {
     setImageError(true);
-    setImageLoading(false);
-  };
-
-  const handleImageLoad = () => {
-    setImageLoading(false);
   };
 
   // Different layouts based on variant
@@ -79,28 +73,22 @@ export function ArticleCard({
           {imageError ? (
             <ArticlePlaceholder message="Blog image unavailable" />
           ) : (
-            <>
-              {imageLoading && (
-                <div className="absolute inset-0 bg-gray-200 animate-pulse rounded-lg" />
-              )}
-              <Image
-                src={article.thumbnail}
-                alt={article.summary}
-                fill
-                className={`
-                  object-cover transition-transform duration-300 group-hover:scale-105
-                  ${imageLoading ? "opacity-0" : "opacity-100"}
-                `}
-                sizes={
-                  isFeatured
-                    ? "(min-width: 768px) 50vw, 100vw"
-                    : "(min-width: 768px) 25vw, 50vw"
-                }
-                onError={handleImageError}
-                onLoad={handleImageLoad}
-                priority={priority}
-              />
-            </>
+            <Image
+              src={article.thumbnail}
+              alt={article.summary}
+              fill
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
+              sizes={
+                isFeatured
+                  ? "(min-width: 768px) 50vw, 100vw"
+                  : "(min-width: 768px) 25vw, 50vw"
+              }
+              onError={handleImageError}
+              priority={priority}
+              loading={priority ? undefined : "lazy"}
+              placeholder="blur"
+              blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAEAAQDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+            />
           )}
 
           {/* External link indicator */}

@@ -9,6 +9,7 @@ import PropertyContainer from "@/app/(lobby)/development-projects/_component/pro
 import { getDeveloperProject } from "@/lib/get-developer-project";
 import type { Metadata } from "next";
 import { siteConfig } from "@/config/site";
+import { logError } from "@/lib/logger";
 
 interface DeveloperProjectPageProps {
   params: Promise<{ projectId: string }>;
@@ -309,7 +310,11 @@ export default async function DeveloperProjectPage({
       </>
     );
   } catch (error) {
-    console.error("Error loading development project page:", error);
+    logError("Failed to load development project page", error, {
+      component: "DeveloperProjectPage",
+      action: "getDeveloperProject",
+      projectId: (await params).projectId,
+    });
     return (
       <main className="min-h-screen flex items-center justify-center">
         <div className="text-center space-y-4 max-w-md mx-auto p-8">

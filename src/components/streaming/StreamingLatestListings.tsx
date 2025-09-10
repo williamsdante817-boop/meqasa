@@ -3,6 +3,7 @@ import { LatestListingsSection } from "@/components/property/listings/latest-lis
 import type { Listing as CardListing } from "@/components/property/cards/property-card";
 import type { LatestListingsResponse } from "@/lib/get-latest-listing";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { logError } from "@/lib/logger";
 
 interface StreamingLatestListingsProps {
   latestListingsPromise: Promise<LatestListingsResponse>;
@@ -92,7 +93,7 @@ export async function StreamingLatestListings({
       <LatestListingsSection rentListings={rentals} saleListings={selling} />
     );
   } catch (error: unknown) {
-    console.error("Failed to load latest listings:", error);
+    logError("Failed to load latest listings", error, { component: "StreamingLatestListings" });
     return (
       <ContentSection
         title="Latest Listings"

@@ -8,12 +8,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import {
-  processReferenceSearch,
   formatReferenceForDisplay,
   type ReferenceSearchResult,
 } from "@/lib/reference-url-generator";
 import {
-  processUnifiedReferenceSearch,
   type UnifiedSearchResult,
 } from "@/lib/unified-reference-search";
 import {
@@ -49,7 +47,7 @@ export function ReferenceSearch({
   // New unified search options with defaults
   enableUnifiedSearch = true, // Enable by default for new functionality
   searchTimeout = 8000, // 8 second timeout
-  includeAlternatives = false,
+  includeAlternatives: _includeAlternatives = false,
 }: ReferenceSearchProps) {
   const [reference, setReference] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -179,7 +177,7 @@ export function ReferenceSearch({
       onError,
       enableUnifiedSearch,
       searchTimeout,
-      includeAlternatives,
+      searchType,
     ]
   );
 

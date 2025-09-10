@@ -1,5 +1,6 @@
 import { HeroBanner } from "@/components/search/HeroBanner";
 import { HeroBannerSkeleton } from "./LoadingSkeletons";
+import { logError } from "@/lib/logger";
 import type { AdLink } from "@/types";
 
 interface StreamingHeroBannerProps {
@@ -24,7 +25,7 @@ export async function StreamingHeroBanner({
       />
     );
   } catch (error) {
-    console.error("Failed to load hero banner:", error);
+    logError("Failed to load hero banner", error, { component: "StreamingHeroBanner" });
     return <HeroBannerSkeleton />;
   }
 }

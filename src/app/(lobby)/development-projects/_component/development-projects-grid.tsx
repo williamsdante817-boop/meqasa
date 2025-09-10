@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import DevelopmentProjectCard from "./development-project-card";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
+import { logError } from "@/lib/logger";
 
 interface DevelopmentProject {
   projectid: number;
@@ -32,7 +33,6 @@ export default function DevelopmentProjectsGrid({
 }: DevelopmentProjectsGridProps) {
   const [projects, setProjects] = useState<DevelopmentProject[]>([]);
   const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
 
@@ -52,13 +52,16 @@ export default function DevelopmentProjectsGrid({
       const data: { projects?: DevelopmentProject[] } = await response.json();
       return data.projects ?? [];
     } catch (error) {
-      console.error("Error fetching development projects:", error);
+      logError("Failed to fetch development projects", error, {
+        component: "DevelopmentProjectsGrid",
+        action: "fetchProjects",
+      });
       return [];
     }
   };
 
   // Filter projects based on search params
-  const getFilteredProjects = (allProjects: DevelopmentProject[]) => {
+  const getFilteredProjects = useCallback((allProjects: DevelopmentProject[]) => {
     let filtered = [...allProjects];
 
     if (searchParams.featured) {
@@ -95,7 +98,7 @@ export default function DevelopmentProjectsGrid({
     }
 
     return filtered;
-  };
+  }, [searchParams]);
 
   // Load initial projects
   useEffect(() => {
@@ -107,7 +110,11 @@ export default function DevelopmentProjectsGrid({
         setProjects(filteredProjects);
         setHasMore(false); // For now, we load all projects at once
       } catch (error) {
-        console.error("Error loading projects:", error);
+        logError("Failed to load projects", error, {
+          component: "DevelopmentProjectsGrid",
+          action: "loadProjects",
+          searchParams,
+        });
         setProjects([]);
       } finally {
         setLoading(false);
@@ -115,7 +122,7 @@ export default function DevelopmentProjectsGrid({
     };
 
     void loadProjects();
-  }, [searchParams]);
+  }, [searchParams, getFilteredProjects]);
 
   // Load more projects
   const loadMore = async () => {
@@ -138,7 +145,10 @@ export default function DevelopmentProjectsGrid({
       await new Promise((resolve) => setTimeout(resolve, 1000));
       setHasMore(false); // No more to load in mock
     } catch (error) {
-      console.error("Error loading more projects:", error);
+      logError("Failed to load more projects", error, {
+        component: "DevelopmentProjectsGrid",
+        action: "loadMore",
+      });
     } finally {
       setLoadingMore(false);
     }

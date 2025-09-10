@@ -4,13 +4,16 @@ import { cva, type VariantProps } from "class-variance-authority";
 const skeletonVariants = cva("animate-pulse rounded-md", {
   variants: {
     variant: {
-      default: "bg-primary/10",
+      default: "bg-brand-muted/20",
       light: "bg-gray-100",
       card: "bg-gray-50",
       text: "bg-gray-200",
       image: "bg-gray-100",
+      brand: "bg-brand-primary/10",
       shimmer:
         "bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 bg-[length:200%_100%] animate-shimmer",
+      "brand-shimmer":
+        "bg-gradient-to-r from-brand-primary/5 via-brand-primary/15 to-brand-primary/5 bg-[length:200%_100%] animate-shimmer",
     },
     size: {
       sm: "h-3",

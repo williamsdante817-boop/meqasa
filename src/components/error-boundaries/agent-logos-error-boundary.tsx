@@ -4,6 +4,7 @@ import React, { Component } from "react";
 import { AlertCard } from "@/components/common/alert-card";
 import { AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { logError } from "@/lib/logger";
 
 interface Props {
   children: React.ReactNode;
@@ -25,11 +26,10 @@ export class AgentLogosErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error(
-      "Agent Logos Error Boundary caught an error:",
-      error,
-      errorInfo
-    );
+    logError("Agent Logos Error Boundary caught an error", error, {
+      component: "AgentLogosErrorBoundary",
+      errorInfo,
+    });
   }
 
   handleRetry = () => {
