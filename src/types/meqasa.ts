@@ -90,8 +90,8 @@ export interface MeqasaSearchParams {
   fbaths?: number | "- Any -";
   fmin?: number;
   fmax?: number;
-  fisfurnished?: 1;
-  ffsbo?: 1;
+  fisfurnished?: "1";
+  ffsbo?: "1";
   frentperiod?: RentPeriod;
   fsort?: SortOrder;
   fhowshort?: ShortLetDuration; // New parameter for short-let duration

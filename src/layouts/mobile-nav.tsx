@@ -101,7 +101,7 @@ export function MobileNav({ items: _ }: MobileNavProps) {
         { title: "Houses", href: "/search/sale?q=ghana&ftype=house" },
         { title: "Apartments", href: "/search/sale?q=ghana&ftype=apartment" },
         { title: "Office Spaces", href: "/search/sale?q=ghana&ftype=office" },
-        { title: "Commercial", href: "/search/sale?q=ghana&ftype=commercial" },
+        { title: "Commercial Spaces", href: "/search/sale?q=ghana&ftype=commercial space" },
       ],
     },
     {
@@ -111,7 +111,7 @@ export function MobileNav({ items: _ }: MobileNavProps) {
         { title: "Residential Land", href: "/search/sale?q=ghana&ftype=land" },
         {
           title: "Commercial Land",
-          href: "/search/sale?q=ghana&ftype=commercial",
+          href: "/search/sale?q=ghana&ftype=commercial space",
         },
         {
           title: "Industrial Land",

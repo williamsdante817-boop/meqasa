@@ -15,6 +15,8 @@ export const propertyTypes = [
   "shop",
   "retail",
   "beach house",
+  "hotel",
+  "studio apartment",
 ] as const;
 
 export const contractTypes = ["rent", "sale", "short-stay"] as const;
@@ -123,9 +125,9 @@ export const propertyConfig = {
 
   // Property type categories for better organization
   categories: {
-    residential: ["house", "apartment", "townhouse"],
+    residential: ["house", "apartment", "studio apartment", "townhouse"],
     commercial: ["office", "shop", "commercial space", "warehouse", "retail"],
-    hospitality: ["guest house", "beach house"],
+    hospitality: ["guest house", "beach house", "hotel"],
     land: ["land"],
   },
 

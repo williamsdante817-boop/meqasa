@@ -36,9 +36,15 @@ const propertyCategories = [
       },
       {
         label: "Guest Houses",
-        href: "/search/rent?ftype=guesthouse",
+        href: "/search/rent?ftype=guest house",
         icon: Building,
         count: "120+",
+      },
+      {
+        label: "Studio Apartments",
+        href: "/search/rent?ftype=studio apartment",
+        icon: Building,
+        count: "50+",
       },
     ],
   },
@@ -65,7 +71,7 @@ const propertyCategories = [
       },
       {
         label: "Commercial",
-        href: "/search/sale?ftype=commercial",
+        href: "/search/sale?ftype=commercial space",
         icon: Briefcase,
         count: "150+",
       },
@@ -85,6 +91,18 @@ const propertyCategories = [
         href: "/search/rent?ftype=retail",
         icon: Store,
         count: "200+",
+      },
+      {
+        label: "Beach Houses",
+        href: "/search/rent?ftype=beach house",
+        icon: Building2,
+        count: "25+",
+      },
+      {
+        label: "Hotels",
+        href: "/search/rent?ftype=hotel",
+        icon: Building,
+        count: "15+",
       },
     ],
   },
@@ -132,9 +150,9 @@ export default function PropertyTypeLinks() {
                   <li key={type.label}>
                     <Link
                       href={type.href}
-                      className={`group flex items-center justify-between w-full px-2.5 py-2 rounded-md text-sm font-medium transition-all duration-200 hover:translate-x-0.5 ${
+                      className={`group flex items-center justify-between w-full px-2.5 py-2 rounded-sm text-sm font-medium transition-all duration-200 hover:translate-x-0.5 ${
                         active
-                          ? "bg-brand-primary text-white shadow-md shadow-brand-primary/25"
+                          ? "bg-brand-primary text-white shadow-sm shadow-brand-primary/25"
                           : "bg-gray-50 text-brand-muted hover:bg-brand-primary/10 hover:text-brand-primary hover:shadow-sm"
                       }`}
                       aria-label={`View ${type.label} properties`}
@@ -169,18 +187,6 @@ export default function PropertyTypeLinks() {
             </ul>
           </div>
         ))}
-
-        {/* Browse All CTA */}
-        {/* <div className="pt-4 border-t border-gray-100">
-          <Link
-            href="/search/sale"
-            className="flex items-center justify-center gap-2 w-full px-3 py-2.5 bg-gradient-to-r from-brand-primary to-brand-primary-dark text-white rounded-md font-semibold text-xs xl:text-sm hover:from-brand-primary-dark hover:to-brand-primary transition-all duration-300 hover:shadow-lg hover:shadow-brand-primary/25 hover:-translate-y-0.5 group"
-            aria-label="Browse all available properties"
-          >
-            <Building className="w-3.5 h-3.5 xl:w-4 xl:h-4 transition-transform duration-200 group-hover:scale-110" />
-            <span className="truncate">Browse All</span>
-          </Link>
-        </div> */}
       </nav>
     </aside>
   );

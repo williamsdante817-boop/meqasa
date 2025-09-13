@@ -21,6 +21,7 @@ interface CarouselProps {
   images?: string[];
   cloudfrontDomain?: string;
   unitId?: number;
+  listingId?: number;
 }
 
 const getImageUrl = (imagePath: string, cloudfrontDomain: string) => {
@@ -129,6 +130,7 @@ export function DynamicCarousel({
   images = [],
   cloudfrontDomain = "https://dve7rykno93gs.cloudfront.net",
   unitId,
+  listingId,
 }: CarouselProps) {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
@@ -218,9 +220,6 @@ export function DynamicCarousel({
         onKeyDown={handleKeyDown}
         tabIndex={0}
       >
-        <div className="absolute top-4 right-4 z-50">
-          <AddFavoriteButton listingId={unitId ?? 0} />
-        </div>
         <div aria-live="polite" className="sr-only">
           Slide {current} of {count}
         </div>
@@ -254,6 +253,17 @@ export function DynamicCarousel({
             Slide {current} of {count}
           </Badge>
         </div>
+        {/* Mobile favorite button overlay */}
+        {(unitId || listingId) && (
+          <div className="absolute top-4 right-4 z-20 block md:hidden">
+            <AddFavoriteButton 
+              listingId={unitId || listingId || 0}
+              showLabel={false}
+              size="md"
+              hideLabelOnMobile={true}
+            />
+          </div>
+        )}
       </div>
 
       <ImageCarouselModal

@@ -29,7 +29,16 @@ const fallbackOptions = {
   propertyType: [
     { value: "house", label: "House" },
     { value: "apartment", label: "Apartment" },
+    { value: "studio apartment", label: "Studio" },
     { value: "office", label: "Office" },
+    { value: "townhouse", label: "Townhouse" },
+    { value: "commercial space", label: "Commercial" },
+    { value: "warehouse", label: "Warehouse" },
+    { value: "guest house", label: "Guest" },
+    { value: "hotel", label: "Hotel" },
+    { value: "shop", label: "Shop" },
+    { value: "retail", label: "Retail" },
+    { value: "beach house", label: "Beach" },
   ],
   bedrooms: [
     { value: "1", label: "1 Bedroom" },

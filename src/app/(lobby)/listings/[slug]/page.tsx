@@ -2,6 +2,7 @@ import { Breadcrumbs } from "@/components/layout/bread-crumbs";
 import Shell from "@/layouts/shell";
 
 import { AlertCard } from "@/components/common/alert-card";
+import { AddFavoriteButton } from "@/components/add-favorite-button";
 import Amenities from "@/components/amenities";
 import ContactCard from "@/components/common/contact-card";
 import ContactSection from "@/components/contact-section";
@@ -16,6 +17,9 @@ import PropertyInsight from "@/components/property/details/property-insight";
 import PropertyListings from "@/components/property/listings/property-listings";
 import PropertyShowcase from "@/components/property/details/property-showcase";
 import SafetyTipsCard from "@/components/safety-tip";
+import TrendingPropertyCard from "@/components/common/trending-property-card";
+import PropertyContextCard from "@/components/common/property-context-card";
+import PropertyFeatures from "@/components/common/property-features";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { getListingDetails } from "@/lib/get-listing-detail";
@@ -62,6 +66,7 @@ const PROPERTY_TYPES = {
 const VERIFICATION_STATUSES = {
   APPROVED: "approved",
   APPROVED2: "approved2",
+  APPROVED3: "approved3", // For owner-direct properties
 } as const;
 
 // Helper function to extract the first currency amount (e.g., GH₵ 3,687,912) from HTML/text and return digits
@@ -185,6 +190,33 @@ export default async function DetailsPage({
     component: "ListingsPage",
   });
 
+  // Log detailed listing data for development purposes
+  if (listingDetail) {
+    logInfo("Listing details data", {
+      listingId: listingDetail.listingid,
+      title: listingDetail.title,
+      price: listingDetail.price,
+      contract: listingDetail.contract,
+      type: listingDetail.type,
+      location: listingDetail.location,
+      beds: listingDetail.beds,
+      baths: listingDetail.baths,
+      garages: listingDetail.garages,
+      floorarea: listingDetail.floorarea,
+      isfurnished: listingDetail.isfurnished,
+      owner: {
+        name: listingDetail.owner.name,
+        type: listingDetail.owner.type,
+        verification: listingDetail.owner.verification,
+        listingscount: listingDetail.owner.listingscount,
+      },
+      amenitiesCount: listingDetail.amenities.length,
+      imageCount: listingDetail.imagelist.length,
+      similarsCount: listingDetail.similars.length,
+      component: "ListingsPage",
+    });
+  }
+
   if (!listingDetail) {
     throw createPropertyError(new Error("Property listing not found"));
   }
@@ -291,15 +323,15 @@ export default async function DetailsPage({
                 { title: "Home", href: "/" },
                 {
                   title: `For ${listingDetail.contract}`,
-                  href: `/search/${listingDetail.contract.toLowerCase()}?q=ghana&page=1`,
+                  href: `/search/${listingDetail.contract.toLowerCase()}?q=ghana`,
                 },
                 {
                   title: `${listingDetail.type}`,
-                  href: `/search/${listingDetail.contract.toLowerCase()}?q=ghana&ftype=${listingDetail.type}&page=1`,
+                  href: `/search/${listingDetail.contract.toLowerCase()}?q=ghana&ftype=${encodeURIComponent(listingDetail.type.toLowerCase())}`,
                 },
                 {
                   title: `${listingDetail.location}`,
-                  href: `/search/${listingDetail.contract.toLowerCase()}?q=${listingDetail.location}&page=1`,
+                  href: `/search/${listingDetail.contract.toLowerCase()}?q=${encodeURIComponent(listingDetail.location.toLowerCase())}`,
                 },
               ]}
               aria-label="Property listing navigation"
@@ -313,7 +345,10 @@ export default async function DetailsPage({
           className="border-b border-brand-badge-ongoing bg-black flex items-center justify-center"
           aria-label="Property images"
         >
-          <DynamicCarousel images={listingDetail.imagelist} />
+          <DynamicCarousel 
+            images={listingDetail.imagelist} 
+            listingId={Number(listingDetail.detailreq.split("-").pop()) || 0}
+          />
         </section>
         <Shell>
           <div className="grid grid-cols-1 text-brand-accent w-full mt-4 lg:grid-cols-[2fr_1fr] lg:gap-8 lg:px-0">
@@ -328,7 +363,7 @@ export default async function DetailsPage({
                     {listingDetail.leaseunit}
                   </span>
                 </div>
-                <div className="flex gap-2 md:gap-3 text-xs flex-wrap">
+                <div className="flex gap-2 md:gap-3 text-xs flex-wrap items-center">
                   {(listingDetail.owner.verification ===
                     VERIFICATION_STATUSES.APPROVED ||
                     listingDetail.owner.verification ===
@@ -338,69 +373,35 @@ export default async function DetailsPage({
                       Verified
                     </Badge>
                   )}
+                  {listingDetail.owner.verification ===
+                    VERIFICATION_STATUSES.APPROVED3 && (
+                    <Badge variant="success" className="uppercase">
+                      <ShieldCheck className="h-3 w-3 mr-1" />
+                      Verified Owner
+                    </Badge>
+                  )}
                   {Boolean(listingDetail.isnegotiable) && (
                     <Badge variant="default" className="uppercase">
                       Negotiable
                     </Badge>
                   )}
+                  {/* Desktop favorite button - hidden on mobile since it's in carousel */}
+                  <div className="hidden md:block">
+                    <AddFavoriteButton 
+                      listingId={Number(listingDetail.detailreq.split("-").pop()) || 0}
+                      showLabel={true}
+                      size="md"
+                      hideLabelOnMobile={false}
+                    />
+                  </div>
                 </div>
               </div>
-              <div className="flex items-center gap-4 py-3">
-                <div
-                  className="flex items-center gap-3 md:gap-6 flex-wrap"
-                  role="list"
-                  aria-label="Property features"
-                >
-                  {listingDetail.beds && (
-                    <div className="flex items-center gap-2" role="listitem">
-                      <p className="flex items-center gap-2 text-brand-accent">
-                        <BedIcon
-                          className="h-5 w-5 text-brand-muted"
-                          strokeWidth={1.2}
-                          aria-hidden="true"
-                        />{" "}
-                        <span>{listingDetail.beds} Beds</span>
-                      </p>
-                    </div>
-                  )}
-                  {listingDetail.baths && (
-                    <div className="flex items-center gap-2" role="listitem">
-                      <p className="flex items-center gap-2 text-brand-accent">
-                        <BathIcon
-                          className="h-5 w-5 text-brand-muted"
-                          strokeWidth={1.2}
-                          aria-hidden="true"
-                        />{" "}
-                        <span>{listingDetail.baths} Baths</span>
-                      </p>
-                    </div>
-                  )}
-                  {listingDetail.garages && (
-                    <div className="flex items-center gap-2" role="listitem">
-                      <p className="flex items-center gap-2 text-brand-accent">
-                        <ParkingSquare
-                          className="h-5 w-5 text-brand-muted"
-                          strokeWidth={1.2}
-                          aria-hidden="true"
-                        />{" "}
-                        <span>{listingDetail.garages} Parking</span>
-                      </p>
-                    </div>
-                  )}
-                  {listingDetail.floorarea && (
-                    <div className="flex items-center gap-2" role="listitem">
-                      <p className="flex items-center gap-2 text-brand-accent">
-                        <Square
-                          className="h-5 w-5 text-brand-muted"
-                          strokeWidth={1.2}
-                          aria-hidden="true"
-                        />{" "}
-                        <span>{listingDetail.floorarea} sqm</span>
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </div>
+              <PropertyFeatures
+                beds={listingDetail.beds}
+                baths={listingDetail.baths}
+                garages={listingDetail.garages}
+                floorArea={listingDetail.floorarea}
+              />
               <div className="flex items-center gap-4 mb-6">
                 <Badge variant="info" className="uppercase">
                   {isFurnished ? "Furnished" : "Unfurnished"}
@@ -412,99 +413,37 @@ export default async function DetailsPage({
                   <p className="truncate w-full">{listingDetail.location}</p>
                 </Badge>
               </div>
-              <aside className="mb-6">
-                {listingDetail.owner.listingscount !== "0" &&
-                  parseInt(listingDetail.owner.listingscount) >= 5 && (
-                    <Card className="relative overflow-hidden border-l-3 border-l-orange-500 bg-gradient-to-r rounded-lg from-orange-50 to-amber-50 p-4 md:p-6">
-                      <div className="flex items-center gap-4 md:gap-6">
-                        <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-orange-100 text-orange-600">
-                          <Icons.trend className="h-6 w-6" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-2 flex-wrap">
-                            <Badge
-                              variant="warning"
-                              className="text-xs font-semibold flex-shrink-0"
-                            >
-                              🔥 TRENDING
-                            </Badge>
-                            <span className="text-xs text-orange-600 font-medium">
-                              High Interest Property
-                            </span>
-                          </div>
-                          <h3 className="text-brand-accent font-semibold text-base md:text-lg mb-2 leading-tight">
-                            This property is in high demand
-                          </h3>
-                          <div className="flex items-center gap-2 text-sm md:text-base flex-wrap">
-                            <span className="font-medium text-brand-accent flex-shrink-0">
-                              {`${formatNumber(listingDetail.owner.listingscount, { notation: "compact" })} views`}
-                            </span>
-                            <span className="text-brand-muted">•</span>
-                            <span className="text-orange-600 font-medium">
-                              Contact agent before it&apos;s gone!
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                      {/* Subtle background pattern */}
-                      <div className="absolute top-2 right-2 opacity-5">
-                        <Icons.trend className="h-16 w-16 md:h-20 md:w-20 text-orange-500" />
-                      </div>
-                    </Card>
-                  )}
-              </aside>
-              <aside className="mb-6">
-                <Card className="border-blue-200 bg-gradient-to-r from-blue-50 rounded-lg to-indigo-50 p-4 md:p-5">
-                  <div className="flex items-start gap-4">
-                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-600">
-                      <Tag className="h-5 w-5" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-3">
-                        <Badge variant="info" className="text-xs font-semibold">
-                          {listingDetail.owner.type !== "Agent"
-                            ? "PROJECT"
-                            : "CATEGORIES"}
-                        </Badge>
-                      </div>
-                      {listingDetail.owner.type !== "Agent" ? (
-                        <h3 className="font-semibold text-brand-accent text-base">
-                          {"Project name"}
-                        </h3>
-                      ) : (
-                        <div className="space-y-2">
-                          <Link
-                            href={`/search/${listingDetail.contract.toLowerCase()}?q=ghana&ftype=${listingDetail.type.toLowerCase()}&page=1`}
-                            className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 hover:underline transition-colors group"
-                            key={listingDetail.parenttext}
-                          >
-                            <span className="font-medium">
-                              {listingDetail.parenttext}
-                            </span>
-                            <ExternalLink className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                          </Link>
-                          <Link
-                            href={`/search/${listingDetail.contract.toLowerCase()}?q=${listingDetail.location.toLowerCase()}&ftype=${listingDetail.type.toLowerCase()}&page=1`}
-                            className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 hover:underline transition-colors group"
-                            key={listingDetail.categorytext}
-                          >
-                            <span className="font-medium">
-                              {listingDetail.categorytext}
-                            </span>
-                            <ExternalLink className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-colors" />
-                          </Link>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </Card>
-              </aside>
+              <TrendingPropertyCard
+                propertyType="listing"
+                ownerType={listingDetail.owner.type}
+                count={
+                  listingDetail.owner.type === "Agent"
+                    ? parseInt(listingDetail.owner.listingscount) || 0
+                    : 0
+                }
+                threshold={
+                  listingDetail.owner.type === "Agent" ? 5 : 100
+                }
+              />
+              <PropertyContextCard
+                propertyType="listing"
+                ownerType={listingDetail.owner.type}
+                ownerName={listingDetail.owner.name}
+                contract={listingDetail.contract}
+                type={listingDetail.type}
+                location={listingDetail.location}
+                listingData={{
+                  parenttext: listingDetail.parenttext,
+                  categorytext: listingDetail.categorytext,
+                }}
+              />
               <ContentSection
                 title="Description"
                 description=""
                 href="/listings"
                 className="pt-14 md:pt-20 px-0 pb-10 overflow-hidden md:pb-0"
                 btnHidden
+                
               >
                 {listingDetail?.description &&
                 listingDetail.description.trim() !== "" ? (

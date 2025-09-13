@@ -110,10 +110,35 @@ export function ResultSearchFilter() {
     const uiContractType =
       reverseContractMap[urlContractType] ?? DEFAULT_CONTRACT_TYPE;
 
+    // Normalize property type for case-insensitive matching
+    const normalizePropertyType = (type: string | undefined): string => {
+      if (!type || type === "all") return "all";
+      
+      // Common property type mappings (case-insensitive)
+      const typeMap: Record<string, string> = {
+        'apartment': 'apartment',
+        'apartments': 'apartment',
+        'house': 'house',
+        'houses': 'house', 
+        'townhouse': 'townhouse',
+        'townhouses': 'townhouse',
+        'office': 'office',
+        'offices': 'office',
+        'land': 'land',
+        'commercial': 'commercial',
+        'warehouse': 'warehouse',
+        'shop': 'shop',
+        'studio': 'studio'
+      };
+      
+      const lowercaseType = type.toLowerCase().trim();
+      return typeMap[lowercaseType] || lowercaseType;
+    };
+
     return {
       listingType: uiContractType,
       search: searchParamsObj.q ?? "",
-      propertyType: searchParamsObj.ftype ?? "all",
+      propertyType: normalizePropertyType(searchParamsObj.ftype),
       bedrooms: safeBedBath(searchParamsObj.fbeds),
       bathrooms: safeBedBath(searchParamsObj.fbaths),
       minPrice: safeNumber(searchParamsObj.fmin),

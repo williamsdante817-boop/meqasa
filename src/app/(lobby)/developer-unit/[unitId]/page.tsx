@@ -25,9 +25,13 @@ import {
 } from "@/lib/compressed-data-utils";
 import { getUnitDetails } from "@/lib/get-unit-details";
 import { buildInnerHtml, cn, formatNumber, slugify } from "@/lib/utils";
-import { BathIcon, BedIcon, ParkingSquare, Square } from "lucide-react";
+import { BathIcon, BedIcon, ParkingSquare, Square, Tag, ExternalLink } from "lucide-react";
 import { logInfo } from "@/lib/logger";
 import ProjectVideo from "../../development-projects/_component/project-video";
+import TrendingPropertyCard from "@/components/common/trending-property-card";
+import PropertyContextCard from "@/components/common/property-context-card";
+import PropertyFeatures from "@/components/common/property-features";
+import Link from "next/link";
 export default async function DeveloperUnitPage({
   params,
   searchParams,
@@ -123,6 +127,33 @@ export default async function DeveloperUnitPage({
     component: "DeveloperUnitPage",
   });
 
+  // Log detailed unit data for development purposes
+  if (unitDetails?.unit) {
+    logInfo("Developer unit details data", {
+      unitId: unitDetails.unit.unitid,
+      title: unitDetails.unit.title,
+      sellingPrice: unitDetails.unit.sellingprice,
+      terms: unitDetails.unit.terms,
+      unittypename: unitDetails.unit.unittypename,
+      beds: unitDetails.unit.beds,
+      baths: unitDetails.unit.baths,
+      garages: unitDetails.unit.garages,
+      floorarea: unitDetails.unit.floorarea,
+      fullyfurnished: unitDetails.unit.fullyfurnished,
+      city: unitDetails.unit.city,
+      address: unitDetails.unit.address,
+      pageviews: unitDetails.unit.pageviews,
+      soldout: unitDetails.unit.soldout,
+      companyname: unitDetails.unit.companyname,
+      developerid: unitDetails.unit.developerid,
+      projectid: unitDetails.unit.projectid,
+      featuresCount: unitDetails.features?.length || 0,
+      photosCount: unitDetails.photos?.length || 0,
+      similarUnitsCount: unitDetails.similarunits?.length || 0,
+      component: "DeveloperUnitPage",
+    });
+  }
+
   // Construct developer-aware hrefs similar to listings page
   const contract = unitDetails.unit.terms?.toLowerCase() ?? "";
   const location = unitDetails.unit.city?.toLowerCase() ?? "";
@@ -157,15 +188,15 @@ export default async function DeveloperUnitPage({
               { title: "Home", href: "/" },
               {
                 title: `For ${unitDetails.unit.terms}`,
-                href: `/search/${contract}?q=ghana&page=1`,
+                href: `/search/${contract}?q=ghana`,
               },
               {
                 title: `${unitDetails.unit.unittypename}`,
-                href: `/search/${contract}?q=ghana&ftype=${type}&page=1`,
+                href: `/search/${contract}?q=ghana&ftype=${encodeURIComponent(type.toLowerCase())}`,
               },
               {
                 title: `${unitDetails.unit.city}`,
-                href: `/search/${contract}?q=${location}&page=1`,
+                href: `/search/${contract}?q=${encodeURIComponent(location.toLowerCase())}`,
               },
             ]}
             aria-label="Developer unit navigation"
@@ -211,7 +242,7 @@ export default async function DeveloperUnitPage({
                   {unitDetails.unit.terms === "rent" ? "/month" : ""}
                 </span>
               </div>
-              <div className="flex gap-2 md:gap-3 text-xs flex-wrap">
+              <div className="flex gap-2 md:gap-3 text-xs flex-wrap items-center">
                 <Badge variant="default" className="uppercase">
                   {unitDetails.unit.terms === "sale" ? "For Sale" : "For Rent"}
                 </Badge>
@@ -220,65 +251,23 @@ export default async function DeveloperUnitPage({
                     Available
                   </Badge>
                 )}
-              </div>
-              <AddFavoriteButton listingId={Number(unitDetails.unit.unitid)} />
-            </div>
-            <div className="flex items-center gap-4 py-3">
-              <div
-                className="flex items-center gap-3 md:gap-6 flex-wrap"
-                role="list"
-                aria-label="Property features"
-              >
-                {unitDetails.unit.beds && (
-                  <div className="flex items-center gap-2" role="listitem">
-                    <p className="flex items-center gap-2 text-brand-accent">
-                      <BedIcon
-                        className="h-5 w-5 text-brand-muted"
-                        strokeWidth={1.2}
-                        aria-hidden="true"
-                      />
-                      <span>{unitDetails.unit.beds} Beds</span>
-                    </p>
-                  </div>
-                )}
-                {unitDetails.unit.baths && (
-                  <div className="flex items-center gap-2" role="listitem">
-                    <p className="flex items-center gap-2 text-brand-accent">
-                      <BathIcon
-                        className="h-5 w-5 text-brand-muted"
-                        strokeWidth={1.2}
-                        aria-hidden="true"
-                      />
-                      <span>{unitDetails.unit.baths} Baths</span>
-                    </p>
-                  </div>
-                )}
-                {unitDetails.unit.garages && (
-                  <div className="flex items-center gap-2" role="listitem">
-                    <p className="flex items-center gap-2 text-brand-accent">
-                      <ParkingSquare
-                        className="h-5 w-5 text-brand-muted"
-                        strokeWidth={1.2}
-                        aria-hidden="true"
-                      />
-                      <span>{unitDetails.unit.garages} Parking</span>
-                    </p>
-                  </div>
-                )}
-                {unitDetails.unit.floorarea && (
-                  <div className="flex items-center gap-2" role="listitem">
-                    <p className="flex items-center gap-2 text-brand-accent">
-                      <Square
-                        className="h-5 w-5 text-brand-muted"
-                        strokeWidth={1.2}
-                        aria-hidden="true"
-                      />
-                      <span>{unitDetails.unit.floorarea} sqm</span>
-                    </p>
-                  </div>
-                )}
+                {/* Desktop favorite button - hidden on mobile since it's in carousel */}
+                <div className="hidden md:block">
+                  <AddFavoriteButton 
+                    listingId={Number(unitDetails.unit.unitid)}
+                    showLabel={true}
+                    size="md"
+                    hideLabelOnMobile={false}
+                  />
+                </div>
               </div>
             </div>
+            <PropertyFeatures
+              beds={unitDetails.unit.beds}
+              baths={unitDetails.unit.baths}
+              garages={unitDetails.unit.garages}
+              floorArea={unitDetails.unit.floorarea}
+            />
             <div className="flex items-center gap-4 mb-6">
               <Badge variant="info" className="uppercase">
                 {unitDetails.unit.fullyfurnished ? "Furnished" : "Unfurnished"}
@@ -290,46 +279,25 @@ export default async function DeveloperUnitPage({
                 <p className="truncate w-full">{unitDetails.unit.address}</p>
               </Badge>
             </div>
-            <aside className="mb-6">
-              {unitDetails.unit.pageviews !== 0 && (
-                <Card className="relative overflow-hidden border-l-3 border-l-orange-500 bg-gradient-to-r rounded-lg from-orange-50 to-amber-50 p-4 md:p-6">
-                  <div className="flex items-center gap-4 md:gap-6">
-                    <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-orange-100 text-orange-600">
-                      <Icons.trend className="h-6 w-6" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-2 flex-wrap">
-                        <Badge
-                          variant="warning"
-                          className="text-xs font-semibold flex-shrink-0"
-                        >
-                          🔥 TRENDING
-                        </Badge>
-                        <span className="text-xs text-orange-600 font-medium">
-                          High Interest Property
-                        </span>
-                      </div>
-                      <h3 className="text-brand-accent font-semibold text-base md:text-lg mb-2 leading-tight">
-                        This property is in high demand
-                      </h3>
-                      <div className="flex items-center gap-2 text-sm md:text-base flex-wrap">
-                        <span className="font-medium text-brand-accent flex-shrink-0">
-                          {`${formatNumber(unitDetails.unit.pageviews, { notation: "compact" })} views`}
-                        </span>
-                        <span className="text-brand-muted">•</span>
-                        <span className="text-orange-600 font-medium">
-                          Contact agent before it&apos;s gone!
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  {/* Subtle background pattern */}
-                  <div className="absolute top-2 right-2 opacity-5">
-                    <Icons.trend className="h-16 w-16 md:h-20 md:w-20 text-orange-500" />
-                  </div>
-                </Card>
-              )}
-            </aside>
+            <TrendingPropertyCard
+              propertyType="developer-unit"
+              count={unitDetails.unit.pageviews || 0}
+              threshold={1}
+            />
+            <PropertyContextCard
+              propertyType="developer-unit"
+              ownerName={unitDetails.unit.companyname}
+              contract={unitDetails.unit.terms || "sale"}
+              type={unitDetails.unit.unittypename || "unit"}
+              location={unitDetails.unit.city}
+              developerData={{
+                companyName: unitDetails.unit.companyname,
+                developerHref: developerHref,
+                similarSearchHref: similarSearchHref,
+                unitTypeName: unitDetails.unit.unittypename,
+                city: unitDetails.unit.city,
+              }}
+            />
             <ContentSection
               title="Description"
               description=""

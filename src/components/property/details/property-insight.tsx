@@ -2,7 +2,7 @@ import Image from "next/image";
 import React from "react";
 import { formatNumber, formatNumberToCedis } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
-import { TrendingUp } from "lucide-react";
+import { BarChart3 } from "lucide-react";
 
 export type PropertyInsightProps = {
   /** City/area name, e.g., "Lakeside Estate" */
@@ -126,7 +126,7 @@ export default function PropertyInsight(props: PropertyInsightProps) {
     <Card className="mt-16 border-gray-200 bg-gradient-to-r rounded-lg from-gray-50 to-gray-50 p-4 md:p-6">
       <div className="flex items-center gap-4 mb-6">
         <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-gray-100 text-gray-600">
-          <TrendingUp className="h-5 w-5" />
+          <BarChart3 className="h-5 w-5" />
         </div>
         <div className="flex-1">
           <h3 className="text-base font-semibold text-brand-accent lg:text-lg">

@@ -511,7 +511,7 @@ export const siteConfig: SiteConfig = {
         },
         {
           title: "Commercial Spaces For sale",
-          href: "/search/sale?q=ghana&ftype=commercial",
+          href: "/search/sale?q=ghana&ftype=commercial space",
           external: false,
         },
         {
@@ -536,7 +536,7 @@ export const siteConfig: SiteConfig = {
         },
         {
           title: "Guest Houses For rent",
-          href: "/search/rent?q=ghana&ftype=guest%20house",
+          href: "/search/rent?q=ghana&ftype=guest house",
           external: false,
         },
         {
@@ -561,7 +561,7 @@ export const siteConfig: SiteConfig = {
         },
         {
           title: "Commercial Spaces For Sale",
-          href: "/search/sale?q=accra&ftype=commercial",
+          href: "/search/sale?q=accra&ftype=commercial space",
           external: false,
         },
         {
@@ -576,7 +576,7 @@ export const siteConfig: SiteConfig = {
         },
         {
           title: "Guest Houses For Sale",
-          href: "/search/sale?q=ghana&ftype=guest%20house",
+          href: "/search/sale?q=ghana&ftype=guest house",
           external: false,
         },
       ],
@@ -586,15 +586,17 @@ export const siteConfig: SiteConfig = {
     propertyType: [
       { value: "house", label: "House" },
       { value: "apartment", label: "Apartment" },
+      { value: "studio apartment", label: "Studio" },
       { value: "office", label: "Office" },
       // Note: "land" removed - users should use the dedicated Land tab
       { value: "townhouse", label: "Townhouse" },
-      { value: "commercial space", label: "Commercial" },
+      { value: "commercial space", label: "Commercial Space" },
       { value: "warehouse", label: "Warehouse" },
-      { value: "guest house", label: "Guest" },
+      { value: "guest house", label: "Guest House" },
+      { value: "hotel", label: "Hotel" },
       { value: "shop", label: "Shop" },
       { value: "retail", label: "Retail" },
-      { value: "beach house", label: "Beach" },
+      { value: "beach house", label: "Beach House" },
     ],
     bedrooms: [
       { value: "1", label: "1 Bedroom" },
@@ -613,7 +615,7 @@ export const siteConfig: SiteConfig = {
 
     landType: [
       { value: "residential", label: "Residential" },
-      { value: "commercial", label: "Commercial" },
+      { value: "commercial", label: "Commercial Space" },
       { value: "industrial", label: "Industrial" },
     ],
     landSize: [

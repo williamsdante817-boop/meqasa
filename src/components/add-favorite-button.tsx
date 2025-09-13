@@ -9,12 +9,21 @@ import { toast } from "sonner";
 interface AddFavoriteButtonProps {
   className?: string;
   listingId: number;
+  /** Show text label alongside icon for better UX */
+  showLabel?: boolean;
+  /** Size variant for different contexts */
+  size?: "sm" | "md" | "lg";
+  /** Hide text label on mobile for better responsive design */
+  hideLabelOnMobile?: boolean;
 }
 
 export function AddFavoriteButton({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   listingId,
   className,
+  showLabel = false,
+  size = "md",
+  hideLabelOnMobile = true,
 }: AddFavoriteButtonProps) {
   const [isFavorite, setIsFavorite] = useState(false);
 
@@ -43,12 +52,52 @@ export function AddFavoriteButton({
     }
   };
 
+  // Size-based styling
+  const getSizeClasses = () => {
+    switch (size) {
+      case "sm":
+        return {
+          button: "p-1.5 h-auto w-auto",
+          buttonWithLabel: "px-2 py-1.5",
+          icon: "h-5 w-5",
+          text: "text-xs",
+        };
+      case "lg":
+        return {
+          button: "p-3 h-auto w-auto",
+          buttonWithLabel: "px-4 py-3",
+          icon: "h-10 w-10",
+          text: "text-base",
+        };
+      default: // md
+        return {
+          button: "p-2 h-auto w-auto",
+          buttonWithLabel: "px-3 py-2",
+          icon: "h-8 w-8",
+          text: "text-sm",
+        };
+    }
+  };
+
+  const sizeClasses = getSizeClasses();
+
   return (
     <Button
       variant="outline"
       onClick={toggleFavorite}
       className={cn(
-        "p-2 h-auto w-auto rounded-full bg-white/80 backdrop-blur-sm hover:bg-white shadow-md focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary focus-visible:outline-none transition-all duration-200",
+        // Base button styling
+        "bg-white/80 backdrop-blur-sm hover:bg-white shadow-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary focus-visible:outline-none transition-all duration-200",
+        // Responsive layout classes
+        showLabel 
+          ? cn(
+              "rounded-md flex items-center gap-1 sm:gap-2",
+              sizeClasses.buttonWithLabel,
+              // On mobile: smaller padding, on desktop: normal padding
+              hideLabelOnMobile && "sm:px-3 sm:py-2"
+            )
+          : cn("rounded-full", sizeClasses.button),
+        // Favorite state styling
         isFavorite &&
           "bg-white text-brand-primary hover:text-brand-primary hover:bg-white",
         className
@@ -59,13 +108,26 @@ export function AddFavoriteButton({
     >
       <Heart
         className={cn(
-          "h-8 w-8 transition-all duration-200",
+          sizeClasses.icon,
+          "transition-all duration-200 flex-shrink-0",
           isFavorite
             ? "fill-brand-primary text-brand-primary scale-110"
             : "text-gray-600 scale-100"
         )}
         aria-hidden="true"
       />
+      {showLabel && (
+        <span 
+          className={cn(
+            "font-medium transition-all duration-200",
+            sizeClasses.text,
+            // Hide text on mobile if hideLabelOnMobile is true
+            hideLabelOnMobile && "hidden sm:inline"
+          )}
+        >
+          {isFavorite ? "Saved" : "Save"}
+        </span>
+      )}
       <span className="sr-only">
         {isFavorite
           ? "Property is in favorites"
