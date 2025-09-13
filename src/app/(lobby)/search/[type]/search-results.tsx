@@ -104,6 +104,34 @@ export function SearchResults({
     setMounted(true);
   }, []);
 
+  // Sync component state with new server data when initial props change
+  // This handles cases where user clicks property type links and page re-renders with new server data
+  useEffect(() => {
+    // Only sync if we have genuinely new search data from server (different searchId)
+    if (
+      mounted && 
+      initialSearchId !== null && 
+      initialSearchId !== searchId &&
+      !isLoading // Don't interfere with ongoing operations
+    ) {
+      // Reset all state to match new server data
+      setSearchResults(initialResults);
+      setTotalResults(initialTotal);
+      setSearch(initialSearchState);
+      setSearchId(initialSearchId);
+      setCurrentPage(initialPage);
+      
+      // Clear prefetched data since it's for the old search
+      setPrefetchedNextPage(null);
+      setPrefetchedTotal(null);
+      setPrefetchedSearch(null);
+      isPrefetching.current = false;
+      
+      // Reset the initial data processing flag for the new search
+      hasProcessedInitialData.current = false;
+    }
+  }, [mounted, initialSearchId, initialResults, initialTotal, initialSearchState, initialPage, searchId, isLoading]);
+
   // Prefetch next page
   const [prefetchedNextPage, setPrefetchedNextPage] = useState<
     MeqasaListing[] | null
