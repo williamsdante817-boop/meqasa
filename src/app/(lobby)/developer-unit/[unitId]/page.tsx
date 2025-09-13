@@ -153,7 +153,7 @@ export default async function DeveloperUnitPage({
   // Construct developer-aware hrefs similar to listings page
   const contract = unitDetails.unit.terms?.toLowerCase() ?? "";
   const location = unitDetails.unit.city?.toLowerCase() ?? "";
-  
+
   // Normalize property type to match search filter expectations
   const normalizePropertyType = (typeName: string | undefined): string => {
     if (!typeName) return "";
@@ -177,7 +177,7 @@ export default async function DeveloperUnitPage({
     };
     return typeMap[normalized] || normalized;
   };
-  
+
   const type = normalizePropertyType(unitDetails.unit.unittypename);
 
   const similarSearchParams = new URLSearchParams({

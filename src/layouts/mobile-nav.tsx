@@ -7,10 +7,10 @@ import * as React from "react";
 
 import { Icons } from "@/components/icons";
 import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -19,13 +19,13 @@ import { siteConfig } from "@/config/site";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { cn } from "@/lib/utils";
 import {
-    Building2,
-    Heart,
-    Home,
-    MapPin,
-    Phone,
-    Search,
-    Users,
+  Building2,
+  Heart,
+  Home,
+  MapPin,
+  Phone,
+  Search,
+  Users,
 } from "lucide-react";
 
 interface MobileNavProps {

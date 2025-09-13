@@ -266,13 +266,13 @@ export function DynamicCarousel({
         )}
       </div>
 
-  <ImageCarouselModal
-    images={images}
-    isOpen={isModalOpen}
-    onClose={() => setIsModalOpen(false)}
-    initialIndex={selectedImageIndex}
-    getImageUrl={(img) => getImageUrl(img, cloudfrontDomain)}
-  />
+      <ImageCarouselModal
+        images={images}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        initialIndex={selectedImageIndex}
+        getImageUrl={(img) => getImageUrl(img, cloudfrontDomain)}
+      />
     </>
   );
 }

@@ -1,14 +1,14 @@
 import { logError, logInfo } from "@/lib/logger";
 import {
-    MEQASA_RENT_PERIODS,
-    MEQASA_SHORT_LET_DURATIONS,
-    MEQASA_SORT_OPTIONS,
+  MEQASA_RENT_PERIODS,
+  MEQASA_SHORT_LET_DURATIONS,
+  MEQASA_SORT_OPTIONS,
 } from "@/lib/search/constants";
 import { isShortLetQuery } from "@/lib/search/short-let";
 import type {
-    MeqasaLoadMoreParams,
-    MeqasaSearchParams,
-    MeqasaSearchResponse,
+  MeqasaLoadMoreParams,
+  MeqasaSearchParams,
+  MeqasaSearchResponse,
 } from "@/types/meqasa";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
@@ -140,34 +140,43 @@ export async function POST(request: NextRequest) {
       // 2. /properties-for-rent-in-{location}?ftype=apartment (returns fewer, e.g., 2902)
       // We prefer pattern 1 when a specific property type is selected
       let finalUrl: string;
-      
+
       if (isShortLet) {
         // Short-let always uses its specific endpoint
         finalUrl = `${MEQASA_API_BASE}/short-lease-properties-for-rent-in-${locality}`;
-      } else if (searchParams.ftype && VALID_PROPERTY_TYPES.includes(searchParams.ftype) && searchParams.ftype !== 'beach house' && searchParams.ftype !== 'commercial space' && searchParams.ftype !== 'guest house' && searchParams.ftype !== 'studio apartment') {
+      } else if (
+        searchParams.ftype &&
+        VALID_PROPERTY_TYPES.includes(searchParams.ftype) &&
+        searchParams.ftype !== "beach house" &&
+        searchParams.ftype !== "commercial space" &&
+        searchParams.ftype !== "guest house" &&
+        searchParams.ftype !== "studio apartment"
+      ) {
         // Use property-type-specific endpoint when available (except types that don't have dedicated endpoints)
         const mappedPropertyType = mapPropertyTypeForAPI(searchParams.ftype);
-        const propertyTypeSlug = mappedPropertyType.toLowerCase().replace(/\s+/g, '-');
-        
+        const propertyTypeSlug = mappedPropertyType
+          .toLowerCase()
+          .replace(/\s+/g, "-");
+
         // Pluralize common property types for the URL
         const pluralMap: Record<string, string> = {
-          'apartment': 'apartments',
-          'house': 'houses',
-          'office': 'offices',
-          'warehouse': 'warehouses',
-          'townhouse': 'townhouses',
-          'villa': 'villas',
-          'land': 'lands',
-          'shop': 'shops',
-          'hotel': 'hotels',
-          'retail': 'retails',
-          'commercial-space': 'commercial-spaces',
-          'guest-house': 'guest-houses',
-          'beachhouse': 'beachhouse',
-          'studio-apartment': 'studio-apartments',
+          apartment: "apartments",
+          house: "houses",
+          office: "offices",
+          warehouse: "warehouses",
+          townhouse: "townhouses",
+          villa: "villas",
+          land: "lands",
+          shop: "shops",
+          hotel: "hotels",
+          retail: "retails",
+          "commercial-space": "commercial-spaces",
+          "guest-house": "guest-houses",
+          beachhouse: "beachhouse",
+          "studio-apartment": "studio-apartments",
         };
         const pluralSlug = pluralMap[propertyTypeSlug] || propertyTypeSlug;
-        
+
         finalUrl = `${MEQASA_API_BASE}/${pluralSlug}-for-${contract}-in-${locality}`;
         // Don't add ftype to POST params when using specific endpoint
       } else {
@@ -324,8 +333,7 @@ export async function POST(request: NextRequest) {
           });
           debugLog(
             "  🎯 Duration Filter:",
-            searchParams.fhowshort ||
-              "NONE (showing all short-let properties)"
+            searchParams.fhowshort || "NONE (showing all short-let properties)"
           );
           debugLog("  📊 Full Request Body:", serializedParams);
         }
@@ -333,7 +341,7 @@ export async function POST(request: NextRequest) {
         // For non-short-let searches, handle ftype parameter
         if (
           searchParams.ftype &&
-        VALID_PROPERTY_TYPES.includes(searchParams.ftype)
+          VALID_PROPERTY_TYPES.includes(searchParams.ftype)
         ) {
           // Map frontend property type to backend API type
           const mappedPropertyType = mapPropertyTypeForAPI(searchParams.ftype);
@@ -391,9 +399,10 @@ export async function POST(request: NextRequest) {
         component: "PropertiesAPI",
       });
 
-
       const backendRequestTime = Date.now();
-      const actualRequestBody = Array.from(postParams.entries()).map(([key, value]) => `${key}=${value}`).join('&');
+      const actualRequestBody = Array.from(postParams.entries())
+        .map(([key, value]) => `${key}=${value}`)
+        .join("&");
 
       // DEBUG: Log all API requests
       console.log("🔍 DEBUG - API REQUEST:");
@@ -547,8 +556,6 @@ export async function POST(request: NextRequest) {
         component: "PropertiesAPI",
       });
 
-
-
       return NextResponse.json(normalized);
     } else if (type === "loadMore") {
       const {
@@ -601,31 +608,40 @@ export async function POST(request: NextRequest) {
 
       // Build URL - use same property-type-specific endpoint logic as search
       let finalUrl: string;
-      
+
       if (isShortLet) {
         finalUrl = `${MEQASA_API_BASE}/short-lease-properties-for-rent-in-${locality}`;
-      } else if (loadMoreParams.ftype && VALID_PROPERTY_TYPES.includes(loadMoreParams.ftype) && loadMoreParams.ftype !== 'beach house' && loadMoreParams.ftype !== 'commercial space' && loadMoreParams.ftype !== 'guest house' && loadMoreParams.ftype !== 'studio apartment') {
+      } else if (
+        loadMoreParams.ftype &&
+        VALID_PROPERTY_TYPES.includes(loadMoreParams.ftype) &&
+        loadMoreParams.ftype !== "beach house" &&
+        loadMoreParams.ftype !== "commercial space" &&
+        loadMoreParams.ftype !== "guest house" &&
+        loadMoreParams.ftype !== "studio apartment"
+      ) {
         const mappedPropertyType = mapPropertyTypeForAPI(loadMoreParams.ftype);
-        const propertyTypeSlug = mappedPropertyType.toLowerCase().replace(/\s+/g, '-');
-        
+        const propertyTypeSlug = mappedPropertyType
+          .toLowerCase()
+          .replace(/\s+/g, "-");
+
         const pluralMap: Record<string, string> = {
-          'apartment': 'apartments',
-          'house': 'houses',
-          'office': 'offices',
-          'warehouse': 'warehouses',
-          'townhouse': 'townhouses',
-          'villa': 'villas',
-          'land': 'lands',
-          'shop': 'shops',
-          'hotel': 'hotels',
-          'retail': 'retails',
-          'commercial-space': 'commercial-spaces',
-          'guest-house': 'guest-houses',
-          'beachhouse': 'beachhouse',
-          'studio-apartment': 'studio-apartments',
+          apartment: "apartments",
+          house: "houses",
+          office: "offices",
+          warehouse: "warehouses",
+          townhouse: "townhouses",
+          villa: "villas",
+          land: "lands",
+          shop: "shops",
+          hotel: "hotels",
+          retail: "retails",
+          "commercial-space": "commercial-spaces",
+          "guest-house": "guest-houses",
+          beachhouse: "beachhouse",
+          "studio-apartment": "studio-apartments",
         };
         const pluralSlug = pluralMap[propertyTypeSlug] || propertyTypeSlug;
-        
+
         finalUrl = `${MEQASA_API_BASE}/${pluralSlug}-for-${contract}-in-${locality}`;
       } else {
         finalUrl = `${MEQASA_API_BASE}/properties-for-${contract}-in-${locality}`;
@@ -780,9 +796,10 @@ export async function POST(request: NextRequest) {
         component: "PropertiesAPI",
       });
 
-
       const backendRequestTime = Date.now();
-      const actualRequestBody = Array.from(postParams.entries()).map(([key, value]) => `${key}=${value}`).join('&');
+      const actualRequestBody = Array.from(postParams.entries())
+        .map(([key, value]) => `${key}=${value}`)
+        .join("&");
 
       // DEBUG: Log all API requests
       console.log("🔍 DEBUG - API REQUEST:");
@@ -936,8 +953,6 @@ export async function POST(request: NextRequest) {
         component: "PropertiesAPI",
       });
 
-
-
       return NextResponse.json(normalized);
     } else {
       return NextResponse.json(
@@ -961,7 +976,6 @@ export async function POST(request: NextRequest) {
       stack: error instanceof Error ? error.stack : undefined,
       component: "PropertiesAPI",
     });
-
 
     return NextResponse.json(
       { error: "Failed to fetch properties", requestId },

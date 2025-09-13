@@ -1,15 +1,15 @@
 "use client";
 
-import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import {
+  Briefcase,
   Building,
   Building2,
   MapPin,
-  Warehouse,
   Store,
-  Briefcase,
+  Warehouse,
 } from "lucide-react";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
 // Categorized property types with proper hrefs pointing to units search and icons
 const propertyCategories = [
@@ -45,6 +45,12 @@ const propertyCategories = [
         label: "Guest Houses",
         href: "/search/rent?q=ghana&ftype=guest%20house",
         icon: Building2,
+      },
+      {
+        label: "Studio Apartments",
+        href: "/search/rent?ftype=studio apartment",
+        icon: Building,
+        count: "50+",
       },
     ],
   },
@@ -161,8 +167,6 @@ export default function PropertyTypeLinks() {
                           {type.label}
                         </span>
                       </div>
-
-
                     </Link>
                   </li>
                 );
