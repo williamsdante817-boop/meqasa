@@ -33,12 +33,12 @@ export function BlogSectionStatic({ blogData }: BlogSectionStaticProps) {
 
   return (
     <Shell>
-      <div className="lg:flex flex-col md:flex-row gap-6">
+      <div className="flex-col gap-6 md:flex-row lg:flex">
         <ContentSection
           title="Property Guides & Insights"
           description="Read our blog"
           href="/blog"
-          className="pt-14 md:pt-20 lg:pt-24 flex-[2]"
+          className="flex-[2] pt-14 md:pt-20 lg:pt-24"
           border
         >
           {featuredArticles.map((article, index) => (
@@ -51,10 +51,10 @@ export function BlogSectionStatic({ blogData }: BlogSectionStaticProps) {
         </ContentSection>
 
         <aside
-          className="hidden md:block flex-1 mt-28"
+          className="mt-28 hidden flex-1 md:block"
           aria-label="Market News"
         >
-          <h3 className="text-xl font-bold leading-tight tracking-tighter text-brand-accent lg:mb-8 lg:text-[23px] lg:font-extrabold">
+          <h3 className="text-brand-accent text-xl leading-tight font-bold tracking-tighter lg:mb-8 lg:text-[23px] lg:font-extrabold">
             Market News
           </h3>
           <div role="list">

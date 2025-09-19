@@ -130,10 +130,10 @@ function FloorPlansComponent({
     return (
       <Card className="p-8 text-center">
         <div className="space-y-4">
-          <div className="w-12 h-12 mx-auto bg-red-100 rounded-full flex items-center justify-center">
-            <Home className="w-6 h-6 text-red-600" />
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
+            <Home className="h-6 w-6 text-red-600" />
           </div>
-          <h3 className="text-lg font-semibold text-brand-accent">
+          <h3 className="text-brand-accent text-lg font-semibold">
             Unable to Load Floor Plans
           </h3>
           <p className="text-brand-muted">{error}</p>
@@ -147,14 +147,14 @@ function FloorPlansComponent({
     return (
       <Card className="overflow-hidden p-0">
         <div className="grid md:grid-cols-[1fr_1.5fr]">
-          <div className="border-r space-y-2 p-4">
+          <div className="space-y-2 border-r p-4">
             {Array.from({ length: 5 }).map((_, i) => (
               <Skeleton key={i} className="h-20 w-full" />
             ))}
           </div>
           <div className="p-8">
-            <Skeleton className="h-8 w-48 mb-4" />
-            <Skeleton className="h-4 w-32 mb-8" />
+            <Skeleton className="mb-4 h-8 w-48" />
+            <Skeleton className="mb-8 h-4 w-32" />
             <Skeleton className="aspect-[4/3] w-full" />
           </div>
         </div>
@@ -167,10 +167,10 @@ function FloorPlansComponent({
     return (
       <Card className="p-8 text-center">
         <div className="space-y-4">
-          <div className="w-12 h-12 mx-auto bg-gray-100 rounded-full flex items-center justify-center">
-            <Home className="w-6 h-6 text-gray-400" />
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
+            <Home className="h-6 w-6 text-gray-400" />
           </div>
-          <h3 className="text-lg font-semibold text-brand-accent">
+          <h3 className="text-brand-accent text-lg font-semibold">
             No Floor Plans Available
           </h3>
           <p className="text-brand-muted">
@@ -184,7 +184,7 @@ function FloorPlansComponent({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-brand-accent">Floor Plans</h2>
+        <h2 className="text-brand-accent text-2xl font-bold">Floor Plans</h2>
         <Badge
           variant="secondary"
           className="bg-brand-primary/10 text-brand-primary border-brand-primary/20"
@@ -200,24 +200,24 @@ function FloorPlansComponent({
           onValueChange={handleTabChange}
           className="w-full"
         >
-          <TabsList className="grid w-full grid-cols-2 rounded-none h-auto bg-gray-50/50">
+          <TabsList className="grid h-auto w-full grid-cols-2 rounded-none bg-gray-50/50">
             <TabsTrigger
               value="type"
-              className="flex flex-col items-center py-4 px-6 data-[state=active]:text-brand-blue data-[state=active]:bg-white data-[state=active]:shadow-sm transition-all duration-200"
+              className="data-[state=active]:text-brand-blue flex flex-col items-center px-6 py-4 transition-all duration-200 data-[state=active]:bg-white data-[state=active]:shadow-sm"
               aria-label="View floor plans by type"
             >
-              <div className="border rounded-lg p-2 mb-2 transition-colors data-[state=active]:border-brand-blue data-[state=inactive]:border-gray-300">
-                <Grid3x3 className="w-5 h-5" aria-hidden="true" />
+              <div className="data-[state=active]:border-brand-blue mb-2 rounded-lg border p-2 transition-colors data-[state=inactive]:border-gray-300">
+                <Grid3x3 className="h-5 w-5" aria-hidden="true" />
               </div>
               <span className="text-sm font-medium">By Type</span>
             </TabsTrigger>
             <TabsTrigger
               value="bed"
-              className="flex flex-col items-center py-4 px-6 data-[state=active]:text-brand-blue data-[state=active]:bg-white data-[state=active]:shadow-sm transition-all duration-200"
+              className="data-[state=active]:text-brand-blue flex flex-col items-center px-6 py-4 transition-all duration-200 data-[state=active]:bg-white data-[state=active]:shadow-sm"
               aria-label="View floor plans by bedroom count"
             >
-              <div className="border rounded-lg p-2 mb-2 transition-colors data-[state=active]:border-brand-blue data-[state=inactive]:border-gray-300">
-                <Bed className="w-5 h-5" aria-hidden="true" />
+              <div className="data-[state=active]:border-brand-blue mb-2 rounded-lg border p-2 transition-colors data-[state=inactive]:border-gray-300">
+                <Bed className="h-5 w-5" aria-hidden="true" />
               </div>
               <span className="text-sm font-medium">By Bedrooms</span>
             </TabsTrigger>
@@ -273,14 +273,14 @@ function FloorPlanContent({
   onImageError,
 }: FloorPlanContentProps) {
   return (
-    <div className="grid md:grid-cols-[1fr_1.5fr] min-h-[500px]">
+    <div className="grid min-h-[500px] md:grid-cols-[1fr_1.5fr]">
       {/* Floor plan list */}
       <div className="border-r bg-gray-50/30">
-        <div className="p-4 border-b bg-white">
-          <h3 className="font-semibold text-brand-accent text-lg">
+        <div className="border-b bg-white p-4">
+          <h3 className="text-brand-accent text-lg font-semibold">
             Available Plans
           </h3>
-          <p className="text-sm text-brand-muted">
+          <p className="text-brand-muted text-sm">
             {currentFloorPlans.length} options to choose from
           </p>
         </div>
@@ -292,18 +292,18 @@ function FloorPlanContent({
                 key={`${plan.id}-${plan.type}-${index}`}
                 variant="ghost"
                 className={cn(
-                  "w-full justify-start border-b rounded-none p-6 h-auto text-left transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-inset",
+                  "focus-visible:ring-brand-blue h-auto w-full justify-start rounded-none border-b p-6 text-left transition-all duration-200 focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset",
                   isSelected
-                    ? "bg-brand-blue/5 border-l-4 border-l-brand-blue shadow-sm"
-                    : "hover:bg-gray-50 border-l-4 border-l-transparent"
+                    ? "bg-brand-blue/5 border-l-brand-blue border-l-4 shadow-sm"
+                    : "border-l-4 border-l-transparent hover:bg-gray-50"
                 )}
                 onClick={() => onPlanSelect(index)}
                 aria-pressed={isSelected}
                 aria-describedby={`plan-${index}-description`}
               >
-                <div className="space-y-2 w-full">
+                <div className="w-full space-y-2">
                   <div className="flex items-center justify-between">
-                    <h4 className="text-brand-accent font-bold text-lg">
+                    <h4 className="text-brand-accent text-lg font-bold">
                       {plan.id}
                     </h4>
                     <Badge
@@ -314,18 +314,18 @@ function FloorPlanContent({
                     </Badge>
                   </div>
                   <div className="flex items-center gap-4 text-sm">
-                    <div className="flex items-center gap-1 text-brand-blue font-semibold">
-                      <Square className="w-4 h-4" aria-hidden="true" />
+                    <div className="text-brand-blue flex items-center gap-1 font-semibold">
+                      <Square className="h-4 w-4" aria-hidden="true" />
                       {plan.sqft} sqft / {plan.sqm} sqm
                     </div>
                   </div>
-                  <div className="flex items-center gap-4 text-sm text-brand-muted">
+                  <div className="text-brand-muted flex items-center gap-4 text-sm">
                     <div className="flex items-center gap-1">
-                      <Bed className="w-4 h-4" aria-hidden="true" />
+                      <Bed className="h-4 w-4" aria-hidden="true" />
                       {plan.beds} {plan.beds === 1 ? "Bed" : "Beds"}
                     </div>
                     <div className="flex items-center gap-1">
-                      <Bath className="w-4 h-4" aria-hidden="true" />
+                      <Bath className="h-4 w-4" aria-hidden="true" />
                       {plan.baths} {plan.baths === 1 ? "Bath" : "Baths"}
                     </div>
                   </div>
@@ -349,32 +349,32 @@ function FloorPlanContent({
         {selectedFloorPlan ? (
           <div className="space-y-8">
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
+            <div className="flex flex-col justify-between gap-4 md:flex-row md:items-start">
               <div className="flex items-center gap-4">
                 <div
-                  className="w-1 h-12 bg-brand-primary rounded-full flex-shrink-0"
+                  className="bg-brand-primary h-12 w-1 flex-shrink-0 rounded-full"
                   aria-hidden="true"
                 />
                 <div>
-                  <h2 className="text-brand-accent font-semibold text-xl md:text-2xl">
+                  <h2 className="text-brand-accent text-xl font-semibold md:text-2xl">
                     {selectedFloorPlan.title}
                   </h2>
-                  <div className="flex items-center gap-2 mt-1">
+                  <div className="mt-1 flex items-center gap-2">
                     <Badge variant="secondary" className="text-xs">
                       TYPE {selectedFloorPlan.type}
                     </Badge>
                   </div>
                 </div>
               </div>
-              <div className="text-right space-y-1">
-                <div className="flex items-center gap-2 text-brand-blue font-semibold">
-                  <Square className="w-4 h-4" aria-hidden="true" />
+              <div className="space-y-1 text-right">
+                <div className="text-brand-blue flex items-center gap-2 font-semibold">
+                  <Square className="h-4 w-4" aria-hidden="true" />
                   <span>
                     {selectedFloorPlan.sqm} sqm ({selectedFloorPlan.sqft} sqft)
                   </span>
                 </div>
                 {selectedFloorPlan.unitNumbers && (
-                  <p className="text-sm text-brand-muted">
+                  <p className="text-brand-muted text-sm">
                     Units: {selectedFloorPlan.unitNumbers}
                   </p>
                 )}
@@ -383,26 +383,26 @@ function FloorPlanContent({
 
             {/* Key Features */}
             <div className="flex flex-wrap gap-4">
-              <div className="flex items-center gap-2 bg-gray-50 px-4 py-2 rounded-lg">
-                <Bed className="w-5 h-5 text-brand-blue" aria-hidden="true" />
-                <span className="font-medium text-brand-accent">
+              <div className="flex items-center gap-2 rounded-lg bg-gray-50 px-4 py-2">
+                <Bed className="text-brand-blue h-5 w-5" aria-hidden="true" />
+                <span className="text-brand-accent font-medium">
                   {selectedFloorPlan.beds}{" "}
                   {selectedFloorPlan.beds === 1 ? "Bedroom" : "Bedrooms"}
                 </span>
               </div>
-              <div className="flex items-center gap-2 bg-gray-50 px-4 py-2 rounded-lg">
-                <Bath className="w-5 h-5 text-brand-blue" aria-hidden="true" />
-                <span className="font-medium text-brand-accent">
+              <div className="flex items-center gap-2 rounded-lg bg-gray-50 px-4 py-2">
+                <Bath className="text-brand-blue h-5 w-5" aria-hidden="true" />
+                <span className="text-brand-accent font-medium">
                   {selectedFloorPlan.baths}{" "}
                   {selectedFloorPlan.baths === 1 ? "Bathroom" : "Bathrooms"}
                 </span>
               </div>
-              <div className="flex items-center gap-2 bg-gray-50 px-4 py-2 rounded-lg">
+              <div className="flex items-center gap-2 rounded-lg bg-gray-50 px-4 py-2">
                 <Square
-                  className="w-5 h-5 text-brand-blue"
+                  className="text-brand-blue h-5 w-5"
                   aria-hidden="true"
                 />
-                <span className="font-medium text-brand-accent">
+                <span className="text-brand-accent font-medium">
                   {selectedFloorPlan.sqft} sqft
                 </span>
               </div>
@@ -410,15 +410,15 @@ function FloorPlanContent({
 
             {/* Floor plan image */}
             <div className="space-y-4">
-              <h3 className="font-semibold text-brand-accent">
+              <h3 className="text-brand-accent font-semibold">
                 Floor Plan Layout
               </h3>
-              <div className="relative w-full aspect-[4/3] border-2 border-gray-200 rounded-xl overflow-hidden bg-white">
+              <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl border-2 border-gray-200 bg-white">
                 {imageLoading && (
                   <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
                     <div className="space-y-3 text-center">
-                      <Skeleton className="w-16 h-16 rounded-full mx-auto" />
-                      <Skeleton className="h-4 w-32 mx-auto" />
+                      <Skeleton className="mx-auto h-16 w-16 rounded-full" />
+                      <Skeleton className="mx-auto h-4 w-32" />
                     </div>
                   </div>
                 )}
@@ -439,16 +439,16 @@ function FloorPlanContent({
                   priority={selectedPlan === 0}
                 />
               </div>
-              <p className="text-sm text-brand-muted text-center">
+              <p className="text-brand-muted text-center text-sm">
                 Floor plan is for illustration purposes and may vary from actual
                 construction.
               </p>
             </div>
           </div>
         ) : (
-          <div className="flex items-center justify-center h-full min-h-[400px]">
-            <div className="text-center space-y-4">
-              <Home className="w-12 h-12 mx-auto text-gray-400" />
+          <div className="flex h-full min-h-[400px] items-center justify-center">
+            <div className="space-y-4 text-center">
+              <Home className="mx-auto h-12 w-12 text-gray-400" />
               <p className="text-brand-muted">
                 Select a floor plan to view details
               </p>

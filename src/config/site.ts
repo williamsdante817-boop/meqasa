@@ -229,7 +229,7 @@ export const siteConfig: SiteConfig = {
     },
     {
       title: "All Projects",
-      href: "/development-projects",
+      href: "/developers/projects",
       description: "Explore all real estate development projects in Ghana.",
       items: [],
     },
@@ -238,6 +238,36 @@ export const siteConfig: SiteConfig = {
       description:
         "Browse properties for sale, including houses and apartments.",
       items: [],
+    },
+    {
+      title: "More",
+      description: "Learn more about MeQasa, get help, and access important resources.",
+      items: [
+        {
+          title: "About Us",
+          href: "/about",
+          description: "Learn about MeQasa's mission and how we're revolutionizing Ghana's real estate market.",
+          items: [],
+        },
+        {
+          title: "Contact Us",
+          href: "/contact",
+          description: "Get in touch with our support team for assistance with your property needs.",
+          items: [],
+        },
+        {
+          title: "Help & FAQ",
+          href: "/help",
+          description: "Find answers to frequently asked questions and get help with using MeQasa.",
+          items: [],
+        },
+        {
+          title: "Terms of Service",
+          href: "/terms",
+          description: "Read our terms and conditions for using the MeQasa platform.",
+          items: [],
+        },
+      ],
     },
   ] satisfies MainNavItem[],
   footerNav: [
@@ -577,6 +607,51 @@ export const siteConfig: SiteConfig = {
         {
           title: "Guest Houses For Sale",
           href: "/search/sale?q=ghana&ftype=guest house",
+          external: false,
+        },
+      ],
+    },
+    {
+      title: "Company",
+      items: [
+        {
+          title: "About Us",
+          href: "/about",
+          external: false,
+        },
+        {
+          title: "Contact Us",
+          href: "/contact",
+          external: false,
+        },
+        {
+          title: "Help & FAQ",
+          href: "/help",
+          external: false,
+        },
+        {
+          title: "Blog",
+          href: "https://blog.meqasa.com",
+          external: true,
+        },
+      ],
+    },
+    {
+      title: "Legal",
+      items: [
+        {
+          title: "Terms of Service",
+          href: "/terms",
+          external: false,
+        },
+        {
+          title: "Privacy Policy",
+          href: "/privacy",
+          external: false,
+        },
+        {
+          title: "Cookie Policy",
+          href: "/privacy#cookies",
           external: false,
         },
       ],

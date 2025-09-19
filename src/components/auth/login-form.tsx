@@ -88,12 +88,12 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
           <div className="grid gap-2">
             <Label
               htmlFor="email"
-              className="text-sm font-medium text-brand-accent"
+              className="text-brand-accent text-sm font-medium"
             >
               Email address
             </Label>
             <div className="relative">
-              <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-brand-muted" />
+              <Mail className="text-brand-muted absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
               <Input
                 id="email"
                 name="email"
@@ -106,14 +106,14 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
                 value={formData.email}
                 onChange={handleInputChange}
                 className={cn(
-                  "pl-10 h-11 sm:h-12 text-base border-brand-border focus:border-brand-primary focus:ring-brand-primary",
+                  "border-brand-border focus:border-brand-primary focus:ring-brand-primary h-11 pl-10 text-base sm:h-12",
                   errors.email &&
                     "border-destructive focus:border-destructive focus:ring-destructive"
                 )}
               />
             </div>
             {errors.email && (
-              <p className="text-sm text-destructive">{errors.email}</p>
+              <p className="text-destructive text-sm">{errors.email}</p>
             )}
           </div>
 
@@ -121,19 +121,19 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
             <div className="flex items-center justify-between">
               <Label
                 htmlFor="password"
-                className="text-sm font-medium text-brand-accent"
+                className="text-brand-accent text-sm font-medium"
               >
                 Password
               </Label>
               <Link
                 href="/auth/forgot-password"
-                className="text-sm text-brand-primary hover:text-brand-primary-dark transition-colors"
+                className="text-brand-primary hover:text-brand-primary-dark text-sm transition-colors"
               >
                 Forgot password?
               </Link>
             </div>
             <div className="relative">
-              <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-brand-muted" />
+              <Lock className="text-brand-muted absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
               <Input
                 id="password"
                 name="password"
@@ -145,7 +145,7 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
                 value={formData.password}
                 onChange={handleInputChange}
                 className={cn(
-                  "pl-10 pr-10 h-11 sm:h-12 text-base border-brand-border focus:border-brand-primary focus:ring-brand-primary",
+                  "border-brand-border focus:border-brand-primary focus:ring-brand-primary h-11 pr-10 pl-10 text-base sm:h-12",
                   errors.password &&
                     "border-destructive focus:border-destructive focus:ring-destructive"
                 )}
@@ -153,7 +153,7 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-brand-muted hover:text-brand-accent transition-colors"
+                className="text-brand-muted hover:text-brand-accent absolute top-1/2 right-3 -translate-y-1/2 transition-colors"
               >
                 {showPassword ? (
                   <EyeOff className="h-4 w-4" />
@@ -163,7 +163,7 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
               </button>
             </div>
             {errors.password && (
-              <p className="text-sm text-destructive">{errors.password}</p>
+              <p className="text-destructive text-sm">{errors.password}</p>
             )}
           </div>
 
@@ -174,11 +174,11 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
               type="checkbox"
               checked={formData.rememberMe}
               onChange={handleInputChange}
-              className="h-4 w-4 rounded border-brand-border text-brand-primary focus:ring-brand-primary"
+              className="border-brand-border text-brand-primary focus:ring-brand-primary h-4 w-4 rounded"
             />
             <Label
               htmlFor="remember-me"
-              className="text-sm text-brand-muted cursor-pointer"
+              className="text-brand-muted cursor-pointer text-sm"
             >
               Keep me signed in
             </Label>
@@ -187,7 +187,7 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
           <Button
             disabled={isLoading}
             type="submit"
-            className="h-11 sm:h-12 text-base bg-brand-primary hover:bg-brand-primary-dark text-white font-medium"
+            className="bg-brand-primary hover:bg-brand-primary-dark h-11 text-base font-medium text-white sm:h-12"
           >
             {isLoading ? (
               <>
@@ -206,7 +206,7 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
           <Separator className="w-full" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-white px-2 text-brand-muted">
+          <span className="text-brand-muted bg-white px-2">
             Or continue with
           </span>
         </div>
@@ -218,12 +218,12 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
           type="button"
           disabled={isLoading}
           onClick={() => handleSocialLogin("Google")}
-          className="h-11 sm:h-12 text-sm sm:text-base border-brand-border hover:bg-brand-gray"
+          className="border-brand-border hover:bg-brand-gray h-11 text-sm sm:h-12 sm:text-base"
         >
           {isLoading ? (
-            <Loader2 className="mr-1 sm:mr-2 h-4 w-4 animate-spin" />
+            <Loader2 className="mr-1 h-4 w-4 animate-spin sm:mr-2" />
           ) : (
-            <Icons.google className="mr-1 sm:mr-2 h-4 w-4" />
+            <Icons.google className="mr-1 h-4 w-4 sm:mr-2" />
           )}
           <span className="hidden sm:inline">Google</span>
           <span className="sm:hidden">Google</span>
@@ -233,12 +233,12 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
           type="button"
           disabled={isLoading}
           onClick={() => handleSocialLogin("Facebook")}
-          className="h-11 sm:h-12 text-sm sm:text-base border-brand-border hover:bg-brand-gray"
+          className="border-brand-border hover:bg-brand-gray h-11 text-sm sm:h-12 sm:text-base"
         >
           {isLoading ? (
-            <Loader2 className="mr-1 sm:mr-2 h-4 w-4 animate-spin" />
+            <Loader2 className="mr-1 h-4 w-4 animate-spin sm:mr-2" />
           ) : (
-            <Icons.facebook className="mr-1 sm:mr-2 h-4 w-4" />
+            <Icons.facebook className="mr-1 h-4 w-4 sm:mr-2" />
           )}
           <span className="hidden sm:inline">Facebook</span>
           <span className="sm:hidden">Facebook</span>

@@ -166,13 +166,13 @@ export function ActiveFilterChips({
 
   return (
     <Shell className="flex items-center gap-3 py-4 pb-10">
-      <div className="flex items-center gap-2 text-sm text-gray-600 flex-shrink-0">
+      <div className="flex flex-shrink-0 items-center gap-2 text-sm text-gray-600">
         <Filter className="h-4 w-4" />
         <span className="font-medium">Active filters:</span>
       </div>
 
-      <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide flex-1 min-w-0">
-        <div className="flex items-center gap-2 flex-nowrap">
+      <div className="scrollbar-hide flex min-w-0 flex-1 items-center gap-2 overflow-x-auto">
+        <div className="flex flex-nowrap items-center gap-2">
           {activeFilters.map((filter) => {
             const IconComponent = filter.icon;
 
@@ -180,16 +180,16 @@ export function ActiveFilterChips({
               <Badge
                 key={filter.key}
                 variant="outline"
-                className={`${filter.color} border transition-all hover:shadow-sm flex-shrink-0 whitespace-nowrap`}
+                className={`${filter.color} flex-shrink-0 border whitespace-nowrap transition-all hover:shadow-sm`}
               >
-                <IconComponent className="h-3 w-3 mr-1" />
+                <IconComponent className="mr-1 h-3 w-3" />
                 <span className="text-xs font-medium">
                   {filter.label}: {filter.value}
                 </span>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-4 w-4 ml-1 p-0 hover:bg-black/10 rounded-full"
+                  className="ml-1 h-4 w-4 rounded-full p-0 hover:bg-black/10"
                   onClick={() => handleRemoveFilter(filter.key)}
                   aria-label={`Remove ${filter.label} filter`}
                 >
@@ -204,7 +204,7 @@ export function ActiveFilterChips({
               variant="ghost"
               size="sm"
               onClick={onClearAllFilters}
-              className="text-xs text-gray-500 hover:text-gray-700 h-6 px-2 flex-shrink-0 whitespace-nowrap ml-2"
+              className="ml-2 h-6 flex-shrink-0 px-2 text-xs whitespace-nowrap text-gray-500 hover:text-gray-700"
               aria-label="Clear all filters"
             >
               Clear all

@@ -98,19 +98,19 @@ export default function FeaturedDevelopments() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div className="space-y-2">
-            <div className="h-8 bg-gray-200 rounded w-64 animate-pulse" />
-            <div className="h-4 bg-gray-200 rounded w-96 animate-pulse" />
+            <div className="h-8 w-64 animate-pulse rounded bg-gray-200" />
+            <div className="h-4 w-96 animate-pulse rounded bg-gray-200" />
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           {Array.from({ length: 2 }).map((_, i) => (
             <div key={i} className="animate-pulse">
-              <div className="bg-gray-200 h-80 rounded-lg mb-4" />
+              <div className="mb-4 h-80 rounded-lg bg-gray-200" />
               <div className="space-y-2">
-                <div className="h-6 bg-gray-200 rounded w-3/4" />
-                <div className="h-4 bg-gray-200 rounded w-1/2" />
-                <div className="h-4 bg-gray-200 rounded w-full" />
+                <div className="h-6 w-3/4 rounded bg-gray-200" />
+                <div className="h-4 w-1/2 rounded bg-gray-200" />
+                <div className="h-4 w-full rounded bg-gray-200" />
               </div>
             </div>
           ))}
@@ -129,8 +129,8 @@ export default function FeaturedDevelopments() {
       <div className="flex items-center justify-between">
         <div className="space-y-2">
           <div className="flex items-center gap-2">
-            <Star className="h-5 w-5 text-yellow-500 fill-current" />
-            <h2 className="text-2xl font-bold text-brand-accent">
+            <Star className="h-5 w-5 fill-current text-yellow-500" />
+            <h2 className="text-brand-accent text-2xl font-bold">
               Featured Developments
             </h2>
           </div>
@@ -143,7 +143,7 @@ export default function FeaturedDevelopments() {
         <Button
           variant="outline"
           asChild
-          className="hidden md:flex items-center gap-2"
+          className="hidden items-center gap-2 md:flex"
         >
           <Link href="/development-projects?featured=true">
             View All Featured
@@ -153,11 +153,11 @@ export default function FeaturedDevelopments() {
       </div>
 
       {/* Featured Projects Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {featuredProjects.map((project, index) => (
           <Card
             key={project.projectid}
-            className="group relative overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-500"
+            className="group relative overflow-hidden border-0 shadow-lg transition-all duration-500 hover:shadow-2xl"
           >
             <Link
               href={
@@ -174,7 +174,7 @@ export default function FeaturedDevelopments() {
               <AspectRatio ratio={16 / 10} className="relative overflow-hidden">
                 {/* Loading skeleton */}
                 {!imageLoaded[project.projectid] && (
-                  <div className="absolute inset-0 z-20 bg-gray-100 animate-pulse" />
+                  <div className="absolute inset-0 z-20 animate-pulse bg-gray-100" />
                 )}
 
                 <ImageWithFallback
@@ -201,34 +201,34 @@ export default function FeaturedDevelopments() {
 
                 {/* Featured badge */}
                 <div className="absolute top-4 left-4 z-30">
-                  <Badge className="bg-yellow-500 text-black font-semibold shadow-lg">
-                    <Star className="h-3 w-3 mr-1 fill-current" />
+                  <Badge className="bg-yellow-500 font-semibold text-black shadow-lg">
+                    <Star className="mr-1 h-3 w-3 fill-current" />
                     Featured
                   </Badge>
                 </div>
 
                 {/* Status badge */}
                 <div className="absolute top-4 right-4 z-30">
-                  <Badge className="bg-white/90 text-brand-accent font-semibold shadow-lg">
+                  <Badge className="text-brand-accent bg-white/90 font-semibold shadow-lg">
                     {getCompletionStatus(project.status)}
                   </Badge>
                 </div>
 
                 {/* Project info overlay */}
-                <div className="absolute bottom-0 left-0 right-0 z-30 p-6 text-white">
+                <div className="absolute right-0 bottom-0 left-0 z-30 p-6 text-white">
                   <div className="space-y-3">
                     <div className="space-y-1">
-                      <h3 className="text-2xl font-bold group-hover:text-yellow-300 transition-colors">
+                      <h3 className="text-2xl font-bold transition-colors group-hover:text-yellow-300">
                         {project.projectname}
                       </h3>
-                      <p className="text-white/90 text-sm font-medium">
+                      <p className="text-sm font-medium text-white/90">
                         {formatNumber(project.pageviews)} views •{" "}
                         {project.unitcount} units
                       </p>
                     </div>
 
                     <div className="flex items-center text-white/90">
-                      <MapPin className="h-4 w-4 mr-1.5 flex-shrink-0" />
+                      <MapPin className="mr-1.5 h-4 w-4 flex-shrink-0" />
                       <span className="text-sm">{project.fullLocation}</span>
                     </div>
                   </div>
@@ -236,43 +236,43 @@ export default function FeaturedDevelopments() {
               </AspectRatio>
             </div>
 
-            <CardContent className="p-6 space-y-4">
+            <CardContent className="space-y-4 p-6">
               {/* Description */}
               <p className="text-brand-muted line-clamp-3 leading-relaxed">
                 {project.aboutproject}
               </p>
 
               {/* Stats Row */}
-              <div className="flex items-center justify-between py-3 border-y">
+              <div className="flex items-center justify-between border-y py-3">
                 <div className="text-center">
-                  <div className="text-lg font-bold text-brand-accent">
+                  <div className="text-brand-accent text-lg font-bold">
                     {project.unitcount}
                   </div>
-                  <div className="text-xs text-brand-muted">Total Units</div>
+                  <div className="text-brand-muted text-xs">Total Units</div>
                 </div>
 
                 <div className="text-center">
-                  <div className="text-lg font-bold text-brand-primary">
+                  <div className="text-brand-primary text-lg font-bold">
                     {formatNumber(project.pageviews)}
                   </div>
-                  <div className="text-xs text-brand-muted">Page Views</div>
+                  <div className="text-brand-muted text-xs">Page Views</div>
                 </div>
 
                 <div className="text-center">
                   <div className="text-lg font-bold text-green-600">
                     {project.region}
                   </div>
-                  <div className="text-xs text-brand-muted">Location</div>
+                  <div className="text-brand-muted text-xs">Location</div>
                 </div>
               </div>
 
               {/* Status info */}
               <div className="flex items-center gap-2">
-                <Building2 className="h-4 w-4 text-brand-accent flex-shrink-0" />
+                <Building2 className="text-brand-accent h-4 w-4 flex-shrink-0" />
                 <div className="flex items-center gap-2">
                   <Badge
                     variant="outline"
-                    className="text-xs font-medium bg-gray-50 text-gray-700"
+                    className="bg-gray-50 text-xs font-medium text-gray-700"
                   >
                     {project.status.charAt(0).toUpperCase() +
                       project.status.slice(1)}
@@ -280,7 +280,7 @@ export default function FeaturedDevelopments() {
                   {project.isFeatured && (
                     <Badge
                       variant="outline"
-                      className="text-xs font-medium bg-yellow-50 text-yellow-700 border-yellow-300"
+                      className="border-yellow-300 bg-yellow-50 text-xs font-medium text-yellow-700"
                     >
                       Featured
                     </Badge>
@@ -291,7 +291,7 @@ export default function FeaturedDevelopments() {
               {/* CTA Button */}
               <Button
                 variant="default"
-                className="w-full relative z-20 bg-brand-primary hover:bg-brand-primary/90"
+                className="bg-brand-primary hover:bg-brand-primary/90 relative z-20 w-full"
                 asChild
               >
                 <Link
@@ -303,7 +303,7 @@ export default function FeaturedDevelopments() {
                     ? { target: "_blank", rel: "noopener noreferrer" }
                     : {})}
                 >
-                  <Building2 className="h-4 w-4 mr-2" />
+                  <Building2 className="mr-2 h-4 w-4" />
                   {project.weburl
                     ? "Visit Project Site"
                     : "View Project Details"}
@@ -319,7 +319,7 @@ export default function FeaturedDevelopments() {
         <Button variant="outline" asChild className="w-full">
           <Link href="/development-projects?featured=true">
             View All Featured Developments
-            <ArrowRight className="h-4 w-4 ml-2" />
+            <ArrowRight className="ml-2 h-4 w-4" />
           </Link>
         </Button>
       </div>

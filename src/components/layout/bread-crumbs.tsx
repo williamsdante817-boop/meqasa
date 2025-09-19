@@ -1,7 +1,7 @@
 import * as React from "react";
 import Link from "next/link";
 
-import { cn, truncate } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { ChevronRightIcon } from "lucide-react";
 
 interface BreadcrumbsProps extends React.ComponentPropsWithoutRef<"nav"> {
@@ -11,23 +11,36 @@ interface BreadcrumbsProps extends React.ComponentPropsWithoutRef<"nav"> {
     key?: string;
   }[];
   separator?: React.ComponentType<{ className?: string }>;
-  truncationLength?: number;
+  mobileOnly?: boolean; // Option to enable truncation only on mobile
 }
 
 export function Breadcrumbs({
   segments,
   separator,
-  truncationLength = 15,
+  mobileOnly = true,
   className,
   ...props
 }: BreadcrumbsProps) {
   const SeparatorIcon = separator ?? ChevronRightIcon;
 
+  // Responsive truncation classes:
+  // - truncate: truncate on all screen sizes
+  // - truncate sm:overflow-visible sm:text-clip sm:whitespace-normal: truncate only on mobile, full text on sm and up
+  const getTextClasses = (base: string) => {
+    if (mobileOnly) {
+      return cn(
+        base,
+        "truncate sm:overflow-visible sm:text-clip sm:whitespace-normal"
+      );
+    }
+    return cn(base, "truncate");
+  };
+
   return (
     <nav
       aria-label="breadcrumbs"
       className={cn(
-        "flex w-full items-center overflow-auto text-sm font-semibold text-brand-muted",
+        "text-brand-muted flex w-full items-center overflow-auto text-sm font-semibold",
         className
       )}
       {...props}
@@ -40,22 +53,20 @@ export function Breadcrumbs({
             {isLastSegment ? (
               <span
                 aria-current="page"
-                className={cn("truncate text-brand-accent")}
+                className={getTextClasses("text-brand-accent")}
+                title={segment.title} // Add title for accessibility on truncated text
               >
-                {truncationLength > 0 && segment.title
-                  ? truncate(segment.title, truncationLength)
-                  : segment.title}
+                {segment.title}
               </span>
             ) : (
               <Link
                 href={segment.href}
-                className={cn(
-                  "truncate transition-colors hover:text-brand-accent text-brand-muted"
+                className={getTextClasses(
+                  "hover:text-brand-accent text-brand-muted transition-colors"
                 )}
+                title={segment.title} // Add title for accessibility on truncated text
               >
-                {truncationLength > 0 && segment.title
-                  ? truncate(segment.title, truncationLength)
-                  : segment.title}
+                {segment.title}
               </Link>
             )}
             {!isLastSegment && (

@@ -123,13 +123,13 @@ export default function PropertyInsight(props: PropertyInsightProps) {
     .join(" in ");
 
   return (
-    <Card className="mt-16 border-gray-200 bg-gradient-to-r rounded-lg from-gray-50 to-gray-50 p-4 md:p-6">
-      <div className="flex items-center gap-4 mb-6">
+    <Card className="mt-16 rounded-lg border-gray-200 bg-gradient-to-r from-gray-50 to-gray-50 p-4 md:p-6">
+      <div className="mb-6 flex items-center gap-4">
         <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-gray-100 text-gray-600">
           <BarChart3 className="h-5 w-5" />
         </div>
         <div className="flex-1">
-          <h3 className="text-base font-semibold text-brand-accent lg:text-lg">
+          <h3 className="text-brand-accent text-base font-semibold lg:text-lg">
             Property Insights
           </h3>
           <p className="text-sm text-gray-600">
@@ -140,7 +140,7 @@ export default function PropertyInsight(props: PropertyInsightProps) {
 
       <div className="space-y-4">
         {/* Price Comparison */}
-        <div className="flex items-start gap-4 p-4 bg-white rounded-lg border border-gray-200">
+        <div className="flex items-start gap-4 rounded-lg border border-gray-200 bg-white p-4">
           <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-gray-100">
             <Image
               src="/insights_price@3x.webp"
@@ -150,16 +150,16 @@ export default function PropertyInsight(props: PropertyInsightProps) {
             />
           </div>
           <div className="flex-1">
-            <p className="text-sm text-brand-accent leading-relaxed">
+            <p className="text-brand-accent text-sm leading-relaxed">
               This property is priced{" "}
-              <span className="font-semibold text-brand-accent">
+              <span className="text-brand-accent font-semibold">
                 {formatPercent(priceDelta)} {getDeltaWordForPrice(priceDelta)}
               </span>{" "}
               {contextPhrase
                 ? `than the average cost of ${contextPhrase}.`
                 : "than comparable listings."}
             </p>
-            <p className="text-xs text-brand-muted mt-1">
+            <p className="text-brand-muted mt-1 text-xs">
               Average price:{" "}
               <span className="font-medium">
                 {formatNumberToCedis(avgPrice ?? 0, "en-GH", {
@@ -171,7 +171,7 @@ export default function PropertyInsight(props: PropertyInsightProps) {
         </div>
 
         {/* Size Comparison */}
-        <div className="flex items-start gap-4 p-4 bg-white rounded-lg border border-gray-200">
+        <div className="flex items-start gap-4 rounded-lg border border-gray-200 bg-white p-4">
           <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-gray-100">
             <Image
               src="/insights_floorarea@3x.webp"
@@ -181,16 +181,16 @@ export default function PropertyInsight(props: PropertyInsightProps) {
             />
           </div>
           <div className="flex-1">
-            <p className="text-sm text-brand-accent leading-relaxed">
+            <p className="text-brand-accent text-sm leading-relaxed">
               This property measures{" "}
-              <span className="font-semibold text-brand-accent">
+              <span className="text-brand-accent font-semibold">
                 {formatPercent(sizeDelta)} {getDeltaWordForSize(sizeDelta)}
               </span>{" "}
               {contextPhrase
                 ? `than the average size of ${contextPhrase}.`
                 : "than comparable listings."}
             </p>
-            <p className="text-xs text-brand-muted mt-1">
+            <p className="text-brand-muted mt-1 text-xs">
               Average size:{" "}
               <span className="font-medium">
                 {formatNumber(avgSize ?? 0, { maximumFractionDigits: 0 })} sqm
@@ -200,8 +200,8 @@ export default function PropertyInsight(props: PropertyInsightProps) {
         </div>
       </div>
 
-      <div className="mt-4 p-3 bg-gray-100/50 rounded-md border border-gray-200">
-        <p className="text-xs text-gray-700 leading-relaxed">
+      <div className="mt-4 rounded-md border border-gray-200 bg-gray-100/50 p-3">
+        <p className="text-xs leading-relaxed text-gray-700">
           📊 The data presented reflects average prices and sizes for comparable
           listings
           {contextPhrase ? ` (${contextPhrase})` : ""} as listed on meqasa.com.

@@ -8,7 +8,7 @@ import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Calendar } from "lucide-react";
 import { PlaceholderImage } from "@/components/common/placeholder-image";
 import { ImageWithFallback } from "@/components/common/image-with-fallback";
-import { cn } from "@/lib/utils";
+import { cn, formatDisplayDate, isValidDateString } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function BlogCard({
@@ -30,34 +30,24 @@ export default function BlogCard({
   const [isLoading, setIsLoading] = React.useState(true);
   const hasPoster = Boolean(poster);
 
-  // Ensure ISO-8601 for machine-readable date while displaying raw or formatted date
-  const parsedDate = React.useMemo(() => {
-    const d = new Date(datePosted);
-    return isNaN(d.getTime()) ? null : d;
-  }, [datePosted]);
-
-  const isoDate = parsedDate ? parsedDate.toISOString() : undefined;
-  const displayDate = parsedDate
-    ? parsedDate.toLocaleDateString(undefined, {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-      })
-    : datePosted;
+  // Use consistent date formatting
+  const isValidDate = isValidDateString(datePosted);
+  const isoDate = isValidDate ? new Date(datePosted).toISOString() : undefined;
+  const displayDate = isValidDate ? formatDisplayDate(datePosted) : datePosted;
 
   return (
     <Link href={href} className="block" aria-label={`Read blog post: ${title}`}>
-      <article className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_192px] mb-6 gap-4">
+      <article className="mb-6 grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_192px]">
         <div className="space-y-2">
-          <h3 className="text-base sm:text-lg font-semibold text-brand-accent mb-1 leading-tight">
+          <h3 className="text-brand-accent mb-1 text-base leading-tight font-semibold sm:text-lg">
             {title}
           </h3>
-          <p className="line-clamp-3 text-sm sm:text-base leading-relaxed text-brand-muted">
+          <p className="text-brand-muted line-clamp-3 text-sm leading-relaxed sm:text-base">
             {description}
           </p>
           <time
             dateTime={isoDate}
-            className="text-sm sm:text-base text-brand-accent flex items-center"
+            className="text-brand-accent flex items-center text-sm sm:text-base"
           >
             <Calendar
               className="mr-2 text-[#f93a5d]"
@@ -68,8 +58,8 @@ export default function BlogCard({
           </time>
         </div>
         <div className="hidden lg:block lg:w-full lg:overflow-hidden lg:rounded-lg">
-          <Card className="overflow-hidden size-full !p-0 rounded-lg">
-            <CardContent className="!p-0 rounded-lg">
+          <Card className="size-full overflow-hidden rounded-lg !p-0">
+            <CardContent className="rounded-lg !p-0">
               <AspectRatio
                 ratio={4 / 3}
                 className="relative overflow-hidden rounded-lg"
@@ -84,7 +74,7 @@ export default function BlogCard({
                       priority={priority}
                       loading={priority ? "eager" : undefined}
                       className={cn(
-                        "object-cover rounded-lg transition-opacity duration-300",
+                        "rounded-lg object-cover transition-opacity duration-300",
                         isLoading ? "opacity-0" : "opacity-100"
                       )}
                       onError={() => setImgError(true)}
@@ -92,7 +82,7 @@ export default function BlogCard({
                       quality={priority ? 85 : 75}
                     />
                     {isLoading && (
-                      <Skeleton className="absolute inset-0 bg-gray-100 animate-pulse rounded-xl" />
+                      <Skeleton className="absolute inset-0 animate-pulse rounded-xl bg-gray-100" />
                     )}
                   </>
                 ) : (

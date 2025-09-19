@@ -21,12 +21,12 @@ function ArticlePlaceholder({
 }) {
   return (
     <div
-      className="w-full h-full bg-gray-100 flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300"
+      className="flex h-full w-full flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-100"
       role="img"
       aria-label={message}
     >
-      <ImageIcon className="w-8 h-8 text-gray-400 mb-2" />
-      <span className="text-gray-500 text-sm text-center px-2">{message}</span>
+      <ImageIcon className="mb-2 h-8 w-8 text-gray-400" />
+      <span className="px-2 text-center text-sm text-gray-500">{message}</span>
     </div>
   );
 }
@@ -61,14 +61,10 @@ export function ArticleCard({
 
   return (
     <Card className={cardClasses}>
-      <CardContent className={`p-0 h-full ${isList ? "flex" : ""}`}>
+      <CardContent className={`h-full p-0 ${isList ? "flex" : ""}`}>
         {/* Article Image */}
         <div
-          className={`
-            relative overflow-hidden rounded-t-lg flex-shrink-0
-            ${imageHeight}
-            ${isList ? "rounded-l-lg rounded-t-none mr-3" : ""}
-          `}
+          className={`relative flex-shrink-0 overflow-hidden rounded-t-lg ${imageHeight} ${isList ? "mr-3 rounded-t-none rounded-l-lg" : ""} `}
         >
           {imageError ? (
             <ArticlePlaceholder message="Blog image unavailable" />
@@ -92,18 +88,18 @@ export function ArticleCard({
           )}
 
           {/* External link indicator */}
-          <div className="absolute top-2 right-2 bg-black/60 rounded-full p-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-            <ExternalLink className="w-3 h-3 text-white" />
+          <div className="absolute top-2 right-2 rounded-full bg-black/60 p-1.5 opacity-0 transition-opacity group-hover:opacity-100">
+            <ExternalLink className="h-3 w-3 text-white" />
           </div>
         </div>
 
         {/* Article Content */}
         <div
-          className={`p-4 flex-1 flex flex-col ${isList ? "justify-center" : ""}`}
+          className={`flex flex-1 flex-col p-4 ${isList ? "justify-center" : ""}`}
         >
           {/* Source and Date */}
           <div
-            className={`flex items-center gap-2 text-xs sm:text-sm text-gray-500 mb-2 ${isList ? "mb-1" : ""}`}
+            className={`mb-2 flex items-center gap-2 text-xs text-gray-500 sm:text-sm ${isList ? "mb-1" : ""}`}
           >
             <span className="font-medium">{article.source}</span>
             <span>•</span>
@@ -118,12 +114,7 @@ export function ArticleCard({
             className="group/link"
           >
             <h3
-              className={`
-                font-semibold text-gray-900 group-hover/link:text-brand-primary 
-                transition-colors duration-200 line-clamp-2
-                ${isFeatured ? "text-base sm:text-lg md:text-xl mb-3" : "text-sm sm:text-base mb-2"}
-                ${isList ? "text-sm sm:text-base leading-tight" : ""}
-              `}
+              className={`group-hover/link:text-brand-primary line-clamp-2 font-semibold text-gray-900 transition-colors duration-200 ${isFeatured ? "mb-3 text-base sm:text-lg md:text-xl" : "mb-2 text-sm sm:text-base"} ${isList ? "text-sm leading-tight sm:text-base" : ""} `}
               title={article.summary}
             >
               {article.summary}
@@ -136,10 +127,10 @@ export function ArticleCard({
               href={article.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center text-sm sm:text-base text-brand-primary hover:text-brand-primary/80 transition-colors mt-auto"
+              className="text-brand-primary hover:text-brand-primary/80 mt-auto inline-flex items-center text-sm transition-colors sm:text-base"
             >
               Read More
-              <ExternalLink className="w-4 h-4 ml-1" />
+              <ExternalLink className="ml-1 h-4 w-4" />
             </Link>
           )}
         </div>

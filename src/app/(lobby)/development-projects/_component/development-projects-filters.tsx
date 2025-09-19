@@ -126,7 +126,7 @@ export default function DevelopmentProjectsFilters({
       {/* Search Bar */}
       <form onSubmit={handleSearch} className="flex gap-2">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-brand-muted" />
+          <Search className="text-brand-muted absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
           <Input
             type="text"
             placeholder="Search by project name, developer, or location..."
@@ -193,7 +193,7 @@ export default function DevelopmentProjectsFilters({
           showAllFilters ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
         )}
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 pt-4 border-t">
+        <div className="grid grid-cols-1 gap-4 border-t pt-4 md:grid-cols-2 lg:grid-cols-4">
           {/* Status Filter */}
           <div className="space-y-2">
             <Label htmlFor="status">Project Status</Label>

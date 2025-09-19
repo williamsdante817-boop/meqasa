@@ -95,7 +95,7 @@ export function MobileSearchModal({
     }
 
     updateFormState(activeTab, resetValues);
-    
+
     // Announce filter removal to screen readers
     setAnnouncement(`${filterName} filter removed`);
     setTimeout(() => setAnnouncement(""), 1000);
@@ -114,7 +114,7 @@ export function MobileSearchModal({
       furnished: false,
       owner: false,
     });
-    
+
     // Announce all filters cleared to screen readers
     setAnnouncement("All filters cleared");
     setTimeout(() => setAnnouncement(""), 1000);
@@ -182,10 +182,10 @@ export function MobileSearchModal({
     if (isOpen) {
       // Store the element that was focused before the modal opened
       lastFocusedElementRef.current = document.activeElement as HTMLElement;
-      
+
       document.addEventListener("keydown", handleKeyDown);
       document.body.style.overflow = "hidden";
-      
+
       // Focus the close button when modal opens
       setTimeout(() => {
         closeButtonRef.current?.focus();
@@ -212,7 +212,7 @@ export function MobileSearchModal({
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/50 z-[999998] lg:hidden"
+        className="fixed inset-0 z-[999998] bg-black/50 lg:hidden"
         onClick={onClose}
         style={{ position: "fixed", zIndex: 999998 }}
         aria-hidden="true"
@@ -220,7 +220,7 @@ export function MobileSearchModal({
 
       {/* Modal */}
       <div
-        className="fixed inset-0 z-[999999] pt-4 pb-10 bg-white lg:hidden"
+        className="fixed inset-0 z-[999999] bg-white pt-4 pb-10 lg:hidden"
         style={{ position: "fixed", zIndex: 999999 }}
         ref={modalRef}
         role="dialog"
@@ -228,7 +228,7 @@ export function MobileSearchModal({
         aria-labelledby="search-modal-title"
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-white sticky top-0 z-10">
+        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-200 bg-white p-4">
           <h2 id="search-modal-title" className="font-semibold text-gray-900">
             Search Properties
           </h2>
@@ -264,36 +264,38 @@ export function MobileSearchModal({
               rent: "Rent",
               buy: "Buy",
               land: "Land",
-              "short-let": "Short Let"
+              "short-let": "Short Let",
             };
-            setAnnouncement(`Switched to ${tabNames[value as keyof typeof tabNames]} tab`);
+            setAnnouncement(
+              `Switched to ${tabNames[value as keyof typeof tabNames]} tab`
+            );
             setTimeout(() => setAnnouncement(""), 1000);
           }}
-          className="flex flex-col h-full"
+          className="flex h-full flex-col"
         >
-          <div className="px-4 pt-2 pb-1 bg-white border-b border-gray-100 sticky top-[69px] z-10">
-            <TabsList className="grid w-full grid-cols-4 bg-gray-100 p-1 rounded-lg">
+          <div className="sticky top-[69px] z-10 border-b border-gray-100 bg-white px-4 pt-2 pb-1">
+            <TabsList className="grid w-full grid-cols-4 rounded-lg bg-gray-100 p-1">
               <TabsTrigger
                 value="rent"
-                className="font-semibold text-sm data-[state=active]:bg-white data-[state=active]:text-brand-primary data-[state=active]:shadow-sm"
+                className="data-[state=active]:text-brand-primary text-sm font-semibold data-[state=active]:bg-white data-[state=active]:shadow-sm"
               >
                 Rent
               </TabsTrigger>
               <TabsTrigger
                 value="buy"
-                className="font-semibold text-sm data-[state=active]:bg-white data-[state=active]:text-brand-primary data-[state=active]:shadow-sm"
+                className="data-[state=active]:text-brand-primary text-sm font-semibold data-[state=active]:bg-white data-[state=active]:shadow-sm"
               >
                 Buy
               </TabsTrigger>
               <TabsTrigger
                 value="land"
-                className="font-semibold text-sm data-[state=active]:bg-white data-[state=active]:text-brand-primary data-[state=active]:shadow-sm"
+                className="data-[state=active]:text-brand-primary text-sm font-semibold data-[state=active]:bg-white data-[state=active]:shadow-sm"
               >
                 Land
               </TabsTrigger>
               <TabsTrigger
                 value="short-let"
-                className="font-semibold text-sm data-[state=active]:bg-white data-[state=active]:text-brand-primary data-[state=active]:shadow-sm"
+                className="data-[state=active]:text-brand-primary text-sm font-semibold data-[state=active]:bg-white data-[state=active]:shadow-sm"
               >
                 Short Let
               </TabsTrigger>
@@ -302,7 +304,7 @@ export function MobileSearchModal({
 
           {/* Content Area */}
           <div className="flex-1 overflow-y-auto">
-            <div className="p-4 space-y-4">
+            <div className="space-y-4 p-4">
               {/* Search Input */}
               <div className="flex flex-col gap-3 text-left">
                 <label className="text-base font-medium text-gray-700">
@@ -400,7 +402,7 @@ export function MobileSearchModal({
 
           {/* Active Filters Display */}
           {getActiveFilterCount(currentFormState) > 0 && (
-            <div className="px-4 border-t border-gray-100">
+            <div className="border-t border-gray-100 px-4">
               <ActiveFilterChips
                 formState={currentFormState}
                 onRemoveFilter={handleRemoveFilter}
@@ -411,17 +413,17 @@ export function MobileSearchModal({
           )}
 
           {/* Enhanced Footer with Search Button */}
-          <div className="p-4 border-t border-gray-200 bg-white sticky bottom-0">
+          <div className="sticky bottom-0 border-t border-gray-200 bg-white p-4">
             <div className="space-y-2">
               <Button
                 type="submit"
                 form={`search-form-${activeTab}`}
                 variant="brand-primary"
-                className="w-full h-12 font-semibold rounded-lg"
+                className="h-12 w-full rounded-lg font-semibold"
               >
-                <Search className="h-5 w-5 mr-2" />
+                <Search className="mr-2 h-5 w-5" />
                 Search Properties
-                <ChevronRight className="h-4 w-4 ml-2" />
+                <ChevronRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
           </div>

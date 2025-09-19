@@ -24,7 +24,7 @@ export async function getHomepagePopup(): Promise<PopupDataWithUrls> {
   // Transform the data to include full URLs
   return {
     ...popupData,
-    imageUrl: `https://dve7rykno93gs.cloudfront.net${popupData.src}`,
-    linkUrl: `https://meqasa.com${popupData.href}`,
+    imageUrl: popupData.src ? `https://dve7rykno93gs.cloudfront.net${popupData.src}` : "",
+    linkUrl: popupData.href ? `https://meqasa.com${popupData.href}` : "",
   };
 }

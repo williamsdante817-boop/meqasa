@@ -5,7 +5,7 @@ export function DevelopersSkeleton() {
   return (
     <div role="status" aria-label="Loading developers">
       {/* Search input skeleton */}
-      <div className="w-full mb-8">
+      <div className="mb-8 w-full">
         <Skeleton
           variant="light"
           className="h-12 w-full max-w-lg rounded-md"
@@ -22,30 +22,30 @@ export function DevelopersSkeleton() {
             role="status"
             aria-label={`Loading developer ${index + 1}`}
           >
-            <div className="flex flex-col sm:flex-row gap-6 mb-6">
+            <div className="mb-6 flex flex-col gap-6 sm:flex-row">
               {/* Logo skeleton */}
               <div className="flex-shrink-0">
                 <Skeleton
                   variant="card"
-                  className="w-16 h-16 rounded-md"
+                  className="h-16 w-16 rounded-md"
                   aria-label="Loading developer logo"
                 />
               </div>
 
               {/* Content skeleton */}
-              <div className="flex-1 min-w-0">
-                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                   <div className="flex-1">
                     {/* Company name skeleton */}
                     <Skeleton
                       variant="text"
                       size="lg"
-                      className="w-48 mb-2"
+                      className="mb-2 w-48"
                       aria-label="Loading company name"
                     />
 
                     {/* Location skeleton */}
-                    <div className="flex items-center gap-2 mb-3">
+                    <div className="mb-3 flex items-center gap-2">
                       <Skeleton variant="light" className="h-4 w-4" />
                       <Skeleton
                         variant="light"
@@ -55,14 +55,14 @@ export function DevelopersSkeleton() {
                     </div>
 
                     {/* Badges skeleton */}
-                    <div className="flex items-center gap-3 mb-3">
+                    <div className="mb-3 flex items-center gap-3">
                       <Skeleton
                         variant="light"
-                        className="h-6 w-20 bg-brand-badge-verified/20 rounded-sm"
+                        className="bg-brand-badge-verified/20 h-6 w-20 rounded-sm"
                       />
                       <Skeleton
                         variant="light"
-                        className="h-6 w-24 bg-brand-badge-ongoing/20 rounded-sm"
+                        className="bg-brand-badge-ongoing/20 h-6 w-24 rounded-sm"
                       />
                     </div>
                   </div>
@@ -70,7 +70,7 @@ export function DevelopersSkeleton() {
                   {/* Button skeleton */}
                   <Skeleton
                     variant="light"
-                    className="h-10 w-32 bg-brand-primary/20 rounded-md"
+                    className="bg-brand-primary/20 h-10 w-32 rounded-md"
                   />
                 </div>
               </div>
@@ -80,7 +80,7 @@ export function DevelopersSkeleton() {
             <div className="mb-6">
               <Skeleton
                 variant="shimmer"
-                className="w-full h-48 rounded-md"
+                className="h-48 w-full rounded-md"
                 aria-label="Loading developer showcase image"
               />
             </div>

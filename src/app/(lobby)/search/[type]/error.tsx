@@ -19,17 +19,17 @@ export default function SearchError({
 
   return (
     <Shell>
-      <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4">
+      <div className="flex min-h-[400px] flex-col items-center justify-center space-y-4">
         <AlertCard className="max-w-md" />
-        <div className="text-center space-y-4">
-          <h2 className="text-xl font-semibold text-brand-accent">
+        <div className="space-y-4 text-center">
+          <h2 className="text-brand-accent text-xl font-semibold">
             Something went wrong!
           </h2>
           <p className="text-brand-muted">
             We encountered an error while loading the search results. Please try
             again.
           </p>
-          <div className="flex gap-4 justify-center">
+          <div className="flex justify-center gap-4">
             <Button onClick={reset} variant="default">
               Try again
             </Button>

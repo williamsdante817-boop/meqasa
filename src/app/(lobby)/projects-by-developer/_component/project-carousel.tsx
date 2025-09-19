@@ -49,10 +49,10 @@ export function ProjectCarousel({ photos }: { photos: Photo[] }) {
           <Slides key={photo.projectid + index} image={photo.photo} />
         ))}
       </CarouselContent>
-      <CarouselPrevious className="left-3/4  top-3/4 z-20 hidden h-12 w-12 translate-y-6 bg-white lg:flex" />
-      <CarouselNext className="right-60 top-3/4 z-20 hidden h-12 w-12 translate-y-6 bg-white lg:flex" />
+      <CarouselPrevious className="top-3/4 left-3/4 z-20 hidden h-12 w-12 translate-y-6 bg-white lg:flex" />
+      <CarouselNext className="top-3/4 right-60 z-20 hidden h-12 w-12 translate-y-6 bg-white lg:flex" />
       <Button
-        className="absolute right-[305px] top-[80.5%] z-20 hidden h-12 w-12 rounded-full bg-white text-b-accent hover:bg-white/90 lg:flex"
+        className="text-b-accent absolute top-[80.5%] right-[305px] z-20 hidden h-12 w-12 rounded-full bg-white hover:bg-white/90 lg:flex"
         size="icon"
       >
         {/* <Icons.expand className="h-4 w-4" /> */}
@@ -65,7 +65,7 @@ export function ProjectCarousel({ photos }: { photos: Photo[] }) {
             "linear-gradient(180deg,rgba(0,0,0,.2),rgba(0,0,0,.1) 16.31%,transparent 37.79%),linear-gradient(1turn,rgba(0,0,0,.8),transparent 79.49%)",
         }}
       />
-      <div className="absolute bottom-0 left-0 right-0 z-20 py-2 text-center text-sm text-muted-foreground text-white lg:hidden">
+      <div className="text-muted-foreground absolute right-0 bottom-0 left-0 z-20 py-2 text-center text-sm text-white lg:hidden">
         Slide {current} of {count}
       </div>
     </Carousel>
@@ -77,7 +77,7 @@ function Slides({ image }: { image: string }) {
     <CarouselItem className="h-full w-full min-w-full flex-1">
       <div className="p-0">
         <Card className="rounded-none border-0">
-          <CardContent className="flex aspect-[16/9] items-center justify-center p-0 relative">
+          <CardContent className="relative flex aspect-[16/9] items-center justify-center p-0">
             {/* <Image
             alt="test"
             src={img}

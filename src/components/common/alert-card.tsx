@@ -50,11 +50,11 @@ export function AlertCard({
         role="img"
         aria-label="Alert icon"
       >
-        <Icon className="size-5 text-brand-primary" aria-hidden="true" />
+        <Icon className="text-brand-primary size-5" aria-hidden="true" />
       </div>
       {children ?? (
         <div className="flex flex-col items-center space-y-2 text-center">
-          <AlertTitle className="text-lg text-brand-accent">
+          <AlertTitle className="text-brand-accent text-lg">
             {title ?? defaultTitle}
           </AlertTitle>
           {description ? (
@@ -62,11 +62,11 @@ export function AlertCard({
               {description}
             </AlertDescription>
           ) : (
-            <div className="flex flex-col sm:flex-row items-center gap-2 text-sm text-brand-muted">
+            <div className="text-brand-muted flex flex-col items-center gap-2 text-sm sm:flex-row">
               <AlertDescription>{defaultDescription}</AlertDescription>
               <Link
                 href={linkHref}
-                className="transition-colors hover:text-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue focus:ring-offset-2 rounded-sm"
+                className="hover:text-brand-blue focus:ring-brand-blue rounded-sm transition-colors focus:ring-2 focus:ring-offset-2 focus:outline-none"
                 aria-label={`${linkText} - Opens in new tab`}
               >
                 {linkText}

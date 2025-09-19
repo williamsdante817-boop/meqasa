@@ -17,34 +17,30 @@ export function ArticleCardSkeleton({
       role="status"
       aria-label="Loading article"
     >
-      <CardContent className={`p-0 h-full ${isList ? "flex" : ""}`}>
+      <CardContent className={`h-full p-0 ${isList ? "flex" : ""}`}>
         {/* Image Skeleton */}
         <div
-          className={`
-            relative overflow-hidden rounded-t-lg flex-shrink-0
-            ${isFeatured ? "h-48 md:h-56" : isList ? "h-20 w-20" : "h-40"}
-            ${isList ? "rounded-l-lg rounded-t-none mr-3" : ""}
-          `}
+          className={`relative flex-shrink-0 overflow-hidden rounded-t-lg ${isFeatured ? "h-48 md:h-56" : isList ? "h-20 w-20" : "h-40"} ${isList ? "mr-3 rounded-t-none rounded-l-lg" : ""} `}
         >
           <Skeleton
             variant="shimmer"
-            className="w-full h-full"
+            className="h-full w-full"
             aria-label="Loading article image"
           />
         </div>
 
         {/* Content Skeleton */}
         <div
-          className={`p-4 flex-1 flex flex-col ${isList ? "justify-center" : ""}`}
+          className={`flex flex-1 flex-col p-4 ${isList ? "justify-center" : ""}`}
         >
           {/* Source and Date */}
           <div
-            className={`flex items-center gap-2 mb-2 ${isList ? "mb-1" : ""}`}
+            className={`mb-2 flex items-center gap-2 ${isList ? "mb-1" : ""}`}
           >
             <Skeleton variant="light" size="sm" className="w-16" />
             <Skeleton
               variant="light"
-              className="h-3 w-3 rounded-full bg-brand-muted/20"
+              className="bg-brand-muted/20 h-3 w-3 rounded-full"
             />
             <Skeleton variant="light" size="sm" className="w-20" />
           </div>
@@ -88,12 +84,12 @@ export function FeaturedArticlesSkeleton() {
         <Skeleton
           variant="text"
           size="lg"
-          className="w-32 mb-2 mx-auto md:mx-0"
+          className="mx-auto mb-2 w-32 md:mx-0"
         />
         <Skeleton
           variant="light"
           size="default"
-          className="w-48 mx-auto md:mx-0"
+          className="mx-auto w-48 md:mx-0"
         />
       </div>
 
@@ -120,12 +116,12 @@ export function MarketNewsSkeleton() {
         <Skeleton
           variant="text"
           size="lg"
-          className="w-28 mb-2 mx-auto md:mx-0"
+          className="mx-auto mb-2 w-28 md:mx-0"
         />
         <Skeleton
           variant="light"
           size="default"
-          className="w-40 mx-auto md:mx-0"
+          className="mx-auto w-40 md:mx-0"
         />
       </div>
 
@@ -147,13 +143,13 @@ export function BlogSectionSkeleton() {
     >
       <div className="container px-4 md:px-0">
         {/* Section Header */}
-        <div className="text-center mb-12">
-          <Skeleton variant="text" size="xl" className="w-48 mb-4 mx-auto" />
-          <Skeleton variant="light" size="md" className="w-64 mx-auto" />
+        <div className="mb-12 text-center">
+          <Skeleton variant="text" size="xl" className="mx-auto mb-4 w-48" />
+          <Skeleton variant="light" size="md" className="mx-auto w-64" />
         </div>
 
         {/* Blog Content */}
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
+        <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
           <FeaturedArticlesSkeleton />
           <MarketNewsSkeleton />
         </div>

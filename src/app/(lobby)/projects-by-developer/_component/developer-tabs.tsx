@@ -121,14 +121,19 @@ export function DeveloperTabs({ developer }: { developer: DeveloperDetails }) {
   }, [searchQuery, sortOrder]);
 
   const renderProjectCard = (project: Project, index: number) => {
-    const url = `development-projects/${project?.city.split(" ").join("-")}-${project?.projectname.split(" ").join("-")}-${project?.projectid}`;
+    // Generate consistent lowercase URL
+    const citySlug =
+      project?.city?.split(" ").join("-").toLowerCase() || "ghana";
+    const projectSlug =
+      project?.projectname?.split(" ").join("-").toLowerCase() || "project";
+    const url = `/development-projects/${citySlug}-${projectSlug}-${project?.projectid}`;
     return (
       <ProjectCard
         key={`${project.projectid}-${index}`}
         name={project.projectname}
         status={project.projectstatus}
         src={`https://meqasa.com/uploads/imgs/${project?.photo}`}
-        url={`/${url.toLowerCase()}`}
+        url={url}
       />
     );
   };
@@ -151,11 +156,11 @@ export function DeveloperTabs({ developer }: { developer: DeveloperDetails }) {
     actionText?: string;
     onAction?: () => void;
   }) => (
-    <div className="flex flex-col items-center justify-center py-12 px-6 text-center">
-      <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-        <Icon className="w-8 h-8 text-gray-400" />
+    <div className="flex flex-col items-center justify-center px-6 py-12 text-center">
+      <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
+        <Icon className="h-8 w-8 text-gray-400" />
       </div>
-      <h3 className="text-lg font-semibold text-brand-accent mb-2">{title}</h3>
+      <h3 className="text-brand-accent mb-2 text-lg font-semibold">{title}</h3>
       <p className="text-brand-muted mb-4 max-w-md">{description}</p>
       {actionText && onAction && (
         <Button variant="outline" size="sm" onClick={onAction}>
@@ -168,50 +173,50 @@ export function DeveloperTabs({ developer }: { developer: DeveloperDetails }) {
   return (
     <div className="w-full space-y-6">
       {/* Enhanced Stats Overview */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-100">
+      <div className="grid grid-cols-2 gap-4 rounded-lg border border-blue-100 bg-gradient-to-r from-blue-50 to-indigo-50 p-4 lg:grid-cols-4">
         <div className="text-center">
-          <div className="text-2xl font-bold text-brand-accent">
+          <div className="text-brand-accent text-2xl font-bold">
             {processedStats.totalProjects}
           </div>
-          <div className="text-sm text-brand-muted">Total Projects</div>
+          <div className="text-brand-muted text-sm">Total Projects</div>
         </div>
         <div className="text-center">
           <div className="text-2xl font-bold text-green-600">
             {processedStats.completedProjects}
           </div>
-          <div className="text-sm text-brand-muted">Completed</div>
+          <div className="text-brand-muted text-sm">Completed</div>
         </div>
         <div className="text-center">
           <div className="text-2xl font-bold text-orange-600">
             {processedStats.ongoingProjects}
           </div>
-          <div className="text-sm text-brand-muted">Ongoing</div>
+          <div className="text-brand-muted text-sm">Ongoing</div>
         </div>
         <div className="text-center">
           <div className="text-2xl font-bold text-blue-600">
             {processedStats.availableUnits}
           </div>
-          <div className="text-sm text-brand-muted">Available Units</div>
+          <div className="text-brand-muted text-sm">Available Units</div>
         </div>
       </div>
 
       {/* Enhanced Search and Filter Controls */}
-      <div className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center justify-between p-4 bg-gray-50 rounded-lg border">
-        <div className="flex-1 max-w-md">
+      <div className="flex flex-col items-stretch justify-between gap-4 rounded-lg border bg-gray-50 p-4 sm:flex-row sm:items-center">
+        <div className="max-w-md flex-1">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
             <Input
               placeholder="Search projects or units..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 bg-white"
+              className="bg-white pl-10"
             />
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-2 items-center">
+        <div className="flex flex-wrap items-center gap-2">
           <div className="flex items-center gap-2">
-            <SlidersHorizontal className="w-4 h-4 text-gray-500" />
+            <SlidersHorizontal className="h-4 w-4 text-gray-500" />
             <span className="text-sm text-gray-600">Sort:</span>
             <Button
               variant={sortOrder === "newest" ? "default" : "outline"}
@@ -232,18 +237,18 @@ export function DeveloperTabs({ developer }: { developer: DeveloperDetails }) {
       </div>
 
       <Tabs defaultValue="current" className="w-full">
-        <TabsList className="grid h-full w-full grid-cols-3 px-2 bg-muted">
+        <TabsList className="bg-muted grid h-full w-full grid-cols-3 px-2">
           <TabsTrigger
             value="current"
-            className="group relative text-sm text-brand-muted data-[state=active]:text-brand-accent transition-all duration-200"
+            className="group text-brand-muted data-[state=active]:text-brand-accent relative text-sm transition-all duration-200"
           >
-            <Building2 className="w-4 h-4 mr-2" />
+            <Building2 className="mr-2 h-4 w-4" />
             <span className="hidden sm:inline">Current Projects</span>
             <span className="sm:hidden">Current</span>
             <Badge
               variant="secondary"
               className={cn(
-                "ml-2 h-5 w-5 p-0 flex items-center justify-center text-xs font-semibold transition-all duration-200",
+                "ml-2 flex h-5 w-5 items-center justify-center p-0 text-xs font-semibold transition-all duration-200",
                 "group-data-[state=active]:bg-brand-blue group-data-[state=active]:text-white",
                 "hidden lg:flex"
               )}
@@ -254,15 +259,15 @@ export function DeveloperTabs({ developer }: { developer: DeveloperDetails }) {
 
           <TabsTrigger
             value="available"
-            className="group relative text-sm text-brand-muted data-[state=active]:text-brand-accent transition-all duration-200"
+            className="group text-brand-muted data-[state=active]:text-brand-accent relative text-sm transition-all duration-200"
           >
-            <Home className="w-4 h-4 mr-2" />
+            <Home className="mr-2 h-4 w-4" />
             <span className="hidden sm:inline">Available Units</span>
             <span className="sm:hidden">Units</span>
             <Badge
               variant="secondary"
               className={cn(
-                "ml-2 h-5 w-5 p-0 flex items-center justify-center text-xs font-semibold transition-all duration-200",
+                "ml-2 flex h-5 w-5 items-center justify-center p-0 text-xs font-semibold transition-all duration-200",
                 "group-data-[state=active]:bg-brand-blue group-data-[state=active]:text-white",
                 "hidden lg:flex"
               )}
@@ -273,15 +278,15 @@ export function DeveloperTabs({ developer }: { developer: DeveloperDetails }) {
 
           <TabsTrigger
             value="past"
-            className="group relative text-sm text-brand-muted data-[state=active]:text-brand-accent transition-all duration-200"
+            className="group text-brand-muted data-[state=active]:text-brand-accent relative text-sm transition-all duration-200"
           >
-            <Clock className="w-4 h-4 mr-2" />
+            <Clock className="mr-2 h-4 w-4" />
             <span className="hidden sm:inline">Past Projects</span>
             <span className="sm:hidden">Past</span>
             <Badge
               variant="secondary"
               className={cn(
-                "ml-2 h-5 w-5 p-0 flex items-center justify-center text-xs font-semibold transition-all duration-200",
+                "ml-2 flex h-5 w-5 items-center justify-center p-0 text-xs font-semibold transition-all duration-200",
                 "group-data-[state=active]:bg-brand-blue group-data-[state=active]:text-white",
                 "hidden lg:flex"
               )}

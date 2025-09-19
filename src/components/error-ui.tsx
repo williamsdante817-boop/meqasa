@@ -11,7 +11,7 @@ function RetryButton({ onRetry }: RetryButtonProps) {
   return (
     <button
       onClick={onRetry}
-      className="inline-flex items-center px-4 py-2 bg-brand-primary text-white rounded-md hover:bg-brand-primary/90 transition-colors whitespace-nowrap shrink-0"
+      className="bg-brand-primary hover:bg-brand-primary/90 inline-flex shrink-0 items-center rounded-md px-4 py-2 whitespace-nowrap text-white transition-colors"
     >
       <svg
         className="mr-2 h-4 w-4"
@@ -41,13 +41,13 @@ export function PropertyErrorUI({
   onRetry,
 }: PropertyErrorUIProps) {
   return (
-    <div className="min-h-[60vh] flex items-center justify-center">
-      <div className="max-w-md w-full text-center space-y-6">
+    <div className="flex min-h-[60vh] items-center justify-center">
+      <div className="w-full max-w-md space-y-6 text-center">
         <div className="space-y-4">
           <div className="flex justify-center">
-            <div className="rounded-full bg-destructive/10 p-4">
+            <div className="bg-destructive/10 rounded-full p-4">
               <svg
-                className="h-12 w-12 text-destructive"
+                className="text-destructive h-12 w-12"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -64,14 +64,14 @@ export function PropertyErrorUI({
           </div>
 
           <div className="space-y-2">
-            <h1 className="text-2xl font-bold text-foreground">
+            <h1 className="text-foreground text-2xl font-bold">
               {errorDetails.title}
             </h1>
             <p className="text-muted-foreground">{errorDetails.description}</p>
           </div>
         </div>
 
-        <div className="flex flex-row gap-3  flex-nowrap justify-center">
+        <div className="flex flex-row flex-nowrap justify-center gap-3">
           {errorDetails.showRetry && onRetry && (
             <RetryButton onRetry={onRetry} />
           )}
@@ -79,7 +79,7 @@ export function PropertyErrorUI({
           {errorDetails.showBackToHome && (
             <Link
               href="/"
-              className="inline-flex items-center px-4 py-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground rounded-md transition-colors whitespace-nowrap shrink-0"
+              className="border-input bg-background hover:bg-accent hover:text-accent-foreground inline-flex shrink-0 items-center rounded-md border px-4 py-2 whitespace-nowrap transition-colors"
             >
               <svg
                 className="mr-2 h-4 w-4"
@@ -101,7 +101,7 @@ export function PropertyErrorUI({
           {errorDetails.showBrowseProperties && (
             <Link
               href="/search/rent?q=ghana&page=1"
-              className="inline-flex items-center px-4 py-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground rounded-md transition-colors whitespace-nowrap shrink-0"
+              className="border-input bg-background hover:bg-accent hover:text-accent-foreground inline-flex shrink-0 items-center rounded-md border px-4 py-2 whitespace-nowrap transition-colors"
             >
               <svg
                 className="mr-2 h-4 w-4"
@@ -122,9 +122,9 @@ export function PropertyErrorUI({
         </div>
 
         {errorDetails.showTroubleshootingTips && (
-          <div className="mt-8 p-4 bg-muted rounded-lg text-left">
-            <h3 className="font-medium text-sm mb-2">Troubleshooting Tips:</h3>
-            <ul className="text-sm text-muted-foreground space-y-1">
+          <div className="bg-muted mt-8 rounded-lg p-4 text-left">
+            <h3 className="mb-2 text-sm font-medium">Troubleshooting Tips:</h3>
+            <ul className="text-muted-foreground space-y-1 text-sm">
               <li>• Check your internet connection</li>
               <li>• Refresh the page or try again</li>
               <li>• Wait a few moments if the server is busy</li>

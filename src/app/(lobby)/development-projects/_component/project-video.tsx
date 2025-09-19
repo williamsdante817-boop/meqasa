@@ -48,19 +48,18 @@ export default function ProjectVideo({
 
   // Check if we have a valid video URL
   const hasValidVideo = Boolean(embedUrl);
-  
 
   return (
     <ContentSection
       title={title}
       description={description}
       href=""
-      className="pt-14 px-0 md:pt-20"
+      className="px-0 pt-14 md:pt-20"
       btnHidden
       aria-label={`${title} section`}
     >
       <Card
-        className="flex h-[250px] overflow-hidden rounded-lg border-brand-badge-ongoing bg-gradient-to-br from-gray-50 to-gray-100 p-0 lg:h-[400px]"
+        className="border-brand-badge-ongoing flex h-[250px] overflow-hidden rounded-lg bg-gradient-to-br from-gray-50 to-gray-100 p-0 lg:h-[400px]"
         role="region"
         aria-label={`${title} player`}
       >
@@ -77,13 +76,15 @@ export default function ProjectVideo({
             aria-label={`${title} video player`}
           />
         ) : (
-          <div className="grow flex items-center justify-center bg-gradient-to-br from-red-50 to-red-100">
-            <div className="text-center p-6">
-              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4 mx-auto">
-                <AlertCircle className="w-8 h-8 text-red-500" />
+          <div className="flex grow items-center justify-center bg-gradient-to-br from-red-50 to-red-100">
+            <div className="p-6 text-center">
+              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
+                <AlertCircle className="h-8 w-8 text-red-500" />
               </div>
-              <h3 className="text-brand-accent font-medium mb-2">Video not available</h3>
-              <p className="text-sm text-brand-muted max-w-xs">
+              <h3 className="text-brand-accent mb-2 font-medium">
+                Video not available
+              </h3>
+              <p className="text-brand-muted max-w-xs text-sm">
                 {videoUrl && !isValidYouTubeUrl(videoUrl)
                   ? "The video URL provided is not valid. Please contact support if this issue persists."
                   : "We're working to make this video available. Please check back later."}

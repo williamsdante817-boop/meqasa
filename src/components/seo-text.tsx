@@ -4,7 +4,7 @@ import React from "react";
 export default function SeoText() {
   return (
     <aside
-      className="pt-14 md:pt-20 lg:pt-24 text-sm leading-6 text-brand-muted lg:text-base"
+      className="text-brand-muted pt-14 text-sm leading-6 md:pt-20 lg:pt-24 lg:text-base"
       aria-labelledby="seo-text-heading"
       role="complementary"
     >
@@ -24,7 +24,7 @@ export default function SeoText() {
             Looking for{" "}
             <Link
               href="/property-for-sale-in-accra"
-              className="font-medium text-brand-blue no-underline hover:underline focus:outline-none focus:ring-2 focus:ring-brand-blue focus:ring-offset-2"
+              className="text-brand-blue focus:ring-brand-blue font-medium no-underline hover:underline focus:ring-2 focus:ring-offset-2 focus:outline-none"
               aria-label="View properties for sale in Accra"
             >
               properties for sale
@@ -32,7 +32,7 @@ export default function SeoText() {
             or{" "}
             <Link
               href="/property-for-rent-in-accra"
-              className="font-medium text-brand-blue no-underline hover:underline focus:outline-none focus:ring-2 focus:ring-brand-blue focus:ring-offset-2"
+              className="text-brand-blue focus:ring-brand-blue font-medium no-underline hover:underline focus:ring-2 focus:ring-offset-2 focus:outline-none"
               aria-label="View properties for rent in Accra"
             >
               properties for rent
@@ -43,7 +43,7 @@ export default function SeoText() {
             From{" "}
             <Link
               href="/house-for-sale-in-accra"
-              className="font-medium text-brand-blue no-underline hover:underline focus:outline-none focus:ring-2 focus:ring-brand-blue focus:ring-offset-2"
+              className="text-brand-blue focus:ring-brand-blue font-medium no-underline hover:underline focus:ring-2 focus:ring-offset-2 focus:outline-none"
               aria-label="View houses for sale in Accra"
             >
               houses in Accra
@@ -51,7 +51,7 @@ export default function SeoText() {
             to{" "}
             <Link
               href="/apartment-for-sale-in-east-legon"
-              className="font-medium text-brand-blue no-underline hover:underline focus:outline-none focus:ring-2 focus:ring-brand-blue focus:ring-offset-2"
+              className="text-brand-blue focus:ring-brand-blue font-medium no-underline hover:underline focus:ring-2 focus:ring-offset-2 focus:outline-none"
               aria-label="View apartments for sale in East Legon"
             >
               apartments in East Legon

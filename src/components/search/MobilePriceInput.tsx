@@ -110,7 +110,7 @@ export function MobilePriceInput({
       <div className="grid grid-cols-2 gap-3">
         {/* Min Price Input */}
         <div className="relative">
-          <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-sm font-medium text-gray-600 pointer-events-none">
+          <div className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 transform text-sm font-medium text-gray-600">
             {unit}
           </div>
           <Input
@@ -121,16 +121,16 @@ export function MobilePriceInput({
             onBlur={handleMinBlur}
             placeholder={placeholder.min}
             className={cn(
-              "h-12 pl-12 bg-gray-50 border-gray-200 rounded-lg",
-              "focus:bg-white focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20",
-              "text-base placeholder:text-gray-500 placeholder:text-base"
+              "h-12 rounded-lg border-gray-200 bg-gray-50 pl-12",
+              "focus:border-brand-primary focus:ring-brand-primary/20 focus:bg-white focus:ring-2",
+              "text-base placeholder:text-base placeholder:text-gray-500"
             )}
           />
         </div>
 
         {/* Max Price Input */}
         <div className="relative">
-          <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-sm font-medium text-gray-600 pointer-events-none">
+          <div className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 transform text-sm font-medium text-gray-600">
             {unit}
           </div>
           <Input
@@ -141,9 +141,9 @@ export function MobilePriceInput({
             onBlur={handleMaxBlur}
             placeholder={placeholder.max}
             className={cn(
-              "h-12 pl-12 bg-gray-50 border-gray-200 rounded-lg",
-              "focus:bg-white focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20",
-              "text-base placeholder:text-gray-500 placeholder:text-base"
+              "h-12 rounded-lg border-gray-200 bg-gray-50 pl-12",
+              "focus:border-brand-primary focus:ring-brand-primary/20 focus:bg-white focus:ring-2",
+              "text-base placeholder:text-base placeholder:text-gray-500"
             )}
           />
         </div>
@@ -152,7 +152,7 @@ export function MobilePriceInput({
       {/* Quick price range suggestions */}
       {unit === "GH₵" && (
         <div className="border-t border-gray-100 pt-4">
-          <p className="text-sm font-medium text-gray-700 mb-3">Quick Select</p>
+          <p className="mb-3 text-sm font-medium text-gray-700">Quick Select</p>
           <div className="grid grid-cols-2 gap-2">
             {[
               { min: "0", max: "500000", label: "Under 500K" },
@@ -169,7 +169,7 @@ export function MobilePriceInput({
                   onMinChange(priceRange.min);
                   onMaxChange(priceRange.max);
                 }}
-                className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-brand-primary hover:bg-brand-primary/5 border border-gray-200 hover:border-brand-primary/30 rounded-lg transition-all duration-200 active:scale-95"
+                className="hover:text-brand-primary hover:bg-brand-primary/5 hover:border-brand-primary/30 rounded-lg border border-gray-200 px-3 py-2 text-sm font-medium text-gray-700 transition-all duration-200 active:scale-95"
               >
                 {priceRange.label}
               </button>
@@ -179,7 +179,7 @@ export function MobilePriceInput({
       )}
 
       {/* Range Hint */}
-      <div className="text-sm text-gray-500 text-start">
+      <div className="text-start text-sm text-gray-500">
         Range: {unit}
         {range.min.toLocaleString()} - {unit}
         {range.max.toLocaleString()}

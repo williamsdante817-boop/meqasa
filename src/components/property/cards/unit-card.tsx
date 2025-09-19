@@ -33,25 +33,25 @@ export default function UnitCard({ unit }: { unit: SimilarUnit | Unit }) {
 
   return (
     <Card
-      className="size-full bg-transparent rounded-lg !p-0 relative gap-0 border-none shadow-none group"
+      className="group relative size-full gap-0 rounded-lg border-none bg-transparent !p-0 shadow-none"
       role="article"
       aria-labelledby={`unit-title-${unit.unitid}`}
     >
       <Link
         href={unitUrl}
         aria-label={`View details for ${unit.title}`}
-        className="block focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent focus:ring-accent rounded-lg transition-all duration-200"
+        className="focus:ring-accent block rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent focus:outline-none"
       >
-        <CardHeader className="!p-0 border-b border-b-gray-100 gap-0 rounded-lg shadow-none">
+        <CardHeader className="gap-0 rounded-lg border-b border-b-gray-100 !p-0 shadow-none">
           <AspectRatio
             ratio={4 / 3}
             className="relative overflow-hidden rounded-lg"
           >
             {imageLoading && (
-              <Skeleton className="absolute inset-0 z-10 rounded-lg h-[256px]" />
+              <Skeleton className="absolute inset-0 z-10 h-[256px] rounded-lg" />
             )}
             <ImageWithFallback
-              className="object-cover rounded-lg"
+              className="rounded-lg object-cover"
               src={`https://meqasa.com/uploads/imgs/${unit.coverphoto}`}
               sizes="(min-width: 1024px) 20vw, (min-width: 768px) 25vw, (min-width: 640px) 33vw, (min-width: 475px) 50vw, 100vw"
               fill
@@ -68,7 +68,7 @@ export default function UnitCard({ unit }: { unit: SimilarUnit | Unit }) {
             aria-label="Property status"
           >
             <Badge
-              className="rounded-sm bg-brand-accent capitalize"
+              className="bg-brand-accent rounded-sm capitalize"
               aria-label={`Property is ${unit.terms === "sale" ? "for sale" : "for rent"}`}
             >
               {unit.terms === "sale" ? "For Sale" : "For Rent"}
@@ -80,26 +80,26 @@ export default function UnitCard({ unit }: { unit: SimilarUnit | Unit }) {
           </div>
         </CardHeader>
 
-        <CardContent className="px-0 pb-0 space-y-1">
+        <CardContent className="space-y-1 px-0 pb-0">
           <CardTitle
             id={`unit-title-${unit.unitid}`}
-            className="line-clamp-1 text-xs font-bold text-brand-primary md:text-sm pt-2 capitalize"
+            className="text-brand-primary line-clamp-1 pt-2 text-xs font-bold capitalize md:text-sm"
           >
             {unit.title}
           </CardTitle>
           <div>
-            <span className="text-sm capitalize text-brand-muted line-clamp-1">
+            <span className="text-brand-muted line-clamp-1 text-sm capitalize">
               {unit.address}, {unit.city}
             </span>
-            <div className="mt-1 flex items-center text-sm text-brand-muted flex-nowrap overflow-hidden">
+            <div className="text-brand-muted mt-1 flex flex-nowrap items-center overflow-hidden text-sm">
               <span className="truncate">{unit.beds} Beds</span>
               <Dot
-                className="h-[12px] w-[12px] text-brand-accent flex-shrink-0"
+                className="text-brand-accent h-[12px] w-[12px] flex-shrink-0"
                 aria-hidden="true"
               />
               <span className="truncate">{unit.baths} Baths</span>
               <Icons.dot
-                className="h-[12px] w-[12px] text-brand-accent flex-shrink-0"
+                className="text-brand-accent h-[12px] w-[12px] flex-shrink-0"
                 aria-hidden="true"
               />
               <span className="truncate">{unit.floorarea} m²</span>

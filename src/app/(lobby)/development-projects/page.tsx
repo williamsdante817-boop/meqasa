@@ -126,7 +126,7 @@ export default async function DevelopmentProjectsPage({
   };
 
   return (
-    <Shell className="pb-8 pt-6 md:py-8">
+    <Shell className="pt-6 pb-8 md:py-8">
       <div className="space-y-6">
         {/* Breadcrumbs */}
         <Breadcrumbs segments={segments} />
@@ -134,10 +134,10 @@ export default async function DevelopmentProjectsPage({
         {/* Page Header */}
         <div className="space-y-4">
           <div className="space-y-2">
-            <h1 className="text-2xl font-bold leading-tight tracking-tight text-brand-accent sm:text-3xl md:text-4xl">
+            <h1 className="text-brand-accent text-2xl leading-tight font-bold tracking-tight sm:text-3xl md:text-4xl">
               {getPageTitle()}
             </h1>
-            <p className="text-base text-brand-muted md:text-lg">
+            <p className="text-brand-muted text-base md:text-lg">
               {getPageDescription()}
             </p>
           </div>
@@ -147,7 +147,7 @@ export default async function DevelopmentProjectsPage({
         {(!resolvedSearchParams.status || resolvedSearchParams.featured) && (
           <Suspense
             fallback={
-              <div className="animate-pulse bg-gray-100 h-64 rounded-lg" />
+              <div className="h-64 animate-pulse rounded-lg bg-gray-100" />
             }
           >
             <FeaturedDevelopments />
@@ -157,7 +157,7 @@ export default async function DevelopmentProjectsPage({
         {/* Filters Section */}
         <div className="space-y-6">
           <div className="border-b pb-4">
-            <h2 className="text-xl font-semibold text-brand-accent mb-4">
+            <h2 className="text-brand-accent mb-4 text-xl font-semibold">
               Filter Projects
             </h2>
             <DevelopmentProjectsFilters searchParams={resolvedSearchParams} />
@@ -166,11 +166,11 @@ export default async function DevelopmentProjectsPage({
           {/* Projects Grid */}
           <Suspense
             fallback={
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {Array.from({ length: 6 }).map((_, i) => (
                   <div
                     key={i}
-                    className="animate-pulse bg-gray-100 h-80 rounded-lg"
+                    className="h-80 animate-pulse rounded-lg bg-gray-100"
                   />
                 ))}
               </div>

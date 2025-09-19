@@ -48,7 +48,7 @@ async function DevelopersContent() {
 
     return (
       <>
-        <div className="w-full mb-8">
+        <div className="mb-8 w-full">
           <SearchInput
             data={developers.map((dev) => ({
               developerid: dev.developerid,
@@ -79,7 +79,7 @@ export default function DevelopersPage() {
   return (
     <Shell>
       <div className="py-8">
-        <div className="grid grid-cols-1 text-brand-accent w-full mt-4 lg:grid-cols-[2fr_1fr] lg:gap-8 lg:px-0">
+        <div className="text-brand-accent mt-4 grid w-full grid-cols-1 lg:grid-cols-[2fr_1fr] lg:gap-8 lg:px-0">
           <div>
             <Breadcrumbs
               className="mb-6"
@@ -88,8 +88,8 @@ export default function DevelopersPage() {
                 { title: "Developers", href: "#" },
               ]}
             />
-            <header className="mb-8 text-b-accent">
-              <h1 className="mb-2 text-lg font-bold leading-tight tracking-tighter text-brand-accent md:text-xl">
+            <header className="text-b-accent mb-8">
+              <h1 className="text-brand-accent mb-2 text-lg leading-tight font-bold tracking-tighter md:text-xl">
                 Find a Developer
               </h1>
             </header>

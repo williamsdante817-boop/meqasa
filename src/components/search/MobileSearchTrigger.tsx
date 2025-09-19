@@ -26,16 +26,16 @@ export function MobileSearchTrigger({
 
   return (
     <button
-      className="lgs:hidden flex justify-between h-12 items-center bg-white shadow-elegant border-brand-primary border w-[80%] mx-auto rounded-lg mt-4 px-4 py-2 hover:shadow-lg transition-shadow cursor-pointer"
+      className="lgs:hidden shadow-elegant border-brand-primary mx-auto mt-4 flex h-12 w-[80%] cursor-pointer items-center justify-between rounded-lg border bg-white px-4 py-2 transition-shadow hover:shadow-lg"
       onClick={handleClick}
       style={{ pointerEvents: "auto" }}
       aria-label="Open search filters"
     >
       <div className="flex items-center gap-2">
-        <SearchIcon size={18} className=" text-gray-400" />
+        <SearchIcon size={18} className="text-gray-400" />
         <p className="text-brand-muted text-sm">Enter Location</p>
       </div>
-      <div className="bg-[#f93a5d] hover:bg-[#f93a5d]/90 px-3 py-1 rounded text-white text-sm font-medium transition-colors">
+      <div className="rounded bg-[#f93a5d] px-3 py-1 text-sm font-medium text-white transition-colors hover:bg-[#f93a5d]/90">
         Search
       </div>
     </button>

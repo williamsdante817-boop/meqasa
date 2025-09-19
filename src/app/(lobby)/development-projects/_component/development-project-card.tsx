@@ -67,7 +67,7 @@ export default function DevelopmentProjectCard({
   };
 
   return (
-    <Card className="group relative h-full overflow-hidden rounded-lg border border-gray-200 bg-white transition-all duration-300 hover:border-brand-primary/30 hover:shadow-lg">
+    <Card className="group hover:border-brand-primary/30 relative h-full overflow-hidden rounded-lg border border-gray-200 bg-white transition-all duration-300 hover:shadow-lg">
       {/* Project Link Overlay */}
       <Link
         href={project.weburl || `/development-projects/${project.projectid}`}
@@ -78,11 +78,11 @@ export default function DevelopmentProjectCard({
           : {})}
       />
 
-      <CardHeader className="p-0 relative">
+      <CardHeader className="relative p-0">
         <AspectRatio ratio={16 / 10} className="relative overflow-hidden">
           {/* Loading skeleton */}
           {!imageLoaded && (
-            <div className="absolute inset-0 z-20 bg-gray-100 animate-pulse" />
+            <div className="absolute inset-0 z-20 animate-pulse bg-gray-100" />
           )}
 
           {/* Main Project Image */}
@@ -121,7 +121,7 @@ export default function DevelopmentProjectCard({
           {/* Featured badge */}
           {project.isFeatured && (
             <div className="absolute top-3 right-3 z-30">
-              <Badge className="bg-brand-primary text-white text-xs font-semibold shadow-lg">
+              <Badge className="bg-brand-primary text-xs font-semibold text-white shadow-lg">
                 Featured
               </Badge>
             </div>
@@ -129,10 +129,10 @@ export default function DevelopmentProjectCard({
 
           {/* Developer logo */}
           {project.logoUrl && (
-            <div className="absolute bottom-3 right-3 z-30">
-              <div className="w-10 h-10 md:w-12 md:h-12 rounded-md bg-white/90 backdrop-blur-sm p-1.5 md:p-2 shadow-md">
+            <div className="absolute right-3 bottom-3 z-30">
+              <div className="h-10 w-10 rounded-md bg-white/90 p-1.5 shadow-md backdrop-blur-sm md:h-12 md:w-12 md:p-2">
                 {!logoLoaded && (
-                  <div className="w-full h-full bg-gray-200 animate-pulse rounded" />
+                  <div className="h-full w-full animate-pulse rounded bg-gray-200" />
                 )}
                 <ImageWithFallback
                   src={project.logoUrl}
@@ -140,7 +140,7 @@ export default function DevelopmentProjectCard({
                   width={40}
                   height={40}
                   className={cn(
-                    "w-full h-full object-contain transition-opacity duration-300",
+                    "h-full w-full object-contain transition-opacity duration-300",
                     logoLoaded ? "opacity-100" : "opacity-0"
                   )}
                   fallbackAlt={`Developer logo not available`}
@@ -152,33 +152,33 @@ export default function DevelopmentProjectCard({
         </AspectRatio>
       </CardHeader>
 
-      <CardContent className="p-4 md:p-6 space-y-4">
+      <CardContent className="space-y-4 p-4 md:p-6">
         {/* Project Title */}
         <div className="space-y-2">
-          <h3 className="text-lg font-bold text-brand-accent line-clamp-1 group-hover:text-brand-primary transition-colors duration-200">
+          <h3 className="text-brand-accent group-hover:text-brand-primary line-clamp-1 text-lg font-bold transition-colors duration-200">
             {project.projectname}
           </h3>
-          <p className="text-sm text-brand-muted font-medium">
+          <p className="text-brand-muted text-sm font-medium">
             {formatUnitCount()} • {formatNumber(project.pageviews)} views
           </p>
         </div>
 
         {/* Location */}
-        <div className="flex items-center text-brand-muted">
-          <MapPin className="h-4 w-4 mr-1.5 flex-shrink-0" />
-          <span className="text-sm line-clamp-1">{project.fullLocation}</span>
+        <div className="text-brand-muted flex items-center">
+          <MapPin className="mr-1.5 h-4 w-4 flex-shrink-0" />
+          <span className="line-clamp-1 text-sm">{project.fullLocation}</span>
         </div>
 
         {/* Description */}
-        <p className="text-sm text-brand-muted line-clamp-3 leading-relaxed">
+        <p className="text-brand-muted line-clamp-3 text-sm leading-relaxed">
           {project.aboutproject}
         </p>
 
         {/* Action Section */}
-        <div className="flex items-center justify-between pt-2 border-t">
+        <div className="flex items-center justify-between border-t pt-2">
           <div className="flex items-center gap-2">
-            <Building2 className="h-4 w-4 text-brand-accent" />
-            <span className="text-sm font-medium text-brand-accent">
+            <Building2 className="text-brand-accent h-4 w-4" />
+            <span className="text-brand-accent text-sm font-medium">
               {project.region}
             </span>
           </div>
@@ -187,7 +187,7 @@ export default function DevelopmentProjectCard({
           <Button
             variant="outline"
             size="sm"
-            className="relative z-20 text-brand-accent hover:bg-brand-primary hover:text-white transition-colors duration-200"
+            className="text-brand-accent hover:bg-brand-primary relative z-20 transition-colors duration-200 hover:text-white"
             asChild
           >
             <Link
@@ -198,7 +198,7 @@ export default function DevelopmentProjectCard({
                 ? { target: "_blank", rel: "noopener noreferrer" }
                 : {})}
             >
-              <Eye className="h-4 w-4 mr-1.5" />
+              <Eye className="mr-1.5 h-4 w-4" />
               {project.weburl ? "Visit Site" : "View Details"}
             </Link>
           </Button>

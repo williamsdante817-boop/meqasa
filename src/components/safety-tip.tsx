@@ -23,7 +23,7 @@ const safetyTips = [
 export default function SafetyTipsCard() {
   return (
     <section className="mt-6 md:mt-20" aria-labelledby="safety-tips-heading">
-      <Card className="border-amber-200 bg-gradient-to-r from-amber-50 to-yellow-50 rounded-lg p-4 md:p-5 relative overflow-hidden">
+      <Card className="relative overflow-hidden rounded-lg border-amber-200 bg-gradient-to-r from-amber-50 to-yellow-50 p-4 md:p-5">
         <div className="flex items-start gap-4">
           <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-amber-100 text-amber-600">
             <Shield className="h-5 w-5" />
@@ -32,7 +32,7 @@ export default function SafetyTipsCard() {
             <div className="mb-3">
               <h2
                 id="safety-tips-heading"
-                className="text-base font-semibold text-brand-accent lg:text-lg"
+                className="text-brand-accent text-base font-semibold lg:text-lg"
               >
                 Safety Tips
               </h2>
@@ -40,10 +40,10 @@ export default function SafetyTipsCard() {
             <div className="space-y-3">
               {safetyTips.map((tip, index) => (
                 <div key={index} className="flex items-start gap-3">
-                  <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-amber-100 text-amber-600 mt-0.5">
+                  <div className="mt-0.5 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-amber-100 text-amber-600">
                     <span className="text-xs font-bold">{index + 1}</span>
                   </div>
-                  <p className="text-sm text-brand-accent leading-relaxed">
+                  <p className="text-brand-accent text-sm leading-relaxed">
                     {tip}
                   </p>
                 </div>
@@ -52,7 +52,7 @@ export default function SafetyTipsCard() {
           </div>
         </div>
         {/* Subtle background pattern */}
-        <div className="absolute bottom-2 right-2 opacity-5">
+        <div className="absolute right-2 bottom-2 opacity-5">
           <Shield className="h-16 w-16 text-amber-500" />
         </div>
       </Card>

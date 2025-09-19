@@ -68,17 +68,17 @@ export default function PropertyDetailsTable({
   };
 
   return (
-    <Card className="border-gray-200 bg-gradient-to-r rounded-lg from-gray-50 to-gray-50 p-4 md:p-6">
+    <Card className="rounded-lg border-gray-200 bg-gradient-to-r from-gray-50 to-gray-50 p-4 md:p-6">
       <div className="space-y-3">
         {filteredDetails.map((detail, index) => (
           <div
             key={`${detail.title}-${index}`}
-            className="flex items-center justify-between py-3 px-4 bg-white rounded-lg border border-gray-200 hover:border-gray-300 transition-colors"
+            className="flex items-center justify-between rounded-lg border border-gray-200 bg-white px-4 py-3 transition-colors hover:border-gray-300"
           >
-            <span className="text-sm font-medium text-brand-accent">
+            <span className="text-brand-accent text-sm font-medium">
               {detail.title}
             </span>
-            <span className="text-sm text-brand-muted font-medium capitalize">
+            <span className="text-brand-muted text-sm font-medium capitalize">
               {formatValue(detail)}
             </span>
           </div>

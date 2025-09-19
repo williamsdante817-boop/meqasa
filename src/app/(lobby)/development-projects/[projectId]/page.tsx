@@ -124,11 +124,11 @@ export default async function DeveloperProjectPage({
     // Error handling for missing project data
     if (!projectData?.project) {
       return (
-        <main className="min-h-screen flex items-center justify-center">
-          <div className="text-center space-y-4 max-w-md mx-auto p-8">
-            <div className="w-16 h-16 mx-auto bg-red-100 rounded-full flex items-center justify-center">
+        <main className="flex min-h-screen items-center justify-center">
+          <div className="mx-auto max-w-md space-y-4 p-8 text-center">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
               <svg
-                className="w-8 h-8 text-red-600"
+                className="h-8 w-8 text-red-600"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -141,7 +141,7 @@ export default async function DeveloperProjectPage({
                 />
               </svg>
             </div>
-            <h1 className="text-2xl font-bold text-brand-accent">
+            <h1 className="text-brand-accent text-2xl font-bold">
               Project Not Found
             </h1>
             <p className="text-brand-muted">
@@ -215,7 +215,7 @@ export default async function DeveloperProjectPage({
             />
           </Shell>
           <section
-            className="relative w-full h-[250px] md:h-[450px] overflow-hidden flex md:mb-4"
+            className="relative flex h-[250px] w-full overflow-hidden md:mb-4 md:h-[450px]"
             aria-label="Project hero image"
           >
             {/* Background Image */}
@@ -230,32 +230,32 @@ export default async function DeveloperProjectPage({
             />
 
             {/* Gradient overlay for text readability */}
-            <div className="absolute bottom-0 left-0 w-full h-52 bg-gradient-to-t from-black/70 to-transparent"></div>
+            <div className="absolute bottom-0 left-0 h-52 w-full bg-gradient-to-t from-black/70 to-transparent"></div>
           </section>
           <Shell className="px-0">
             <div className="h-fit w-full bg-inherit">
-              <div className="relative z-10 flex items-start sm:items-end gap-4 p-4 lg:container lg:-top-14 lg:gap-8 lg:px-0">
+              <div className="relative z-10 flex items-start gap-4 p-4 sm:items-end lg:-top-14 lg:container lg:gap-8 lg:px-0">
                 {/* Company Logo Card */}
-                <div className="bg-white rounded-lg p-3 w-[100px] h-[100px] sm:w-[120px] sm:h-[120px] md:w-[160px] md:h-[160px] flex items-center justify-center border border-gray-200 shadow-sm flex-shrink-0">
+                <div className="flex h-[100px] w-[100px] flex-shrink-0 items-center justify-center rounded-lg border border-gray-200 bg-white p-3 shadow-sm sm:h-[120px] sm:w-[120px] md:h-[160px] md:w-[160px]">
                   <Image
                     src={`https://meqasa.com/uploads/imgs/${projectData.project.logo}`}
                     alt={`${projectData.project.name || "Developer"} company logo`}
                     width={120}
                     height={120}
-                    className="object-contain w-auto h-auto max-w-[60px] sm:max-w-[80px] md:max-w-[120px]"
+                    className="h-auto w-auto max-w-[60px] object-contain sm:max-w-[80px] md:max-w-[120px]"
                   />
                 </div>
-                <div className="flex grow items-center justify-between min-w-0">
-                  <div className="grid gap-2 min-w-0 ">
+                <div className="flex min-w-0 grow items-center justify-between">
+                  <div className="grid min-w-0 gap-2">
                     <div className="space-y-2">
                       <h1
-                        className="text-xl font-extrabold text-brand-accent lg:text-3xl lg:font-bold leading-tight line-clamp-2"
+                        className="text-brand-accent line-clamp-2 text-xl leading-tight font-extrabold lg:text-3xl lg:font-bold"
                         itemProp="name"
                       >
                         {projectData.project.projectname}
                       </h1>
                       <p
-                        className="text-sm md:text-base font-medium text-brand-muted truncate"
+                        className="text-brand-muted truncate text-sm font-medium md:text-base"
                         itemProp="provider"
                       >
                         by {projectData.project.name || "Developer"}
@@ -265,7 +265,7 @@ export default async function DeveloperProjectPage({
                     <div className="flex flex-wrap items-center gap-2">
                       <Badge
                         variant="secondary"
-                        className="bg-brand-primary/10 text-brand-primary border-brand-primary/20 uppercase font-medium"
+                        className="bg-brand-primary/10 text-brand-primary border-brand-primary/20 font-medium uppercase"
                       >
                         Development Project
                       </Badge>
@@ -273,13 +273,13 @@ export default async function DeveloperProjectPage({
                         variant="outline"
                         className="border-green-200 bg-green-50 text-green-700"
                       >
-                        <CheckCircle className="h-3 w-3 mr-1" strokeWidth="2" />
+                        <CheckCircle className="mr-1 h-3 w-3" strokeWidth="2" />
                         Active
                       </Badge>
                     </div>
 
                     <div
-                      className="flex items-center gap-2 text-sm font-medium text-brand-blue mt-2"
+                      className="text-brand-blue mt-2 flex items-center gap-2 text-sm font-medium"
                       itemProp="address"
                     >
                       <MapPin
@@ -294,9 +294,9 @@ export default async function DeveloperProjectPage({
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2 flex-shrink-0 ml-4">
+                  <div className="ml-4 flex flex-shrink-0 items-center gap-2">
                     <BrochureButton
-                      className="hidden rounded-lg md:flex items-center justify-center bg-brand-accent text-white font-semibold hover:bg-brand-accent/90 transition-colors shadow-md"
+                      className="bg-brand-accent hover:bg-brand-accent/90 hidden items-center justify-center rounded-lg font-semibold text-white shadow-md transition-colors md:flex"
                       showIcon
                       aria-label={`Download ${projectData.project.projectname} brochure`}
                     />
@@ -316,11 +316,11 @@ export default async function DeveloperProjectPage({
       projectId: (await params).projectId,
     });
     return (
-      <main className="min-h-screen flex items-center justify-center">
-        <div className="text-center space-y-4 max-w-md mx-auto p-8">
-          <div className="w-16 h-16 mx-auto bg-red-100 rounded-full flex items-center justify-center">
+      <main className="flex min-h-screen items-center justify-center">
+        <div className="mx-auto max-w-md space-y-4 p-8 text-center">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
             <svg
-              className="w-8 h-8 text-red-600"
+              className="h-8 w-8 text-red-600"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -333,7 +333,7 @@ export default async function DeveloperProjectPage({
               />
             </svg>
           </div>
-          <h1 className="text-2xl font-bold text-brand-accent">
+          <h1 className="text-brand-accent text-2xl font-bold">
             Something went wrong
           </h1>
           <p className="text-brand-muted">

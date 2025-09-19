@@ -1,21 +1,21 @@
 export function BannerSkeleton() {
   return (
     <div className="animate-pulse">
-      <div className="bg-gray-200 rounded-lg h-8 w-full"></div>
+      <div className="h-8 w-full rounded-lg bg-gray-200"></div>
     </div>
   );
 }
 
 export function HeroBannerSkeleton() {
   return (
-    <div className="hidden lg:block max-h-[280px] h-[280px] relative bg-gray-200 animate-pulse">
-      <div className="absolute inset-0 bg-gray-300 rounded"></div>
+    <div className="relative hidden h-[280px] max-h-[280px] animate-pulse bg-gray-200 lg:block">
+      <div className="absolute inset-0 rounded bg-gray-300"></div>
     </div>
   );
 }
 
 export function RectangleBannerSkeleton() {
   return (
-    <div className="w-full h-[250px] bg-gray-200 rounded-lg shadow animate-pulse"></div>
+    <div className="h-[250px] w-full animate-pulse rounded-lg bg-gray-200 shadow"></div>
   );
 }

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Card } from "./ui/card";
 import { buildRichInnerHtml } from "@/lib/utils";
+import Image from "next/image";
 
 interface GridAdProps {
   flexiBanner: string;
@@ -28,10 +29,16 @@ export default function GridAd({
   error,
 }: GridAdProps) {
   const [mounted, setMounted] = useState(false);
+  const [image1Loaded, setImage1Loaded] = useState(false);
+  const [image2Loaded, setImage2Loaded] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Enhanced blur placeholder for better UX
+  const blurDataURL =
+    "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAQABgDASIAAhEBAxEB/8QAFwAAAwEAAAAAAAAAAAAAAAAAAAMGBP/EACAQAAEDBAICAwAAAAAAAAAAAAECAwQABREGEiExE1HB/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAL/xAAYEQEBAQEBAAAAAAAAAAAAAAAAARECEv/aAAwDAQACEQMRAD8A0kup7jLkSktFTqXW4VBwKS2qCWlOKGCUp3BsEjJOD6nVZ/q67kJhp1oYfBBVyCrwB4lfX0o1HqVPUC9TSLsGkKJU0pClJ1gDPJORz4z2BI6bTEMStqRIebTKUVv5S2ppOSCCdoJI+p8fY+oj7z/2Q==";
 
   if (!mounted) return null;
 
@@ -42,12 +49,7 @@ export default function GridAd({
           {[1, 2, 3].map((index) => (
             <div
               key={index}
-              className={`
-                bg-gray-100 animate-pulse rounded-lg
-                ${index === 0 ? "sm:col-span-3 sm:row-span-2 h-48" : ""}
-                ${index === 1 ? "sm:col-span-3 sm:row-span-2 h-48" : ""}
-                ${index === 2 ? "sm:col-start-4 sm:col-span-3 sm:row-start-1 sm:row-span-4 h-[450px]" : ""}
-              `}
+              className={`animate-pulse rounded-lg bg-gray-100 ${index === 0 ? "h-48 sm:col-span-3 sm:row-span-2" : ""} ${index === 1 ? "h-48 sm:col-span-3 sm:row-span-2" : ""} ${index === 2 ? "h-[450px] sm:col-span-3 sm:col-start-4 sm:row-span-4 sm:row-start-1" : ""} `}
             />
           ))}
         </div>
@@ -61,7 +63,7 @@ export default function GridAd({
         className="hidden lg:block"
         aria-label="Error loading featured items"
       >
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-600">
+        <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-red-600">
           <p className="font-medium">Error loading featured items</p>
           <p className="text-sm">{error}</p>
         </div>
@@ -74,67 +76,67 @@ export default function GridAd({
   return (
     <section className="hidden lg:block" aria-label="Featured items grid">
       <div
-        className="grid grid-cols-1 gap-4 sm:grid-cols-6 sm:grid-rows-4 h-full"
+        className="grid h-full grid-cols-1 gap-4 sm:grid-cols-6 sm:grid-rows-4"
         role="grid"
       >
         {/* First placeholder item */}
-        <Card className="sm:col-span-3 sm:row-span-2 overflow-hidden h-60 rounded-lg">
+        <Card className="relative h-60 overflow-hidden rounded-lg sm:col-span-3 sm:row-span-2">
           <a
             href="https://www.thorpe-bedu.com/belton-residences/"
             target="_blank"
             rel="noopener noreferrer"
-            className="block h-full"
+            className="relative block h-full"
           >
-            <picture className="block h-full">
-              <source
-                type="image/webp"
-                srcSet="https://dve7rykno93gs.cloudfront.net/pieoq/1649141906.webp"
-              />
-              <source
-                type="image/jpeg"
-                srcSet="https://dve7rykno93gs.cloudfront.net/pieoq/1572277987"
-              />
-              <img
-                src="https://dve7rykno93gs.cloudfront.net/pieoq/1572277987"
-                alt="Belton Residences - Selling Fast"
-                loading="lazy"
-                className="w-full h-full object-cover"
-              />
-            </picture>
+            <Image
+              src="https://dve7rykno93gs.cloudfront.net/pieoq/1572277987"
+              alt="Belton Residences - Selling Fast"
+              fill
+              className={`object-cover transition-all duration-700 ${
+                image1Loaded ? "blur-0 opacity-100" : "opacity-90 blur-sm"
+              }`}
+              placeholder="blur"
+              blurDataURL={blurDataURL}
+              onLoad={() => setImage1Loaded(true)}
+              onError={() => setImage1Loaded(true)} // Show image even if there's an error
+              sizes="(max-width: 768px) 100vw, 50vw"
+            />
+            {/* Show blur background while loading */}
+            {!image1Loaded && (
+              <div className="absolute inset-0 animate-pulse bg-gradient-to-br from-gray-100 via-gray-50 to-gray-200" />
+            )}
           </a>
         </Card>
 
         {/* Flexi banner in the middle position */}
-        <Card className="sm:col-span-3 sm:row-span-2 overflow-hidden h-60 rounded-lg">
-          <div className="w-full h-full [&>*]:w-full [&>*]:h-full [&>img]:object-cover [&>img]:w-full [&>img]:h-full">
-            <a
-              href="/follow-ad-2502?u=https://meqasa.com/1-bedroom-apartment-for-sale-in-nungua-unit-3222"
-              target="_blank"
-              className="block h-full"
-            >
-              <picture className="block h-full">
-                <source
-                  type="image/webp"
-                  srcSet="https://dve7rykno93gs.cloudfront.net/pieoq/1649141906.webp"
-                />
-                <source
-                  type="image/jpeg"
-                  srcSet="https://dve7rykno93gs.cloudfront.net/pieoq/1649141906"
-                />
-                <img
-                  src="https://dve7rykno93gs.cloudfront.net/pieoq/1649141906"
-                  alt="1 & 2 Beachview Bedroom Apartments & Penthouses for Sale Maritime Road Nungua"
-                  loading="lazy"
-                  className="w-full h-full object-cover"
-                />
-              </picture>
-            </a>
-          </div>
+        <Card className="relative h-60 overflow-hidden rounded-lg sm:col-span-3 sm:row-span-2">
+          <a
+            href="/follow-ad-2502?u=https://meqasa.com/1-bedroom-apartment-for-sale-in-nungua-unit-3222"
+            target="_blank"
+            className="relative block h-full"
+          >
+            <Image
+              src="https://dve7rykno93gs.cloudfront.net/pieoq/1572277987"
+              alt="Belton Residences - Premium Properties"
+              fill
+              className={`object-cover transition-all duration-700 ${
+                image2Loaded ? "blur-0 opacity-100" : "opacity-90 blur-sm"
+              }`}
+              placeholder="blur"
+              blurDataURL={blurDataURL}
+              onLoad={() => setImage2Loaded(true)}
+              onError={() => setImage2Loaded(true)} // Show image even if there's an error
+              sizes="(max-width: 768px) 100vw, 50vw"
+            />
+            {/* Show blur background while loading */}
+            {!image2Loaded && (
+              <div className="absolute inset-0 animate-pulse bg-gradient-to-br from-gray-100 via-gray-50 to-gray-200" />
+            )}
+          </a>
         </Card>
 
         {/* Last placeholder item */}
         <Card
-          className="sm:col-start-4 sm:col-span-3 sm:row-start-1 sm:row-span-4 overflow-hidden h-full rounded-lg"
+          className="h-full overflow-hidden rounded-lg sm:col-span-3 sm:col-start-4 sm:row-span-4 sm:row-start-1"
           dangerouslySetInnerHTML={buildRichInnerHtml(flexiBanner)}
         />
       </div>

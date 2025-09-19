@@ -73,6 +73,9 @@ export function formatDate(
   }).format(new Date(date));
 }
 
+// Re-export date utilities for consistency
+export { formatRecency, formatDisplayDate, formatApiDate, isValidDateString } from "./date-utils";
+
 export function formatBytes(
   bytes: number,
   decimals = 0,

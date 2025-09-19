@@ -15,13 +15,13 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import type {
-  PropertyType,
   ContractType,
   RentPeriod,
   SortOrder,
   MeqasaListing,
   MeqasaSearchParams,
 } from "@/types/meqasa";
+import type { PropertyType } from "@/config/property";
 import { searchProperties } from "@/lib/meqasa";
 
 const PROPERTY_TYPES: PropertyType[] = [
@@ -29,7 +29,7 @@ const PROPERTY_TYPES: PropertyType[] = [
   "house",
   "office",
   "warehouse",
-  "guesthouse",
+  "guest house",
   "townhouse",
   "land",
 ];
@@ -125,19 +125,19 @@ export default function MeqasaSearchForm({
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4">
+    <div className="mx-auto w-full max-w-7xl px-4">
       <form
         ref={formRef}
         onSubmit={handleSubmit}
-        className="bg-gray-50 p-6 rounded-lg"
+        className="rounded-lg bg-gray-50 p-6"
       >
         {error && (
-          <div className="mb-4 p-3 bg-red-50 text-red-600 rounded-md">
+          <div className="mb-4 rounded-md bg-red-50 p-3 text-red-600">
             {error}
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
           <div className="flex items-center justify-center">
             <a
               href="https://meqasa.com/"

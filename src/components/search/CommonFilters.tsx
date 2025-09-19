@@ -87,7 +87,7 @@ export function CommonFilters({
             onValueChange={(value) => updateFormState({ propertyType: value })}
             aria-label="Property type filter"
           >
-            <SelectTrigger className="h-5 min-w-[150px] max-w-[150px] cursor-pointer rounded-none border-0 bg-transparent py-0 text-base font-medium shadow-none text-white focus:border-0 focus:ring-0 focus:ring-transparent">
+            <SelectTrigger className="h-5 max-w-[150px] min-w-[150px] cursor-pointer rounded-none border-0 bg-transparent py-0 text-base font-medium text-white shadow-none focus:border-0 focus:ring-0 focus:ring-transparent">
               <SelectValue placeholder="Type" />
             </SelectTrigger>
             <SelectContent>
@@ -113,7 +113,10 @@ export function CommonFilters({
               </SelectGroup>
             </SelectContent>
           </Select>
-          <Separator orientation="vertical" className="h-[20px] bg-brand-separator" />
+          <Separator
+            orientation="vertical"
+            className="bg-brand-separator h-[20px]"
+          />
         </>
       )}
       {isShortLet && (
@@ -123,7 +126,7 @@ export function CommonFilters({
             onValueChange={(value) => updateFormState({ howShort: value })}
             aria-label="Rental duration filter"
           >
-            <SelectTrigger className="h-5 min-w-[150px] max-w-[150px] cursor-pointer rounded-none border-0 bg-transparent py-0 text-base font-medium shadow-none text-white focus:border-0 focus:ring-0 focus:ring-transparent">
+            <SelectTrigger className="h-5 max-w-[150px] min-w-[150px] cursor-pointer rounded-none border-0 bg-transparent py-0 text-base font-medium text-white shadow-none focus:border-0 focus:ring-0 focus:ring-transparent">
               <SelectValue placeholder="Duration" />
             </SelectTrigger>
             <SelectContent>
@@ -149,7 +152,10 @@ export function CommonFilters({
               </SelectGroup>
             </SelectContent>
           </Select>
-          <Separator orientation="vertical" className="h-[20px] bg-brand-separator" />
+          <Separator
+            orientation="vertical"
+            className="bg-brand-separator h-[20px]"
+          />
         </>
       )}
       {!hideBedBath && formState.propertyType !== "land" && (
@@ -159,7 +165,7 @@ export function CommonFilters({
             onValueChange={(value) => updateFormState({ bedrooms: value })}
             aria-label="Bedroom count filter"
           >
-            <SelectTrigger className="h-5 min-w-[150px] max-w-[150px] cursor-pointer rounded-none border-0 bg-transparent py-0 text-base font-medium shadow-none text-white focus:border-0 focus:ring-0 focus:ring-transparent">
+            <SelectTrigger className="h-5 max-w-[150px] min-w-[150px] cursor-pointer rounded-none border-0 bg-transparent py-0 text-base font-medium text-white shadow-none focus:border-0 focus:ring-0 focus:ring-transparent">
               <SelectValue placeholder="Beds" />
             </SelectTrigger>
             <SelectContent>
@@ -185,13 +191,16 @@ export function CommonFilters({
               </SelectGroup>
             </SelectContent>
           </Select>
-          <Separator orientation="vertical" className="h-[20px] bg-brand-separator" />
+          <Separator
+            orientation="vertical"
+            className="bg-brand-separator h-[20px]"
+          />
           <Select
             value={formState.bathrooms}
             onValueChange={(value) => updateFormState({ bathrooms: value })}
             aria-label="Bathroom count filter"
           >
-            <SelectTrigger className="h-5 min-w-[150px] max-w-[150px] cursor-pointer rounded-none border-0 bg-transparent py-0 text-base font-medium shadow-none text-white focus:border-0 focus:ring-0 focus:ring-transparent">
+            <SelectTrigger className="h-5 max-w-[150px] min-w-[150px] cursor-pointer rounded-none border-0 bg-transparent py-0 text-base font-medium text-white shadow-none focus:border-0 focus:ring-0 focus:ring-transparent">
               <SelectValue placeholder="Baths" />
             </SelectTrigger>
             <SelectContent>
@@ -217,7 +226,10 @@ export function CommonFilters({
               </SelectGroup>
             </SelectContent>
           </Select>
-          <Separator orientation="vertical" className="h-[20px] bg-brand-separator" />
+          <Separator
+            orientation="vertical"
+            className="bg-brand-separator h-[20px]"
+          />
         </>
       )}
       <PriceRangeSelect
@@ -237,7 +249,10 @@ export function CommonFilters({
 
       {(showAreaRange || formState.propertyType === "land") && (
         <>
-          <Separator orientation="vertical" className="h-[20px] bg-brand-separator" />
+          <Separator
+            orientation="vertical"
+            className="bg-brand-separator h-[20px]"
+          />
           <PriceInput
             title="Area range"
             unit="m²"
@@ -256,13 +271,16 @@ export function CommonFilters({
 
       {showMoreFilters && (
         <>
-          <Separator orientation="vertical" className="h-[20px] bg-brand-separator" />
+          <Separator
+            orientation="vertical"
+            className="bg-brand-separator h-[20px]"
+          />
           <MoreFiltersPopover
             formState={formState}
             updateFormState={updateFormState}
             contractType={contractType}
             variant="home"
-            className="flex h-5 min-w-[150px] max-w-[150px] cursor-pointer items-center justify-between rounded-none border-0 bg-transparent py-0 text-base font-medium shadow-none text-white whitespace-nowrap focus:border-0 focus:ring-0 focus:ring-transparent"
+            className="flex h-5 max-w-[150px] min-w-[150px] cursor-pointer items-center justify-between rounded-none border-0 bg-transparent py-0 text-base font-medium whitespace-nowrap text-white shadow-none focus:border-0 focus:ring-0 focus:ring-transparent"
           />
         </>
       )}

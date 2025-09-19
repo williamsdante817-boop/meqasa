@@ -538,35 +538,35 @@ export function NearestEstablishments({
     return (
       <Card className={cn("w-full border-red-100 bg-red-50/30", className)}>
         <CardContent className="p-6">
-          <div className="flex items-center justify-center text-center py-8">
-            <div className="space-y-6 max-w-md">
-              <div className="w-16 h-16 mx-auto bg-gradient-to-br from-red-50 to-red-100 rounded-full flex items-center justify-center border-2 border-red-200">
-                <AlertCircle className="w-8 h-8 text-red-500" />
+          <div className="flex items-center justify-center py-8 text-center">
+            <div className="max-w-md space-y-6">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border-2 border-red-200 bg-gradient-to-br from-red-50 to-red-100">
+                <AlertCircle className="h-8 w-8 text-red-500" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-red-900 mb-2">
+                <h3 className="mb-2 text-lg font-semibold text-red-900">
                   Service Temporarily Unavailable
                 </h3>
-                <p className="text-red-700 mb-6 text-sm leading-relaxed">
+                <p className="mb-6 text-sm leading-relaxed text-red-700">
                   We&apos;re having trouble loading nearby amenities right now.
                   This might be due to a network issue or temporary service
                   disruption.
                 </p>
-                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <div className="flex flex-col justify-center gap-3 sm:flex-row">
                   <Button
                     onClick={fetchEstablishments}
                     variant="outline"
                     size="sm"
-                    className="border-red-200 text-red-700 hover:bg-red-50 transition-all hover:scale-105"
+                    className="border-red-200 text-red-700 transition-all hover:scale-105 hover:bg-red-50"
                   >
-                    <Search className="w-4 h-4 mr-2" />
+                    <Search className="mr-2 h-4 w-4" />
                     Try Again
                   </Button>
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => window.location.reload()}
-                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                    className="text-red-600 hover:bg-red-50 hover:text-red-700"
                   >
                     Refresh Page
                   </Button>
@@ -575,11 +575,11 @@ export function NearestEstablishments({
 
               {/* Technical details for debugging (hidden in production) */}
               {process.env.NODE_ENV === "development" && (
-                <details className="text-left bg-red-100 rounded p-3 text-xs">
-                  <summary className="cursor-pointer text-red-800 font-medium">
+                <details className="rounded bg-red-100 p-3 text-left text-xs">
+                  <summary className="cursor-pointer font-medium text-red-800">
                     Technical Details
                   </summary>
-                  <p className="text-red-700 mt-2">{error}</p>
+                  <p className="mt-2 text-red-700">{error}</p>
                 </details>
               )}
             </div>
@@ -592,14 +592,14 @@ export function NearestEstablishments({
   return (
     <Card className={cn("w-full", className)}>
       <CardHeader className="pb-4">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
           <div>
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-8 h-8 bg-brand-blue/10 rounded-lg flex items-center justify-center">
-                <MapPin className="w-4 h-4 text-brand-blue" />
+            <div className="mb-2 flex items-center gap-3">
+              <div className="bg-brand-blue/10 flex h-8 w-8 items-center justify-center rounded-lg">
+                <MapPin className="text-brand-blue h-4 w-4" />
               </div>
               <div>
-                <CardTitle className="text-lg sm:text-xl text-brand-accent">
+                <CardTitle className="text-brand-accent text-lg sm:text-xl">
                   Nearby Amenities
                 </CardTitle>
                 <p className="text-brand-muted text-sm">
@@ -608,9 +608,9 @@ export function NearestEstablishments({
               </div>
             </div>
             {nearestEstablishment && (
-              <div className="flex items-center gap-2 mt-3 p-2 bg-blue-50 rounded-lg border border-blue-100">
-                <Navigation className="w-4 h-4 text-blue-600" />
-                <span className="text-sm text-blue-800 font-medium">
+              <div className="mt-3 flex items-center gap-2 rounded-lg border border-blue-100 bg-blue-50 p-2">
+                <Navigation className="h-4 w-4 text-blue-600" />
+                <span className="text-sm font-medium text-blue-800">
                   Closest: {nearestEstablishment.name} •{" "}
                   {formatDistance(nearestEstablishment.distance / 1000)}
                 </span>
@@ -621,17 +621,17 @@ export function NearestEstablishments({
           {/* Quick Stats Badge */}
           {!loading && establishments.length > 0 && (
             <div className="flex items-center gap-3 text-sm">
-              <div className="bg-green-50 border border-green-200 rounded-lg px-3 py-1.5">
-                <span className="text-green-700 font-medium">
+              <div className="rounded-lg border border-green-200 bg-green-50 px-3 py-1.5">
+                <span className="font-medium text-green-700">
                   {establishments.length}
                 </span>
-                <span className="text-green-600 ml-1">locations found</span>
+                <span className="ml-1 text-green-600">locations found</span>
               </div>
-              <div className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5">
-                <span className="text-gray-700 font-medium">
+              <div className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5">
+                <span className="font-medium text-gray-700">
                   {maxDistance}km
                 </span>
-                <span className="text-gray-600 ml-1">radius</span>
+                <span className="ml-1 text-gray-600">radius</span>
               </div>
             </div>
           )}
@@ -653,17 +653,17 @@ export function NearestEstablishments({
                 size="sm"
                 onClick={() => setActiveCategory(key as EstablishmentType)}
                 className={cn(
-                  "flex items-center gap-1.5 transition-all duration-200 min-w-0 flex-shrink-0",
-                  "text-xs sm:text-sm px-2 sm:px-3 py-2",
+                  "flex min-w-0 flex-shrink-0 items-center gap-1.5 transition-all duration-200",
+                  "px-2 py-2 text-xs sm:px-3 sm:text-sm",
                   isActive && "bg-brand-blue hover:bg-brand-blue/90"
                 )}
                 aria-pressed={isActive}
               >
-                <Icon className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                <Icon className="h-3 w-3 flex-shrink-0 sm:h-4 sm:w-4" />
                 <span className="truncate">{config.label}</span>
                 <Badge
                   variant="secondary"
-                  className="ml-1 bg-white/20 text-inherit text-xs px-1"
+                  className="ml-1 bg-white/20 px-1 text-xs text-inherit"
                 >
                   {count}
                 </Badge>
@@ -674,30 +674,30 @@ export function NearestEstablishments({
 
         {/* Search */}
         <div className="relative">
-          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-            <Search className="w-4 h-4 text-gray-400" />
+          <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+            <Search className="h-4 w-4 text-gray-400" />
           </div>
           <Input
             placeholder={`Search ${ESTABLISHMENT_CATEGORIES[activeCategory].label.toLowerCase()}...`}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 pr-10 bg-gray-50/50 border-gray-200 focus:bg-white transition-all duration-200 focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue"
+            className="focus:ring-brand-blue/20 focus:border-brand-blue border-gray-200 bg-gray-50/50 pr-10 pl-10 transition-all duration-200 focus:bg-white focus:ring-2"
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery("")}
-              className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 transition-colors"
+              className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 transition-colors hover:text-gray-600"
               aria-label="Clear search"
             >
-              <div className="w-4 h-4 rounded-full bg-gray-300 hover:bg-gray-400 flex items-center justify-center transition-colors">
-                <div className="w-2 h-2 bg-white rounded-full" />
+              <div className="flex h-4 w-4 items-center justify-center rounded-full bg-gray-300 transition-colors hover:bg-gray-400">
+                <div className="h-2 w-2 rounded-full bg-white" />
               </div>
             </button>
           )}
 
           {/* Search results count */}
           {searchQuery && (
-            <div className="absolute -bottom-6 left-0 text-xs text-brand-muted">
+            <div className="text-brand-muted absolute -bottom-6 left-0 text-xs">
               {filteredEstablishments.length} results for &ldquo;{searchQuery}
               &rdquo;
             </div>
@@ -706,8 +706,8 @@ export function NearestEstablishments({
 
         {/* Mobile/Tablet Toggle for Map View */}
         <div className="block lg:hidden">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-brand-accent">
+          <div className="mb-4 flex items-center justify-between">
+            <h3 className="text-brand-accent font-semibold">
               Found {filteredEstablishments.length}{" "}
               {ESTABLISHMENT_CATEGORIES[activeCategory].label}
             </h3>
@@ -725,7 +725,7 @@ export function NearestEstablishments({
         </div>
 
         {/* Split View: List + Map */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 min-h-[400px] lg:min-h-[600px]">
+        <div className="grid min-h-[400px] grid-cols-1 gap-6 lg:min-h-[600px] lg:grid-cols-2">
           {/* Left Side: Results List */}
           <div
             className={cn(
@@ -735,28 +735,28 @@ export function NearestEstablishments({
             )}
           >
             <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-brand-accent text-sm sm:text-base">
+              <h3 className="text-brand-accent text-sm font-semibold sm:text-base">
                 Found {filteredEstablishments.length}{" "}
                 {ESTABLISHMENT_CATEGORIES[activeCategory].label}
               </h3>
               {nearestEstablishment && (
-                <div className="text-xs sm:text-sm text-brand-blue">
+                <div className="text-brand-blue text-xs sm:text-sm">
                   Nearest:{" "}
                   {formatDistance(nearestEstablishment.distance / 1000)}
                 </div>
               )}
             </div>
 
-            <div className="space-y-3 max-h-[350px] sm:max-h-[400px] lg:max-h-[500px] overflow-y-auto pr-2">
+            <div className="max-h-[350px] space-y-3 overflow-y-auto pr-2 sm:max-h-[400px] lg:max-h-[500px]">
               {loading ? (
                 <div className="space-y-3">
                   {Array.from({ length: 4 }).map((_, i) => (
                     <div
                       key={i}
-                      className="flex items-center space-x-3 sm:space-x-4 p-3 sm:p-4 border rounded-lg bg-gradient-to-r from-gray-50 to-white"
+                      className="flex items-center space-x-3 rounded-lg border bg-gradient-to-r from-gray-50 to-white p-3 sm:space-x-4 sm:p-4"
                     >
-                      <Skeleton className="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex-shrink-0" />
-                      <div className="space-y-2 flex-1 min-w-0">
+                      <Skeleton className="h-10 w-10 flex-shrink-0 rounded-full sm:h-12 sm:w-12" />
+                      <div className="min-w-0 flex-1 space-y-2">
                         <div className="flex items-center gap-2">
                           <Skeleton className="h-4 w-32 sm:w-48" />
                           <Skeleton className="h-3 w-8 rounded-full" />
@@ -775,8 +775,8 @@ export function NearestEstablishments({
 
                   {/* Loading indicator */}
                   <div className="flex items-center justify-center py-6">
-                    <div className="flex items-center gap-3 text-brand-muted">
-                      <Loader2 className="w-5 h-5 animate-spin text-brand-blue" />
+                    <div className="text-brand-muted flex items-center gap-3">
+                      <Loader2 className="text-brand-blue h-5 w-5 animate-spin" />
                       <span className="text-sm">
                         Finding nearby amenities...
                       </span>
@@ -795,29 +795,29 @@ export function NearestEstablishments({
                       key={establishment.id}
                       onClick={() => handleEstablishmentClick(establishment)}
                       className={cn(
-                        "flex items-center justify-between p-3 sm:p-4 border rounded-lg transition-all duration-200 cursor-pointer group touch-manipulation",
+                        "group flex cursor-pointer touch-manipulation items-center justify-between rounded-lg border p-3 transition-all duration-200 sm:p-4",
                         "active:scale-95 sm:active:scale-100", // Subtle press feedback on mobile
                         isSelected
                           ? "border-brand-blue bg-brand-blue/5 shadow-sm"
-                          : "border-gray-200 hover:border-brand-blue/30 hover:shadow-sm"
+                          : "hover:border-brand-blue/30 border-gray-200 hover:shadow-sm"
                       )}
                     >
-                      <div className="flex items-center space-x-3 sm:space-x-4 min-w-0 flex-1">
+                      <div className="flex min-w-0 flex-1 items-center space-x-3 sm:space-x-4">
                         <div
                           className={cn(
-                            "w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center transition-transform group-hover:scale-105 flex-shrink-0",
+                            "flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full transition-transform group-hover:scale-105 sm:h-12 sm:w-12",
                             config.color,
-                            isSelected && "ring-2 ring-brand-blue ring-offset-2"
+                            isSelected && "ring-brand-blue ring-2 ring-offset-2"
                           )}
                         >
-                          <Icon className="w-5 h-5 sm:w-6 sm:h-6" />
+                          <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
                         </div>
 
-                        <div className="space-y-1 flex-1 min-w-0">
-                          <div className="flex items-center gap-2 flex-wrap">
+                        <div className="min-w-0 flex-1 space-y-1">
+                          <div className="flex flex-wrap items-center gap-2">
                             <h4
                               className={cn(
-                                "font-semibold transition-colors text-sm sm:text-base truncate",
+                                "truncate text-sm font-semibold transition-colors sm:text-base",
                                 isSelected
                                   ? "text-brand-blue"
                                   : "text-brand-accent group-hover:text-brand-blue"
@@ -826,9 +826,9 @@ export function NearestEstablishments({
                               {establishment.name}
                             </h4>
                             {establishment.rating && (
-                              <div className="flex items-center gap-1 flex-shrink-0">
-                                <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
-                                <span className="text-xs text-brand-muted">
+                              <div className="flex flex-shrink-0 items-center gap-1">
+                                <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
+                                <span className="text-brand-muted text-xs">
                                   {establishment.rating}
                                 </span>
                               </div>
@@ -839,28 +839,28 @@ export function NearestEstablishments({
                             <Badge
                               variant="outline"
                               className={cn(
-                                "text-xs w-fit",
+                                "w-fit text-xs",
                                 establishment.openNow
-                                  ? "text-green-600 border-green-200 bg-green-50"
-                                  : "text-red-600 border-red-200 bg-red-50"
+                                  ? "border-green-200 bg-green-50 text-green-600"
+                                  : "border-red-200 bg-red-50 text-red-600"
                               )}
                             >
                               {establishment.openNow ? "Open" : "Closed"}
                             </Badge>
                           )}
 
-                          <p className="text-xs sm:text-sm text-brand-muted line-clamp-1">
+                          <p className="text-brand-muted line-clamp-1 text-xs sm:text-sm">
                             {establishment.address}
                           </p>
-                          <div className="flex items-center gap-3 sm:gap-4 text-xs text-brand-muted">
+                          <div className="text-brand-muted flex items-center gap-3 text-xs sm:gap-4">
                             <div className="flex items-center gap-1">
-                              <MapPin className="w-3 h-3" />
+                              <MapPin className="h-3 w-3" />
                               <span>
                                 {formatDistance(establishment.distance / 1000)}
                               </span>
                             </div>
                             <div className="flex items-center gap-1">
-                              <Clock className="w-3 h-3" />
+                              <Clock className="h-3 w-3" />
                               <span>{establishment.travelTime} min</span>
                             </div>
                           </div>
@@ -870,28 +870,28 @@ export function NearestEstablishments({
                   );
                 })
               ) : (
-                <div className="text-center py-12 text-brand-muted">
-                  <div className="w-16 h-16 mx-auto bg-gradient-to-br from-gray-50 to-gray-100 rounded-full flex items-center justify-center mb-6 border-2 border-gray-200">
+                <div className="text-brand-muted py-12 text-center">
+                  <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full border-2 border-gray-200 bg-gradient-to-br from-gray-50 to-gray-100">
                     {(() => {
                       const Icon =
                         ESTABLISHMENT_CATEGORIES[activeCategory].icon;
-                      return <Icon className="w-8 h-8 text-gray-400" />;
+                      return <Icon className="h-8 w-8 text-gray-400" />;
                     })()}
                   </div>
-                  <h3 className="font-medium text-brand-accent mb-2">
+                  <h3 className="text-brand-accent mb-2 font-medium">
                     No{" "}
                     {ESTABLISHMENT_CATEGORIES[
                       activeCategory
                     ].label.toLowerCase()}{" "}
                     found
                   </h3>
-                  <p className="text-sm mb-4">
+                  <p className="mb-4 text-sm">
                     {searchQuery
                       ? `No results match "${searchQuery}" in this area`
                       : `We couldn't find any ${ESTABLISHMENT_CATEGORIES[activeCategory].label.toLowerCase()} within ${maxDistance}km of this location`}
                   </p>
 
-                  <div className="flex flex-col sm:flex-row gap-2 justify-center">
+                  <div className="flex flex-col justify-center gap-2 sm:flex-row">
                     {searchQuery && (
                       <Button
                         variant="outline"
@@ -908,7 +908,7 @@ export function NearestEstablishments({
                       onClick={fetchEstablishments}
                       className="transition-all hover:scale-105"
                     >
-                      <Search className="w-4 h-4 mr-2" />
+                      <Search className="mr-2 h-4 w-4" />
                       Refresh search
                     </Button>
                   </div>
@@ -920,7 +920,7 @@ export function NearestEstablishments({
           {/* Right Side: Interactive Map */}
           <div
             className={cn(
-              "relative border border-gray-200 rounded-lg overflow-hidden bg-gray-100",
+              "relative overflow-hidden rounded-lg border border-gray-200 bg-gray-100",
               "lg:block", // Always show on desktop
               mobileView === "map" ? "block" : "hidden lg:block" // Show/hide based on mobile view mode
             )}
@@ -928,13 +928,13 @@ export function NearestEstablishments({
             {/* Map Loading/Error States */}
             {loadError ? (
               <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
-                <div className="text-center space-y-4">
-                  <AlertCircle className="w-12 h-12 text-red-500 mx-auto" />
+                <div className="space-y-4 text-center">
+                  <AlertCircle className="mx-auto h-12 w-12 text-red-500" />
                   <div>
                     <p className="text-brand-accent font-medium">
                       Map unavailable
                     </p>
-                    <p className="text-sm text-brand-muted">
+                    <p className="text-brand-muted text-sm">
                       Please check your internet connection
                     </p>
                   </div>
@@ -942,44 +942,44 @@ export function NearestEstablishments({
               </div>
             ) : !isLoaded ? (
               <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
-                <div className="text-center space-y-4">
-                  <Loader2 className="w-8 h-8 animate-spin text-brand-blue mx-auto" />
+                <div className="space-y-4 text-center">
+                  <Loader2 className="text-brand-blue mx-auto h-8 w-8 animate-spin" />
                   <p className="text-brand-muted">Loading map...</p>
                 </div>
               </div>
             ) : (
               <>
                 {/* Map Controls */}
-                <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-10 flex flex-col gap-1 sm:gap-2">
+                <div className="absolute top-3 right-3 z-10 flex flex-col gap-1 sm:top-4 sm:right-4 sm:gap-2">
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={handleToggleMapType}
-                    className="bg-white/90 backdrop-blur-sm shadow-sm p-2 sm:p-2.5"
+                    className="bg-white/90 p-2 shadow-sm backdrop-blur-sm sm:p-2.5"
                     title={`Switch to ${mapType === "roadmap" ? "satellite" : "map"} view`}
                   >
-                    <Maximize2 className="w-3 h-3 sm:w-4 sm:h-4" />
+                    <Maximize2 className="h-3 w-3 sm:h-4 sm:w-4" />
                   </Button>
                 </div>
 
-                <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-10 flex flex-col gap-1">
+                <div className="absolute top-3 left-3 z-10 flex flex-col gap-1 sm:top-4 sm:left-4">
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={handleZoomIn}
-                    className="w-8 h-8 sm:w-9 sm:h-9 p-0 bg-white/90 backdrop-blur-sm shadow-sm touch-manipulation"
+                    className="h-8 w-8 touch-manipulation bg-white/90 p-0 shadow-sm backdrop-blur-sm sm:h-9 sm:w-9"
                     title="Zoom in"
                   >
-                    <ZoomIn className="w-3 h-3 sm:w-4 sm:h-4" />
+                    <ZoomIn className="h-3 w-3 sm:h-4 sm:w-4" />
                   </Button>
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={handleZoomOut}
-                    className="w-8 h-8 sm:w-9 sm:h-9 p-0 bg-white/90 backdrop-blur-sm shadow-sm touch-manipulation"
+                    className="h-8 w-8 touch-manipulation bg-white/90 p-0 shadow-sm backdrop-blur-sm sm:h-9 sm:w-9"
                     title="Zoom out"
                   >
-                    <ZoomOut className="w-3 h-3 sm:w-4 sm:h-4" />
+                    <ZoomOut className="h-3 w-3 sm:h-4 sm:w-4" />
                   </Button>
                 </div>
 
@@ -1074,35 +1074,35 @@ export function NearestEstablishments({
                       position={selectedEstablishment.coordinates}
                       onCloseClick={handleInfoWindowClose}
                     >
-                      <div className="p-3 max-w-xs">
+                      <div className="max-w-xs p-3">
                         <div className="space-y-2">
                           <div className="flex items-center gap-2">
-                            <h3 className="font-semibold text-brand-accent">
+                            <h3 className="text-brand-accent font-semibold">
                               {selectedEstablishment.name}
                             </h3>
                             {selectedEstablishment.rating && (
                               <div className="flex items-center gap-1">
-                                <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                                <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
                                 <span className="text-xs font-medium">
                                   {selectedEstablishment.rating}
                                 </span>
                               </div>
                             )}
                           </div>
-                          <p className="text-sm text-brand-muted">
+                          <p className="text-brand-muted text-sm">
                             {selectedEstablishment.address}
                           </p>
                           <div className="flex items-center gap-4 text-sm">
-                            <div className="flex items-center gap-1 text-brand-blue font-medium">
-                              <MapPin className="w-3 h-3" />
+                            <div className="text-brand-blue flex items-center gap-1 font-medium">
+                              <MapPin className="h-3 w-3" />
                               <span>
                                 {formatDistance(
                                   selectedEstablishment.distance / 1000
                                 )}
                               </span>
                             </div>
-                            <div className="flex items-center gap-1 text-brand-muted">
-                              <Clock className="w-3 h-3" />
+                            <div className="text-brand-muted flex items-center gap-1">
+                              <Clock className="h-3 w-3" />
                               <span>
                                 {selectedEstablishment.travelTime} min
                               </span>
@@ -1112,10 +1112,10 @@ export function NearestEstablishments({
                             <Badge
                               variant="outline"
                               className={cn(
-                                "text-xs w-fit",
+                                "w-fit text-xs",
                                 selectedEstablishment.openNow
-                                  ? "text-green-600 border-green-200 bg-green-50"
-                                  : "text-red-600 border-red-200 bg-red-50"
+                                  ? "border-green-200 bg-green-50 text-green-600"
+                                  : "border-red-200 bg-red-50 text-red-600"
                               )}
                             >
                               {selectedEstablishment.openNow
@@ -1134,7 +1134,7 @@ export function NearestEstablishments({
                       position={propertyLocation}
                       onCloseClick={handlePropertyInfoClose}
                     >
-                      <div className="p-3 max-w-sm">
+                      <div className="max-w-sm p-3">
                         <div className="space-y-3">
                           {/* Property Header */}
                           <div className="flex items-start gap-3">
@@ -1144,27 +1144,27 @@ export function NearestEstablishments({
                                 alt={propertyInfo.name}
                                 width={64}
                                 height={64}
-                                className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
+                                className="h-16 w-16 flex-shrink-0 rounded-lg object-cover"
                                 unoptimized
                               />
                             ) : (
-                              <div className="w-16 h-16 bg-brand-blue/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                                <Home className="w-8 h-8 text-brand-blue" />
+                              <div className="bg-brand-blue/10 flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-lg">
+                                <Home className="text-brand-blue h-8 w-8" />
                               </div>
                             )}
                             <div className="min-w-0 flex-1">
-                              <h3 className="font-semibold text-brand-accent text-sm leading-tight">
+                              <h3 className="text-brand-accent text-sm leading-tight font-semibold">
                                 {propertyInfo?.name || propertyName}
                               </h3>
-                              <div className="flex items-center gap-1 text-xs text-brand-muted mt-1">
-                                <MapPin className="w-3 h-3 flex-shrink-0" />
+                              <div className="text-brand-muted mt-1 flex items-center gap-1 text-xs">
+                                <MapPin className="h-3 w-3 flex-shrink-0" />
                                 <span className="truncate">
                                   {propertyInfo?.location || neighborhood}
                                 </span>
                               </div>
                               {propertyInfo?.price && (
                                 <div className="mt-2">
-                                  <span className="bg-brand-blue text-white px-2 py-1 rounded text-xs font-semibold">
+                                  <span className="bg-brand-blue rounded px-2 py-1 text-xs font-semibold text-white">
                                     {propertyInfo.price}
                                   </span>
                                 </div>
@@ -1176,22 +1176,22 @@ export function NearestEstablishments({
                           {(propertyInfo?.bedrooms ||
                             propertyInfo?.bathrooms ||
                             propertyInfo?.size) && (
-                            <div className="flex items-center gap-4 text-xs bg-gray-50 rounded p-2">
+                            <div className="flex items-center gap-4 rounded bg-gray-50 p-2 text-xs">
                               {propertyInfo.bedrooms && (
                                 <div className="flex items-center gap-1">
-                                  <Bed className="w-3 h-3 text-brand-blue" />
+                                  <Bed className="text-brand-blue h-3 w-3" />
                                   <span>{propertyInfo.bedrooms} bed</span>
                                 </div>
                               )}
                               {propertyInfo.bathrooms && (
                                 <div className="flex items-center gap-1">
-                                  <Bath className="w-3 h-3 text-brand-blue" />
+                                  <Bath className="text-brand-blue h-3 w-3" />
                                   <span>{propertyInfo.bathrooms} bath</span>
                                 </div>
                               )}
                               {propertyInfo.size && (
                                 <div className="flex items-center gap-1">
-                                  <Maximize className="w-3 h-3 text-brand-blue" />
+                                  <Maximize className="text-brand-blue h-3 w-3" />
                                   <span>{propertyInfo.size}</span>
                                 </div>
                               )}
@@ -1209,15 +1209,15 @@ export function NearestEstablishments({
 
                           {/* Developer */}
                           {propertyInfo?.developer && (
-                            <div className="flex items-center gap-2 text-xs text-brand-muted">
-                              <User className="w-3 h-3" />
+                            <div className="text-brand-muted flex items-center gap-2 text-xs">
+                              <User className="h-3 w-3" />
                               <span>Listed by {propertyInfo.developer}</span>
                             </div>
                           )}
 
                           {/* Nearby amenities count */}
                           {establishments.length > 0 && (
-                            <div className="text-xs text-brand-blue bg-blue-50 rounded p-2">
+                            <div className="text-brand-blue rounded bg-blue-50 p-2 text-xs">
                               <span className="font-medium">
                                 {establishments.length} amenities
                               </span>{" "}
@@ -1236,8 +1236,8 @@ export function NearestEstablishments({
 
         {/* Footer Stats */}
         {!loading && establishments.length > 0 && (
-          <div className="pt-4 border-t border-gray-200">
-            <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 sm:gap-4 text-xs sm:text-sm text-brand-muted">
+          <div className="border-t border-gray-200 pt-4">
+            <div className="text-brand-muted grid grid-cols-2 gap-2 text-xs sm:flex sm:flex-wrap sm:gap-4 sm:text-sm">
               <div className="flex items-center gap-1">
                 <span className="font-medium">Total:</span>
                 <span>{establishments.length}</span>
@@ -1247,7 +1247,7 @@ export function NearestEstablishments({
                 <span>{maxDistance}km</span>
               </div>
               {nearestEstablishment && (
-                <div className="flex items-center gap-1 col-span-2 sm:col-span-1">
+                <div className="col-span-2 flex items-center gap-1 sm:col-span-1">
                   <span className="font-medium">Nearest:</span>
                   <span>
                     {formatDistance(nearestEstablishment.distance / 1000)}

@@ -37,30 +37,30 @@ const RealEstateAd = ({
         className="block w-full transition-all duration-300 hover:-translate-y-1 hover:shadow-md"
         aria-label={`Visit ${title || "advertiser"} - Opens in new tab`}
       >
-        <div className="relative w-full rounded-lg border border-gray-200 bg-white overflow-hidden shadow-sm hover:shadow-md hover:border-brand-primary/30 transition-all duration-300">
+        <div className="hover:border-brand-primary/30 relative w-full overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:shadow-md">
           {/* Ad Badge */}
           <div className="absolute top-3 left-3 z-10">
-            <span className="inline-flex items-center px-2 py-1 text-xs font-medium bg-gray-100/90 text-gray-600 rounded-full backdrop-blur-sm">
+            <span className="inline-flex items-center rounded-full bg-gray-100/90 px-2 py-1 text-xs font-medium text-gray-600 backdrop-blur-sm">
               {badge || "Sponsored"}
             </span>
           </div>
 
           {/* External Link Indicator */}
-          <div className="absolute top-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-all duration-200">
-            <div className="flex items-center justify-center w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full shadow-sm">
-              <ExternalLink className="w-4 h-4 text-brand-primary" />
+          <div className="absolute top-3 right-3 z-10 opacity-0 transition-all duration-200 group-hover:opacity-100">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/90 shadow-sm backdrop-blur-sm">
+              <ExternalLink className="text-brand-primary h-4 w-4" />
             </div>
           </div>
 
           {/* Image Container */}
           <div className="relative w-full">
-            <div className="relative h-[280px] sm:h-[320px] md:h-[380px] w-full overflow-hidden bg-gray-50">
+            <div className="relative h-[280px] w-full overflow-hidden bg-gray-50 sm:h-[320px] md:h-[380px]">
               {/* Loading state */}
               {!imageLoaded && !imageError && (
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="animate-pulse bg-gray-200 rounded-lg w-full h-full" />
+                  <div className="h-full w-full animate-pulse rounded-lg bg-gray-200" />
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <Eye className="w-8 h-8 text-gray-400 animate-pulse" />
+                    <Eye className="h-8 w-8 animate-pulse text-gray-400" />
                   </div>
                 </div>
               )}
@@ -68,11 +68,11 @@ const RealEstateAd = ({
               {/* Error state */}
               {imageError && (
                 <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-50 text-gray-400">
-                  <div className="w-12 h-12 bg-gray-200 rounded-lg mb-3 flex items-center justify-center">
-                    <Eye className="w-6 h-6" />
+                  <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-lg bg-gray-200">
+                    <Eye className="h-6 w-6" />
                   </div>
                   <p className="text-sm font-medium">Ad content unavailable</p>
-                  <p className="text-xs text-gray-400 mt-1">
+                  <p className="mt-1 text-xs text-gray-400">
                     Click to visit advertiser
                   </p>
                 </div>
@@ -89,7 +89,7 @@ const RealEstateAd = ({
                   }`}
                   sizes="(max-width: 768px) 100vw, 300px"
                   placeholder="blur"
-                  blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iMzAiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ci8+PC9zdmc+"
+                  blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAQABgDASIAAhEBAxEB/8QAFwAAAwEAAAAAAAAAAAAAAAAAAAMGBP/EACAQAAEDBAICAwAAAAAAAAAAAAECAwQABREGEiExE1HB/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAL/xAAYEQEBAQEBAAAAAAAAAAAAAAAAARECEv/aAAwDAQACEQMRAD8A0kup7jLkSktFTqXW4VBwKS2qCWlOKGCUp3BsEjJOD6nVZ/q67kJhp1oYfBBVyCrwB4lfX0o1HqVPUC9TSLsGkKJU0pClJ1gDPJORz4z2BI6bTEMStqRIebTKUVv5S2ppOSCCdoJI+p8fY+oj7z/2Q=="
                   onLoad={() => setImageLoaded(true)}
                   onError={() => setImageError(true)}
                   priority={false}
@@ -97,32 +97,32 @@ const RealEstateAd = ({
               )}
 
               {/* Gradient overlays */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="absolute inset-0 bg-gradient-to-r from-brand-primary/5 via-transparent to-brand-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+              <div className="from-brand-primary/5 to-brand-primary/5 absolute inset-0 bg-gradient-to-r via-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
             </div>
           </div>
 
           {/* Content section (if title or description provided) */}
           {(title || description) && (
-            <div className="p-4 bg-white border-t border-gray-100">
+            <div className="border-t border-gray-100 bg-white p-4">
               {title && (
-                <h3 className="font-semibold text-sm text-brand-accent line-clamp-2 mb-2 group-hover:text-brand-primary transition-colors duration-200">
+                <h3 className="text-brand-accent group-hover:text-brand-primary mb-2 line-clamp-2 text-sm font-semibold transition-colors duration-200">
                   {title}
                 </h3>
               )}
               {description && (
-                <p className="text-xs text-brand-muted line-clamp-3 leading-relaxed">
+                <p className="text-brand-muted line-clamp-3 text-xs leading-relaxed">
                   {description}
                 </p>
               )}
 
               {/* Call-to-action indicator */}
-              <div className="flex items-center justify-between mt-3">
-                <span className="text-xs font-medium text-brand-primary opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+              <div className="mt-3 flex items-center justify-between">
+                <span className="text-brand-primary text-xs font-medium opacity-0 transition-opacity duration-200 group-hover:opacity-100">
                   Learn more
                 </span>
                 <div className="flex items-center text-xs text-gray-400">
-                  <ExternalLink className="w-3 h-3 mr-1" />
+                  <ExternalLink className="mr-1 h-3 w-3" />
                   <span>External</span>
                 </div>
               </div>
@@ -130,7 +130,7 @@ const RealEstateAd = ({
           )}
 
           {/* Hover effect border */}
-          <div className="absolute inset-0 rounded-xl ring-2 ring-brand-primary/20 ring-inset opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none" />
+          <div className="ring-brand-primary/20 pointer-events-none absolute inset-0 rounded-xl opacity-0 ring-2 transition-opacity duration-200 ring-inset group-hover:opacity-100" />
         </div>
       </a>
     </article>

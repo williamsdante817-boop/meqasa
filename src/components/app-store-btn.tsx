@@ -1,12 +1,12 @@
 export default function AppStoreButtons() {
   return (
-    <div className="pt-3 lg:pt-0 flex gap-4">
+    <div className="flex gap-4 pt-3 lg:pt-0">
       <button
         type="button"
         disabled
         aria-disabled="true"
         aria-label="App Store link coming soon"
-        className="cursor-not-allowed opacity-70 bg-black text-white rounded-lg flex items-center justify-center w-[150px] h-[50px] lg:w-[200px] lg:h-[60px]"
+        className="flex h-[50px] w-[150px] cursor-not-allowed items-center justify-center rounded-lg bg-black text-white opacity-70 lg:h-[60px] lg:w-[200px]"
         title="App Store link coming soon"
       >
         <div className="mr-3">
@@ -23,7 +23,7 @@ export default function AppStoreButtons() {
         </div>
         <div>
           <div className="text-xs">Download on the</div>
-          <div className="text-md lg:text-lg font-semibold">App Store</div>
+          <div className="text-md font-semibold lg:text-lg">App Store</div>
         </div>
       </button>
 
@@ -32,7 +32,7 @@ export default function AppStoreButtons() {
         disabled
         aria-disabled="true"
         aria-label="Google Play link coming soon"
-        className="cursor-not-allowed opacity-70 bg-black text-white rounded-lg flex items-center justify-center w-[150px] h-[50px] lg:w-[200px] lg:h-[60px]"
+        className="flex h-[50px] w-[150px] cursor-not-allowed items-center justify-center rounded-lg bg-black text-white opacity-70 lg:h-[60px] lg:w-[200px]"
         title="Google Play link coming soon"
       >
         <div className="mr-3">
@@ -63,7 +63,7 @@ export default function AppStoreButtons() {
         </div>
         <div>
           <div className="text-xs">GET IT ON</div>
-          <div className="text-md lg:text-lg font-semibold">Google Play</div>
+          <div className="text-md font-semibold lg:text-lg">Google Play</div>
         </div>
       </button>
     </div>

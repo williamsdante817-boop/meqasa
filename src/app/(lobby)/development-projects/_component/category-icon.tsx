@@ -69,7 +69,7 @@ export function CategoryIcon({
 
   return (
     <div
-      className={`p-2 rounded-lg ${colorClass} flex items-center justify-center`}
+      className={`rounded-lg p-2 ${colorClass} flex items-center justify-center`}
     >
       <Icon size={size} strokeWidth={1.5} />
     </div>

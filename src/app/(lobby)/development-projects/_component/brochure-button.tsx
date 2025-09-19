@@ -32,7 +32,7 @@ export default function BrochureButton({
         <div onClick={handleClick}>{trigger}</div>
       ) : (
         <Button className={className} variant="default" onClick={handleClick}>
-          {showIcon && <FileText className="w-4 h-4 mr-2" />}
+          {showIcon && <FileText className="mr-2 h-4 w-4" />}
           Get Brochure
         </Button>
       )}

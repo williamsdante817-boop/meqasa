@@ -33,9 +33,9 @@ export function LatestListingsTab({
         onTabChange?.(value);
       }}
     >
-      <div className="flex items-center justify-between gap-4 mx-4 md:mx-0">
+      <div className="mx-4 flex items-center justify-between gap-4 md:mx-0">
         <TabsList
-          className="grid w-full md:w-[400px] grid-cols-2"
+          className="grid w-full grid-cols-2 md:w-[400px]"
           aria-label="Property listing categories"
         >
           {tabs.map((tab) => (
@@ -43,7 +43,7 @@ export function LatestListingsTab({
               key={tab.value}
               value={tab.value}
               aria-label={`View properties ${tab.label.toLowerCase()}`}
-              className="data-[state=active]:bg-brand-accent font-semibold data-[state=active]:text-white text-brand-muted"
+              className="data-[state=active]:bg-brand-accent text-brand-muted font-semibold data-[state=active]:text-white"
             >
               {tab.label}
             </TabsTrigger>

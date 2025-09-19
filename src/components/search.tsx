@@ -3,6 +3,7 @@
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Link from "next/link";
 
 import { searchConfig } from "@/config/search";
 import { type FormState } from "@/types/search";
@@ -69,8 +70,8 @@ export function SearchFilter() {
   };
 
   return (
-    <div className="hidden lg:block absolute left-1/2 w-[920px] -translate-x-1/2 -translate-y-1/2 z-50">
-      <h1 className="sr-only mb-4 text-center text-3xl font-extrabold text-b-accent">
+    <div className="absolute left-1/2 z-50 hidden w-[920px] -translate-x-1/2 -translate-y-1/2 lg:block">
+      <h1 className="text-b-accent sr-only mb-4 text-center text-3xl font-extrabold">
         Ghana&apos;s Smarter Property Search
       </h1>
       <Card
@@ -78,32 +79,39 @@ export function SearchFilter() {
         style={{ background: "rgba(11,17,52,.65)" }}
       >
         <Tabs defaultValue="rent" className="w-full">
-          <div className="mx-auto my-0 w-4/5 lg:max-w-[460px]">
-            <TabsList className="grid h-fit w-full grid-cols-4 bg-white p-1.5 text-b-accent">
+          <div className="mx-auto my-0 w-4/5 lg:max-w-[580px]">
+            <TabsList className="text-b-accent grid h-fit w-full grid-cols-5 bg-white p-1.5">
               <TabsTrigger
                 value="rent"
-                className="font-bold data-[state=active]:bg-brand-primary data-[state=active]:text-white lg:text-base text-brand-accent"
+                className="data-[state=active]:bg-brand-primary text-brand-accent font-bold data-[state=active]:text-white lg:text-base"
               >
                 Rent
               </TabsTrigger>
               <TabsTrigger
                 value="buy"
-                className="font-bold data-[state=active]:bg-brand-primary data-[state=active]:text-white lg:text-base text-brand-accent"
+                className="data-[state=active]:bg-brand-primary text-brand-accent font-bold data-[state=active]:text-white lg:text-base"
               >
                 Buy
               </TabsTrigger>
               <TabsTrigger
                 value="land"
-                className="font-bold data-[state=active]:bg-brand-primary data-[state=active]:text-white lg:text-base text-brand-accent"
+                className="data-[state=active]:bg-brand-primary text-brand-accent font-bold data-[state=active]:text-white lg:text-base"
               >
                 Land
               </TabsTrigger>
               <TabsTrigger
                 value="short-let"
-                className="font-bold data-[state=active]:bg-brand-primary data-[state=active]:text-white lg:text-brand-accent"
+                className="data-[state=active]:bg-brand-primary lg:text-brand-accent font-bold data-[state=active]:text-white"
               >
                 Short Let
               </TabsTrigger>
+              {/* All units link with underline active state */}
+              <Link
+                href="/newly-built-units"
+                className="ring-offset-background focus-visible:ring-ring hover:text-brand-primary text-brand-accent inline-flex items-center justify-center rounded-sm px-3 py-1.5 text-sm font-bold whitespace-nowrap transition-all hover:underline hover:decoration-2 hover:underline-offset-4 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 lg:text-base"
+              >
+                All Units
+              </Link>
             </TabsList>
           </div>
 
@@ -196,10 +204,12 @@ export function SearchFilter() {
                 />
                 <MoreFiltersPopover
                   formState={landFormState}
-                  updateFormState={(updates) => updateFormState("land", updates)}
+                  updateFormState={(updates) =>
+                    updateFormState("land", updates)
+                  }
                   contractType="land"
                   variant="home"
-                  className="flex h-5 min-w-[150px] max-w-[150px] cursor-pointer items-center justify-between rounded-none border-0 bg-transparent py-0 text-base font-medium shadow-none text-white whitespace-nowrap focus:border-0 focus:ring-0 focus:ring-transparent"
+                  className="flex h-5 max-w-[150px] min-w-[150px] cursor-pointer items-center justify-between rounded-none border-0 bg-transparent py-0 text-base font-medium whitespace-nowrap text-white shadow-none focus:border-0 focus:ring-0 focus:ring-transparent"
                 />
               </div>
             </SearchForm>

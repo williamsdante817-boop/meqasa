@@ -13,7 +13,7 @@ const cities = {
 
 export default function QuickLinks() {
   return (
-    <div className="pt-3 flex gap-2 flex-wrap">
+    <div className="flex flex-wrap gap-2 pt-3">
       {Object.entries(cities).map(([city, url]) => (
         <Link key={city} href={url} className="no-underline">
           <Badge className="bg-accent-foreground cursor-pointer">{city}</Badge>

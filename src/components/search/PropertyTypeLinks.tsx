@@ -11,40 +11,40 @@ import {
   Briefcase,
 } from "lucide-react";
 
-// Categorized property types with proper hrefs and icons
+// Categorized property types with proper hrefs pointing to units search and icons
 const propertyCategories = [
   {
     title: "Residential",
     types: [
       {
         label: "Houses",
-        href: "/search/sale?ftype=house",
+        href: "/units/search?terms=sale&unittype=house&address=&maxprice=&beds=0&baths=0",
         icon: Building2,
         count: "2.5K+",
       },
       {
         label: "Apartments",
-        href: "/search/rent?ftype=apartment",
+        href: "/units/search?terms=rent&unittype=apartment&address=&maxprice=&beds=0&baths=0",
         icon: Building,
         count: "1.8K+",
       },
       {
         label: "Townhouses",
-        href: "/search/sale?ftype=townhouse",
+        href: "/units/search?terms=sale&unittype=townhouse&address=&maxprice=&beds=0&baths=0",
         icon: Building2,
         count: "450+",
       },
       {
-        label: "Guest Houses",
-        href: "/search/rent?ftype=guest house",
-        icon: Building,
-        count: "120+",
-      },
-      {
         label: "Studio Apartments",
-        href: "/search/rent?ftype=studio apartment",
+        href: "/units/search?terms=rent&unittype=studio%20apartment&address=&maxprice=&beds=0&baths=0",
         icon: Building,
         count: "50+",
+      },
+      {
+        label: "Villas",
+        href: "/units/search?terms=sale&unittype=villa&address=&maxprice=&beds=0&baths=0",
+        icon: Building2,
+        count: "180+",
       },
     ],
   },
@@ -71,7 +71,7 @@ const propertyCategories = [
       },
       {
         label: "Commercial",
-        href: "/search/sale?ftype=commercial space",
+        href: "/search/sale?ftype=commercial%20space",
         icon: Briefcase,
         count: "150+",
       },
@@ -94,7 +94,7 @@ const propertyCategories = [
       },
       {
         label: "Beach Houses",
-        href: "/search/rent?ftype=beach house",
+        href: "/search/rent?ftype=beach%20house",
         icon: Building2,
         count: "25+",
       },
@@ -114,17 +114,38 @@ export default function PropertyTypeLinks() {
   const currentType = searchParams?.get("ftype");
 
   const isActive = (href: string) => {
-    const url = new URL(href, "http://localhost");
-    const hrefType = url.searchParams.get("ftype") ?? "";
-    return (
-      currentType === hrefType ||
-      (pathname.includes(href.split("?")[0] || "") && currentType === hrefType)
-    );
+    try {
+      const url = new URL(href, "http://localhost");
+
+      // Handle new units search format
+      if (url.pathname.includes("/units/search")) {
+        const hrefUnitType = url.searchParams.get("unittype") ?? "";
+        const hrefTerms = url.searchParams.get("terms") ?? "";
+        const currentUnitType = searchParams?.get("unittype") ?? "";
+        const currentTerms = searchParams?.get("terms") ?? "";
+
+        return (
+          pathname.includes("/units/search") &&
+          hrefUnitType === currentUnitType &&
+          hrefTerms === currentTerms
+        );
+      }
+
+      // Handle old search format
+      const hrefType = url.searchParams.get("ftype") ?? "";
+      return (
+        currentType === hrefType ||
+        (pathname.includes(href.split("?")[0] || "") &&
+          currentType === hrefType)
+      );
+    } catch {
+      return false;
+    }
   };
 
   return (
     <aside
-      className="hidden lg:block w-44 xl:w-60 flex-shrink-0"
+      className="hidden w-44 flex-shrink-0 lg:block xl:w-60"
       role="complementary"
       aria-label="Property type navigation"
     >
@@ -133,11 +154,11 @@ export default function PropertyTypeLinks() {
           <div key={category.title} className="space-y-3">
             {/* Category Header */}
             <div className="flex items-center gap-2 px-2">
-              <div className="h-px flex-1 bg-gradient-to-r from-brand-primary/30 to-transparent" />
-              <h3 className="text-xs font-semibold text-brand-accent uppercase tracking-wider">
+              <div className="from-brand-primary/30 h-px flex-1 bg-gradient-to-r to-transparent" />
+              <h3 className="text-brand-accent text-xs font-semibold tracking-wider uppercase">
                 {category.title}
               </h3>
-              <div className="h-px flex-1 bg-gradient-to-l from-brand-primary/30 to-transparent" />
+              <div className="from-brand-primary/30 h-px flex-1 bg-gradient-to-l to-transparent" />
             </div>
 
             {/* Property Type Links */}
@@ -150,29 +171,29 @@ export default function PropertyTypeLinks() {
                   <li key={type.label}>
                     <Link
                       href={type.href}
-                      className={`group flex items-center justify-between w-full px-2.5 py-2 rounded-sm text-sm font-medium transition-all duration-200 hover:translate-x-0.5 ${
+                      className={`group flex w-full items-center justify-between rounded-sm px-2.5 py-2 text-sm font-medium transition-all duration-200 hover:translate-x-0.5 ${
                         active
-                          ? "bg-brand-primary text-white shadow-sm shadow-brand-primary/25"
-                          : "bg-gray-50 text-brand-muted hover:bg-brand-primary/10 hover:text-brand-primary hover:shadow-sm"
+                          ? "bg-brand-primary shadow-brand-primary/25 text-white shadow-sm"
+                          : "text-brand-muted hover:bg-brand-primary/10 hover:text-brand-primary bg-gray-50 hover:shadow-sm"
                       }`}
                       aria-label={`View ${type.label} properties`}
                     >
                       <div className="flex items-center gap-2.5">
                         <Icon
-                          className={`w-3.5 h-3.5 transition-colors duration-200 flex-shrink-0 ${
+                          className={`h-3.5 w-3.5 flex-shrink-0 transition-colors duration-200 ${
                             active
                               ? "text-white"
                               : "text-brand-accent group-hover:text-brand-primary"
                           }`}
                         />
-                        <span className="font-medium text-sm truncate">
+                        <span className="truncate text-sm font-medium">
                           {type.label}
                         </span>
                       </div>
 
                       {/* Property Count */}
                       <span
-                        className={`text-xs px-1.5 py-0.5 rounded-sm block flex items-center h-full justify-center font-medium transition-colors duration-200 flex-shrink-0 ${
+                        className={`block flex h-full flex-shrink-0 items-center justify-center rounded-sm px-1.5 py-0.5 text-xs font-medium transition-colors duration-200 ${
                           active
                             ? "bg-white/20 text-white"
                             : "bg-brand-primary/10 text-brand-primary group-hover:bg-brand-primary/20"

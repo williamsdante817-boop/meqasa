@@ -55,7 +55,7 @@ export const InfiniteMovingCards = ({
     if (scrollerRef.current) {
       const duration =
         speed === "fast" ? "30s" : speed === "normal" ? "60s" : "70s";
-      scrollerRef.current.style.setProperty('--duration', duration);
+      scrollerRef.current.style.setProperty("--duration", duration);
     }
   }, [speed]);
 
@@ -116,7 +116,7 @@ export const InfiniteMovingCards = ({
       {/* Scrolling container */}
       <div
         ref={scrollerRef}
-        className="flex gap-4 py-8 animate-marquee-persistent"
+        className="animate-marquee-persistent flex gap-4 py-8"
         role="list"
         aria-label={`${items.length} partner companies`}
         style={{
@@ -133,7 +133,7 @@ export const InfiniteMovingCards = ({
           return (
             <Card
               key={`${item.first}-${index}`}
-              className="flex-shrink-0 w-[120px] h-[120px] rounded-lg overflow-hidden"
+              className="h-[120px] w-[120px] flex-shrink-0 overflow-hidden rounded-lg"
               role="listitem"
             >
               <TooltipProvider>
@@ -141,13 +141,13 @@ export const InfiniteMovingCards = ({
                   <TooltipTrigger asChild>
                     <Link
                       href={`/agents/${item.name}?g=${item.first}`}
-                      className="block w-full h-full p-4 hover:bg-gray-50 transition-colors"
+                      className="block h-full w-full p-4 transition-colors hover:bg-gray-50"
                       aria-label={`View details for ${item.name}`}
                       onClick={() => {
                         handleCardClick(item);
                       }}
                     >
-                      <div className="w-full h-full flex items-center justify-center">
+                      <div className="flex h-full w-full items-center justify-center">
                         <OptimizedAgentLogo
                           src={imageUrl}
                           alt={item.name}
@@ -214,17 +214,17 @@ const OptimizedAgentLogo: React.FC<OptimizedAgentLogoProps> = ({
   }, [src]);
 
   return (
-    <div className="relative w-full h-full">
+    <div className="relative h-full w-full">
       {/* Loading skeleton */}
       {isLoading && (
-        <div className="absolute inset-0 bg-gray-100 animate-pulse rounded-md" />
+        <div className="absolute inset-0 animate-pulse rounded-md bg-gray-100" />
       )}
 
       {/* Error state */}
       {hasError && (
-        <div className="absolute inset-0 bg-gray-100 rounded-md flex items-center justify-center">
-          <div className="text-gray-400 text-xs text-center">
-            <div className="w-8 h-8 mx-auto mb-1 bg-gray-200 rounded-md flex items-center justify-center">
+        <div className="absolute inset-0 flex items-center justify-center rounded-md bg-gray-100">
+          <div className="text-center text-xs text-gray-400">
+            <div className="mx-auto mb-1 flex h-8 w-8 items-center justify-center rounded-md bg-gray-200">
               <span className="text-gray-400">?</span>
             </div>
             <span>Logo unavailable</span>

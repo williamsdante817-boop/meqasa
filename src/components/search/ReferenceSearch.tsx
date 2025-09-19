@@ -11,9 +11,7 @@ import {
   formatReferenceForDisplay,
   type ReferenceSearchResult,
 } from "@/lib/reference-url-generator";
-import {
-  type UnifiedSearchResult,
-} from "@/lib/unified-reference-search";
+import { type UnifiedSearchResult } from "@/lib/unified-reference-search";
 import {
   processProductionReferenceSearch,
   type ProductionReferenceResult,
@@ -171,14 +169,7 @@ export function ReferenceSearch({
         setSearchType(null);
       }
     },
-    [
-      router,
-      onSearch,
-      onError,
-      enableUnifiedSearch,
-      searchTimeout,
-      searchType,
-    ]
+    [router, onSearch, onError, enableUnifiedSearch, searchTimeout, searchType]
   );
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -221,15 +212,15 @@ export function ReferenceSearch({
     <div className={cn("space-y-2", className)}>
       {showLabel && (
         <div className="flex items-center gap-2">
-          <Hash className="h-4 w-4 text-brand-primary" />
-          <span className="text-sm font-medium text-brand-accent">
+          <Hash className="text-brand-primary h-4 w-4" />
+          <span className="text-brand-accent text-sm font-medium">
             Quick Find by Reference
           </span>
         </div>
       )}
 
       <div className="flex gap-2">
-        <div className="flex-1 relative">
+        <div className="relative flex-1">
           <Input
             type="text"
             placeholder={placeholder}
@@ -249,13 +240,13 @@ export function ReferenceSearch({
             }
             aria-describedby={error ? "reference-error" : undefined}
           />
-          <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+          <div className="absolute top-1/2 right-3 -translate-y-1/2 transform">
             {isLoading ? (
-              <Loader2 className="h-4 w-4 animate-spin text-brand-primary" />
+              <Loader2 className="text-brand-primary h-4 w-4 animate-spin" />
             ) : error ? (
               <AlertCircle className="h-4 w-4 text-red-500" />
             ) : (
-              <Search className="h-4 w-4 text-muted-foreground" />
+              <Search className="text-muted-foreground h-4 w-4" />
             )}
           </div>
         </div>
@@ -264,7 +255,7 @@ export function ReferenceSearch({
           onClick={handleSearchClick}
           disabled={!reference.trim() || isLoading}
           className={cn(
-            "bg-brand-primary hover:bg-brand-primary-dark text-white font-medium transition-colors duration-200",
+            "bg-brand-primary hover:bg-brand-primary-dark font-medium text-white transition-colors duration-200",
             buttonSizeClass
           )}
           aria-label="Search for property"
@@ -276,7 +267,7 @@ export function ReferenceSearch({
       {error && (
         <div
           id="reference-error"
-          className="flex items-center gap-2 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg p-3"
+          className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-600"
           role="alert"
         >
           <AlertCircle className="h-4 w-4 flex-shrink-0" />
@@ -285,8 +276,8 @@ export function ReferenceSearch({
       )}
 
       {isLoading && (
-        <div className="flex items-center gap-2 text-sm text-blue-600 bg-blue-50 border border-blue-200 rounded-lg p-3">
-          <Loader2 className="h-4 w-4 animate-spin flex-shrink-0" />
+        <div className="flex items-center gap-2 rounded-lg border border-blue-200 bg-blue-50 p-3 text-sm text-blue-600">
+          <Loader2 className="h-4 w-4 flex-shrink-0 animate-spin" />
           <span>
             {enableUnifiedSearch
               ? `Searching ${searchType || "properties and units"}...`
@@ -296,14 +287,14 @@ export function ReferenceSearch({
       )}
 
       {suggestion && !error && !isLoading && (
-        <div className="flex items-center gap-2 text-sm text-green-700 bg-green-50 border border-green-200 rounded-lg p-3">
+        <div className="flex items-center gap-2 rounded-lg border border-green-200 bg-green-50 p-3 text-sm text-green-700">
           <AlertCircle className="h-4 w-4 flex-shrink-0" />
           <span>{suggestion}</span>
         </div>
       )}
 
       {reference && !error && !isLoading && !suggestion && (
-        <div className="text-xs text-muted-foreground">
+        <div className="text-muted-foreground text-xs">
           {enableUnifiedSearch
             ? `Will search properties and units for: ${formatReferenceForDisplay(reference)}`
             : `Will search for: ${formatReferenceForDisplay(reference)}`}

@@ -24,7 +24,7 @@ export async function StreamingFeaturedProjects({
           title="Featured Projects"
           description="View all featured properties"
           href="/developments"
-          className="pt-14 md:pt-20 lg:pt-24 w-full [&_p]:px-4 [&_h2]:px-4 md:[&_p]:px-0 md:[&_h2]:px-0"
+          className="w-full pt-14 md:pt-20 lg:pt-24 [&_h2]:px-4 md:[&_h2]:px-0 [&_p]:px-4 md:[&_p]:px-0"
         >
           <Alert className="mx-auto max-w-md">
             <AlertTitle>No featured projects available</AlertTitle>
@@ -45,7 +45,7 @@ export async function StreamingFeaturedProjects({
           title="Featured Projects"
           description="View all featured properties"
           href="/developments"
-          className="pt-14 md:pt-20 lg:pt-24 w-full [&_p]:px-4 [&_h2]:px-4 md:[&_p]:px-0 md:[&_h2]:px-0"
+          className="w-full pt-14 md:pt-20 lg:pt-24 [&_h2]:px-4 md:[&_h2]:px-0 [&_p]:px-4 md:[&_p]:px-0"
         >
           <Alert className="mx-auto max-w-md">
             <AlertTitle>No featured projects available</AlertTitle>
@@ -63,19 +63,21 @@ export async function StreamingFeaturedProjects({
         title="Featured Projects"
         description="View all featured properties"
         href="/developments"
-        className="pt-14 md:pt-20 lg:pt-24 w-full [&_p]:px-4 [&_h2]:px-4 md:[&_p]:px-0 md:[&_h2]:px-0"
+        className="w-full pt-14 md:pt-20 lg:pt-24 [&_h2]:px-4 md:[&_h2]:px-0 [&_p]:px-4 md:[&_p]:px-0"
       >
         <FeaturedProjectsCarousel properties={featuredProjects} delay={5000} />
       </ContentSection>
     );
   } catch (error) {
-    logError("Failed to load featured projects", error, { component: "StreamingFeaturedProjects" });
+    logError("Failed to load featured projects", error, {
+      component: "StreamingFeaturedProjects",
+    });
     return (
       <ContentSection
         title="Featured Projects"
         description="View all featured properties"
         href="/developments"
-        className="pt-14 md:pt-20 lg:pt-24 w-full [&_p]:px-4 [&_h2]:px-4 md:[&_p]:px-0 md:[&_h2]:px-0"
+        className="w-full pt-14 md:pt-20 lg:pt-24 [&_h2]:px-4 md:[&_h2]:px-0 [&_p]:px-4 md:[&_p]:px-0"
       >
         <Alert variant="destructive" className="mx-auto max-w-md">
           <AlertTitle>Unable to load featured projects</AlertTitle>

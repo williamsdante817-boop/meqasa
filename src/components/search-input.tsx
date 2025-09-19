@@ -38,7 +38,7 @@ export default function SearchInput({
     <>
       <div className="w-full max-w-lg flex-1 md:w-auto md:flex-none">
         <button
-          className="relative cursor-pointer inline-flex w-full items-center justify-start gap-2 whitespace-nowrap rounded-[0.5rem] border border-input bg-background px-4 py-2 text-sm font-normal text-muted-foreground shadow-none transition-colors hover:bg-accent hover:text-b-accent focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 sm:pr-12"
+          className="border-input bg-background text-muted-foreground hover:bg-accent hover:text-b-accent focus-visible:ring-ring relative inline-flex w-full cursor-pointer items-center justify-start gap-2 rounded-[0.5rem] border px-4 py-2 text-sm font-normal whitespace-nowrap shadow-none transition-colors focus-visible:ring-1 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 sm:pr-12"
           onClick={handleOpen}
         >
           <Search className="h-4 w-4" />
@@ -58,7 +58,7 @@ export default function SearchInput({
                   : `${path}/${nameSlug}-${item.developerid}`;
               return (
                 <Link href={href} key={i}>
-                  <CommandItem className="capitalize cursor-pointer">
+                  <CommandItem className="cursor-pointer capitalize">
                     {item.name}
                   </CommandItem>
                 </Link>

@@ -59,8 +59,8 @@ export function AgentsFAQ({ className = "" }: AgentsFAQProps) {
   ];
 
   return (
-    <Card className={`bg-gray-50 border border-gray-200 p-6 ${className}`}>
-      <h2 className="text-lg font-medium text-gray-900 mb-6">
+    <Card className={`border border-gray-200 bg-gray-50 p-6 ${className}`}>
+      <h2 className="mb-6 text-lg font-medium text-gray-900">
         Agents Frequently Asked Questions
       </h2>
 
@@ -72,20 +72,20 @@ export function AgentsFAQ({ className = "" }: AgentsFAQProps) {
           >
             <button
               onClick={() => toggleItem(index)}
-              className="w-full flex items-center justify-between text-left focus:outline-none group cursor-pointer"
+              className="group flex w-full cursor-pointer items-center justify-between text-left focus:outline-none"
             >
-              <h3 className="font-medium text-gray-900 group-hover:text-blue-600 transition-colors">
+              <h3 className="font-medium text-gray-900 transition-colors group-hover:text-blue-600">
                 {item.question}
               </h3>
               {expandedItems.has(index) ? (
-                <ChevronUp className="h-4 w-4 text-gray-500 group-hover:text-blue-600 transition-colors" />
+                <ChevronUp className="h-4 w-4 text-gray-500 transition-colors group-hover:text-blue-600" />
               ) : (
-                <ChevronDown className="h-4 w-4 text-gray-500 group-hover:text-blue-600 transition-colors" />
+                <ChevronDown className="h-4 w-4 text-gray-500 transition-colors group-hover:text-blue-600" />
               )}
             </button>
 
             {expandedItems.has(index) && (
-              <div className="mt-3 text-sm text-gray-600 space-y-3">
+              <div className="mt-3 space-y-3 text-sm text-gray-600">
                 <p>{item.answer}</p>
                 {item.highlights && (
                   <ul className="space-y-2">
@@ -94,7 +94,7 @@ export function AgentsFAQ({ className = "" }: AgentsFAQProps) {
                         key={highlightIndex}
                         className="flex items-start gap-2"
                       >
-                        <span className="text-blue-600 mt-1 text-xs">
+                        <span className="mt-1 text-xs text-blue-600">
                           {highlightIndex + 1}.
                         </span>
                         <span className="leading-relaxed">{highlight}</span>

@@ -78,21 +78,21 @@ export default function AppPromotion() {
     <section
       ref={sectionRef}
       id="app-promotion"
-      className="bg-[#f0f5ff] max-w-6xl mx-auto border border-brand-blue lg:border-none rounded-xl overflow-visible relative my-16 lg:my-32 py-10 px-4 md:px-8 lg:px-12"
+      className="border-brand-blue relative mx-auto my-16 max-w-6xl overflow-visible rounded-xl border bg-[#f0f5ff] px-4 py-10 md:px-8 lg:my-32 lg:border-none lg:px-12"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       role="region"
       aria-label="Mobile app promotion"
     >
-      <div className="grid md:grid-cols-2 items-center">
+      <div className="grid items-center md:grid-cols-2">
         <div className="max-w-lg space-y-1 lg:space-y-3">
-          <h2 className="text-xl md:text-3xl font-bold text-brand-accent">
+          <h2 className="text-brand-accent text-xl font-bold md:text-3xl">
             Do more on the app.
           </h2>
-          <p className="text-sm lg:text-base md:text-lg text-brand-muted">
+          <p className="text-brand-muted text-sm md:text-lg lg:text-base">
             Save your searches, track enquiries and more.
           </p>
-          <p className="text-sm lg:text-base md:text-base text-brand-accent">
+          <p className="text-brand-accent text-sm md:text-base lg:text-base">
             Available on iOS and Android
           </p>
 
@@ -101,41 +101,41 @@ export default function AppPromotion() {
         </div>
 
         <div
-          className="absolute right-10 -top-24 h-[150px] md:h-[400px] overflow-visible hidden lg:block"
+          className="absolute -top-24 right-10 hidden h-[150px] overflow-visible md:h-[400px] lg:block"
           aria-hidden="true"
         >
           {/* Featured Properties Phone */}
           <div
-            className={`absolute right-10 lg:right-[-20px] top-[-30px] transform -rotate-6 z-10 transition-all duration-700 ease-in-out motion-reduce:transform-none motion-reduce:transition-none ${isHovering ? "translate-y-[-10px]" : "translate-y-[0px]"}`}
+            className={`absolute top-[-30px] right-10 z-10 -rotate-6 transform transition-all duration-700 ease-in-out motion-reduce:transform-none motion-reduce:transition-none lg:right-[-20px] ${isHovering ? "translate-y-[-10px]" : "translate-y-[0px]"}`}
             style={{ transformStyle: "preserve-3d", perspective: "1000px" }}
           >
             <div
-              className="relative w-[100px] lg:w-[220px] h-[200px] lg:h-[450px] bg-white rounded-xl lg:rounded-3xl overflow-hidden shadow-2xl border-8 border-white"
+              className="relative h-[200px] w-[100px] overflow-hidden rounded-xl border-8 border-white bg-white shadow-2xl lg:h-[450px] lg:w-[220px] lg:rounded-3xl"
               style={{
                 boxShadow:
                   "0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 15px rgba(0, 0, 0, 0.1)",
               }}
             >
-              <div className="absolute top-0 left-0 w-full h-full flex flex-col">
+              <div className="absolute top-0 left-0 flex h-full w-full flex-col">
                 <div className="bg-white p-3">
-                  <div className="text-sm font-semibold text-brand-accent -rotate-[1deg] transform origin-top-left">
+                  <div className="text-brand-accent origin-top-left -rotate-[1deg] transform text-sm font-semibold">
                     Featured Project Units -{" "}
                     <span className="text-brand-blue">See all</span>
                   </div>
                 </div>
                 <div className="flex-1 bg-gray-100 p-2">
-                  <div className="bg-white rounded-lg overflow-hidden mb-3">
+                  <div className="mb-3 overflow-hidden rounded-lg bg-white">
                     <div className="h-24 bg-gray-200"></div>
                     <div className="p-2">
-                      <div className="h-2 bg-gray-200 rounded w-3/4 mb-1"></div>
-                      <div className="h-2 bg-gray-200 rounded w-1/2"></div>
+                      <div className="mb-1 h-2 w-3/4 rounded bg-gray-200"></div>
+                      <div className="h-2 w-1/2 rounded bg-gray-200"></div>
                     </div>
                   </div>
-                  <div className="bg-white rounded-lg overflow-hidden">
+                  <div className="overflow-hidden rounded-lg bg-white">
                     <div className="h-24 bg-gray-200"></div>
                     <div className="p-2">
-                      <div className="h-2 bg-gray-200 rounded w-3/4 mb-1"></div>
-                      <div className="h-2 bg-gray-200 rounded w-1/2"></div>
+                      <div className="mb-1 h-2 w-3/4 rounded bg-gray-200"></div>
+                      <div className="h-2 w-1/2 rounded bg-gray-200"></div>
                     </div>
                   </div>
                 </div>
@@ -143,45 +143,45 @@ export default function AppPromotion() {
             </div>
             {/* Phone reflection/shadow effect */}
             <div
-              className="absolute bottom-[-15px] left-[10px] right-[10px] h-[20px] bg-black opacity-20 blur-md rounded-full transform -rotate-6 motion-reduce:transform-none"
+              className="absolute right-[10px] bottom-[-15px] left-[10px] h-[20px] -rotate-6 transform rounded-full bg-black opacity-20 blur-md motion-reduce:transform-none"
               aria-hidden="true"
             ></div>
           </div>
 
           {/* Search Interface Phone */}
           <div
-            className={`absolute right-[100px] top-[20px] transform rotate-6 z-0 transition-all duration-700 ease-in-out motion-reduce:transform-none motion-reduce:transition-none ${isHovering ? "translate-y-[-10px] delay-300" : "translate-y-[0px]"}`}
+            className={`absolute top-[20px] right-[100px] z-0 rotate-6 transform transition-all duration-700 ease-in-out motion-reduce:transform-none motion-reduce:transition-none ${isHovering ? "translate-y-[-10px] delay-300" : "translate-y-[0px]"}`}
             style={{ transformStyle: "preserve-3d", perspective: "1000px" }}
           >
             <div
-              className="relative w-[100px] lg:w-[220px] h-[200px] lg:h-[450px] bg-white rounded-xl lg:rounded-3xl overflow-hidden shadow-2xl border-8 border-white"
+              className="relative h-[200px] w-[100px] overflow-hidden rounded-xl border-8 border-white bg-white shadow-2xl lg:h-[450px] lg:w-[220px] lg:rounded-3xl"
               style={{
                 boxShadow:
                   "0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 15px rgba(0, 0, 0, 0.1)",
               }}
             >
-              <div className="absolute top-0 left-0 w-full h-full flex flex-col">
+              <div className="absolute top-0 left-0 flex h-full w-full flex-col">
                 <div className="bg-white p-3">
-                  <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+                  <div className="mb-2 h-4 w-1/2 rounded bg-gray-200"></div>
                 </div>
                 <div className="flex-1 bg-gray-100 p-2">
-                  <div className="bg-white rounded-lg p-3 mb-3">
-                    <div className="h-3 bg-gray-200 rounded w-1/3 mb-2"></div>
-                    <div className="h-6 bg-gray-200 rounded mb-3"></div>
-                    <div className="h-3 bg-gray-200 rounded w-1/3 mb-2"></div>
-                    <div className="h-6 bg-gray-200 rounded mb-3"></div>
-                    <div className="grid grid-cols-2 gap-2 mb-3">
+                  <div className="mb-3 rounded-lg bg-white p-3">
+                    <div className="mb-2 h-3 w-1/3 rounded bg-gray-200"></div>
+                    <div className="mb-3 h-6 rounded bg-gray-200"></div>
+                    <div className="mb-2 h-3 w-1/3 rounded bg-gray-200"></div>
+                    <div className="mb-3 h-6 rounded bg-gray-200"></div>
+                    <div className="mb-3 grid grid-cols-2 gap-2">
                       <div>
-                        <div className="h-3 bg-gray-200 rounded w-1/2 mb-2"></div>
-                        <div className="h-6 bg-gray-200 rounded"></div>
+                        <div className="mb-2 h-3 w-1/2 rounded bg-gray-200"></div>
+                        <div className="h-6 rounded bg-gray-200"></div>
                       </div>
                       <div>
-                        <div className="h-3 bg-gray-200 rounded w-1/2 mb-2"></div>
-                        <div className="h-6 bg-gray-200 rounded"></div>
+                        <div className="mb-2 h-3 w-1/2 rounded bg-gray-200"></div>
+                        <div className="h-6 rounded bg-gray-200"></div>
                       </div>
                     </div>
-                    <div className="h-10 bg-[#ff6d84] rounded flex items-center justify-center">
-                      <div className="h-3 bg-white rounded w-1/3"></div>
+                    <div className="flex h-10 items-center justify-center rounded bg-[#ff6d84]">
+                      <div className="h-3 w-1/3 rounded bg-white"></div>
                     </div>
                   </div>
                 </div>
@@ -189,7 +189,7 @@ export default function AppPromotion() {
             </div>
             {/* Phone reflection/shadow effect */}
             <div
-              className="absolute bottom-[-15px] left-[10px] right-[10px] h-[20px] bg-black opacity-20 blur-md rounded-full transform rotate-6 motion-reduce:transform-none"
+              className="absolute right-[10px] bottom-[-15px] left-[10px] h-[20px] rotate-6 transform rounded-full bg-black opacity-20 blur-md motion-reduce:transform-none"
               aria-hidden="true"
             ></div>
           </div>

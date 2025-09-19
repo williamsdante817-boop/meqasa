@@ -19,17 +19,17 @@ export default function DevelopersError({
 
   return (
     <Shell>
-      <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-8">
+      <div className="flex min-h-[60vh] flex-col items-center justify-center space-y-8">
         <AlertCard className="max-w-md" />
-        <div className="text-center space-y-4">
-          <h1 className="text-2xl font-bold text-brand-accent">
+        <div className="space-y-4 text-center">
+          <h1 className="text-brand-accent text-2xl font-bold">
             Unable to Load Developers
           </h1>
           <p className="text-brand-muted max-w-md">
             We encountered an error while loading the developers list. This
             might be due to a temporary issue with our servers.
           </p>
-          <div className="flex gap-4 justify-center">
+          <div className="flex justify-center gap-4">
             <Button onClick={reset} variant="default">
               Try again
             </Button>

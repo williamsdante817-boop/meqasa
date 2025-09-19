@@ -25,7 +25,14 @@ import {
 } from "@/lib/compressed-data-utils";
 import { getUnitDetails } from "@/lib/get-unit-details";
 import { buildInnerHtml, cn, formatNumber, slugify } from "@/lib/utils";
-import { BathIcon, BedIcon, ParkingSquare, Square, Tag, ExternalLink } from "lucide-react";
+import {
+  BathIcon,
+  BedIcon,
+  ParkingSquare,
+  Square,
+  Tag,
+  ExternalLink,
+} from "lucide-react";
 import { logInfo } from "@/lib/logger";
 import ProjectVideo from "../../development-projects/_component/project-video";
 import TrendingPropertyCard from "@/components/common/trending-property-card";
@@ -73,8 +80,8 @@ export default async function DeveloperUnitPage({
     return (
       <main>
         <Shell>
-          <div className="text-center py-10">
-            <h1 className="text-2xl font-bold text-brand-accent">
+          <div className="py-10 text-center">
+            <h1 className="text-brand-accent text-2xl font-bold">
               Unit Not Found
             </h1>
             <p className="text-brand-muted mt-2">
@@ -181,7 +188,7 @@ export default async function DeveloperUnitPage({
   return (
     <main>
       <Shell>
-        <div className="space-y-3 mb-3">
+        <div className="mb-3 space-y-3">
           <Breadcrumbs
             className="pt-4"
             segments={[
@@ -201,13 +208,13 @@ export default async function DeveloperUnitPage({
             ]}
             aria-label="Developer unit navigation"
           />
-          <h1 className="font-bold leading-tight tracking-tighter text-brand-accent lg:leading-[1.1] text-2xl md:text-3xl capitalize">
+          <h1 className="text-brand-accent text-2xl leading-tight font-bold tracking-tighter capitalize md:text-3xl lg:leading-[1.1]">
             {unitDetails.unit.title || unitDetails.unit.unittypename}
           </h1>
         </div>
       </Shell>
       <section
-        className="border-b border-brand-badge-ongoing bg-black flex items-center justify-center"
+        className="border-brand-badge-ongoing flex items-center justify-center border-b bg-black"
         aria-label="Unit images"
       >
         <DynamicCarousel
@@ -229,20 +236,20 @@ export default async function DeveloperUnitPage({
         />
       </section>
       <Shell>
-        <div className="grid grid-cols-1 text-brand-accent w-full mt-4 lg:grid-cols-[2fr_1fr] lg:gap-8 lg:px-0">
+        <div className="text-brand-accent mt-4 grid w-full grid-cols-1 lg:grid-cols-[2fr_1fr] lg:gap-8 lg:px-0">
           <div>
-            <div className="flex items-start justify-between flex-wrap gap-3 md:flex-nowrap md:items-center md:gap-4">
+            <div className="flex flex-wrap items-start justify-between gap-3 md:flex-nowrap md:items-center md:gap-4">
               <div className="flex items-center">
-                <h2 className="text-2xl font-extrabold text-brand-accent lg:text-3xl">
+                <h2 className="text-brand-accent text-2xl font-extrabold lg:text-3xl">
                   {unitDetails.unit.sellingprice
                     ? `GH₵ ${formatNumber(unitDetails.unit.sellingprice)}`
                     : "Price on Request"}
                 </h2>
-                <span className="text-brand-muted font-light text-sm md:text-xl ml-2">
+                <span className="text-brand-muted ml-2 text-sm font-light md:text-xl">
                   {unitDetails.unit.terms === "rent" ? "/month" : ""}
                 </span>
               </div>
-              <div className="flex gap-2 md:gap-3 text-xs flex-wrap items-center">
+              <div className="flex flex-wrap items-center gap-2 text-xs md:gap-3">
                 <Badge variant="default" className="uppercase">
                   {unitDetails.unit.terms === "sale" ? "For Sale" : "For Rent"}
                 </Badge>
@@ -253,7 +260,7 @@ export default async function DeveloperUnitPage({
                 )}
                 {/* Desktop favorite button - hidden on mobile since it's in carousel */}
                 <div className="hidden md:block">
-                  <AddFavoriteButton 
+                  <AddFavoriteButton
                     listingId={Number(unitDetails.unit.unitid)}
                     showLabel={true}
                     size="md"
@@ -268,15 +275,15 @@ export default async function DeveloperUnitPage({
               garages={unitDetails.unit.garages}
               floorArea={unitDetails.unit.floorarea}
             />
-            <div className="flex items-center gap-4 mb-6">
+            <div className="mb-6 flex items-center gap-4">
               <Badge variant="info" className="uppercase">
                 {unitDetails.unit.fullyfurnished ? "Furnished" : "Unfurnished"}
               </Badge>
               <Badge
                 variant="info"
-                className="uppercase max-w-[280px] md:max-w-full"
+                className="max-w-[280px] uppercase md:max-w-full"
               >
-                <p className="truncate w-full">{unitDetails.unit.address}</p>
+                <p className="w-full truncate">{unitDetails.unit.address}</p>
               </Badge>
             </div>
             <TrendingPropertyCard
@@ -302,7 +309,7 @@ export default async function DeveloperUnitPage({
               title="Description"
               description=""
               href="/developer-units"
-              className="pt-14 md:pt-20 pb-10 md:pb-0"
+              className="pt-14 pb-10 md:pt-20 md:pb-0"
               btnHidden
             >
               <ExpandableDescription
@@ -422,8 +429,8 @@ export default async function DeveloperUnitPage({
           description=""
           href={similarSearchHref}
           className={cn(
-            unitDetails.similarunits.length !== 0 ? "px-0 mb-6" : "px-4",
-            "pt-14 md:pt-20 lg:pt-24  md:block lg:max-w-7xl lg:mx-auto [&_p]:px-4 [&_h2]:px-4"
+            unitDetails.similarunits.length !== 0 ? "mb-6 px-0" : "px-4",
+            "pt-14 md:block md:pt-20 lg:mx-auto lg:max-w-7xl lg:pt-24 [&_h2]:px-4 [&_p]:px-4"
           )}
         >
           <PropertyListings

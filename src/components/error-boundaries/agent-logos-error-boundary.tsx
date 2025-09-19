@@ -39,10 +39,10 @@ export class AgentLogosErrorBoundary extends Component<Props, State> {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="mt-[180px] hidden lg:flex justify-center">
+        <div className="mt-[180px] hidden justify-center lg:flex">
           <AlertCard variant="destructive">
             <div className="flex flex-col items-center space-y-2 text-center">
-              <AlertTitle className="text-lg text-brand-accent">
+              <AlertTitle className="text-brand-accent text-lg">
                 Partner Logos Loading Error
               </AlertTitle>
               <AlertDescription className="text-brand-muted">

@@ -48,27 +48,27 @@ export function AgentInfo({ agent }: AgentInfoProps) {
     <div className="text-brand-accent">
       <div className="flex flex-col items-start gap-3 md:flex-row md:justify-between md:gap-0">
         <div>
-          <h1 className="flex items-center text-[23px] capitalize font-bold leading-5 text-brand-accent md:leading-8">
+          <h1 className="text-brand-accent flex items-center text-[23px] leading-5 font-bold capitalize md:leading-8">
             {agent.name}
             {agent.verified && (
-              <Badge className="ml-2 bg-green-500 uppercase text-white">
+              <Badge className="ml-2 bg-green-500 text-white uppercase">
                 {agent.verified ? "Verified Agent" : ""}
               </Badge>
             )}
           </h1>
           {agent.locality ? (
-            <p className="text-l mt-2 flex items-center gap-2 text-brand-muted flex-nowrap overflow-hidden">
+            <p className="text-l text-brand-muted mt-2 flex flex-nowrap items-center gap-2 overflow-hidden">
               <MapPin
-                className="h-5 w-5 text-brand-primary flex-shrink-0"
+                className="text-brand-primary h-5 w-5 flex-shrink-0"
                 strokeWidth="1.3"
               />
               <span className="truncate">{agent.locality}</span>
             </p>
           ) : null}
           {agent.company ? (
-            <p className="text-l mt-2 flex items-center gap-2 text-brand-muted flex-nowrap overflow-hidden">
+            <p className="text-l text-brand-muted mt-2 flex flex-nowrap items-center gap-2 overflow-hidden">
               <Building
-                className="h-5 w-5 text-brand-primary flex-shrink-0"
+                className="text-brand-primary h-5 w-5 flex-shrink-0"
                 strokeWidth="1.3"
               />
               <span className="truncate">{agent.company}</span>
@@ -107,7 +107,7 @@ export function AgentInfo({ agent }: AgentInfoProps) {
         >
           <span>Share</span>
           <Share2
-            className="h-5 w-5 text-brand-muted"
+            className="text-brand-muted h-5 w-5"
             strokeWidth="1.3"
             aria-hidden="true"
             focusable="false"
@@ -177,7 +177,7 @@ export function AgentInfo({ agent }: AgentInfoProps) {
         <div>
           <p className="text-center font-semibold capitalize md:text-lg">
             rental :{" "}
-            <span className="font-medium text-brand-muted">
+            <span className="text-brand-muted font-medium">
               {formatCommission(agent.rentcommission)}
             </span>
           </p>
@@ -185,7 +185,7 @@ export function AgentInfo({ agent }: AgentInfoProps) {
         <div>
           <p className="text-center font-semibold capitalize md:text-lg">
             sale :{" "}
-            <span className="font-medium text-brand-muted">
+            <span className="text-brand-muted font-medium">
               {formatCommission(agent.salecommission)}
             </span>
           </p>
@@ -193,7 +193,7 @@ export function AgentInfo({ agent }: AgentInfoProps) {
       </div>
 
       <div className="mb-10">
-        <h2 className="mb-4 text-xl capitalize font-semibold">
+        <h2 className="mb-4 text-xl font-semibold capitalize">
           About {agent.name.split(" ")[0]}
         </h2>
         <p className="text-brand-muted">{agent.about}</p>
@@ -203,7 +203,7 @@ export function AgentInfo({ agent }: AgentInfoProps) {
         <div className="mb-10 border-b border-gray-100 pb-8">
           <p className="text-lg font-semibold capitalize">
             Experience :{" "}
-            <span className="inline-block font-medium lowercase text-brand-muted">
+            <span className="text-brand-muted inline-block font-medium lowercase">
               {agent.experience}
             </span>
           </p>
@@ -211,10 +211,10 @@ export function AgentInfo({ agent }: AgentInfoProps) {
       )}
 
       <div className="mb-6 flex items-center gap-3">
-        <h2 className="text-2xl font-bold capitalize text-brand-accent">
+        <h2 className="text-brand-accent text-2xl font-bold capitalize">
           Listings By {agent.name}
         </h2>
-        <Badge className="bg-brand-primary text-white font-semibold">
+        <Badge className="bg-brand-primary font-semibold text-white">
           {agent.activelistings}{" "}
           {agent.activelistings === 1 ? "listing" : "listings"}
         </Badge>

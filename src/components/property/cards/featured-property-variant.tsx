@@ -52,7 +52,7 @@ export default function FeaturedPropertyCard({
 
   return (
     <Card
-      className=" relative h-full overflow-hidden rounded-lg p-0 gap-0 flex flex-col border border-gray-200 bg-white transition-all duration-300 hover:border-brand-primary/30"
+      className="hover:border-brand-primary/30 relative flex h-full flex-col gap-0 overflow-hidden rounded-lg border border-gray-200 bg-white p-0 transition-all duration-300"
       role="article"
       aria-labelledby={`project-title-${projectid}`}
     >
@@ -62,11 +62,11 @@ export default function FeaturedPropertyCard({
         aria-label={`View details for ${projectname}`}
         className="block"
       >
-        <CardHeader className="p-0 gap-0">
+        <CardHeader className="gap-0 p-0">
           <AspectRatio ratio={16 / 9} className="relative overflow-hidden">
             {/* Loading skeleton - only show when image hasn't loaded */}
             {!imageLoaded && (
-              <div className="absolute inset-0 z-20 bg-gray-100 animate-pulse" />
+              <div className="absolute inset-0 z-20 animate-pulse bg-gray-100" />
             )}
 
             <ImageWithFallback
@@ -112,7 +112,7 @@ export default function FeaturedPropertyCard({
       </Link>
 
       {/* Card content */}
-      <CardContent className="p-4 md:p-6 h-full relative gap-0 flex flex-col grow">
+      <CardContent className="relative flex h-full grow flex-col gap-0 p-4 md:p-6">
         <Link
           href={url}
           aria-label={`View details for ${projectname}`}
@@ -120,10 +120,10 @@ export default function FeaturedPropertyCard({
         >
           {/* Company Logo - Enhanced positioning */}
           {logo && (
-            <div className="absolute top-4 right-4 md:top-6 md:right-6 z-10">
-              <div className="w-12 h-12 md:w-16 md:h-16 rounded-md bg-white/90 backdrop-blur-sm p-2 md:p-3 shadow-md transition-all duration-200">
+            <div className="absolute top-4 right-4 z-10 md:top-6 md:right-6">
+              <div className="h-12 w-12 rounded-md bg-white/90 p-2 shadow-md backdrop-blur-sm transition-all duration-200 md:h-16 md:w-16 md:p-3">
                 {!logoLoaded && (
-                  <div className="w-full h-full bg-gray-200 animate-pulse rounded" />
+                  <div className="h-full w-full animate-pulse rounded bg-gray-200" />
                 )}
                 <ImageWithFallback
                   src={logoUrl}
@@ -131,7 +131,7 @@ export default function FeaturedPropertyCard({
                   width={50}
                   height={50}
                   className={cn(
-                    "w-full h-full object-contain transition-opacity duration-300",
+                    "h-full w-full object-contain transition-opacity duration-300",
                     logoLoaded ? "opacity-100" : "opacity-0"
                   )}
                   fallbackAlt={`${projectname} logo not available`}
@@ -143,18 +143,18 @@ export default function FeaturedPropertyCard({
 
           <CardTitle
             id={`project-title-${projectid}`}
-            className="text-base font-bold line-clamp-1 leading-tight text-brand-accent sm:text-lg lg:text-xl transition-colors duration-200 group-hover/content:text-brand-primary mb-2"
+            className="text-brand-accent group-hover/content:text-brand-primary mb-2 line-clamp-1 text-base leading-tight font-bold transition-colors duration-200 sm:text-lg lg:text-xl"
           >
             {projectname}
           </CardTitle>
 
-          <div className="flex items-start gap-2 mb-4 text-brand-muted">
-            <p className="text-sm sm:text-base line-clamp-1 capitalize !px-0">
+          <div className="text-brand-muted mb-4 flex items-start gap-2">
+            <p className="line-clamp-1 !px-0 text-sm capitalize sm:text-base">
               {city}
             </p>
           </div>
 
-          <div className="flex items-start gap-2 mb-4 min-w-0">
+          <div className="mb-4 flex min-w-0 items-start gap-2">
             {/* Unit Types as Badges */}
             <div className="flex flex-wrap gap-1.5">
               {unittypes
@@ -164,7 +164,7 @@ export default function FeaturedPropertyCard({
                   <Badge
                     key={index}
                     variant="outline"
-                    className="text-xs sm:text-sm font-medium bg-gray-50 text-gray-700 border border-gray-300 hover:bg-gray-100 transition-colors duration-200 capitalize"
+                    className="border border-gray-300 bg-gray-50 text-xs font-medium text-gray-700 capitalize transition-colors duration-200 hover:bg-gray-100 sm:text-sm"
                   >
                     {unitType.trim()}
                   </Badge>
@@ -173,7 +173,7 @@ export default function FeaturedPropertyCard({
                 ?.length && (
                 <Badge
                   variant="outline"
-                  className="text-xs font-medium bg-gray-50 text-gray-500 border border-gray-300"
+                  className="border border-gray-300 bg-gray-50 text-xs font-medium text-gray-500"
                 >
                   No unit types
                 </Badge>
@@ -181,7 +181,7 @@ export default function FeaturedPropertyCard({
             </div>
           </div>
 
-          <p className="text-brand-muted line-clamp-3 text-sm sm:text-base leading-relaxed pr-16 md:pr-20 flex-1 !px-0">
+          <p className="text-brand-muted line-clamp-3 flex-1 !px-0 pr-16 text-sm leading-relaxed sm:text-base md:pr-20">
             {text}
           </p>
         </Link>

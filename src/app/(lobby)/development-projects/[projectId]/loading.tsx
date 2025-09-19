@@ -8,7 +8,7 @@ export default function ProjectLoading() {
     <div className="w-full max-w-full overflow-x-hidden">
       <Shell>
         {/* Breadcrumbs skeleton */}
-        <div className="flex items-center gap-2 my-4">
+        <div className="my-4 flex items-center gap-2">
           <Skeleton className="h-4 w-16" />
           <Skeleton className="h-4 w-4" />
           <Skeleton className="h-4 w-24" />
@@ -18,22 +18,22 @@ export default function ProjectLoading() {
       </Shell>
 
       {/* Hero image skeleton */}
-      <div className="relative w-full h-[250px] md:h-[450px] overflow-hidden flex md:mb-4 bg-gray-200">
-        <Skeleton className="w-full h-full" />
+      <div className="relative flex h-[250px] w-full overflow-hidden bg-gray-200 md:mb-4 md:h-[450px]">
+        <Skeleton className="h-full w-full" />
       </div>
 
       <Shell>
         <div className="h-fit w-full bg-inherit">
           <div className="relative z-10 flex items-end gap-2 p-3 lg:-top-14 lg:gap-8">
             {/* Company Logo Card skeleton */}
-            <div className="bg-white rounded-lg p-2 w-[130px] h-[130px] md:w-[160px] md:h-[160px] flex items-center justify-center border shadow-lg">
-              <Skeleton className="w-[120px] h-[120px]" />
+            <div className="flex h-[130px] w-[130px] items-center justify-center rounded-lg border bg-white p-2 shadow-lg md:h-[160px] md:w-[160px]">
+              <Skeleton className="h-[120px] w-[120px]" />
             </div>
 
             <div className="flex grow items-center justify-between">
               <div className="grid">
-                <Skeleton className="h-8 w-64 mb-1" />
-                <Skeleton className="h-6 w-24 mb-3" />
+                <Skeleton className="mb-1 h-8 w-64" />
+                <Skeleton className="mb-3 h-6 w-24" />
                 <div className="space-y-2">
                   <Skeleton className="h-5 w-32" />
                   <Skeleton className="h-5 w-48" />
@@ -41,7 +41,7 @@ export default function ProjectLoading() {
               </div>
 
               <div className="flex items-center gap-2">
-                <Skeleton className="h-10 w-32 rounded-lg bg-gray-700 hidden md:flex" />
+                <Skeleton className="hidden h-10 w-32 rounded-lg bg-gray-700 md:flex" />
               </div>
             </div>
           </div>
@@ -49,21 +49,21 @@ export default function ProjectLoading() {
       </Shell>
 
       <Shell>
-        <div className="grid grid-cols-1 text-brand-accent w-full mt-12 md:grid-cols-[2fr,1fr] lg:gap-8">
+        <div className="text-brand-accent mt-12 grid w-full grid-cols-1 md:grid-cols-[2fr,1fr] lg:gap-8">
           <div className="mt-6 grid gap-8 px-3 pb-3 transition-all duration-300 ease-in lg:grid-cols-1 lg:px-0">
             {/* Project Highlight section */}
             <div>
-              <Skeleton className="h-6 w-32 mb-4" />
-              <div className="flex items-center gap-4 mb-2">
+              <Skeleton className="mb-4 h-6 w-32" />
+              <div className="mb-2 flex items-center gap-4">
                 <Skeleton className="h-8 w-64" />
                 <Skeleton className="h-6 w-24" />
               </div>
-              <Skeleton className="h-5 w-48 mb-2" />
+              <Skeleton className="mb-2 h-5 w-48" />
               <Skeleton className="h-5 w-56" />
             </div>
 
             {/* Price range card */}
-            <div className="mt-6 flex items-center justify-between rounded-lg border border-gray-200 bg-gradient-to-r from-gray-50 to-gray-50 p-4 md:p-6 shadow-sm">
+            <div className="mt-6 flex items-center justify-between rounded-lg border border-gray-200 bg-gradient-to-r from-gray-50 to-gray-50 p-4 shadow-sm md:p-6">
               <div className="space-y-2">
                 <Skeleton className="h-5 w-32" />
                 <Skeleton className="h-8 w-40" />
@@ -75,8 +75,8 @@ export default function ProjectLoading() {
             </div>
 
             {/* About Developer section */}
-            <div className="pt-14 md:pt-20 pb-10 md:pb-0">
-              <Skeleton className="h-6 w-32 mb-4" />
+            <div className="pt-14 pb-10 md:pt-20 md:pb-0">
+              <Skeleton className="mb-4 h-6 w-32" />
               <div className="space-y-2">
                 <Skeleton className="h-4 w-full" />
                 <Skeleton className="h-4 w-full" />
@@ -85,9 +85,9 @@ export default function ProjectLoading() {
             </div>
 
             {/* Project Details section */}
-            <div className="pt-14 md:pt-20 hidden md:block">
-              <Skeleton className="h-6 w-32 mb-4" />
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div className="hidden pt-14 md:block md:pt-20">
+              <Skeleton className="mb-4 h-6 w-32" />
+              <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
                 {Array.from({ length: 10 }, (_, i) => (
                   <div key={i} className="space-y-2">
                     <Skeleton className="h-4 w-24" />
@@ -99,8 +99,8 @@ export default function ProjectLoading() {
 
             {/* Features section */}
             <div className="pt-14 md:pt-20">
-              <Skeleton className="h-6 w-32 mb-4" />
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              <Skeleton className="mb-4 h-6 w-32" />
+              <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
                 {Array.from({ length: 6 }, (_, i) => (
                   <Skeleton key={i} className="h-6 w-32" />
                 ))}
@@ -111,7 +111,7 @@ export default function ProjectLoading() {
           {/* Sidebar */}
           <div className="space-y-6">
             <Card className="p-6">
-              <Skeleton className="h-6 w-32 mb-4" />
+              <Skeleton className="mb-4 h-6 w-32" />
               <div className="space-y-4">
                 <Skeleton className="h-10 w-full" />
                 <Skeleton className="h-10 w-full" />
@@ -120,7 +120,7 @@ export default function ProjectLoading() {
             </Card>
 
             <Card className="p-6">
-              <Skeleton className="h-6 w-32 mb-4" />
+              <Skeleton className="mb-4 h-6 w-32" />
               <div className="space-y-4">
                 <Skeleton className="h-20 w-full" />
                 <Skeleton className="h-20 w-full" />

@@ -90,7 +90,7 @@ const CarouselSlide = ({
     >
       <div>
         <Card className="h-[280px] w-full rounded-none border-0 py-0 shadow-none lg:max-h-[400px] lg:min-h-[400px]">
-          <CardContent className="flex items-center justify-center p-0 relative w-full h-full">
+          <CardContent className="relative flex h-full w-full items-center justify-center p-0">
             {isLoading && (
               <div className="absolute inset-0 flex h-full w-full items-center justify-center bg-gray-100">
                 <div className="h-8 w-8 animate-spin rounded-full border-4 border-orange-400 border-t-transparent" />
@@ -98,7 +98,7 @@ const CarouselSlide = ({
             )}
             <button
               onClick={onImageClick}
-              className="w-full h-full cursor-pointer"
+              className="h-full w-full cursor-pointer"
               aria-label={`View image ${index + 1} in full screen`}
             >
               <ImageWithFallback
@@ -237,18 +237,18 @@ export function DynamicCarousel({
           <CarouselPrevious
             aria-label="Previous slide"
             className={cn(
-              "absolute left-6 top-1/2 -translate-y-1/2 z-10 h-11 w-11 items-center justify-center bg-white text-accent-foreground shadow-md cursor-pointer focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary focus-visible:outline-none",
+              "text-accent-foreground focus-visible:ring-primary absolute top-1/2 left-6 z-10 h-11 w-11 -translate-y-1/2 cursor-pointer items-center justify-center bg-white shadow-md focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none",
               "hidden md:flex"
             )}
           />
           <CarouselNext
             aria-label="Next slide"
             className={cn(
-              "absolute right-6 top-1/2 -translate-y-1/2 z-10 h-11 w-11 items-center justify-center bg-white text-accent-foreground shadow-sm cursor-pointer focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary focus-visible:outline-none hidden md:flex"
+              "text-accent-foreground focus-visible:ring-primary absolute top-1/2 right-6 z-10 hidden h-11 w-11 -translate-y-1/2 cursor-pointer items-center justify-center bg-white shadow-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none md:flex"
             )}
           />
         </Carousel>
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20">
+        <div className="absolute bottom-4 left-1/2 z-20 -translate-x-1/2">
           <Badge variant="dark">
             Slide {current} of {count}
           </Badge>
@@ -256,7 +256,7 @@ export function DynamicCarousel({
         {/* Mobile favorite button overlay */}
         {(unitId || listingId) && (
           <div className="absolute top-4 right-4 z-20 block md:hidden">
-            <AddFavoriteButton 
+            <AddFavoriteButton
               listingId={unitId || listingId || 0}
               showLabel={false}
               size="md"

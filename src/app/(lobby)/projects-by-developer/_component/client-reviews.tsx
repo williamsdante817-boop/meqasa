@@ -169,10 +169,10 @@ export default function ClientReviews() {
       <Star
         key={i}
         className={cn(
-          "w-4 h-4",
+          "h-4 w-4",
           i < rating
-            ? "text-yellow-400 fill-yellow-400"
-            : "text-gray-300 fill-gray-300"
+            ? "fill-yellow-400 text-yellow-400"
+            : "fill-gray-300 text-gray-300"
         )}
       />
     ));
@@ -191,19 +191,19 @@ export default function ClientReviews() {
 
   return (
     <section aria-labelledby="reviews-heading" className="w-full">
-      <div className="flex items-center justify-between mb-6">
+      <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-            <MessageSquare className="w-4 h-4 text-blue-600" />
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100">
+            <MessageSquare className="h-4 w-4 text-blue-600" />
           </div>
           <div>
             <h2
               id="reviews-heading"
-              className="text-lg font-semibold text-brand-accent"
+              className="text-brand-accent text-lg font-semibold"
             >
               Client Reviews
             </h2>
-            <p className="text-sm text-brand-muted">
+            <p className="text-brand-muted text-sm">
               {mockReviews.length} verified reviews •{" "}
               {Math.round(
                 (mockReviews.reduce((acc, r) => acc + r.rating, 0) /
@@ -215,9 +215,9 @@ export default function ClientReviews() {
           </div>
         </div>
 
-        <div className="hidden sm:flex items-center gap-2">
+        <div className="hidden items-center gap-2 sm:flex">
           <div className="flex items-center gap-1">{renderStars(5)}</div>
-          <span className="text-sm font-medium text-brand-accent">
+          <span className="text-brand-accent text-sm font-medium">
             {Math.round(
               (mockReviews.reduce((acc, r) => acc + r.rating, 0) /
                 mockReviews.length) *
@@ -248,20 +248,20 @@ export default function ClientReviews() {
           {/* Enhanced Navigation Controls */}
           <CarouselPrevious
             className={cn(
-              "left-0 sm:left-4 hidden h-10 w-10 sm:h-12 sm:w-12 bg-white shadow-lg border-0 lg:flex transition-all duration-200",
+              "left-0 hidden h-10 w-10 border-0 bg-white shadow-lg transition-all duration-200 sm:left-4 sm:h-12 sm:w-12 lg:flex",
               canScrollPrev
-                ? "hover:bg-gray-50 hover:scale-110 cursor-pointer opacity-100"
-                : "opacity-40 cursor-not-allowed"
+                ? "cursor-pointer opacity-100 hover:scale-110 hover:bg-gray-50"
+                : "cursor-not-allowed opacity-40"
             )}
             aria-label="Previous review"
             disabled={!canScrollPrev}
           />
           <CarouselNext
             className={cn(
-              "right-0 sm:right-4 hidden h-10 w-10 sm:h-12 sm:w-12 bg-white shadow-lg border-0 lg:flex transition-all duration-200",
+              "right-0 hidden h-10 w-10 border-0 bg-white shadow-lg transition-all duration-200 sm:right-4 sm:h-12 sm:w-12 lg:flex",
               canScrollNext
-                ? "hover:bg-gray-50 hover:scale-110 cursor-pointer opacity-100"
-                : "opacity-40 cursor-not-allowed"
+                ? "cursor-pointer opacity-100 hover:scale-110 hover:bg-gray-50"
+                : "cursor-not-allowed opacity-40"
             )}
             aria-label="Next review"
             disabled={!canScrollNext}
@@ -269,14 +269,14 @@ export default function ClientReviews() {
         </Carousel>
 
         {/* Dot Indicators */}
-        <div className="flex justify-center mt-6 gap-2">
+        <div className="mt-6 flex justify-center gap-2">
           {mockReviews.map((_, index) => (
             <button
               key={index}
               className={cn(
-                "w-2 h-2 rounded-full transition-all duration-200",
+                "h-2 w-2 rounded-full transition-all duration-200",
                 currentSlide === index
-                  ? "bg-blue-600 w-6"
+                  ? "w-6 bg-blue-600"
                   : "bg-gray-300 hover:bg-gray-400"
               )}
               onClick={() => {
@@ -290,9 +290,9 @@ export default function ClientReviews() {
         </div>
 
         {/* Progress Bar */}
-        <div className="w-full bg-gray-200 rounded-full h-1 mt-4 overflow-hidden">
+        <div className="mt-4 h-1 w-full overflow-hidden rounded-full bg-gray-200">
           <div
-            className="bg-blue-600 h-1 rounded-full transition-all duration-300 ease-out"
+            className="h-1 rounded-full bg-blue-600 transition-all duration-300 ease-out"
             style={{
               width: `${((currentSlide + 1) / mockReviews.length) * 100}%`,
             }}
@@ -300,8 +300,8 @@ export default function ClientReviews() {
         </div>
 
         {/* Mobile Touch Instructions */}
-        <div className="lg:hidden text-center mt-4">
-          <p className="text-xs text-brand-muted">
+        <div className="mt-4 text-center lg:hidden">
+          <p className="text-brand-muted text-xs">
             Swipe left or right to browse reviews
           </p>
         </div>
@@ -313,20 +313,20 @@ export default function ClientReviews() {
           open={!!selectedReview}
           onOpenChange={() => setSelectedReview(null)}
         >
-          <DialogContent className="sm:max-w-[500px] max-h-[80vh] overflow-y-auto">
+          <DialogContent className="max-h-[80vh] overflow-y-auto sm:max-w-[500px]">
             <DialogTitle className="sr-only">
               Review from {selectedReview.name}
             </DialogTitle>
             <div className="space-y-4">
               {/* Header */}
-              <div className="flex items-start gap-4 pb-4 border-b">
+              <div className="flex items-start gap-4 border-b pb-4">
                 <Avatar className="h-12 w-12 border-2 border-blue-100">
                   <AvatarImage
                     src={selectedReview.avatar}
                     alt={`${selectedReview.name}'s profile picture`}
                     className="object-cover"
                   />
-                  <AvatarFallback className="bg-blue-100 text-blue-700 font-semibold">
+                  <AvatarFallback className="bg-blue-100 font-semibold text-blue-700">
                     {selectedReview.name
                       .split(" ")
                       .map((n) => n[0])
@@ -334,22 +334,22 @@ export default function ClientReviews() {
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <h3 className="font-semibold text-brand-accent">
+                  <div className="mb-1 flex items-center gap-2">
+                    <h3 className="text-brand-accent font-semibold">
                       {selectedReview.name}
                     </h3>
                     {selectedReview.verified && (
-                      <CheckCircle className="w-4 h-4 text-green-500" />
+                      <CheckCircle className="h-4 w-4 text-green-500" />
                     )}
                   </div>
-                  <p className="text-sm text-brand-muted mb-2">
+                  <p className="text-brand-muted mb-2 text-sm">
                     {selectedReview.role}
                   </p>
                   <div className="flex items-center gap-2">
                     <div className="flex items-center gap-1">
                       {renderStars(selectedReview.rating)}
                     </div>
-                    <span className="text-sm text-brand-muted">
+                    <span className="text-brand-muted text-sm">
                       {getTimeAgo(selectedReview.date)}
                     </span>
                   </div>
@@ -357,7 +357,7 @@ export default function ClientReviews() {
               </div>
 
               {/* Project Info */}
-              <div className="bg-blue-50 p-3 rounded-lg">
+              <div className="rounded-lg bg-blue-50 p-3">
                 <p className="text-sm font-medium text-blue-900">
                   Project: {selectedReview.project}
                 </p>
@@ -368,27 +368,27 @@ export default function ClientReviews() {
 
               {/* Review Content */}
               <div className="relative">
-                <Quote className="absolute -top-2 -left-2 w-6 h-6 text-blue-200 fill-blue-200" />
-                <p className="text-sm leading-relaxed text-brand-accent pl-4">
+                <Quote className="absolute -top-2 -left-2 h-6 w-6 fill-blue-200 text-blue-200" />
+                <p className="text-brand-accent pl-4 text-sm leading-relaxed">
                   {selectedReview.review}
                 </p>
               </div>
 
               {/* Actions */}
-              <div className="flex items-center justify-between pt-4 border-t">
+              <div className="flex items-center justify-between border-t pt-4">
                 <Button
                   variant="ghost"
                   size="sm"
                   className="flex items-center gap-2"
                 >
-                  <ThumbsUp className="w-4 h-4" />
+                  <ThumbsUp className="h-4 w-4" />
                   Helpful ({selectedReview.helpful})
                 </Button>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-brand-muted">
+                  <span className="text-brand-muted text-xs">
                     Verified Purchase
                   </span>
-                  <CheckCircle className="w-4 h-4 text-green-500" />
+                  <CheckCircle className="h-4 w-4 text-green-500" />
                 </div>
               </div>
             </div>
@@ -415,7 +415,7 @@ function ReviewCard({
   return (
     <div className="p-2 md:p-3">
       <Card
-        className="h-full w-full cursor-pointer rounded-xl border border-gray-200 p-4 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-blue-200 group"
+        className="group h-full w-full cursor-pointer rounded-xl border border-gray-200 p-4 transition-all duration-200 hover:-translate-y-1 hover:border-blue-200 hover:shadow-lg"
         onClick={() => onSelect(review)}
         role="button"
         tabIndex={0}
@@ -426,7 +426,7 @@ function ReviewCard({
           }
         }}
       >
-        <CardContent className="p-0 space-y-3">
+        <CardContent className="space-y-3 p-0">
           {/* Rating and Category */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1">
@@ -438,17 +438,17 @@ function ReviewCard({
           </div>
 
           {/* Review Text */}
-          <p className="line-clamp-4 text-sm text-brand-accent leading-relaxed">
+          <p className="text-brand-accent line-clamp-4 text-sm leading-relaxed">
             &ldquo;{review.review}&rdquo;
           </p>
 
           {/* Project */}
-          <div className="bg-gray-50 p-2 rounded text-xs text-brand-muted">
+          <div className="text-brand-muted rounded bg-gray-50 p-2 text-xs">
             Project: <span className="font-medium">{review.project}</span>
           </div>
         </CardContent>
 
-        <CardFooter className="mt-4 p-0 flex items-center justify-between">
+        <CardFooter className="mt-4 flex items-center justify-between p-0">
           <div className="flex items-center gap-3">
             <Avatar className="h-8 w-8 border">
               <AvatarImage
@@ -456,7 +456,7 @@ function ReviewCard({
                 className="object-cover"
                 alt={`${review.name}'s profile picture`}
               />
-              <AvatarFallback className="text-xs font-semibold bg-blue-100 text-blue-700">
+              <AvatarFallback className="bg-blue-100 text-xs font-semibold text-blue-700">
                 {review.name
                   .split(" ")
                   .map((n) => n[0])
@@ -465,23 +465,23 @@ function ReviewCard({
             </Avatar>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-medium text-sm text-brand-accent">
+                <span className="text-brand-accent text-sm font-medium">
                   {review.name}
                 </span>
                 {review.verified && (
-                  <CheckCircle className="w-3 h-3 text-green-500" />
+                  <CheckCircle className="h-3 w-3 text-green-500" />
                 )}
               </div>
-              <p className="text-xs text-brand-muted">{review.role}</p>
+              <p className="text-brand-muted text-xs">{review.role}</p>
             </div>
           </div>
 
           <div className="text-right">
-            <div className="flex items-center gap-1 text-xs text-brand-muted">
-              <ThumbsUp className="w-3 h-3" />
+            <div className="text-brand-muted flex items-center gap-1 text-xs">
+              <ThumbsUp className="h-3 w-3" />
               <span>{review.helpful}</span>
             </div>
-            <p className="text-xs text-brand-muted mt-1">
+            <p className="text-brand-muted mt-1 text-xs">
               {getTimeAgo(review.date)}
             </p>
           </div>

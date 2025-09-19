@@ -62,19 +62,21 @@ export function MoreFiltersPopover({
 
   return (
     <Popover>
-      <PopoverTrigger className="flex min-w-[150px] h-5 max-w-[150px] cursor-pointer items-center justify-between rounded-lg text-base font-medium text-white whitespace-nowrap">
+      <PopoverTrigger className="flex h-5 max-w-[150px] min-w-[150px] cursor-pointer items-center justify-between rounded-lg text-base font-medium whitespace-nowrap text-white">
         <span className="flex-shrink-0">More filters</span>
         <SlidersHorizontal className="ml-2 h-4 w-4 flex-shrink-0" />
       </PopoverTrigger>
       <PopoverContent className="w-[400px] p-4">
-        <div className={`mb-4 ${contractType === "rent" ? "grid grid-cols-2" : "grid grid-cols-1"} items-center gap-2`}>
+        <div
+          className={`mb-4 ${contractType === "rent" ? "grid grid-cols-2" : "grid grid-cols-1"} items-center gap-2`}
+        >
           {/* Rent Period - Only show for rent tab */}
           {contractType === "rent" && (
             <Select
               value={formState.period}
               onValueChange={(value) => updateFormState({ period: value })}
             >
-              <SelectTrigger className="h-11 min-w-fit font-semibold text-b-accent">
+              <SelectTrigger className="text-b-accent h-11 min-w-fit font-semibold">
                 <SelectValue placeholder="Rent period" />
               </SelectTrigger>
               <SelectContent className="text-b-accent">
@@ -95,10 +97,10 @@ export function MoreFiltersPopover({
             value={formState.sort}
             onValueChange={(value) => updateFormState({ sort: value })}
           >
-            <SelectTrigger className="h-11 min-w-full font-semibold text-b-accent">
+            <SelectTrigger className="text-b-accent h-11 min-w-full font-semibold">
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
-            <SelectContent className="border-none text-b-accent shadow-spread">
+            <SelectContent className="text-b-accent shadow-spread border-none">
               <SelectGroup>
                 <SelectItem value="- Any -">Any Sort</SelectItem>
                 {(config.sort || fallbackMoreOptions.sort).map(
@@ -115,7 +117,7 @@ export function MoreFiltersPopover({
 
         {/* Hide furnished and owner options for land */}
         {contractType !== "land" && (
-          <div className="flex items-start justify-between pt-8 text-sm font-semibold text-b-accent">
+          <div className="text-b-accent flex items-start justify-between pt-8 text-sm font-semibold">
             <span>Only show...</span>
             <div>
               <div className="mb-2 flex items-center space-x-2">
@@ -125,7 +127,7 @@ export function MoreFiltersPopover({
                   onCheckedChange={(checked) =>
                     updateFormState({ furnished: !!checked })
                   }
-                  className="data-[state=checked]:border-0 data-[state=checked]:bg-primary data-[state=checked]:text-white"
+                  className="data-[state=checked]:bg-primary data-[state=checked]:border-0 data-[state=checked]:text-white"
                 />
                 <label
                   htmlFor="furnished"
@@ -141,7 +143,7 @@ export function MoreFiltersPopover({
                   onCheckedChange={(checked) =>
                     updateFormState({ owner: !!checked })
                   }
-                  className="data-[state=checked]:border-0 data-[state=checked]:bg-primary data-[state=checked]:text-white"
+                  className="data-[state=checked]:bg-primary data-[state=checked]:border-0 data-[state=checked]:text-white"
                 />
                 <label
                   htmlFor="owner"

@@ -310,13 +310,15 @@ export default async function DetailsPage({
   return (
     <>
       {/* Structured Data for SEO - following homepage pattern */}
-      <StructuredData data={generateListingDetailStructuredData(listingDetail, slug)} />
+      <StructuredData
+        data={generateListingDetailStructuredData(listingDetail, slug)}
+      />
       <StructuredData data={generateWebsiteStructuredData()} />
       <StructuredData data={generateOrganizationStructuredData()} />
 
       <main>
         <Shell>
-          <div className="space-y-3 mb-3">
+          <div className="mb-3 space-y-3">
             <Breadcrumbs
               className="pt-4"
               segments={[
@@ -336,47 +338,47 @@ export default async function DetailsPage({
               ]}
               aria-label="Property listing navigation"
             />
-            <h1 className="font-bold leading-tight tracking-tighter text-brand-accent lg:leading-[1.1] text-2xl md:text-3xl capitalize">
+            <h1 className="text-brand-accent text-2xl leading-tight font-bold tracking-tighter capitalize md:text-3xl lg:leading-[1.1]">
               {listingDetail.title}
             </h1>
           </div>
         </Shell>
         <section
-          className="border-b border-brand-badge-ongoing bg-black flex items-center justify-center"
+          className="border-brand-badge-ongoing flex items-center justify-center border-b bg-black"
           aria-label="Property images"
         >
-          <DynamicCarousel 
-            images={listingDetail.imagelist} 
+          <DynamicCarousel
+            images={listingDetail.imagelist}
             listingId={Number(listingDetail.detailreq.split("-").pop()) || 0}
           />
         </section>
         <Shell>
-          <div className="grid grid-cols-1 text-brand-accent w-full mt-4 lg:grid-cols-[2fr_1fr] lg:gap-8 lg:px-0">
+          <div className="text-brand-accent mt-4 grid w-full grid-cols-1 lg:grid-cols-[2fr_1fr] lg:gap-8 lg:px-0">
             <div>
-              <div className="flex items-start justify-between flex-wrap gap-3 md:flex-nowrap md:items-center md:gap-4">
+              <div className="flex flex-wrap items-start justify-between gap-3 md:flex-nowrap md:items-center md:gap-4">
                 <div className="flex items-center">
                   <h2
-                    className="text-2xl font-extrabold text-brand-accent lg:text-3xl"
+                    className="text-brand-accent text-2xl font-extrabold lg:text-3xl"
                     dangerouslySetInnerHTML={safePriceHtml}
                   />
-                  <span className="text-brand-muted font-light text-sm md:text-xl ml-2">
+                  <span className="text-brand-muted ml-2 text-sm font-light md:text-xl">
                     {listingDetail.leaseunit}
                   </span>
                 </div>
-                <div className="flex gap-2 md:gap-3 text-xs flex-wrap items-center">
+                <div className="flex flex-wrap items-center gap-2 text-xs md:gap-3">
                   {(listingDetail.owner.verification ===
                     VERIFICATION_STATUSES.APPROVED ||
                     listingDetail.owner.verification ===
                       VERIFICATION_STATUSES.APPROVED2) && (
                     <Badge variant="success" className="uppercase">
-                      <ShieldCheck className="h-3 w-3 mr-1" />
+                      <ShieldCheck className="mr-1 h-3 w-3" />
                       Verified
                     </Badge>
                   )}
                   {listingDetail.owner.verification ===
                     VERIFICATION_STATUSES.APPROVED3 && (
                     <Badge variant="success" className="uppercase">
-                      <ShieldCheck className="h-3 w-3 mr-1" />
+                      <ShieldCheck className="mr-1 h-3 w-3" />
                       Verified Owner
                     </Badge>
                   )}
@@ -387,8 +389,10 @@ export default async function DetailsPage({
                   )}
                   {/* Desktop favorite button - hidden on mobile since it's in carousel */}
                   <div className="hidden md:block">
-                    <AddFavoriteButton 
-                      listingId={Number(listingDetail.detailreq.split("-").pop()) || 0}
+                    <AddFavoriteButton
+                      listingId={
+                        Number(listingDetail.detailreq.split("-").pop()) || 0
+                      }
                       showLabel={true}
                       size="md"
                       hideLabelOnMobile={false}
@@ -402,15 +406,15 @@ export default async function DetailsPage({
                 garages={listingDetail.garages}
                 floorArea={listingDetail.floorarea}
               />
-              <div className="flex items-center gap-4 mb-6">
+              <div className="mb-6 flex items-center gap-4">
                 <Badge variant="info" className="uppercase">
                   {isFurnished ? "Furnished" : "Unfurnished"}
                 </Badge>
                 <Badge
                   variant="info"
-                  className="uppercase max-w-[280px] md:max-w-full"
+                  className="max-w-[280px] uppercase md:max-w-full"
                 >
-                  <p className="truncate w-full">{listingDetail.location}</p>
+                  <p className="w-full truncate">{listingDetail.location}</p>
                 </Badge>
               </div>
               <TrendingPropertyCard
@@ -421,9 +425,7 @@ export default async function DetailsPage({
                     ? parseInt(listingDetail.owner.listingscount) || 0
                     : 0
                 }
-                threshold={
-                  listingDetail.owner.type === "Agent" ? 5 : 100
-                }
+                threshold={listingDetail.owner.type === "Agent" ? 5 : 100}
               />
               <PropertyContextCard
                 propertyType="listing"
@@ -441,9 +443,8 @@ export default async function DetailsPage({
                 title="Description"
                 description=""
                 href="/listings"
-                className="pt-14 md:pt-20 px-0 pb-10 overflow-hidden md:pb-0"
+                className="overflow-hidden px-0 pt-14 pb-10 md:pt-20 md:pb-0"
                 btnHidden
-                
               >
                 {listingDetail?.description &&
                 listingDetail.description.trim() !== "" ? (
@@ -464,7 +465,7 @@ export default async function DetailsPage({
                 title="Explore More"
                 description=""
                 href="/listings"
-                className="pt-14 px-0 md:pt-20"
+                className="px-0 pt-14 md:pt-20"
                 btnHidden
               >
                 <PropertyShowcase images={listingDetail?.imagelist} />
@@ -562,8 +563,8 @@ export default async function DetailsPage({
             description=""
             href={similarSearchHref}
             className={cn(
-              "w-full mx-auto",
-              "pt-14 md:pt-20 lg:pt-24 md:block mb-6 [&_p]:px-4 [&_h2]:px-4 md:[&_p]:px-0 md:[&_h2]:px-0"
+              "mx-auto w-full",
+              "mb-6 pt-14 md:block md:pt-20 lg:pt-24 [&_h2]:px-4 md:[&_h2]:px-0 [&_p]:px-4 md:[&_p]:px-0"
             )}
           >
             <PropertyListings

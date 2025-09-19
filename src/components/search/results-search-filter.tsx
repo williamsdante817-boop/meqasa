@@ -62,17 +62,17 @@ function SearchFilterErrorBoundary({
 
   if (hasError) {
     return (
-      <div className="bg-red-50 border border-red-200 rounded-lg p-4 mx-4 my-4">
+      <div className="mx-4 my-4 rounded-lg border border-red-200 bg-red-50 p-4">
         <div className="flex items-center">
-          <AlertCircle className="h-5 w-5 text-red-400 mr-2" />
-          <div className="text-sm sm:text-base text-red-700">
+          <AlertCircle className="mr-2 h-5 w-5 text-red-400" />
+          <div className="text-sm text-red-700 sm:text-base">
             Something went wrong with the search filters. Please refresh the
             page.
           </div>
         </div>
         <button
           onClick={() => setHasError(false)}
-          className="mt-2 text-sm text-red-600 hover:text-red-800 underline"
+          className="mt-2 text-sm text-red-600 underline hover:text-red-800"
         >
           Try again
         </button>
@@ -113,24 +113,24 @@ export function ResultSearchFilter() {
     // Normalize property type for case-insensitive matching
     const normalizePropertyType = (type: string | undefined): string => {
       if (!type || type === "all") return "all";
-      
+
       // Common property type mappings (case-insensitive)
       const typeMap: Record<string, string> = {
-        'apartment': 'apartment',
-        'apartments': 'apartment',
-        'house': 'house',
-        'houses': 'house', 
-        'townhouse': 'townhouse',
-        'townhouses': 'townhouse',
-        'office': 'office',
-        'offices': 'office',
-        'land': 'land',
-        'commercial': 'commercial',
-        'warehouse': 'warehouse',
-        'shop': 'shop',
-        'studio': 'studio'
+        apartment: "apartment",
+        apartments: "apartment",
+        house: "house",
+        houses: "house",
+        townhouse: "townhouse",
+        townhouses: "townhouse",
+        office: "office",
+        offices: "office",
+        land: "land",
+        commercial: "commercial",
+        warehouse: "warehouse",
+        shop: "shop",
+        studio: "studio",
       };
-      
+
       const lowercaseType = type.toLowerCase().trim();
       return typeMap[lowercaseType] || lowercaseType;
     };
@@ -176,25 +176,25 @@ export function ResultSearchFilter() {
   // Don't render until initialized
   if (!isInitialized) {
     return (
-      <div className="bg-white border border-gray-200 shadow-sm">
+      <div className="border border-gray-200 bg-white shadow-sm">
         <div className="overflow-x-auto">
-          <div className="flex items-center gap-2 p-4 container mx-auto min-w-fit">
-            <div className="h-10 sm:h-12 w-28 sm:w-32 bg-gray-100 animate-pulse rounded flex-shrink-0"></div>
-            <div className="flex-1 min-w-[120px] sm:min-w-[200px] h-10 sm:h-12 bg-gray-100 animate-pulse rounded"></div>
-            <div className="h-10 sm:h-12 w-32 sm:w-40 bg-gray-100 animate-pulse rounded flex-shrink-0"></div>
-            <div className="h-10 sm:h-12 w-24 sm:w-32 bg-gray-100 animate-pulse rounded flex-shrink-0"></div>
-            <div className="h-10 sm:h-12 w-24 sm:w-32 bg-gray-100 animate-pulse rounded flex-shrink-0"></div>
-            <div className="h-10 sm:h-12 w-28 sm:w-40 bg-gray-100 animate-pulse rounded flex-shrink-0"></div>
-            <div className="h-10 sm:h-12 w-20 sm:w-32 bg-gray-100 animate-pulse rounded flex-shrink-0"></div>
-            <div className="h-10 sm:h-12 w-20 sm:w-32 bg-gray-100 animate-pulse rounded flex-shrink-0"></div>
+          <div className="container mx-auto flex min-w-fit items-center gap-2 p-4">
+            <div className="h-10 w-28 flex-shrink-0 animate-pulse rounded bg-gray-100 sm:h-12 sm:w-32"></div>
+            <div className="h-10 min-w-[120px] flex-1 animate-pulse rounded bg-gray-100 sm:h-12 sm:min-w-[200px]"></div>
+            <div className="h-10 w-32 flex-shrink-0 animate-pulse rounded bg-gray-100 sm:h-12 sm:w-40"></div>
+            <div className="h-10 w-24 flex-shrink-0 animate-pulse rounded bg-gray-100 sm:h-12 sm:w-32"></div>
+            <div className="h-10 w-24 flex-shrink-0 animate-pulse rounded bg-gray-100 sm:h-12 sm:w-32"></div>
+            <div className="h-10 w-28 flex-shrink-0 animate-pulse rounded bg-gray-100 sm:h-12 sm:w-40"></div>
+            <div className="h-10 w-20 flex-shrink-0 animate-pulse rounded bg-gray-100 sm:h-12 sm:w-32"></div>
+            <div className="h-10 w-20 flex-shrink-0 animate-pulse rounded bg-gray-100 sm:h-12 sm:w-32"></div>
           </div>
         </div>
-        <div className="px-4 pb-4 container mx-auto">
+        <div className="container mx-auto px-4 pb-4">
           <div className="flex flex-wrap gap-2">
             {Array.from({ length: 3 }).map((_, idx) => (
               <div
                 key={idx}
-                className="h-8 w-20 bg-gray-100 animate-pulse rounded-full"
+                className="h-8 w-20 animate-pulse rounded-full bg-gray-100"
               ></div>
             ))}
           </div>
@@ -396,20 +396,20 @@ export function ResultSearchFilter() {
 
   return (
     <SearchFilterErrorBoundary>
-      <div className="bg-white border border-gray-200">
+      <div className="border border-gray-200 bg-white">
         {/* Error Display */}
         {error && (
-          <div className="bg-red-50 border-l-4 border-red-400 p-4 mx-4 mt-4">
+          <div className="mx-4 mt-4 border-l-4 border-red-400 bg-red-50 p-4">
             <div className="flex">
-              <AlertCircle className="h-5 w-5 text-red-400 mr-2" />
-              <div className="text-sm sm:text-base text-red-700">{error}</div>
+              <AlertCircle className="mr-2 h-5 w-5 text-red-400" />
+              <div className="text-sm text-red-700 sm:text-base">{error}</div>
             </div>
           </div>
         )}
 
         {/* Mobile-responsive filter container with horizontal scrolling */}
         <div className="overflow-x-auto">
-          <div className="flex items-center gap-2 p-4 container mx-auto min-w-fit">
+          <div className="container mx-auto flex min-w-fit items-center gap-2 p-4">
             {/* For Sale/Rent Dropdown - Hidden for short-let searches */}
             {!isShortLetSearch() && (
               <Select
@@ -418,7 +418,7 @@ export function ResultSearchFilter() {
                   updateFormState({ listingType: value })
                 }
               >
-                <SelectTrigger className="h-10 sm:h-12 w-28 sm:w-32 bg-white text-brand-accent border-gray-200 hover:bg-gray-50 shadow-none cursor-pointer text-sm sm:text-base flex-shrink-0">
+                <SelectTrigger className="text-brand-accent h-10 w-28 flex-shrink-0 cursor-pointer border-gray-200 bg-white text-sm shadow-none hover:bg-gray-50 sm:h-12 sm:w-32 sm:text-base">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -452,7 +452,7 @@ export function ResultSearchFilter() {
                   updateFormState({ propertyType: value })
                 }
               >
-                <SelectTrigger className="h-10 sm:h-12 w-32 sm:w-40 text-brand-accent bg-white border-gray-200 hover:bg-gray-50 shadow-none cursor-pointer text-sm sm:text-base flex-shrink-0">
+                <SelectTrigger className="text-brand-accent h-10 w-32 flex-shrink-0 cursor-pointer border-gray-200 bg-white text-sm shadow-none hover:bg-gray-50 sm:h-12 sm:w-40 sm:text-base">
                   <SelectValue placeholder="Type" />
                 </SelectTrigger>
                 <SelectContent>
@@ -482,7 +482,7 @@ export function ResultSearchFilter() {
                 value={formState.howShort ?? "- Any -"}
                 onValueChange={(value) => updateFormState({ howShort: value })}
               >
-                <SelectTrigger className="h-10 sm:h-12 w-32 sm:w-40 text-brand-accent bg-white border-gray-200 hover:bg-gray-50 shadow-none cursor-pointer text-sm sm:text-base flex-shrink-0">
+                <SelectTrigger className="text-brand-accent h-10 w-32 flex-shrink-0 cursor-pointer border-gray-200 bg-white text-sm shadow-none hover:bg-gray-50 sm:h-12 sm:w-40 sm:text-base">
                   <SelectValue placeholder="Duration" />
                 </SelectTrigger>
                 <SelectContent>
@@ -512,7 +512,7 @@ export function ResultSearchFilter() {
                 value={formState.bedrooms || "- Any -"}
                 onValueChange={(value) => updateFormState({ bedrooms: value })}
               >
-                <SelectTrigger className="h-10 sm:h-12 w-24 sm:w-32 text-brand-accent bg-white border-gray-200 hover:bg-gray-50 shadow-none cursor-pointer text-sm sm:text-base flex-shrink-0">
+                <SelectTrigger className="text-brand-accent h-10 w-24 flex-shrink-0 cursor-pointer border-gray-200 bg-white text-sm shadow-none hover:bg-gray-50 sm:h-12 sm:w-32 sm:text-base">
                   <SelectValue placeholder="Beds" />
                 </SelectTrigger>
                 <SelectContent>
@@ -542,7 +542,7 @@ export function ResultSearchFilter() {
                 value={formState.bathrooms || "- Any -"}
                 onValueChange={(value) => updateFormState({ bathrooms: value })}
               >
-                <SelectTrigger className="h-10 sm:h-12 w-24 sm:w-32 text-brand-accent bg-white border-gray-200 hover:bg-gray-50 shadow-none cursor-pointer text-sm sm:text-base flex-shrink-0">
+                <SelectTrigger className="text-brand-accent h-10 w-24 flex-shrink-0 cursor-pointer border-gray-200 bg-white text-sm shadow-none hover:bg-gray-50 sm:h-12 sm:w-32 sm:text-base">
                   <SelectValue placeholder="Baths" />
                 </SelectTrigger>
                 <SelectContent>
@@ -590,9 +590,7 @@ export function ResultSearchFilter() {
               <MoreFiltersPopover
                 formState={formState}
                 updateFormState={updateFormState}
-                contractType={
-                  formState.listingType === "rent" ? "rent" : "buy"
-                }
+                contractType={formState.listingType === "rent" ? "rent" : "buy"}
               />
             </div>
 
@@ -600,11 +598,11 @@ export function ResultSearchFilter() {
             <Button
               onClick={handleSearch}
               disabled={isSearching}
-              className="h-10 sm:h-12 bg-brand-primary hover:bg-brand-primary-dark text-white px-3 sm:px-6 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 text-sm sm:text-base flex-shrink-0"
+              className="bg-brand-primary hover:bg-brand-primary-dark h-10 flex-shrink-0 px-3 text-sm text-white transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 sm:h-12 sm:px-6 sm:text-base"
             >
               {isSearching ? (
                 <div className="flex items-center gap-1 sm:gap-2">
-                  <div className="w-3 h-3 sm:w-4 sm:h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <div className="h-3 w-3 animate-spin rounded-full border-2 border-white/30 border-t-white sm:h-4 sm:w-4" />
                   <span className="hidden sm:inline">Searching...</span>
                   <span className="sm:hidden">...</span>
                 </div>

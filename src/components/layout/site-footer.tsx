@@ -24,13 +24,13 @@ export function SiteFooter() {
     >
       <PropertyAlertsForm />
       <Shell>
-        <section className="flex flex-col py-16 gap-10">
+        <section className="flex flex-col gap-10 py-16">
           <h2 id="footer-heading" className="sr-only">
             Site Footer
           </h2>
           <nav
             aria-label="Footer Navigation"
-            className="grid flex-1 grid-cols-2 gap-4 lg:gap-10 xxs:grid-cols-2 sm:grid-cols-4"
+            className="xxs:grid-cols-2 grid flex-1 grid-cols-2 gap-4 sm:grid-cols-4 lg:gap-10"
           >
             {siteConfig.footerNav.map((item) => (
               <div key={item.title} className="space-y-3">
@@ -58,7 +58,7 @@ export function SiteFooter() {
             ))}
           </nav>
           <FooterCompanyLink />
-          <div className="border-t border-gray-600 mt-8 pt-8 text-xs text-gray-400">
+          <div className="mt-8 border-t border-gray-600 pt-8 text-xs text-gray-400">
             <p>© {new Date().getFullYear()} meQasa. All rights reserved.</p>
           </div>
         </section>
@@ -96,13 +96,13 @@ function FooterCompanyLink() {
 
   return (
     <section
-      className="border-t border-gray-600 mt-8 pt-8"
+      className="mt-8 border-t border-gray-600 pt-8"
       aria-labelledby="footer-company-heading"
     >
       <h3 id="footer-company-heading" className="sr-only">
         Company Links
       </h3>
-      <div className="grid flex-1 grid-cols-2 gap-10 xxs:grid-cols-2 sm:grid-cols-4">
+      <div className="xxs:grid-cols-2 grid flex-1 grid-cols-2 gap-10 sm:grid-cols-4">
         <div className="space-y-3">
           <h4 className="text-base font-medium">Contact</h4>
           <ul className="space-y-0.5" role="list">

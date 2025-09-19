@@ -74,7 +74,7 @@ export function ResultsPopup({ type }: ResultsPopupProps) {
   return (
     <TooltipProvider>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="max-w-full lg:max-w-3xl p-0 overflow-hidden">
+        <DialogContent className="max-w-full overflow-hidden p-0 lg:max-w-3xl">
           <DialogHeader className="p-0">
             <div className="relative">
               <Tooltip>
@@ -90,10 +90,10 @@ export function ResultsPopup({ type }: ResultsPopupProps) {
                       alt={popupData.alt}
                       width={400}
                       height={300}
-                      className="w-full h-auto object-cover hover:opacity-95 transition-opacity"
+                      className="h-auto w-full object-cover transition-opacity hover:opacity-95"
                       priority
                     />
-                    <DialogTitle className="sr-only absolute bottom-0 left-0 right-0 bg-black/70 text-white p-4 text-sm">
+                    <DialogTitle className="sr-only absolute right-0 bottom-0 left-0 bg-black/70 p-4 text-sm text-white">
                       {popupData.title}
                     </DialogTitle>
                   </Link>

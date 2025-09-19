@@ -2,17 +2,17 @@ import React from "react";
 
 export default function AgentFaq() {
   return (
-    <div className="bg-gray-50 p-6 rounded-lg mb-6">
-      <h2 className="text-xl font-bold text-brand-accent mb-8">
+    <div className="mb-6 rounded-lg bg-gray-50 p-6">
+      <h2 className="text-brand-accent mb-8 text-xl font-bold">
         Agents Frequently Asked Questions
       </h2>
 
       <div className="space-y-6">
         <div>
-          <h3 className="font-semibold text-brand-accent mb-3">
+          <h3 className="text-brand-accent mb-3 font-semibold">
             Why do I need an Agent?
           </h3>
-          <ol className="space-y-2 text-brand-accent">
+          <ol className="text-brand-accent space-y-2">
             <li className="text-brand-muted">
               1.{" "}
               <span className="text-blue-600">
@@ -34,10 +34,10 @@ export default function AgentFaq() {
         </div>
 
         <div>
-          <h3 className="font-semibold text-brand-accent mb-3">
+          <h3 className="text-brand-accent mb-3 font-semibold">
             Why do some Agents Charge Registration fees?
           </h3>
-          <ol className="space-y-2 text-brand-accent">
+          <ol className="text-brand-accent space-y-2">
             <li className="text-brand-muted">
               1. <strong>Agent Commitment fee:</strong> Most Agents or Brokers
               charge commitment fees to enable them to see how serious clients
@@ -58,11 +58,11 @@ export default function AgentFaq() {
         </div>
 
         <div>
-          <h3 className="font-semibold text-brand-accent mb-3">
+          <h3 className="text-brand-accent mb-3 font-semibold">
             What are the qualities of a great Agent, Realtor or Associate
             Broker?
           </h3>
-          <ol className="space-y-2 text-brand-accent">
+          <ol className="text-brand-accent space-y-2">
             <li className="text-brand-muted">
               1. <strong>Knowledge of the Locality:</strong>{" "}
               <span className="text-blue-600">
@@ -81,7 +81,7 @@ export default function AgentFaq() {
         </div>
 
         <div>
-          <h3 className="font-semibold text-brand-accent mb-3">
+          <h3 className="text-brand-accent mb-3 font-semibold">
             What is an Agent average salary
           </h3>
           <p className="text-brand-accent">

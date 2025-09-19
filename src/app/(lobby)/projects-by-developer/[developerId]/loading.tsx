@@ -5,37 +5,37 @@ export default function Loading() {
   return (
     <main role="main" aria-label="Loading developer profile">
       {/* Hero Section Skeleton */}
-      <div className="relative w-full min-h-[200px] h-[300px] sm:min-h-[250px] sm:h-[350px] md:min-h-[400px] md:h-[50vh] md:max-h-[600px] overflow-hidden flex">
+      <div className="relative flex h-[300px] min-h-[200px] w-full overflow-hidden sm:h-[350px] sm:min-h-[250px] md:h-[50vh] md:max-h-[600px] md:min-h-[400px]">
         {/* Background Image Skeleton */}
-        <Skeleton className="w-full h-full bg-gray-300" />
+        <Skeleton className="h-full w-full bg-gray-300" />
 
         <Shell>
           {/* Content Container - matching exact structure */}
           <div
-            className="absolute bottom-0 left-0 w-full h-48 sm:h-56 md:h-64 bg-gradient-to-t from-black/95 to-transparent"
+            className="absolute bottom-0 left-0 h-48 w-full bg-gradient-to-t from-black/95 to-transparent sm:h-56 md:h-64"
             aria-hidden="true"
           />
-          <div className="absolute bottom-4 md:pb-4 z-10 px-0 flex flex-col sm:flex-row items-start sm:items-end h-fit gap-4 sm:gap-6">
+          <div className="absolute bottom-4 z-10 flex h-fit flex-col items-start gap-4 px-0 sm:flex-row sm:items-end sm:gap-6 md:pb-4">
             {/* Company Logo Card Skeleton - Conditionally shown, hidden on mobile */}
-            <div className="bg-white/90 backdrop-blur-sm rounded-md p-2 min-w-[120px] min-h-[120px] sm:min-w-[140px] sm:min-h-[140px] md:min-w-[160px] md:min-h-[160px] w-[120px] h-[120px] sm:w-[140px] sm:h-[140px] md:w-[160px] md:h-[160px] md:flex items-center justify-center shadow-lg hidden">
-              <Skeleton className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded" />
+            <div className="hidden h-[120px] min-h-[120px] w-[120px] min-w-[120px] items-center justify-center rounded-md bg-white/90 p-2 shadow-lg backdrop-blur-sm sm:h-[140px] sm:min-h-[140px] sm:w-[140px] sm:min-w-[140px] md:flex md:h-[160px] md:min-h-[160px] md:w-[160px] md:min-w-[160px]">
+              <Skeleton className="h-20 w-20 rounded sm:h-24 sm:w-24 md:h-28 md:w-28" />
             </div>
 
             {/* Company Info Skeleton */}
             <div className="text-white drop-shadow-lg">
               {/* Company name - h1 with proper text sizing */}
-              <Skeleton className="h-8 sm:h-9 md:h-10 w-48 sm:w-56 md:w-64 mb-2 sm:mb-3 bg-white/20 rounded" />
+              <Skeleton className="mb-2 h-8 w-48 rounded bg-white/20 sm:mb-3 sm:h-9 sm:w-56 md:h-10 md:w-64" />
 
               {/* Active status with CheckCircle icon */}
-              <div className="flex items-center mb-2">
-                <Skeleton className="w-4 h-4 sm:w-5 sm:h-5 rounded-full mr-2 bg-green-400/20 flex-shrink-0" />
-                <Skeleton className="h-3 sm:h-4 w-32 sm:w-36 bg-white/20 rounded" />
+              <div className="mb-2 flex items-center">
+                <Skeleton className="mr-2 h-4 w-4 flex-shrink-0 rounded-full bg-green-400/20 sm:h-5 sm:w-5" />
+                <Skeleton className="h-3 w-32 rounded bg-white/20 sm:h-4 sm:w-36" />
               </div>
 
               {/* Location with MapPin icon */}
               <div className="flex items-center">
-                <Skeleton className="w-5 h-5 rounded-full mr-2 bg-brand-primary/20 flex-shrink-0" />
-                <Skeleton className="h-3 sm:h-4 w-40 sm:w-48 bg-white/20 rounded" />
+                <Skeleton className="bg-brand-primary/20 mr-2 h-5 w-5 flex-shrink-0 rounded-full" />
+                <Skeleton className="h-3 w-40 rounded bg-white/20 sm:h-4 sm:w-48" />
               </div>
             </div>
           </div>
@@ -43,11 +43,11 @@ export default function Loading() {
       </div>
 
       <Shell>
-        <div className="grid grid-cols-1 text-brand-accent w-full mt-4 lg:grid-cols-[2fr_1fr] lg:gap-8 lg:px-0">
+        <div className="text-brand-accent mt-4 grid w-full grid-cols-1 lg:grid-cols-[2fr_1fr] lg:gap-8 lg:px-0">
           <div>
             {/* Breadcrumbs Skeleton */}
             <nav aria-label="Breadcrumb navigation">
-              <div className="pb-4 flex items-center gap-2 text-gray-600">
+              <div className="flex items-center gap-2 pb-4 text-gray-600">
                 <Skeleton className="h-4 w-12 rounded" />
                 <Skeleton className="h-4 w-4 rounded-full" />
                 <Skeleton className="h-4 w-24 rounded" />
@@ -59,18 +59,18 @@ export default function Loading() {
             {/* Developer Tabs Skeleton - Matching actual DeveloperTabs component */}
             <div className="w-full">
               {/* Tabs Header - matching TabsList structure */}
-              <div className="grid h-full w-full grid-cols-3 px-2 bg-muted rounded-md p-1 mb-0">
-                <div className="group inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium">
+              <div className="bg-muted mb-0 grid h-full w-full grid-cols-3 rounded-md p-1 px-2">
+                <div className="group inline-flex items-center justify-center rounded-sm px-3 py-1.5 text-sm font-medium whitespace-nowrap">
                   <Skeleton className="h-4 w-20 sm:w-28" />
-                  <Skeleton className="hidden lg:flex ml-2 h-6 w-6 items-center justify-center rounded-md" />
+                  <Skeleton className="ml-2 hidden h-6 w-6 items-center justify-center rounded-md lg:flex" />
                 </div>
-                <div className="group inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium">
+                <div className="group inline-flex items-center justify-center rounded-sm px-3 py-1.5 text-sm font-medium whitespace-nowrap">
                   <Skeleton className="h-4 w-20 sm:w-24" />
-                  <Skeleton className="hidden lg:flex ml-2 h-6 w-6 items-center justify-center rounded-md" />
+                  <Skeleton className="ml-2 hidden h-6 w-6 items-center justify-center rounded-md lg:flex" />
                 </div>
-                <div className="group inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium">
+                <div className="group inline-flex items-center justify-center rounded-sm px-3 py-1.5 text-sm font-medium whitespace-nowrap">
                   <Skeleton className="h-4 w-16 sm:w-20" />
-                  <Skeleton className="hidden lg:flex ml-2 h-6 w-6 items-center justify-center rounded-md" />
+                  <Skeleton className="ml-2 hidden h-6 w-6 items-center justify-center rounded-md lg:flex" />
                 </div>
               </div>
 
@@ -84,15 +84,15 @@ export default function Loading() {
                       className="group relative h-full overflow-hidden rounded-lg border-0 bg-transparent p-0 shadow-none"
                     >
                       {/* ProjectCard structure - CardHeader p-0 gap-0 */}
-                      <div className="p-0 gap-0">
+                      <div className="gap-0 p-0">
                         {/* AspectRatio 16/9 */}
-                        <div className="aspect-[16/9] relative overflow-hidden rounded-lg">
-                          <Skeleton className="h-[180px] w-full rounded-lg lg:h-[254px] transition-transform duration-300" />
+                        <div className="relative aspect-[16/9] overflow-hidden rounded-lg">
+                          <Skeleton className="h-[180px] w-full rounded-lg transition-transform duration-300 lg:h-[254px]" />
 
                           {/* Status Badge and Project Name - absolute bottom-3 left-3 z-20 lg:bottom-4 lg:left-4 */}
                           <div className="absolute bottom-3 left-3 z-20 lg:bottom-4 lg:left-4">
-                            <Skeleton className="h-6 w-20 rounded-sm mb-2 bg-white/30" />
-                            <Skeleton className="h-5 w-32 lg:h-6 lg:w-40 bg-white/40 rounded" />
+                            <Skeleton className="mb-2 h-6 w-20 rounded-sm bg-white/30" />
+                            <Skeleton className="h-5 w-32 rounded bg-white/40 lg:h-6 lg:w-40" />
                           </div>
 
                           {/* Gradient Overlay - matching exact gradient */}
@@ -104,7 +104,7 @@ export default function Loading() {
                 </div>
 
                 {/* Pagination Skeleton - conditional based on items > 6 */}
-                <div className="flex items-center justify-center gap-2 mt-8">
+                <div className="mt-8 flex items-center justify-center gap-2">
                   <Skeleton className="h-8 w-8 rounded" />
                   <Skeleton className="h-8 w-8 rounded" />
                   <Skeleton className="h-8 w-8 rounded" />
@@ -116,8 +116,8 @@ export default function Loading() {
 
             {/* About Developer Section Skeleton */}
             <section aria-labelledby="about-developer-heading">
-              <div className="pt-10 sm:pt-14 md:pt-20 pb-8 sm:pb-10 md:pb-0">
-                <Skeleton className="h-8 w-48 mb-6 rounded" />
+              <div className="pt-10 pb-8 sm:pt-14 sm:pb-10 md:pt-20 md:pb-0">
+                <Skeleton className="mb-6 h-8 w-48 rounded" />
                 <div className="prose prose-sm max-w-none space-y-3">
                   <Skeleton className="h-4 w-full rounded" />
                   <Skeleton className="h-4 w-full rounded" />
@@ -133,11 +133,11 @@ export default function Loading() {
 
             {/* Client Reviews Section Skeleton */}
             <section aria-labelledby="client-reviews-heading">
-              <div className="pt-10 sm:pt-14 md:pt-20 pb-8 sm:pb-10 md:pb-0">
-                <Skeleton className="h-8 w-80 mb-6 rounded" />
+              <div className="pt-10 pb-8 sm:pt-14 sm:pb-10 md:pt-20 md:pb-0">
+                <Skeleton className="mb-6 h-8 w-80 rounded" />
                 <div className="space-y-4">
                   {Array.from({ length: 3 }).map((_, i) => (
-                    <div key={i} className="border rounded-lg p-4 space-y-3">
+                    <div key={i} className="space-y-3 rounded-lg border p-4">
                       <div className="flex items-center gap-3">
                         <Skeleton className="h-12 w-12 rounded-full" />
                         <div className="flex-1 space-y-2">
@@ -167,12 +167,12 @@ export default function Loading() {
 
           {/* Sidebar Contact Card Skeleton */}
           <aside
-            className="hidden lg:block pb-6 sticky top-4"
+            className="sticky top-4 hidden pb-6 lg:block"
             aria-label="Contact information"
           >
-            <div className="border rounded-lg p-6 space-y-4 bg-white shadow-sm">
+            <div className="space-y-4 rounded-lg border bg-white p-6 shadow-sm">
               {/* Contact Header */}
-              <div className="flex items-center gap-4 pb-4 border-b">
+              <div className="flex items-center gap-4 border-b pb-4">
                 <Skeleton className="h-12 w-12 rounded-full" />
                 <div className="flex-1 space-y-2">
                   <Skeleton className="h-5 w-32" />
@@ -188,7 +188,7 @@ export default function Loading() {
               </div>
 
               {/* Additional Info */}
-              <div className="pt-4 border-t space-y-2">
+              <div className="space-y-2 border-t pt-4">
                 <div className="flex items-center gap-2">
                   <Skeleton className="h-4 w-4 rounded-full" />
                   <Skeleton className="h-4 w-32" />
@@ -200,7 +200,7 @@ export default function Loading() {
               </div>
 
               {/* Social Links */}
-              <div className="pt-4 border-t">
+              <div className="border-t pt-4">
                 <div className="flex items-center gap-3">
                   <Skeleton className="h-8 w-8 rounded-full" />
                   <Skeleton className="h-8 w-8 rounded-full" />

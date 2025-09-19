@@ -35,6 +35,7 @@ export default function RootLayout({
           "min-h-screen bg-gray-50 font-sans antialiased",
           fontSans.variable
         )}
+        suppressHydrationWarning
       >
         <QueryProvider>{children}</QueryProvider>
         <Toaster />

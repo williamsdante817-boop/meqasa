@@ -78,7 +78,7 @@ export function ImageWithFallback(props: ImageWithFallbackProps) {
       className={cn(
         "duration-700 ease-in-out",
         withBlur && isLoading && "scale-105 blur-sm",
-        withBlur && !isLoading && "scale-100 blur-0",
+        withBlur && !isLoading && "blur-0 scale-100",
         className
       )}
       loading={loading ?? (priority ? undefined : "lazy")}

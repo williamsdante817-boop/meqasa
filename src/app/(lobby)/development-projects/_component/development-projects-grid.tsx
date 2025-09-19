@@ -61,44 +61,47 @@ export default function DevelopmentProjectsGrid({
   };
 
   // Filter projects based on search params
-  const getFilteredProjects = useCallback((allProjects: DevelopmentProject[]) => {
-    let filtered = [...allProjects];
+  const getFilteredProjects = useCallback(
+    (allProjects: DevelopmentProject[]) => {
+      let filtered = [...allProjects];
 
-    if (searchParams.featured) {
-      filtered = filtered.filter((project) => project.isFeatured);
-    }
+      if (searchParams.featured) {
+        filtered = filtered.filter((project) => project.isFeatured);
+      }
 
-    if (searchParams.status) {
-      filtered = filtered.filter(
-        (project) => project.status === searchParams.status
-      );
-    }
+      if (searchParams.status) {
+        filtered = filtered.filter(
+          (project) => project.status === searchParams.status
+        );
+      }
 
-    if (searchParams.location) {
-      filtered = filtered.filter(
-        (project) =>
-          project.fullLocation
-            .toLowerCase()
-            .includes((searchParams.location as string).toLowerCase()) ||
-          project.region
-            .toLowerCase()
-            .includes((searchParams.location as string).toLowerCase())
-      );
-    }
+      if (searchParams.location) {
+        filtered = filtered.filter(
+          (project) =>
+            project.fullLocation
+              .toLowerCase()
+              .includes((searchParams.location as string).toLowerCase()) ||
+            project.region
+              .toLowerCase()
+              .includes((searchParams.location as string).toLowerCase())
+        );
+      }
 
-    if (searchParams.search) {
-      const searchTerm = (searchParams.search as string).toLowerCase();
-      filtered = filtered.filter(
-        (project) =>
-          project.projectname.toLowerCase().includes(searchTerm) ||
-          project.aboutproject.toLowerCase().includes(searchTerm) ||
-          project.fullLocation.toLowerCase().includes(searchTerm) ||
-          project.region.toLowerCase().includes(searchTerm)
-      );
-    }
+      if (searchParams.search) {
+        const searchTerm = (searchParams.search as string).toLowerCase();
+        filtered = filtered.filter(
+          (project) =>
+            project.projectname.toLowerCase().includes(searchTerm) ||
+            project.aboutproject.toLowerCase().includes(searchTerm) ||
+            project.fullLocation.toLowerCase().includes(searchTerm) ||
+            project.region.toLowerCase().includes(searchTerm)
+        );
+      }
 
-    return filtered;
-  }, [searchParams]);
+      return filtered;
+    },
+    [searchParams]
+  );
 
   // Load initial projects
   useEffect(() => {
@@ -156,12 +159,12 @@ export default function DevelopmentProjectsGrid({
 
   if (loading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {Array.from({ length: 6 }).map((_, i) => (
           <div key={i} className="animate-pulse">
-            <div className="bg-gray-200 h-64 rounded-lg mb-4" />
-            <div className="bg-gray-200 h-4 rounded mb-2" />
-            <div className="bg-gray-200 h-4 rounded w-2/3" />
+            <div className="mb-4 h-64 rounded-lg bg-gray-200" />
+            <div className="mb-2 h-4 rounded bg-gray-200" />
+            <div className="h-4 w-2/3 rounded bg-gray-200" />
           </div>
         ))}
       </div>
@@ -170,8 +173,8 @@ export default function DevelopmentProjectsGrid({
 
   if (projects.length === 0) {
     return (
-      <div className="text-center py-12">
-        <h3 className="text-lg font-semibold text-brand-accent mb-2">
+      <div className="py-12 text-center">
+        <h3 className="text-brand-accent mb-2 text-lg font-semibold">
           No projects found
         </h3>
         <p className="text-brand-muted">
@@ -185,13 +188,13 @@ export default function DevelopmentProjectsGrid({
     <div className="space-y-8">
       {/* Results Count */}
       <div className="flex items-center justify-between">
-        <p className="text-sm text-brand-muted">
+        <p className="text-brand-muted text-sm">
           Showing {projects.length} project{projects.length !== 1 ? "s" : ""}
         </p>
       </div>
 
       {/* Projects Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {projects.map((project) => (
           <DevelopmentProjectCard key={project.projectid} project={project} />
         ))}

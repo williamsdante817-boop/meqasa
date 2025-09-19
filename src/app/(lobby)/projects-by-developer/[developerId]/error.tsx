@@ -18,22 +18,22 @@ export default function Error({
   }, [error]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] p-8 text-center">
+    <div className="flex min-h-[60vh] flex-col items-center justify-center p-8 text-center">
       <div className="mb-6">
-        <AlertTriangle className="h-16 w-16 text-red-500 mx-auto" />
+        <AlertTriangle className="mx-auto h-16 w-16 text-red-500" />
       </div>
 
-      <h1 className="text-3xl font-bold text-gray-900 mb-4">
+      <h1 className="mb-4 text-3xl font-bold text-gray-900">
         Something went wrong
       </h1>
 
-      <p className="text-lg text-gray-600 mb-8 max-w-md">
+      <p className="mb-8 max-w-md text-lg text-gray-600">
         We encountered an error while loading the developer profile. This might
         be due to a temporary issue or the developer profile may no longer be
         available.
       </p>
 
-      <div className="flex flex-col sm:flex-row gap-4">
+      <div className="flex flex-col gap-4 sm:flex-row">
         <Button
           onClick={reset}
           variant="default"

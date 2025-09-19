@@ -12,13 +12,13 @@ export const metadata: Metadata = {
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row">
+    <div className="flex min-h-screen flex-col lg:flex-row">
       {/* Mobile Header - Only visible on mobile */}
-      <div className="lg:hidden bg-gradient-to-r from-brand-primary to-brand-primary-dark p-6 text-white text-center">
-        <Link href="/" className="inline-block mb-4">
+      <div className="from-brand-primary to-brand-primary-dark bg-gradient-to-r p-6 text-center text-white lg:hidden">
+        <Link href="/" className="mb-4 inline-block">
           <Icons.logo className="size-8 text-white" />
         </Link>
-        <h1 className="text-xl font-bold mb-2">
+        <h1 className="mb-2 text-xl font-bold">
           Welcome back to {siteConfig.name}
         </h1>
         <p className="text-sm text-white/90">
@@ -27,17 +27,17 @@ export default function LoginPage() {
       </div>
 
       {/* Left side - Brand/Hero Section - Hidden on mobile */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-brand-primary to-brand-primary-dark flex-col justify-center items-center p-8 text-white relative overflow-hidden">
+      <div className="from-brand-primary to-brand-primary-dark relative hidden flex-col items-center justify-center overflow-hidden bg-gradient-to-br p-8 text-white lg:flex lg:w-1/2">
         {/* Background pattern */}
         <div className="absolute inset-0 bg-black/10 backdrop-blur-sm"></div>
-        <div className="relative z-10 text-center max-w-md">
-          <Link href="/" className="inline-block mb-8">
+        <div className="relative z-10 max-w-md text-center">
+          <Link href="/" className="mb-8 inline-block">
             <Icons.logo className="size-12 text-white" />
           </Link>
-          <h1 className="text-3xl font-bold mb-4">
+          <h1 className="mb-4 text-3xl font-bold">
             Welcome back to {siteConfig.name}
           </h1>
-          <p className="text-lg text-white/90 mb-6">
+          <p className="mb-6 text-lg text-white/90">
             Sign in to access your saved properties, manage your listings, and
             connect with top real estate agents in Ghana.
           </p>
@@ -51,13 +51,13 @@ export default function LoginPage() {
       </div>
 
       {/* Right side - Login Form */}
-      <div className="flex-1 lg:w-1/2 flex flex-col justify-center p-4 sm:p-6 lg:p-8 bg-white">
-        <div className="max-w-md mx-auto w-full">
+      <div className="flex flex-1 flex-col justify-center bg-white p-4 sm:p-6 lg:w-1/2 lg:p-8">
+        <div className="mx-auto w-full max-w-md">
           <div className="mb-6 lg:mb-8">
-            <h2 className="text-xl lg:text-2xl font-bold text-brand-accent mb-2">
+            <h2 className="text-brand-accent mb-2 text-xl font-bold lg:text-2xl">
               Sign in to your account
             </h2>
-            <p className="text-sm lg:text-base text-brand-muted">
+            <p className="text-brand-muted text-sm lg:text-base">
               Don&apos;t have an account?{" "}
               <Link
                 href="/auth/sign-up"
@@ -70,7 +70,7 @@ export default function LoginPage() {
 
           <LoginForm />
 
-          <div className="mt-6 lg:mt-8 text-center text-xs lg:text-sm text-brand-muted">
+          <div className="text-brand-muted mt-6 text-center text-xs lg:mt-8 lg:text-sm">
             <p>
               By signing in, you agree to our{" "}
               <Link

@@ -207,7 +207,11 @@ export async function POST(request: NextRequest) {
       // Add any additional parameters from the request body
       Object.entries(body).forEach(([key, value]) => {
         if (value !== null && value !== undefined) {
-          if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
+          if (
+            typeof value === "string" ||
+            typeof value === "number" ||
+            typeof value === "boolean"
+          ) {
             postParams.set(key, String(value));
           }
         }

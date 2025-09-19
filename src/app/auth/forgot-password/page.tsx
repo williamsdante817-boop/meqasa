@@ -10,35 +10,35 @@ export const metadata: Metadata = {
 
 export default function ForgotPasswordPage() {
   return (
-    <div className="min-h-screen flex flex-col justify-center py-6 sm:py-12 px-4 sm:px-6 lg:px-8 bg-brand-gray">
+    <div className="bg-brand-gray flex min-h-screen flex-col justify-center px-4 py-6 sm:px-6 sm:py-12 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <Link href="/" className="flex justify-center">
-          <Icons.logo className="size-10 sm:size-12 text-brand-primary" />
+          <Icons.logo className="text-brand-primary size-10 sm:size-12" />
         </Link>
-        <h2 className="mt-4 sm:mt-6 text-center text-2xl sm:text-3xl font-bold text-brand-accent">
+        <h2 className="text-brand-accent mt-4 text-center text-2xl font-bold sm:mt-6 sm:text-3xl">
           Reset your password
         </h2>
-        <p className="mt-2 text-center text-sm text-brand-muted px-4">
+        <p className="text-brand-muted mt-2 px-4 text-center text-sm">
           Enter your email address and we&apos;ll send you a link to reset your
           password.
         </p>
       </div>
 
-      <div className="mt-6 sm:mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-6 sm:py-8 px-4 shadow-elegant sm:rounded-lg sm:px-10 mx-4 sm:mx-0">
+      <div className="mt-6 sm:mx-auto sm:mt-8 sm:w-full sm:max-w-md">
+        <div className="shadow-elegant mx-4 bg-white px-4 py-6 sm:mx-0 sm:rounded-lg sm:px-10 sm:py-8">
           <ForgotPasswordForm />
 
-          <div className="mt-4 sm:mt-6 text-center">
+          <div className="mt-4 text-center sm:mt-6">
             <Link
               href="/auth/login"
-              className="text-sm text-brand-primary hover:text-brand-primary-dark transition-colors"
+              className="text-brand-primary hover:text-brand-primary-dark text-sm transition-colors"
             >
               ← Back to sign in
             </Link>
           </div>
         </div>
 
-        <div className="mt-6 sm:mt-8 text-center text-sm text-brand-muted px-4">
+        <div className="text-brand-muted mt-6 px-4 text-center text-sm sm:mt-8">
           <p>
             Don&apos;t have an account?{" "}
             <Link

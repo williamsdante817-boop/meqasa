@@ -27,8 +27,8 @@ export function SearchDebugInfo({ mode, searchData }: SearchDebugInfoProps) {
   }
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 bg-gray-900 text-white p-3 rounded-lg shadow-lg text-xs max-w-xs">
-      <div className="flex items-center justify-between mb-2">
+    <div className="fixed right-4 bottom-4 z-50 max-w-xs rounded-lg bg-gray-900 p-3 text-xs text-white shadow-lg">
+      <div className="mb-2 flex items-center justify-between">
         <span className="font-bold">
           🔧 Search Mode: {mode === "enhanced" ? "✨ Enhanced" : "📊 Original"}
         </span>
@@ -52,7 +52,7 @@ export function SearchDebugInfo({ mode, searchData }: SearchDebugInfoProps) {
       )}
 
       {isExpanded && (
-        <div className="border-t border-gray-700 pt-2 mt-2 text-gray-400">
+        <div className="mt-2 border-t border-gray-700 pt-2 text-gray-400">
           <div>
             Screen:{" "}
             {typeof window !== "undefined" && window.innerWidth < 768

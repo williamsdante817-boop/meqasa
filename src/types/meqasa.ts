@@ -75,10 +75,16 @@ export type PropertyType =
   | "apartment"
   | "house"
   | "office"
-  | "warehouse"
-  | "guesthouse"
+  | "land"
   | "townhouse"
-  | "land";
+  | "commercial space"
+  | "warehouse"
+  | "guest house"
+  | "shop"
+  | "retail"
+  | "beach house"
+  | "hotel"
+  | "studio apartment";
 export type ContractType = "rent" | "sale";
 export type RentPeriod = "shortrent" | "longrent" | "- Any -";
 export type SortOrder = "date" | "date2" | "price" | "price2";

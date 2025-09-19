@@ -33,7 +33,7 @@ export default function PropertyPlan({ className }: PropertyPlanProps) {
                 onLoad={() => setIsLoading(false)}
               />
               {isLoading && (
-                <div className="absolute inset-0 bg-gray-100 animate-pulse" />
+                <div className="absolute inset-0 animate-pulse bg-gray-100" />
               )}
             </>
           ) : (

@@ -77,7 +77,7 @@ export default function PropertyListings({
             return (
               <CarouselItem
                 key={key}
-                className="basis-[220px] py-1 bg-transparent md:basis-[256px]"
+                className="basis-[220px] bg-transparent py-1 md:basis-[256px]"
                 role="listitem"
                 aria-label={`Property ${i + 1} of ${transformedListings.length}`}
               >
@@ -94,11 +94,11 @@ export default function PropertyListings({
           })}
         </CarouselContent>
         <CarouselPrevious
-          className="left-6 hidden h-11 w-11 items-center justify-center bg-white text-accent-foreground shadow-md md:flex"
+          className="text-accent-foreground left-6 hidden h-11 w-11 items-center justify-center bg-white shadow-md md:flex"
           aria-label="Previous property"
         />
         <CarouselNext
-          className="right-6 hidden h-11 w-11 items-center justify-center bg-white text-accent-foreground shadow-md md:flex"
+          className="text-accent-foreground right-6 hidden h-11 w-11 items-center justify-center bg-white shadow-md md:flex"
           aria-label="Next property"
         />
       </Carousel>

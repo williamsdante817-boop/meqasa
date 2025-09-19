@@ -33,7 +33,7 @@ export function ErrorCard({
       aria-live="assertive"
       aria-atomic="true"
       className={cn(
-        "flex w-full min-w-0 text-brand-accent rounded-lg flex-col items-center justify-center overflow-hidden p-10",
+        "text-brand-accent flex w-full min-w-0 flex-col items-center justify-center overflow-hidden rounded-lg p-10",
         className
       )}
       {...props}
@@ -43,11 +43,11 @@ export function ErrorCard({
       </div>
       <div className="flex flex-col items-center justify-center space-y-1.5 py-14 text-center">
         <CardTitle className="text-xl font-semibold">{title}</CardTitle>
-        <CardDescription className="line-clamp-4 text-brand-muted ">
+        <CardDescription className="text-brand-muted line-clamp-4">
           {description}
         </CardDescription>
       </div>
-      <div className="flex flex-nowrap items-center h-full justify-center gap-8 text-center">
+      <div className="flex h-full flex-nowrap items-center justify-center gap-8 text-center">
         {reset ? (
           <Button aria-label="Retry" variant="outline" onClick={reset}>
             Retry

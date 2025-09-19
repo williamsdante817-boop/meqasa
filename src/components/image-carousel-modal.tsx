@@ -19,11 +19,11 @@ function ImagePlaceholder({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "w-full h-full flex items-center justify-center bg-gray-100",
+        "flex h-full w-full items-center justify-center bg-gray-100",
         className
       )}
     >
-      <ImageIcon className="w-8 h-8 text-gray-400" />
+      <ImageIcon className="h-8 w-8 text-gray-400" />
     </div>
   );
 }
@@ -305,7 +305,7 @@ export function ImageCarouselModal({
     >
       <DialogContent
         className={cn(
-          "fixed inset-0 w-screen h-screen max-w-none max-h-none p-0 m-0 bg-black border-none flex flex-col translate-x-0 translate-y-0 left-0 top-0 !rounded-none",
+          "fixed inset-0 top-0 left-0 m-0 flex h-screen max-h-none w-screen max-w-none translate-x-0 translate-y-0 flex-col !rounded-none border-none bg-black p-0",
           "transition-all duration-300 ease-out",
           isAnimating ? "opacity-0" : "opacity-100"
         )}
@@ -315,15 +315,15 @@ export function ImageCarouselModal({
         aria-label="Image gallery"
         hideCloseButton
       >
-        <div className="relative w-full h-full flex flex-col items-center justify-center gap-3 px-4 md:px-6">
+        <div className="relative flex h-full w-full flex-col items-center justify-center gap-3 px-4 md:px-6">
           {/* Photo count at top left */}
           <div
             className={cn(
-              "absolute top-4 left-4 z-50 text-white text-sm font-medium bg-black/60 rounded-lg px-3 py-2",
+              "absolute top-4 left-4 z-50 rounded-lg bg-black/60 px-3 py-2 text-sm font-medium text-white",
               "transition-all duration-300 ease-out",
               isAnimating
-                ? "opacity-0 translate-y-2"
-                : "opacity-100 translate-y-0"
+                ? "translate-y-2 opacity-0"
+                : "translate-y-0 opacity-100"
             )}
           >
             {currentIndex + 1} / {validImages.length}
@@ -334,11 +334,11 @@ export function ImageCarouselModal({
             variant="outline"
             size="icon"
             className={cn(
-              "absolute right-6 top-6 z-50 h-11 w-11 rounded-full bg-white/90 backdrop-blur-sm text-gray-700 shadow-lg cursor-pointer hover:bg-white hover:shadow-xl hover:scale-105 active:scale-95",
+              "absolute top-6 right-6 z-50 h-11 w-11 cursor-pointer rounded-full bg-white/90 text-gray-700 shadow-lg backdrop-blur-sm hover:scale-105 hover:bg-white hover:shadow-xl active:scale-95",
               "transition-all duration-300 ease-out",
               isAnimating
-                ? "opacity-0 translate-y-2"
-                : "opacity-100 translate-y-0"
+                ? "translate-y-2 opacity-0"
+                : "translate-y-0 opacity-100"
             )}
             onClick={onClose}
             aria-label="Close image gallery"
@@ -351,11 +351,11 @@ export function ImageCarouselModal({
             variant="outline"
             size="icon"
             className={cn(
-              "absolute left-6 top-1/2 -translate-y-1/2 z-50 h-11 w-11 rounded-full bg-white/90 backdrop-blur-sm text-gray-700 shadow-lg cursor-pointer hidden md:flex hover:bg-white hover:shadow-xl hover:scale-105 active:scale-95 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary focus-visible:outline-none disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100",
+              "focus-visible:ring-primary absolute top-1/2 left-6 z-50 hidden h-11 w-11 -translate-y-1/2 cursor-pointer rounded-full bg-white/90 text-gray-700 shadow-lg backdrop-blur-sm hover:scale-105 hover:bg-white hover:shadow-xl focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100 md:flex",
               "transition-all duration-300 ease-out",
               isAnimating
-                ? "opacity-0 translate-x-2"
-                : "opacity-100 translate-x-0"
+                ? "translate-x-2 opacity-0"
+                : "translate-x-0 opacity-100"
             )}
             onClick={handlePrevious}
             aria-label="Previous image"
@@ -368,9 +368,9 @@ export function ImageCarouselModal({
           <div
             ref={mainImageRef}
             className={cn(
-              "relative flex items-center justify-center touch-pan-y overflow-hidden rounded-lg bg-gray-900",
+              "relative flex touch-pan-y items-center justify-center overflow-hidden rounded-lg bg-gray-900",
               "transition-all duration-300 ease-out",
-              isAnimating ? "opacity-0 scale-95" : "opacity-100 scale-100"
+              isAnimating ? "scale-95 opacity-0" : "scale-100 opacity-100"
             )}
             style={{ width: "min(800px, 100%)", aspectRatio: "800 / 530" }}
             tabIndex={0}
@@ -382,7 +382,7 @@ export function ImageCarouselModal({
             onTouchEnd={handleTouchEnd}
           >
             {hasError ? (
-              <div className="w-full h-full flex items-center justify-center">
+              <div className="flex h-full w-full items-center justify-center">
                 <ImagePlaceholder className="rounded-xl" />
               </div>
             ) : (
@@ -390,7 +390,7 @@ export function ImageCarouselModal({
                 {/* Loading skeleton overlay */}
                 {isLoading && (
                   <div className="absolute inset-0 z-10">
-                    <Skeleton className="w-full h-full rounded-lg" />
+                    <Skeleton className="h-full w-full rounded-lg" />
                   </div>
                 )}
 
@@ -416,11 +416,11 @@ export function ImageCarouselModal({
             variant="outline"
             size="icon"
             className={cn(
-              "absolute right-6 top-1/2 -translate-y-1/2 z-50 h-11 w-11 rounded-full bg-white/90 backdrop-blur-sm text-gray-700 shadow-lg cursor-pointer hidden md:flex hover:bg-white hover:shadow-xl hover:scale-105 active:scale-95 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary focus-visible:outline-none disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100",
+              "focus-visible:ring-primary absolute top-1/2 right-6 z-50 hidden h-11 w-11 -translate-y-1/2 cursor-pointer rounded-full bg-white/90 text-gray-700 shadow-lg backdrop-blur-sm hover:scale-105 hover:bg-white hover:shadow-xl focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100 md:flex",
               "transition-all duration-300 ease-out",
               isAnimating
-                ? "opacity-0 -translate-x-2"
-                : "opacity-100 translate-x-0"
+                ? "-translate-x-2 opacity-0"
+                : "translate-x-0 opacity-100"
             )}
             onClick={handleNext}
             aria-label="Next image"
@@ -434,11 +434,11 @@ export function ImageCarouselModal({
             <div
               ref={thumbnailStripRef}
               className={cn(
-                "overflow-x-auto bg-black/80 py-3 px-0 flex gap-2 items-center justify-start border-t border-gray-600/40",
+                "flex items-center justify-start gap-2 overflow-x-auto border-t border-gray-600/40 bg-black/80 px-0 py-3",
                 "transition-all duration-300 ease-out",
                 isAnimating
-                  ? "opacity-0 translate-y-4"
-                  : "opacity-100 translate-y-0"
+                  ? "translate-y-4 opacity-0"
+                  : "translate-y-0 opacity-100"
               )}
               style={{
                 minHeight: THUMBNAIL_STRIP_HEIGHT,
@@ -460,10 +460,10 @@ export function ImageCarouselModal({
                   data-thumb-index={idx}
                   onClick={() => handleThumbnailClick(idx)}
                   className={cn(
-                    "relative flex-shrink-0 rounded-md overflow-hidden transition-all origin-center outline-none",
+                    "relative flex-shrink-0 origin-center overflow-hidden rounded-md transition-all outline-none",
                     idx === currentIndex
-                      ? "ring-2 ring-brand-blue ring-offset-2 ring-offset-black z-10"
-                      : "opacity-70 hover:opacity-100 focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+                      ? "ring-brand-blue z-10 ring-2 ring-offset-2 ring-offset-black"
+                      : "focus-visible:ring-brand-blue opacity-70 hover:opacity-100 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
                   )}
                   style={{ width: THUMBNAIL_WIDTH, height: THUMBNAIL_HEIGHT }}
                   aria-label={`Show image ${idx + 1}`}

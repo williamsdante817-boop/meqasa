@@ -14,18 +14,18 @@ const VALID_CONTRACTS = ["rent", "sale"] as const;
 
 // Valid property types according to API testing (all confirmed working)
 const VALID_PROPERTY_TYPES = [
-  "apartment",      // ✅ 6,949 results
-  "house",          // ✅ 5,199 results  
-  "office",         // ✅ 709 results
-  "warehouse",      // ✅ 125 results
-  "townhouse",      // ✅ 1,471 results
-  "land",           // ✅ 1 result
-  "shop",           // ✅ 363 results
-  "retail",         // ✅ 229 results
+  "apartment", // ✅ 6,949 results
+  "house", // ✅ 5,199 results
+  "office", // ✅ 709 results
+  "warehouse", // ✅ 125 results
+  "townhouse", // ✅ 1,471 results
+  "land", // ✅ 1 result
+  "shop", // ✅ 363 results
+  "retail", // ✅ 229 results
   "commercial space", // ✅ 203 results
-  "guest house",    // ✅ 13 results
-  "beach house",    // Frontend type (maps to "Beachhouse")
-  "hotel",          // ✅ 1 result
+  "guest house", // ✅ 13 results
+  "beach house", // Frontend type (maps to "Beachhouse")
+  "hotel", // ✅ 1 result
   "studio apartment", // ✅ 11 results
 ] as const;
 
@@ -61,51 +61,54 @@ function isShortLetRequest(params: MeqasaSearchParams): boolean {
 function mapPropertyTypeForAPI(propertyType: string): string {
   const propertyTypeMap: Record<string, string> = {
     // Confirmed via API testing:
-    // "guest house" -> works as-is (13 results)  
+    // "guest house" -> works as-is (13 results)
     // "shop" -> works as-is (363 results)
     // "retail" -> works as-is (229 results)
     // "commercial space" -> works as-is
-    
+
     // Only map the one that needs it:
     "beach house": "Beachhouse", // Frontend "beach house" -> Backend "Beachhouse" (5 results)
   };
-  
+
   return propertyTypeMap[propertyType] || propertyType;
 }
 
 export async function POST(request: NextRequest) {
   const requestStartTime = Date.now();
   const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
-  
+
   // Extract request metadata for logging
-  const userAgent = request.headers.get('user-agent') || 'unknown';
-  const referer = request.headers.get('referer') || 'unknown';
-  const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
-  const contentType = request.headers.get('content-type') || 'unknown';
-  
-  logInfo('API Request started', {
+  const userAgent = request.headers.get("user-agent") || "unknown";
+  const referer = request.headers.get("referer") || "unknown";
+  const ip =
+    request.headers.get("x-forwarded-for") ||
+    request.headers.get("x-real-ip") ||
+    "unknown";
+  const contentType = request.headers.get("content-type") || "unknown";
+
+  logInfo("API Request started", {
     requestId,
-    method: 'POST',
-    url: '/api/properties',
+    method: "POST",
+    url: "/api/properties",
     userAgent,
     referer,
     ip,
     contentType,
     timestamp: new Date().toISOString(),
-    component: 'PropertiesAPI'
+    component: "PropertiesAPI",
   });
 
   try {
     const body = (await request.json()) as RequestBody;
     const { type, params } = body;
-    
-    logInfo('Request body parsed', {
+
+    logInfo("Request body parsed", {
       requestId,
       requestType: type,
       paramKeys: Object.keys(params),
       hasContract: !!params.contract,
       hasLocality: !!params.locality,
-      component: 'PropertiesAPI'
+      component: "PropertiesAPI",
     });
 
     if (type === "search") {
@@ -209,7 +212,7 @@ export async function POST(request: NextRequest) {
       if (isShortLet) {
         // Set required short-let parameters
         postParams.set("frentperiod", "shortrent");
-        
+
         postParams.set("ftype", "- Any -"); // Required for short-let searches (property type filtering not supported)
 
         // Add short-let duration only if provided
@@ -236,10 +239,12 @@ export async function POST(request: NextRequest) {
           // Map frontend property type to backend API type
           const mappedPropertyType = mapPropertyTypeForAPI(searchParams.ftype);
           postParams.set("ftype", mappedPropertyType);
-          
+
           // Log property type mapping for debugging
           if (mappedPropertyType !== searchParams.ftype) {
-            console.log(`🔄 Property type mapped: "${searchParams.ftype}" → "${mappedPropertyType}"`);
+            console.log(
+              `🔄 Property type mapped: "${searchParams.ftype}" → "${mappedPropertyType}"`
+            );
           }
         }
       }
@@ -258,11 +263,11 @@ export async function POST(request: NextRequest) {
         fhowshort: searchParams.fhowshort,
         frentperiod: searchParams.frentperiod,
       };
-      
-      logInfo('Backend API call initiated - SEARCH', {
+
+      logInfo("Backend API call initiated - SEARCH", {
         requestId,
         backendUrl: finalUrl,
-        method: 'POST',
+        method: "POST",
         contract,
         locality,
         isShortLet,
@@ -279,19 +284,19 @@ export async function POST(request: NextRequest) {
           ownerDirect: searchParams.ffsbo,
           rentPeriod: searchParams.frentperiod,
           sortBy: searchParams.fsort,
-          shortLetDuration: searchParams.fhowshort
+          shortLetDuration: searchParams.fhowshort,
         },
         debugInfo: {
           environment: process.env.NODE_ENV,
           timestamp: new Date().toISOString(),
-          processedTime: Date.now() - requestStartTime
+          processedTime: Date.now() - requestStartTime,
         },
-        component: 'PropertiesAPI'
+        component: "PropertiesAPI",
       });
-      
+
       console.log("🚀 API Request: POST", finalUrl, {
         params: searchParams,
-        data: Object.fromEntries(postParams.entries())
+        data: Object.fromEntries(postParams.entries()),
       });
 
       const backendRequestTime = Date.now();
@@ -302,32 +307,36 @@ export async function POST(request: NextRequest) {
         },
         body: postParams.toString(),
       });
-      
+
       const backendResponseTime = Date.now();
       const backendDuration = backendResponseTime - backendRequestTime;
-      
-      logInfo('Backend API response received - SEARCH', {
+
+      logInfo("Backend API response received - SEARCH", {
         requestId,
         backendUrl: finalUrl,
         httpStatus: response.status,
         httpStatusText: response.statusText,
         backendDuration: `${backendDuration}ms`,
         responseHeaders: Object.fromEntries(response.headers.entries()),
-        component: 'PropertiesAPI'
+        component: "PropertiesAPI",
       });
 
       if (!response.ok) {
         const errorText = await response.text();
-        logError('Backend API error - SEARCH', new Error(`Meqasa API error: ${response.statusText}`), {
-          requestId,
-          backendUrl: finalUrl,
-          httpStatus: response.status,
-          httpStatusText: response.statusText,
-          errorResponse: errorText,
-          requestPayload,
-          backendDuration: `${backendDuration}ms`,
-          component: 'PropertiesAPI'
-        });
+        logError(
+          "Backend API error - SEARCH",
+          new Error(`Meqasa API error: ${response.statusText}`),
+          {
+            requestId,
+            backendUrl: finalUrl,
+            httpStatus: response.status,
+            httpStatusText: response.statusText,
+            errorResponse: errorText,
+            requestPayload,
+            backendDuration: `${backendDuration}ms`,
+            component: "PropertiesAPI",
+          }
+        );
         throw new Error(`Meqasa API error: ${response.statusText}`);
       }
 
@@ -363,7 +372,7 @@ export async function POST(request: NextRequest) {
       };
 
       const totalRequestTime = Date.now() - requestStartTime;
-      
+
       const responseInfo = {
         searchId: normalized.searchid,
         resultCount: normalized.resultcount,
@@ -380,8 +389,8 @@ export async function POST(request: NextRequest) {
             }
           : null,
       };
-      
-      logInfo('Backend API response processed - SEARCH', {
+
+      logInfo("Backend API response processed - SEARCH", {
         requestId,
         backendUrl: finalUrl,
         searchId: normalized.searchid,
@@ -395,28 +404,30 @@ export async function POST(request: NextRequest) {
           hasResults: normalized.results.length > 0,
           hasTopAds: (normalized.topads?.length || 0) > 0,
           hasBottomAds: (normalized.bottomads?.length || 0) > 0,
-          hasProject1: normalized.project1 && !('empty' in normalized.project1),
-          hasProject2: normalized.project2 && !('empty' in normalized.project2)
+          hasProject1: normalized.project1 && !("empty" in normalized.project1),
+          hasProject2: normalized.project2 && !("empty" in normalized.project2),
         },
         performance: {
           backendDuration: `${backendDuration}ms`,
           totalDuration: `${totalRequestTime}ms`,
-          processingTime: `${totalRequestTime - backendDuration}ms`
+          processingTime: `${totalRequestTime - backendDuration}ms`,
         },
-        sampleResult: normalized.results[0] ? {
-          listingId: normalized.results[0].listingid,
-          summary: normalized.results[0].summary?.substring(0, 50) + '...',
-          price: normalized.results[0].pricepart1,
-          type: normalized.results[0].type,
-          hasImages: (normalized.results[0].imagelist?.length || 0) > 0
-        } : null,
-        component: 'PropertiesAPI'
+        sampleResult: normalized.results[0]
+          ? {
+              listingId: normalized.results[0].listingid,
+              summary: normalized.results[0].summary?.substring(0, 50) + "...",
+              price: normalized.results[0].pricepart1,
+              type: normalized.results[0].type,
+              hasImages: parseInt(normalized.results[0].photocount || "0") > 0,
+            }
+          : null,
+        component: "PropertiesAPI",
       });
-      
+
       console.log("✅ API Response: POST", finalUrl, {
         status: response.status,
         duration: `${backendDuration}ms`,
-        data: responseInfo
+        data: responseInfo,
       });
 
       // Log detailed search results data for development purposes
@@ -439,14 +450,14 @@ export async function POST(request: NextRequest) {
           pricepart2: result.pricepart2,
           type: result.type,
           contract: result.contract,
-          location: result.location,
-          beds: result.beds,
-          baths: result.baths,
-          garages: result.garages,
+          location: result.locationstring,
+          beds: result.bedroomcount,
+          baths: result.bathroomcount,
+          garages: result.garagecount,
           floorarea: result.floorarea,
           ownerName: result.owner?.name,
           ownerType: result.owner?.type,
-          imageCount: result.imagelist?.length || 0,
+          imageCount: parseInt(result.photocount || "0"),
         })),
         component: "SearchAPI",
       });
@@ -519,10 +530,12 @@ export async function POST(request: NextRequest) {
         // Map frontend property type to backend API type
         const mappedPropertyType = mapPropertyTypeForAPI(loadMoreParams.ftype);
         postParams.set("ftype", mappedPropertyType);
-        
+
         // Log property type mapping for debugging
         if (mappedPropertyType !== loadMoreParams.ftype) {
-          console.log(`🔄 LoadMore property type mapped: "${loadMoreParams.ftype}" → "${mappedPropertyType}"`);
+          console.log(
+            `🔄 LoadMore property type mapped: "${loadMoreParams.ftype}" → "${mappedPropertyType}"`
+          );
         }
       }
 
@@ -580,7 +593,7 @@ export async function POST(request: NextRequest) {
       if (isShortLet) {
         // Set required short-let parameters
         postParams.set("frentperiod", "shortrent");
-        
+
         postParams.set("ftype", "- Any -"); // Required for short-let searches (property type filtering not supported)
 
         // Add short-let duration only if provided
@@ -606,11 +619,11 @@ export async function POST(request: NextRequest) {
         postParams: Object.fromEntries(postParams.entries()),
         rawParams: params,
       };
-      
-      logInfo('Backend API call initiated - LOAD_MORE', {
+
+      logInfo("Backend API call initiated - LOAD_MORE", {
         requestId,
         backendUrl: finalUrl,
-        method: 'POST',
+        method: "POST",
         contract,
         locality,
         searchId,
@@ -622,19 +635,19 @@ export async function POST(request: NextRequest) {
         paginationInfo: {
           searchId,
           requestedPage: pageNumber,
-          isFirstPage: pageNumber === 1
+          isFirstPage: pageNumber === 1,
         },
         debugInfo: {
           environment: process.env.NODE_ENV,
           timestamp: new Date().toISOString(),
-          processedTime: Date.now() - requestStartTime
+          processedTime: Date.now() - requestStartTime,
         },
-        component: 'PropertiesAPI'
+        component: "PropertiesAPI",
       });
-      
+
       console.log("🚀 API Request: POST", finalUrl, {
         params: { searchId, pageNumber },
-        data: Object.fromEntries(postParams.entries())
+        data: Object.fromEntries(postParams.entries()),
       });
 
       const backendRequestTime = Date.now();
@@ -645,11 +658,11 @@ export async function POST(request: NextRequest) {
         },
         body: postParams.toString(),
       });
-      
+
       const backendResponseTime = Date.now();
       const backendDuration = backendResponseTime - backendRequestTime;
-      
-      logInfo('Backend API response received - LOAD_MORE', {
+
+      logInfo("Backend API response received - LOAD_MORE", {
         requestId,
         backendUrl: finalUrl,
         httpStatus: response.status,
@@ -658,27 +671,31 @@ export async function POST(request: NextRequest) {
         responseHeaders: Object.fromEntries(response.headers.entries()),
         paginationContext: {
           searchId,
-          pageNumber
+          pageNumber,
         },
-        component: 'PropertiesAPI'
+        component: "PropertiesAPI",
       });
 
       if (!response.ok) {
         const errorText = await response.text();
-        logError('Backend API error - LOAD_MORE', new Error(`Meqasa API error: ${response.statusText}`), {
-          requestId,
-          backendUrl: finalUrl,
-          httpStatus: response.status,
-          httpStatusText: response.statusText,
-          errorResponse: errorText,
-          requestPayload: loadMorePayload,
-          backendDuration: `${backendDuration}ms`,
-          paginationContext: {
-            searchId,
-            pageNumber
-          },
-          component: 'PropertiesAPI'
-        });
+        logError(
+          "Backend API error - LOAD_MORE",
+          new Error(`Meqasa API error: ${response.statusText}`),
+          {
+            requestId,
+            backendUrl: finalUrl,
+            httpStatus: response.status,
+            httpStatusText: response.statusText,
+            errorResponse: errorText,
+            requestPayload: loadMorePayload,
+            backendDuration: `${backendDuration}ms`,
+            paginationContext: {
+              searchId,
+              pageNumber,
+            },
+            component: "PropertiesAPI",
+          }
+        );
         throw new Error(`Meqasa API error: ${response.statusText}`);
       }
 
@@ -712,7 +729,7 @@ export async function POST(request: NextRequest) {
         })(),
       };
       const totalRequestTime = Date.now() - requestStartTime;
-      
+
       const loadMoreResponseInfo = {
         searchId: normalized.searchid,
         resultCount: normalized.resultcount,
@@ -721,8 +738,8 @@ export async function POST(request: NextRequest) {
         rawResultCountType: typeof raw.resultcount,
         data: normalized,
       };
-      
-      logInfo('Backend API response processed - LOAD_MORE', {
+
+      logInfo("Backend API response processed - LOAD_MORE", {
         requestId,
         backendUrl: finalUrl,
         searchId: normalized.searchid,
@@ -735,25 +752,25 @@ export async function POST(request: NextRequest) {
           normalizedResultCount: normalized.resultcount,
           hasResults: normalized.results.length > 0,
           hasTopAds: (normalized.topads?.length || 0) > 0,
-          hasBottomAds: (normalized.bottomads?.length || 0) > 0
+          hasBottomAds: (normalized.bottomads?.length || 0) > 0,
         },
         performance: {
           backendDuration: `${backendDuration}ms`,
           totalDuration: `${totalRequestTime}ms`,
-          processingTime: `${totalRequestTime - backendDuration}ms`
+          processingTime: `${totalRequestTime - backendDuration}ms`,
         },
         paginationInfo: {
           searchId,
           pageNumber,
-          hasMoreResults: normalized.results.length > 0
+          hasMoreResults: normalized.results.length > 0,
         },
-        component: 'PropertiesAPI'
+        component: "PropertiesAPI",
       });
-      
+
       console.log("✅ API Response: POST", finalUrl, {
         status: response.status,
         duration: `${backendDuration}ms`,
-        data: loadMoreResponseInfo
+        data: loadMoreResponseInfo,
       });
 
       // Log detailed loadMore results data for development purposes
@@ -776,14 +793,14 @@ export async function POST(request: NextRequest) {
           pricepart2: result.pricepart2,
           type: result.type,
           contract: result.contract,
-          location: result.location,
-          beds: result.beds,
-          baths: result.baths,
-          garages: result.garages,
+          location: result.locationstring,
+          beds: result.bedroomcount,
+          baths: result.bathroomcount,
+          garages: result.garagecount,
           floorarea: result.floorarea,
           ownerName: result.owner?.name,
           ownerType: result.owner?.type,
-          imageCount: result.imagelist?.length || 0,
+          imageCount: parseInt(result.photocount || "0"),
         })),
         component: "LoadMoreAPI",
       });
@@ -797,27 +814,27 @@ export async function POST(request: NextRequest) {
     }
   } catch (error) {
     const totalRequestTime = Date.now() - requestStartTime;
-    
-    logError('API Request failed', error, {
+
+    logError("API Request failed", error, {
       requestId,
-      url: '/api/properties',
-      method: 'POST',
+      url: "/api/properties",
+      method: "POST",
       userAgent,
       referer,
       ip,
       totalDuration: `${totalRequestTime}ms`,
-      errorType: error instanceof Error ? error.name : 'UnknownError',
+      errorType: error instanceof Error ? error.name : "UnknownError",
       errorMessage: error instanceof Error ? error.message : String(error),
       stack: error instanceof Error ? error.stack : undefined,
-      component: 'PropertiesAPI'
+      component: "PropertiesAPI",
     });
-    
+
     console.error("❌ API Error: POST /api/properties", {
       requestId,
       duration: `${totalRequestTime}ms`,
-      error: error instanceof Error ? error.message : String(error)
+      error: error instanceof Error ? error.message : String(error),
     });
-    
+
     return NextResponse.json(
       { error: "Failed to fetch properties", requestId },
       { status: 500 }

@@ -25,7 +25,7 @@ export function StaticAgentLogos({ staticData }: StaticContentProps) {
   return (
     <AgentLogosErrorBoundary>
       <div
-        className="mt-[125px] hidden lg:flex overflow-hidden"
+        className="mt-[125px] hidden overflow-hidden lg:flex"
         role="complementary"
         aria-label="Partner logos"
       >
@@ -45,7 +45,7 @@ export function StaticBlogSection({ staticData }: StaticContentProps) {
       title="Property Guides & Insights"
       description="Read our blog"
       href="/blog"
-      className="pt-14 md:pt-20 lg:pt-24 flex-[2] px-4 md:px-0"
+      className="flex-[2] px-4 pt-14 md:px-0 md:pt-20 lg:pt-24"
       border
     >
       {staticData.blogData.map((blog, index) => (
@@ -64,8 +64,10 @@ export function StaticBlogSection({ staticData }: StaticContentProps) {
 
 export function StaticMarketNews({ staticData }: StaticContentProps) {
   return (
-    <aside className="hidden md:block flex-1 mt-28" aria-label="Market News">
-      <h2 className="leading-tight tracking-tighter text-brand-accent text-2xl lg:text-3xl font-bold mb-6">Market News</h2>
+    <aside className="mt-28 hidden flex-1 md:block" aria-label="Market News">
+      <h2 className="text-brand-accent mb-6 text-2xl leading-tight font-bold tracking-tighter lg:text-3xl">
+        Market News
+      </h2>
       <div role="list">
         {staticData.blogData.slice(0, 3).map((blog, index) => (
           <div key={index} role="listitem">
@@ -87,17 +89,17 @@ export function StaticLocationSection({ staticData }: StaticContentProps) {
       title="Choice Neighborhoods"
       description="These neighborhoods are highly desirable for business, living, and pleasure. Find out why!"
       href="/"
-      className="pt-14 md:pt-20 lg:pt-24 flex-[2] w-full [&_p]:px-4 [&_h2]:px-4 md:[&_p]:px-0 md:[&_h2]:px-0"
+      className="w-full flex-[2] pt-14 md:pt-20 lg:pt-24 [&_h2]:px-4 md:[&_h2]:px-0 [&_p]:px-4 md:[&_p]:px-0"
     >
       <div
         className="overflow-x-auto lg:overflow-visible"
         role="region"
         aria-label="Neighborhoods"
       >
-        <div className="flex gap-3 lg:grid lg:grid-cols-4 lg:gap-8 pb-4 lg:pb-0">
+        <div className="flex gap-3 pb-4 lg:grid lg:grid-cols-4 lg:gap-8 lg:pb-0">
           {staticData.locationData.map((item, i) => (
             <div
-              className={`w-[calc((100vw-48px)/2)] min-w-[280px] flex-none h-full max-w-full lg:w-full lg:min-w-0 lg:flex-initial ${i === 0 ? "pl-4" : ""} ${i === staticData.locationData.length - 1 ? "pr-4" : ""} lg:pl-0 lg:pr-0`}
+              className={`h-full w-[calc((100vw-48px)/2)] max-w-full min-w-[280px] flex-none lg:w-full lg:min-w-0 lg:flex-initial ${i === 0 ? "pl-4" : ""} ${i === staticData.locationData.length - 1 ? "pr-4" : ""} lg:pr-0 lg:pl-0`}
               key={i}
             >
               <div className="h-full">

@@ -16,15 +16,15 @@ export default function PropertyAlertsForm() {
 
   return (
     <section
-      className="w-full bg-white border-t py-6"
+      className="w-full border-t bg-white py-6"
       aria-labelledby="property-alerts-heading"
     >
-      <div className="container mx-auto px-4 max-w-6xl">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+      <div className="container mx-auto max-w-6xl px-4">
+        <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
           <div className="space-y-1">
             <h2
               id="property-alerts-heading"
-              className="text-xl font-semibold text-brand-accent"
+              className="text-brand-accent text-xl font-semibold"
             >
               Get Property Alerts from meQasa
             </h2>
@@ -34,7 +34,7 @@ export default function PropertyAlertsForm() {
           </div>
           <form
             onSubmit={handleSubmit}
-            className="flex w-full md:w-auto gap-2 items-center"
+            className="flex w-full items-center gap-2 md:w-auto"
             aria-label="Subscribe to property alerts"
           >
             <label htmlFor="email-input" className="sr-only">
@@ -46,14 +46,14 @@ export default function PropertyAlertsForm() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="kwame007@meqasa.com"
-              className="flex-1 min-w-0 !border md:min-w-[300px] h-10 rounded-md"
+              className="h-10 min-w-0 flex-1 rounded-md !border md:min-w-[300px]"
               required
               aria-required="true"
             />
             <Button
               variant={"default"}
               type="submit"
-              className="bg-[#f93a5d] hover:bg-[#f93a5d]/80 text-white"
+              className="bg-[#f93a5d] text-white hover:bg-[#f93a5d]/80"
               aria-label="Subscribe to property alerts"
             >
               Subscribe

@@ -27,7 +27,7 @@ const LoadingVariants = {
   ),
 
   grid: ({ rows = 6 }: { rows?: number }) => (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
       {Array.from({ length: rows }).map((_, i) => (
         <div key={i} className="space-y-3">
           <Skeleton variant="shimmer" className="h-48 w-full rounded-lg" />
@@ -48,11 +48,11 @@ const LoadingVariants = {
       {Array.from({ length: rows }).map((_, i) => (
         <div
           key={i}
-          className="flex gap-4 p-4 border border-gray-100 rounded-lg"
+          className="flex gap-4 rounded-lg border border-gray-100 p-4"
         >
           <Skeleton
             variant="shimmer"
-            className="h-24 w-32 rounded-md flex-shrink-0"
+            className="h-24 w-32 flex-shrink-0 rounded-md"
           />
           <div className="flex-1 space-y-2">
             <Skeleton variant="text" size="lg" className="w-4/5" />
@@ -69,16 +69,16 @@ const LoadingVariants = {
   ),
 
   card: ({ rows = 4 }: { rows?: number }) => (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {Array.from({ length: rows }).map((_, i) => (
         <div
           key={i}
-          className="border border-gray-100 rounded-lg p-4 space-y-3"
+          className="space-y-3 rounded-lg border border-gray-100 p-4"
         >
           <Skeleton variant="shimmer" className="h-32 w-full rounded-md" />
           <Skeleton variant="text" size="md" className="w-4/5" />
           <Skeleton variant="light" size="default" className="w-3/5" />
-          <div className="flex justify-between items-center pt-2">
+          <div className="flex items-center justify-between pt-2">
             <Skeleton variant="light" className="h-4 w-16" />
             <Skeleton variant="light" className="h-6 w-6 rounded-full" />
           </div>
@@ -167,11 +167,11 @@ export function DashboardLoading() {
       </div>
 
       {/* Stats cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         {Array.from({ length: 3 }).map((_, i) => (
           <div
             key={i}
-            className="p-6 border border-gray-100 rounded-lg space-y-3"
+            className="space-y-3 rounded-lg border border-gray-100 p-6"
           >
             <div className="flex items-center justify-between">
               <Skeleton variant="light" className="h-4 w-20" />

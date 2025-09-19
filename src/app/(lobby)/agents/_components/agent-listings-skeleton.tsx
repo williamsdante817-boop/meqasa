@@ -30,25 +30,25 @@ export function AgentListingsSkeleton() {
               <Skeleton
                 variant="text"
                 size="lg"
-                className="w-full mb-3"
+                className="mb-3 w-full"
                 aria-label="Loading property title"
               />
 
               {/* Price skeleton */}
-              <div className="flex items-center gap-2 pt-3 mb-3">
+              <div className="mb-3 flex items-center gap-2 pt-3">
                 <Skeleton
                   variant="text"
-                  className="h-5 w-24 bg-brand-accent/20"
+                  className="bg-brand-accent/20 h-5 w-24"
                 />
                 <Skeleton variant="light" className="h-4 w-16" />
               </div>
 
               {/* Description skeleton */}
-              <div className="pt-3 mb-3">
+              <div className="mb-3 pt-3">
                 <Skeleton
                   variant="light"
                   size="default"
-                  className="w-full mb-2"
+                  className="mb-2 w-full"
                 />
                 <Skeleton variant="light" size="default" className="w-3/4" />
               </div>
@@ -58,12 +58,12 @@ export function AgentListingsSkeleton() {
                 <Skeleton variant="light" className="h-4 w-16" />
                 <Skeleton
                   variant="light"
-                  className="h-3 w-3 rounded-full bg-brand-accent/20"
+                  className="bg-brand-accent/20 h-3 w-3 rounded-full"
                 />
                 <Skeleton variant="light" className="h-4 w-20" />
                 <Skeleton
                   variant="light"
-                  className="h-3 w-3 rounded-full bg-brand-accent/20"
+                  className="bg-brand-accent/20 h-3 w-3 rounded-full"
                 />
                 <Skeleton variant="light" className="h-4 w-24" />
               </div>
@@ -77,7 +77,7 @@ export function AgentListingsSkeleton() {
               </div>
               <Skeleton
                 variant="light"
-                className="h-9 w-32 bg-brand-primary/20 rounded"
+                className="bg-brand-primary/20 h-9 w-32 rounded"
               />
             </div>
           </div>

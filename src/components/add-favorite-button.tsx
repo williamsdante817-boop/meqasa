@@ -87,11 +87,11 @@ export function AddFavoriteButton({
       onClick={toggleFavorite}
       className={cn(
         // Base button styling
-        "bg-white/80 backdrop-blur-sm hover:bg-white shadow-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary focus-visible:outline-none transition-all duration-200",
+        "focus-visible:ring-primary bg-white/80 shadow-sm backdrop-blur-sm transition-all duration-200 hover:bg-white focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none",
         // Responsive layout classes
-        showLabel 
+        showLabel
           ? cn(
-              "rounded-md flex items-center gap-1 sm:gap-2",
+              "flex items-center gap-1 rounded-md sm:gap-2",
               sizeClasses.buttonWithLabel,
               // On mobile: smaller padding, on desktop: normal padding
               hideLabelOnMobile && "sm:px-3 sm:py-2"
@@ -99,7 +99,7 @@ export function AddFavoriteButton({
           : cn("rounded-full", sizeClasses.button),
         // Favorite state styling
         isFavorite &&
-          "bg-white text-brand-primary hover:text-brand-primary hover:bg-white",
+          "text-brand-primary hover:text-brand-primary bg-white hover:bg-white",
         className
       )}
       aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
@@ -109,15 +109,15 @@ export function AddFavoriteButton({
       <Heart
         className={cn(
           sizeClasses.icon,
-          "transition-all duration-200 flex-shrink-0",
+          "flex-shrink-0 transition-all duration-200",
           isFavorite
             ? "fill-brand-primary text-brand-primary scale-110"
-            : "text-gray-600 scale-100"
+            : "scale-100 text-gray-600"
         )}
         aria-hidden="true"
       />
       {showLabel && (
-        <span 
+        <span
           className={cn(
             "font-medium transition-all duration-200",
             sizeClasses.text,

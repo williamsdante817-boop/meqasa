@@ -38,11 +38,11 @@ function DistanceIndicatorComponent({
     return (
       <div
         className={cn(
-          "flex items-center gap-1 text-brand-blue font-medium text-xs",
+          "text-brand-blue flex items-center gap-1 text-xs font-medium",
           className
         )}
       >
-        <MapPin className="w-3 h-3" aria-hidden="true" />
+        <MapPin className="h-3 w-3" aria-hidden="true" />
         <span>
           {formattedDistance}
           {unit !== "m" ? unit : ""}
@@ -54,16 +54,16 @@ function DistanceIndicatorComponent({
   if (variant === "detailed") {
     return (
       <div className={cn("space-y-1", className)}>
-        <div className="flex items-center gap-2 text-brand-blue font-medium text-sm">
-          <MapPin className="w-4 h-4" aria-hidden="true" />
+        <div className="text-brand-blue flex items-center gap-2 text-sm font-medium">
+          <MapPin className="h-4 w-4" aria-hidden="true" />
           <span>
             {formattedDistance}
             {unit !== "m" ? unit : ""} away
           </span>
         </div>
         {showTravelTime && travelTime && (
-          <div className="flex items-center gap-2 text-brand-muted text-xs">
-            <Clock className="w-3 h-3" aria-hidden="true" />
+          <div className="text-brand-muted flex items-center gap-2 text-xs">
+            <Clock className="h-3 w-3" aria-hidden="true" />
             <span>{travelTime} min</span>
           </div>
         )}
@@ -74,13 +74,13 @@ function DistanceIndicatorComponent({
   return (
     <div
       className={cn(
-        "flex items-center gap-2 text-brand-blue font-medium text-sm transition-all duration-200",
+        "text-brand-blue flex items-center gap-2 text-sm font-medium transition-all duration-200",
         "group-hover:text-brand-accent",
         className
       )}
     >
       <MapPin
-        className="w-4 h-4 transition-transform group-hover:scale-110"
+        className="h-4 w-4 transition-transform group-hover:scale-110"
         aria-hidden="true"
       />
       <div className="flex flex-col">
@@ -89,8 +89,8 @@ function DistanceIndicatorComponent({
           {unit !== "m" ? unit : ""}
         </span>
         {showTravelTime && travelTime && (
-          <div className="flex items-center gap-1 text-brand-muted text-xs">
-            <Clock className="w-3 h-3" aria-hidden="true" />
+          <div className="text-brand-muted flex items-center gap-1 text-xs">
+            <Clock className="h-3 w-3" aria-hidden="true" />
             <span>{travelTime}min</span>
           </div>
         )}

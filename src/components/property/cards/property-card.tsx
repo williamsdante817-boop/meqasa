@@ -153,7 +153,7 @@ const PropertyCard = React.forwardRef<HTMLDivElement, PropertyCardProps>(
       <Link
         href={`/${formattedUrl}`}
         aria-label={`View property: ${title ?? streetaddress ?? "details"}`}
-        className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-lg"
+        className="focus-visible:ring-ring block rounded-lg focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
         tabIndex={0}
       >
         <Card
@@ -166,14 +166,14 @@ const PropertyCard = React.forwardRef<HTMLDivElement, PropertyCardProps>(
           aria-describedby={`property-details-${listingId}`}
           {...props}
         >
-          <CardHeader className="!p-0 border-b border-b-gray-100 gap-0 rounded-lg">
+          <CardHeader className="gap-0 rounded-lg border-b border-b-gray-100 !p-0">
             <AspectRatio
               ratio={4 / 3}
               className="relative overflow-hidden rounded-lg"
             >
               <ImageWithFallback
                 className={cn(
-                  "object-cover rounded-lg transition-all duration-300",
+                  "rounded-lg object-cover transition-all duration-300",
                   isLoading ? "opacity-0" : "opacity-100"
                 )}
                 src={image || "/placeholder-image.png"}
@@ -188,12 +188,12 @@ const PropertyCard = React.forwardRef<HTMLDivElement, PropertyCardProps>(
                 quality={priority ? 85 : 75}
               />
               {isLoading && (
-                <div className="absolute inset-0 bg-gray-100 animate-pulse rounded-lg" />
+                <div className="absolute inset-0 animate-pulse rounded-lg bg-gray-100" />
               )}
             </AspectRatio>
 
             <Badge
-              className="absolute top-3 left-3 z-10 rounded-sm bg-brand-accent capitalize"
+              className="bg-brand-accent absolute top-3 left-3 z-10 rounded-sm capitalize"
               aria-label={`Property type: ${displayContract}`}
             >
               {displayContract}
@@ -216,44 +216,44 @@ const PropertyCard = React.forwardRef<HTMLDivElement, PropertyCardProps>(
             )}
           </CardHeader>
 
-          <CardContent className="px-0 pb-0 space-y-1">
+          <CardContent className="space-y-1 px-0 pb-0">
             <CardTitle
               id={`property-title-${listingId}`}
-              className="line-clamp-1 mb-3 leading-relaxed font-bold text-brand-primary text-base sm:text-lg pt-2 capitalize transition-colors duration-200 group-hover:text-brand-primary-dark"
+              className="text-brand-primary group-hover:text-brand-primary-dark mb-3 line-clamp-1 pt-2 text-base leading-relaxed font-bold capitalize transition-colors duration-200 sm:text-lg"
             >
               {title}
             </CardTitle>
             <div id={`property-details-${listingId}`}>
               <div
-                className="flex h-fit items-center gap-2 mb-1.5 mt-[10px]"
+                className="mt-[10px] mb-1.5 flex h-fit items-center gap-2"
                 aria-label="Property pricing"
               >
                 {pricepart1 ? (
                   <span
-                    className="text-lg font-bold leading-tight text-brand-accent sm:text-xl"
+                    className="text-brand-accent text-lg leading-tight font-bold sm:text-xl"
                     dangerouslySetInnerHTML={buildInnerHtml(pricepart1)}
                   />
                 ) : price ? (
                   <span
-                    className="text-lg font-bold leading-tight text-brand-accent sm:text-xl"
+                    className="text-brand-accent text-lg leading-tight font-bold sm:text-xl"
                     dangerouslySetInnerHTML={buildInnerHtml(price)}
                   />
                 ) : (
-                  <span className="text-sm sm:text-base font-semibold text-brand-muted">
+                  <span className="text-brand-muted text-sm font-semibold sm:text-base">
                     Price not available
                   </span>
                 )}
                 {pricepart2 && (
-                  <span className="text-sm sm:text-base font-normal text-brand-muted">
+                  <span className="text-brand-muted text-sm font-normal sm:text-base">
                     {pricepart2}
                   </span>
                 )}
               </div>
-              <span className="text-sm sm:text-base capitalize mb-1 text-brand-muted line-clamp-1">
+              <span className="text-brand-muted mb-1 line-clamp-1 text-sm capitalize sm:text-base">
                 {streetaddress}
               </span>
               <div
-                className="mt-1 flex items-center text-sm sm:text-base text-brand-muted flex-nowrap overflow-hidden"
+                className="text-brand-muted mt-1 flex flex-nowrap items-center overflow-hidden text-sm sm:text-base"
                 aria-label="Property features"
               >
                 {Number.isFinite(bedsNum) && bedsNum > 0 && (
@@ -267,7 +267,7 @@ const PropertyCard = React.forwardRef<HTMLDivElement, PropertyCardProps>(
                     {(Number.isFinite(bathsNum) && bathsNum > 0) ||
                     (Number.isFinite(garagesNum) && garagesNum > 0) ? (
                       <Dot
-                        className="h-[12px] w-[12px] text-brand-accent flex-shrink-0"
+                        className="text-brand-accent h-[12px] w-[12px] flex-shrink-0"
                         aria-hidden="true"
                       />
                     ) : null}
@@ -283,7 +283,7 @@ const PropertyCard = React.forwardRef<HTMLDivElement, PropertyCardProps>(
                     </span>
                     {Number.isFinite(garagesNum) && garagesNum > 0 ? (
                       <Dot
-                        className="h-[12px] w-[12px] text-brand-accent flex-shrink-0"
+                        className="text-brand-accent h-[12px] w-[12px] flex-shrink-0"
                         aria-hidden="true"
                       />
                     ) : null}

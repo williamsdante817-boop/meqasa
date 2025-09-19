@@ -12,28 +12,28 @@ export const metadata: Metadata = {
 
 export default function SignUpPage() {
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row">
+    <div className="flex min-h-screen flex-col lg:flex-row">
       {/* Mobile Header - Only visible on mobile */}
-      <div className="lg:hidden bg-gradient-to-r from-brand-primary to-brand-primary-dark p-6 text-white text-center">
-        <Link href="/" className="inline-block mb-4">
+      <div className="from-brand-primary to-brand-primary-dark bg-gradient-to-r p-6 text-center text-white lg:hidden">
+        <Link href="/" className="mb-4 inline-block">
           <Icons.logo className="size-8 text-white" />
         </Link>
-        <h1 className="text-xl font-bold mb-2">Join {siteConfig.name} today</h1>
+        <h1 className="mb-2 text-xl font-bold">Join {siteConfig.name} today</h1>
         <p className="text-sm text-white/90">Create your free account</p>
       </div>
 
       {/* Left side - Brand/Hero Section - Hidden on mobile */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-brand-primary to-brand-primary-dark flex-col justify-center items-center p-8 text-white relative overflow-hidden">
+      <div className="from-brand-primary to-brand-primary-dark relative hidden flex-col items-center justify-center overflow-hidden bg-gradient-to-br p-8 text-white lg:flex lg:w-1/2">
         {/* Background pattern */}
         <div className="absolute inset-0 bg-black/10 backdrop-blur-sm"></div>
-        <div className="relative z-10 text-center max-w-md">
-          <Link href="/" className="inline-block mb-8">
+        <div className="relative z-10 max-w-md text-center">
+          <Link href="/" className="mb-8 inline-block">
             <Icons.logo className="size-12 text-white" />
           </Link>
-          <h1 className="text-3xl font-bold mb-4">
+          <h1 className="mb-4 text-3xl font-bold">
             Join {siteConfig.name} today
           </h1>
-          <p className="text-lg text-white/90 mb-6">
+          <p className="mb-6 text-lg text-white/90">
             Create your free account to save properties, list your own
             properties, and connect with Ghana&apos;s top real estate
             professionals.
@@ -56,13 +56,13 @@ export default function SignUpPage() {
       </div>
 
       {/* Right side - Sign Up Form */}
-      <div className="flex-1 lg:w-1/2 flex flex-col justify-center p-4 sm:p-6 lg:p-8 bg-white min-h-0">
-        <div className="max-w-md mx-auto w-full overflow-y-auto">
+      <div className="flex min-h-0 flex-1 flex-col justify-center bg-white p-4 sm:p-6 lg:w-1/2 lg:p-8">
+        <div className="mx-auto w-full max-w-md overflow-y-auto">
           <div className="mb-4 lg:mb-6">
-            <h2 className="text-xl lg:text-2xl font-bold text-brand-accent mb-2">
+            <h2 className="text-brand-accent mb-2 text-xl font-bold lg:text-2xl">
               Create your account
             </h2>
-            <p className="text-sm lg:text-base text-brand-muted">
+            <p className="text-brand-muted text-sm lg:text-base">
               Already have an account?{" "}
               <Link
                 href="/auth/login"
@@ -75,7 +75,7 @@ export default function SignUpPage() {
 
           <SignUpForm />
 
-          <div className="mt-4 lg:mt-6 text-center text-xs lg:text-sm text-brand-muted pb-4">
+          <div className="text-brand-muted mt-4 pb-4 text-center text-xs lg:mt-6 lg:text-sm">
             <p>
               By creating an account, you agree to our{" "}
               <Link

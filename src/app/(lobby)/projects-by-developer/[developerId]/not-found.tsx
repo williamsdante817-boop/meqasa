@@ -4,22 +4,22 @@ import { Search, Home, Building2 } from "lucide-react";
 
 export default function NotFound() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] p-8 text-center">
+    <div className="flex min-h-[60vh] flex-col items-center justify-center p-8 text-center">
       <div className="mb-6">
-        <Building2 className="h-16 w-16 text-gray-400 mx-auto" />
+        <Building2 className="mx-auto h-16 w-16 text-gray-400" />
       </div>
 
-      <h1 className="text-3xl font-bold text-gray-900 mb-4">
+      <h1 className="mb-4 text-3xl font-bold text-gray-900">
         Developer Not Found
       </h1>
 
-      <p className="text-lg text-gray-600 mb-8 max-w-md">
+      <p className="mb-8 max-w-md text-lg text-gray-600">
         The developer profile you&apos;re looking for doesn&apos;t exist or may
         have been removed. This could be due to the developer no longer being
         active on our platform.
       </p>
 
-      <div className="flex flex-col sm:flex-row gap-4 mb-8">
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row">
         <Button
           asChild
           variant="default"

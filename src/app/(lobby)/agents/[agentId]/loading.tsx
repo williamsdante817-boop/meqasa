@@ -19,7 +19,7 @@ export default function AgentDetailsLoading() {
         {/* Agent Header Section */}
         <Shell>
           {/* Agent Header Card Skeleton - matching AgentHeader component */}
-          <div className="bg-white rounded-lg shadow-sm border p-6 my-6">
+          <div className="my-6 rounded-lg border bg-white p-6 shadow-sm">
             <div className="flex items-start gap-6">
               {/* Agent Logo */}
               <div className="flex-shrink-0">
@@ -61,7 +61,7 @@ export default function AgentDetailsLoading() {
                 </div>
 
                 {/* Stats section */}
-                <div className="flex items-center gap-4 mt-4 pt-4 border-t">
+                <div className="mt-4 flex items-center gap-4 border-t pt-4">
                   <div className="flex items-center gap-2">
                     <Skeleton className="h-4 w-16" />
                     <Skeleton className="h-5 w-8 rounded" />
@@ -78,11 +78,11 @@ export default function AgentDetailsLoading() {
 
         {/* Main Content */}
         <Shell className="mt-20">
-          <div className="grid grid-cols-1 text-brand-accent w-full mt-4 lg:grid-cols-[2fr_1fr] lg:gap-8 lg:px-0">
+          <div className="text-brand-accent mt-4 grid w-full grid-cols-1 lg:grid-cols-[2fr_1fr] lg:gap-8 lg:px-0">
             <div>
               {/* Breadcrumbs */}
               <div className="mb-6">
-                <div className="flex space-x-2 items-center">
+                <div className="flex items-center space-x-2">
                   <Skeleton className="h-4 w-12" />
                   <Skeleton className="h-4 w-4" /> {/* Separator */}
                   <Skeleton className="h-4 w-16" />
@@ -94,33 +94,33 @@ export default function AgentDetailsLoading() {
               {/* Agent Listings Section - matching AgentListings structure */}
               <div className="mb-8">
                 {/* Listings Header */}
-                <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
                   <div className="lg:col-span-3">
-                    <div className="flex items-center gap-3 mb-2">
+                    <div className="mb-2 flex items-center gap-3">
                       <Skeleton className="h-6 w-40" />{" "}
                       {/* "Listings By AgentName" */}
                       <Skeleton className="h-6 w-20 rounded" />{" "}
                       {/* Badge with total count */}
                     </div>
-                    <Skeleton className="h-4 w-56 mb-6" />{" "}
+                    <Skeleton className="mb-6 h-4 w-56" />{" "}
                     {/* "Showing X-Y of Z listings" */}
                   </div>
                 </div>
 
                 {/* Property Listings Cards */}
-                <div className="grid grid-cols-1 gap-8 mb-8">
+                <div className="mb-8 grid grid-cols-1 gap-8">
                   {Array.from({ length: 4 }).map((_, index) => (
                     <div
                       key={index}
-                      className="bg-white border border-gray-200 rounded-lg overflow-hidden"
+                      className="overflow-hidden rounded-lg border border-gray-200 bg-white"
                     >
                       <div className="flex gap-4 p-4">
                         {/* Property Image */}
-                        <Skeleton className="h-32 w-48 rounded-lg flex-shrink-0" />
+                        <Skeleton className="h-32 w-48 flex-shrink-0 rounded-lg" />
 
                         <div className="flex-1 space-y-3">
                           {/* Property Title & Price */}
-                          <div className="flex justify-between items-start">
+                          <div className="flex items-start justify-between">
                             <Skeleton className="h-5 w-3/4" />
                             <Skeleton className="h-6 w-24" />
                           </div>
@@ -176,7 +176,7 @@ export default function AgentDetailsLoading() {
 
             {/* Sidebar - Contact Card */}
             <aside className="relative mb-5 pb-8 md:mb-0">
-              <div className="bg-white border border-gray-200 rounded-lg p-6 sticky top-4">
+              <div className="sticky top-4 rounded-lg border border-gray-200 bg-white p-6">
                 <div className="space-y-4">
                   {/* Contact header */}
                   <Skeleton className="h-6 w-32" />
@@ -197,7 +197,7 @@ export default function AgentDetailsLoading() {
                   </div>
 
                   {/* Additional info */}
-                  <div className="pt-4 border-t space-y-2">
+                  <div className="space-y-2 border-t pt-4">
                     <Skeleton className="h-4 w-full" />
                     <Skeleton className="h-4 w-3/4" />
                   </div>

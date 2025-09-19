@@ -32,7 +32,7 @@ export async function StreamingLatestListings({
           title="Latest Listings"
           description="View all recent property listings available."
           href="/search/rent?q=ghana&page=1"
-          className="pt-14 md:pt-20 lg:pt-24 [&_p]:px-4 [&_h2]:px-4 w-full mx-auto md:max-w-[720px] lg:max-w-[960px] xl:max-w-[1140px] 2xl:max-w-[1320px]"
+          className="mx-auto w-full pt-14 md:max-w-[720px] md:pt-20 lg:max-w-[960px] lg:pt-24 xl:max-w-[1140px] 2xl:max-w-[1320px] [&_h2]:px-4 [&_p]:px-4"
         >
           <Alert className="mx-auto max-w-md">
             <AlertTitle>No latest listings available</AlertTitle>
@@ -76,7 +76,7 @@ export async function StreamingLatestListings({
           title="Latest Listings"
           description="View all recent property listings available."
           href="/search/rent?q=ghana&page=1"
-          className="pt-14 md:pt-20 lg:pt-24 w-full [&_p]:px-4 [&_h2]:px-4 md:[&_p]:px-0 md:[&_h2]:px-0"
+          className="w-full pt-14 md:pt-20 lg:pt-24 [&_h2]:px-4 md:[&_h2]:px-0 [&_p]:px-4 md:[&_p]:px-0"
         >
           <Alert className="mx-auto max-w-md">
             <AlertTitle>No latest listings available</AlertTitle>
@@ -93,13 +93,15 @@ export async function StreamingLatestListings({
       <LatestListingsSection rentListings={rentals} saleListings={selling} />
     );
   } catch (error: unknown) {
-    logError("Failed to load latest listings", error, { component: "StreamingLatestListings" });
+    logError("Failed to load latest listings", error, {
+      component: "StreamingLatestListings",
+    });
     return (
       <ContentSection
         title="Latest Listings"
         description="View all recent property listings available."
         href="/search/rent?q=ghana&page=1"
-        className="pt-14 md:pt-20 lg:pt-24 w-full [&_p]:px-4 [&_h2]:px-4 md:[&_p]:px-0 md:[&_h2]:px-0"
+        className="w-full pt-14 md:pt-20 lg:pt-24 [&_h2]:px-4 md:[&_h2]:px-0 [&_p]:px-4 md:[&_p]:px-0"
       >
         <Alert variant="destructive" className="mx-auto max-w-md">
           <AlertTitle>Unable to load latest listings</AlertTitle>

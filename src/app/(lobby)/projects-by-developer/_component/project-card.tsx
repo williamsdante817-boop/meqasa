@@ -17,9 +17,9 @@ export function ProjectCard({
   url: string;
 }) {
   return (
-    <Card className="group relative h-full overflow-hidden rounded-lg border-0 bg-transparent p-0 shadow-none hover:shadow-md transition-shadow duration-200">
+    <Card className="group relative h-full overflow-hidden rounded-lg border-0 bg-transparent p-0 shadow-none transition-shadow duration-200 hover:shadow-md">
       <Link href={url} className="block h-full">
-        <CardHeader className="p-0 gap-0">
+        <CardHeader className="gap-0 p-0">
           <AspectRatio ratio={16 / 9} className="relative">
             <ImageWithFallback
               src={src}
@@ -37,7 +37,7 @@ export function ProjectCard({
             <div className="absolute bottom-3 left-3 z-20 lg:bottom-4 lg:left-4">
               <Badge
                 className={cn(
-                  "uppercase rounded-sm",
+                  "rounded-sm uppercase",
                   status?.toLowerCase() === "completed"
                     ? "bg-brand-badge-completed text-white"
                     : status?.toLowerCase() === "ongoing"
@@ -49,7 +49,7 @@ export function ProjectCard({
               </Badge>
 
               {/* Project Name */}
-              <h4 className="mt-2 line-clamp-1 font-bold text-white lg:text-xl leading-tight">
+              <h4 className="mt-2 line-clamp-1 leading-tight font-bold text-white lg:text-xl">
                 {name}
               </h4>
             </div>

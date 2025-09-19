@@ -47,7 +47,7 @@ function ImagePlaceholder({
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.3, ease: "easeOut" }}
       className={cn(
-        "w-full h-full min-h-full bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col items-center justify-center rounded-lg border border-gray-200",
+        "flex h-full min-h-full w-full flex-col items-center justify-center rounded-lg border border-gray-200 bg-gradient-to-br from-gray-50 to-gray-100",
         className
       )}
       role="img"
@@ -58,8 +58,8 @@ function ImagePlaceholder({
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.1, duration: 0.3 }}
       >
-        <ImageIcon className="w-8 h-8 text-gray-400 mb-2" />
-        <span className="text-gray-500 text-sm text-center">{message}</span>
+        <ImageIcon className="mb-2 h-8 w-8 text-gray-400" />
+        <span className="text-center text-sm text-gray-500">{message}</span>
       </motion.div>
     </motion.div>
   );
@@ -71,29 +71,29 @@ function PropertyShowcaseSkeleton({ maxImages = 4 }: { maxImages?: number }) {
 
   return (
     <div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+      <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-3">
         {/* Main large image skeleton (left, spans two rows) - matches exact dimensions */}
-        <div className="md:col-span-2 row-span-2 relative max-h-[300px] md:max-h-[450px]">
-          <div className="rounded-lg overflow-hidden h-full min-h-[300px] md:min-h-[450px]">
-            <Skeleton className="w-full h-full rounded-lg" />
+        <div className="relative row-span-2 max-h-[300px] md:col-span-2 md:max-h-[450px]">
+          <div className="h-full min-h-[300px] overflow-hidden rounded-lg md:min-h-[450px]">
+            <Skeleton className="h-full w-full rounded-lg" />
           </div>
         </div>
 
         {/* Right column with smaller image skeletons (stacked vertically) */}
-        <div className="flex flex-col gap-4 max-h-[450px]">
+        <div className="flex max-h-[450px] flex-col gap-4">
           {Array.from({ length: rightImageCount }, (_, index) => (
             <div
               key={`skeleton-right-${index}`}
-              className="rounded-lg overflow-hidden h-1/3 flex-1 relative min-h-[133px]"
+              className="relative h-1/3 min-h-[133px] flex-1 overflow-hidden rounded-lg"
             >
-              <Skeleton className="w-full h-[200px] md:h-full rounded-lg" />
+              <Skeleton className="h-[200px] w-full rounded-lg md:h-full" />
             </div>
           ))}
         </div>
       </div>
 
       {/* See more photos button skeleton */}
-      <div className="text-left mt-2">
+      <div className="mt-2 text-left">
         <Skeleton className="h-5 w-32 rounded" />
       </div>
     </div>
@@ -158,22 +158,22 @@ function PropertyShowcaseImages({ images }: { images: string[] }) {
 
   return (
     <div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+      <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-3">
         {/* Main large property image (left, spans two rows) */}
-        <div className="md:col-span-2 row-span-2 relative max-h-[300px] md:max-h-[450px]">
-          <div className="rounded-lg overflow-hidden h-full">
+        <div className="relative row-span-2 max-h-[300px] md:col-span-2 md:max-h-[450px]">
+          <div className="h-full overflow-hidden rounded-lg">
             {imgErrors[0] ? (
               <ImagePlaceholder />
             ) : imgLoading[0] ? (
-              <div className="w-full h-full relative">
-                <Skeleton className="w-full h-full rounded-lg" />
+              <div className="relative h-full w-full">
+                <Skeleton className="h-full w-full rounded-lg" />
                 {/* Hidden image for actual loading */}
                 <Image
                   src={getImageUrl(mainImage)}
                   alt="Main property image"
                   width={900}
                   height={600}
-                  className="opacity-0 w-full h-full object-cover"
+                  className="h-full w-full object-cover opacity-0"
                   sizes="(min-width: 1024px) 66vw, 100vw"
                   onError={() => handleImageError(0)}
                   onLoad={() => handleImageLoad(0)}
@@ -184,7 +184,7 @@ function PropertyShowcaseImages({ images }: { images: string[] }) {
             ) : (
               <motion.button
                 onClick={() => handleImageClick(0)}
-                className="group w-full h-full cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300"
+                className="group focus-visible:ring-primary h-full w-full cursor-pointer overflow-hidden rounded-lg shadow-md transition-shadow duration-300 hover:shadow-xl focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
                 aria-label="Open image gallery at main image"
                 type="button"
                 whileHover={{ scale: 1.02 }}
@@ -194,7 +194,7 @@ function PropertyShowcaseImages({ images }: { images: string[] }) {
                 animate={{ opacity: 1, y: 0 }}
               >
                 <motion.div
-                  className="w-full h-full overflow-hidden"
+                  className="h-full w-full overflow-hidden"
                   whileHover={{ scale: 1.05 }}
                   transition={{ duration: 0.4, ease: "easeOut" }}
                 >
@@ -203,7 +203,7 @@ function PropertyShowcaseImages({ images }: { images: string[] }) {
                     alt="Main property image"
                     width={900}
                     height={600}
-                    className="w-full h-full object-cover cursor-pointer group-hover:brightness-105 transition-all duration-300"
+                    className="h-full w-full cursor-pointer object-cover transition-all duration-300 group-hover:brightness-105"
                     sizes="(min-width: 1024px) 66vw, 100vw"
                     onError={() => handleImageError(0)}
                     onLoad={() => handleImageLoad(0)}
@@ -213,17 +213,17 @@ function PropertyShowcaseImages({ images }: { images: string[] }) {
                     quality={85}
                   />
                 </motion.div>
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 pointer-events-none" />
+                <div className="pointer-events-none absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/10" />
                 {/* Hover overlay with subtle zoom icon */}
                 <motion.div
-                  className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                  className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100"
                   initial={{ scale: 0.8 }}
                   whileHover={{ scale: 1 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <div className="bg-white/90 backdrop-blur-sm rounded-full p-3 shadow-lg">
+                  <div className="rounded-full bg-white/90 p-3 shadow-lg backdrop-blur-sm">
                     <svg
-                      className="w-6 h-6 text-gray-700"
+                      className="h-6 w-6 text-gray-700"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -243,7 +243,7 @@ function PropertyShowcaseImages({ images }: { images: string[] }) {
         </div>
 
         {/* Right column with up to three smaller property images (stacked vertically) */}
-        <div className="flex flex-col gap-4 max-h-[450px]">
+        <div className="flex max-h-[450px] flex-col gap-4">
           {rightImages.map((image, index) => {
             const actualIndex = index + 1;
             const isLastTile = index === rightImages.length - 1;
@@ -253,7 +253,7 @@ function PropertyShowcaseImages({ images }: { images: string[] }) {
             return (
               <motion.div
                 key={`right-image-${actualIndex}-${image}`}
-                className="rounded-lg overflow-hidden h-1/3 flex-1 relative"
+                className="relative h-1/3 flex-1 overflow-hidden rounded-lg"
                 aria-label={`Additional property image ${actualIndex + 1}`}
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -266,15 +266,15 @@ function PropertyShowcaseImages({ images }: { images: string[] }) {
                 {imgErrors[actualIndex] ? (
                   <ImagePlaceholder />
                 ) : imgLoading[actualIndex] ? (
-                  <div className="w-full h-full relative">
-                    <Skeleton className="w-full h-[200px] md:h-full rounded-lg" />
+                  <div className="relative h-full w-full">
+                    <Skeleton className="h-[200px] w-full rounded-lg md:h-full" />
                     {/* Hidden image for actual loading */}
                     <Image
                       src={getImageUrl(image)}
                       alt={`Property image ${actualIndex + 1}`}
                       width={450}
                       height={300}
-                      className="opacity-0 w-full h-[200px] md:h-full object-cover"
+                      className="h-[200px] w-full object-cover opacity-0 md:h-full"
                       sizes="(min-width: 1024px) 33vw, 100vw"
                       onError={() => handleImageError(actualIndex)}
                       onLoad={() => handleImageLoad(actualIndex)}
@@ -284,7 +284,7 @@ function PropertyShowcaseImages({ images }: { images: string[] }) {
                 ) : (
                   <motion.button
                     onClick={() => handleImageClick(actualIndex)}
-                    className="group relative w-full h-full cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300"
+                    className="group focus-visible:ring-primary relative h-full w-full cursor-pointer overflow-hidden rounded-lg shadow-sm transition-shadow duration-300 hover:shadow-lg focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
                     aria-label={
                       showMoreOverlay
                         ? `Open image gallery at image ${actualIndex + 1}, plus ${remainingCount} more photos`
@@ -296,7 +296,7 @@ function PropertyShowcaseImages({ images }: { images: string[] }) {
                     transition={{ duration: 0.2, ease: "easeOut" }}
                   >
                     <motion.div
-                      className="w-full h-full overflow-hidden"
+                      className="h-full w-full overflow-hidden"
                       whileHover={{ scale: 1.1 }}
                       transition={{ duration: 0.4, ease: "easeOut" }}
                     >
@@ -305,7 +305,7 @@ function PropertyShowcaseImages({ images }: { images: string[] }) {
                         alt={`Property image ${actualIndex + 1}`}
                         width={450}
                         height={300}
-                        className="w-full h-[200px] md:h-full object-cover cursor-pointer group-hover:brightness-105 transition-all duration-300"
+                        className="h-[200px] w-full cursor-pointer object-cover transition-all duration-300 group-hover:brightness-105 md:h-full"
                         sizes="(min-width: 1024px) 33vw, 100vw"
                         onError={() => handleImageError(actualIndex)}
                         onLoad={() => handleImageLoad(actualIndex)}
@@ -316,7 +316,7 @@ function PropertyShowcaseImages({ images }: { images: string[] }) {
                     </motion.div>
                     {showMoreOverlay && (
                       <motion.div
-                        className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent text-white flex items-center justify-center backdrop-blur-[1px]"
+                        className="absolute inset-0 flex items-center justify-center bg-gradient-to-t from-black/70 via-black/40 to-transparent text-white backdrop-blur-[1px]"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.3 }}
@@ -331,7 +331,7 @@ function PropertyShowcaseImages({ images }: { images: string[] }) {
                         </motion.span>
                       </motion.div>
                     )}
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300 pointer-events-none" />
+                    <div className="pointer-events-none absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/5" />
                   </motion.button>
                 )}
               </motion.div>
@@ -342,13 +342,13 @@ function PropertyShowcaseImages({ images }: { images: string[] }) {
 
       {/* See more photos button */}
       <motion.div
-        className="text-left mt-4"
+        className="mt-4 text-left"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.6, duration: 0.3 }}
       >
         <motion.button
-          className="group inline-flex items-center gap-2 text-brand-blue font-medium hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:underline cursor-pointer transition-colors"
+          className="group text-brand-blue focus-visible:ring-primary inline-flex cursor-pointer items-center gap-2 font-medium transition-colors hover:underline focus-visible:underline focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
           onClick={() => handleImageClick(0)}
           aria-label="See more photos"
           whileHover={{ x: 3 }}

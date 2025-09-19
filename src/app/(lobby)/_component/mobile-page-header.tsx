@@ -9,7 +9,7 @@ export default function MobilePageHeader() {
   return (
     <PageHeader
       as="section"
-      className="mx-auto items-center gap-2 text-center lg:hidden flex"
+      className="mx-auto flex items-center gap-2 text-center lg:hidden"
       withPadding
       role="banner"
       aria-label="Mobile property search header"
@@ -22,7 +22,7 @@ export default function MobilePageHeader() {
         Find Your Dream Home
       </PageHeaderHeading>
       <PageHeaderDescription
-        className="max-w-[46.875rem] animate-fade-up text-brand-muted"
+        className="animate-fade-up text-brand-muted max-w-[46.875rem]"
         style={{ animationDelay: "0.30s", animationFillMode: "both" }}
       >
         Discover the perfect property tailored to your lifestyle and preference

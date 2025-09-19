@@ -182,7 +182,7 @@ export function validateSearchParams(
       "house",
       "office",
       "warehouse",
-      "guesthouse",
+      "guest house",
       "townhouse",
       "land",
     ].includes(params.ftype)

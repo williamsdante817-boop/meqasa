@@ -25,21 +25,25 @@ export default function PropertyFeatures({
   className = "",
 }: PropertyFeaturesProps) {
   // Helper function to safely parse and validate numeric values
-  const parseValue = (value: string | number | null | undefined): number | null => {
+  const parseValue = (
+    value: string | number | null | undefined
+  ): number | null => {
     if (value === null || value === undefined || value === "") {
       return null;
     }
-    
+
     const num = typeof value === "string" ? parseInt(value, 10) : value;
     return isNaN(num) || num <= 0 ? null : num;
   };
 
   // Helper function to safely parse floor area (can be decimal)
-  const parseFloorArea = (value: string | number | null | undefined): number | null => {
+  const parseFloorArea = (
+    value: string | number | null | undefined
+  ): number | null => {
     if (value === null || value === undefined || value === "") {
       return null;
     }
-    
+
     const num = typeof value === "string" ? parseFloat(value) : value;
     return isNaN(num) || num <= 0 ? null : num;
   };
@@ -58,15 +62,15 @@ export default function PropertyFeatures({
   return (
     <div className={`flex items-center gap-4 py-3 ${className}`}>
       <div
-        className="flex items-center gap-3 md:gap-6 flex-wrap"
+        className="flex flex-wrap items-center gap-3 md:gap-6"
         role="list"
         aria-label="Property features"
       >
         {bedsCount && (
           <div className="flex items-center gap-2" role="listitem">
-            <div className="flex items-center gap-2 text-brand-accent">
+            <div className="text-brand-accent flex items-center gap-2">
               <BedIcon
-                className="h-5 w-5 text-brand-muted"
+                className="text-brand-muted h-5 w-5"
                 strokeWidth={1.2}
                 aria-hidden="true"
               />
@@ -76,12 +80,12 @@ export default function PropertyFeatures({
             </div>
           </div>
         )}
-        
+
         {bathsCount && (
           <div className="flex items-center gap-2" role="listitem">
-            <div className="flex items-center gap-2 text-brand-accent">
+            <div className="text-brand-accent flex items-center gap-2">
               <BathIcon
-                className="h-5 w-5 text-brand-muted"
+                className="text-brand-muted h-5 w-5"
                 strokeWidth={1.2}
                 aria-hidden="true"
               />
@@ -91,36 +95,34 @@ export default function PropertyFeatures({
             </div>
           </div>
         )}
-        
+
         {garagesCount && (
           <div className="flex items-center gap-2" role="listitem">
-            <div className="flex items-center gap-2 text-brand-accent">
+            <div className="text-brand-accent flex items-center gap-2">
               <ParkingSquare
-                className="h-5 w-5 text-brand-muted"
+                className="text-brand-muted h-5 w-5"
                 strokeWidth={1.2}
                 aria-hidden="true"
               />
-              <span>
-                {garagesCount} Parking
-              </span>
+              <span>{garagesCount} Parking</span>
             </div>
           </div>
         )}
-        
+
         {floorAreaValue && (
           <div className="flex items-center gap-2" role="listitem">
-            <div className="flex items-center gap-2 text-brand-accent">
+            <div className="text-brand-accent flex items-center gap-2">
               <Square
-                className="h-5 w-5 text-brand-muted"
+                className="text-brand-muted h-5 w-5"
                 strokeWidth={1.2}
                 aria-hidden="true"
               />
               <span>
                 {/* Format floor area with appropriate decimal places */}
-                {floorAreaValue % 1 === 0 
+                {floorAreaValue % 1 === 0
                   ? floorAreaValue.toString()
-                  : floorAreaValue.toFixed(1)
-                } sqm
+                  : floorAreaValue.toFixed(1)}{" "}
+                sqm
               </span>
             </div>
           </div>

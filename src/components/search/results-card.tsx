@@ -63,9 +63,9 @@ export function ResultsCard({ result }: { result: MeqasaListing }) {
       : "";
 
   return (
-    <Card className="flex flex-col gap-4 rounded-lg py-0 text-brand-accent shadow-none transition-all duration-300 hover:shadow-md md:flex-row md:border md:border-brand-border md:p-4 md:hover:shadow-sm md:hover:border-brand-primary/30">
-      <CardHeader className="min-w-[256px] sm:min-w-[300px] p-0 relative">
-        <div className="relative min-h-[202px] sm:min-h-[225px] min-w-[256px] sm:min-w-[300px] overflow-hidden rounded-lg group-hover:scale-[1.02] transition-transform duration-300">
+    <Card className="text-brand-accent md:border-brand-border md:hover:border-brand-primary/30 flex flex-col gap-4 rounded-lg py-0 shadow-none transition-all duration-300 hover:shadow-md md:flex-row md:border md:p-4 md:hover:shadow-sm">
+      <CardHeader className="relative min-w-[256px] p-0 sm:min-w-[300px]">
+        <div className="relative min-h-[202px] min-w-[256px] overflow-hidden rounded-lg transition-transform duration-300 group-hover:scale-[1.02] sm:min-h-[225px] sm:min-w-[300px]">
           <Link
             href={detailsLink}
             className="absolute inset-0 z-10"
@@ -75,13 +75,13 @@ export function ResultsCard({ result }: { result: MeqasaListing }) {
               {/* Loading Skeleton - only show when image hasn't loaded */}
               {!imageLoaded && (
                 <div className="absolute inset-0 z-10">
-                  <Skeleton className="h-[202px] sm:h-[225px] w-full rounded-lg animate-pulse" />
+                  <Skeleton className="h-[202px] w-full animate-pulse rounded-lg sm:h-[225px]" />
                 </div>
               )}
 
               <ImageWithFallback
                 className={cn(
-                  "relative z-20 h-[202px] sm:h-[225px] w-full rounded-lg object-cover transition-all duration-300",
+                  "relative z-20 h-[202px] w-full rounded-lg object-cover transition-all duration-300 sm:h-[225px]",
                   imageLoaded ? "opacity-100" : "opacity-0"
                 )}
                 src={result.image}
@@ -99,21 +99,21 @@ export function ResultsCard({ result }: { result: MeqasaListing }) {
 
           {/* Top Ad Badge */}
           {result.istopad && (
-            <Badge className="absolute left-4 top-4 z-30 h-6 bg-brand-accent text-white uppercase tracking-wide shadow-sm">
+            <Badge className="bg-brand-accent absolute top-4 left-4 z-30 h-6 tracking-wide text-white uppercase shadow-sm">
               {result.availability}
             </Badge>
           )}
 
           {/* Favorite Button - Enhanced positioning */}
           {listingId > 0 && (
-            <div className="absolute right-3 top-3 z-30 opacity-80 group-hover:opacity-100 transition-opacity duration-200">
+            <div className="absolute top-3 right-3 z-30 opacity-80 transition-opacity duration-200 group-hover:opacity-100">
               <AddFavoriteButton listingId={listingId} />
             </div>
           )}
 
           {/* Photo Count Button */}
           <Badge
-            className="absolute bottom-3 right-3 z-30 bg-black/70 text-white text-xs sm:text-sm hover:bg-black/90 transition-colors duration-200"
+            className="absolute right-3 bottom-3 z-30 bg-black/70 text-xs text-white transition-colors duration-200 hover:bg-black/90 sm:text-sm"
             aria-label={`View ${result.photocount} photos`}
           >
             <Camera className="mr-1.5 h-3 w-3 sm:h-4 sm:w-4" />
@@ -125,7 +125,7 @@ export function ResultsCard({ result }: { result: MeqasaListing }) {
       <CardContent className="flex flex-1 flex-col justify-between px-4 pb-4 md:p-0">
         <div>
           <Link href={detailsLink}>
-            <h3 className="font-bold capitalize text-brand-accent text-base sm:text-lg leading-tight line-clamp-2">
+            <h3 className="text-brand-accent line-clamp-2 text-base leading-tight font-bold capitalize sm:text-lg">
               {result.summary}
             </h3>
           </Link>
@@ -133,11 +133,11 @@ export function ResultsCard({ result }: { result: MeqasaListing }) {
           {/* Price Section - Enhanced */}
           <div className="flex h-fit items-baseline gap-2 pt-2 sm:pt-3">
             <span
-              className="text-lg font-bold text-brand-primary leading-tight sm:text-xl"
+              className="text-brand-primary text-lg leading-tight font-bold sm:text-xl"
               dangerouslySetInnerHTML={buildInnerHtml(result.pricepart1)}
             />
             {result.pricepart2 && (
-              <span className="text-sm font-medium text-brand-muted leading-tight sm:text-base">
+              <span className="text-brand-muted text-sm leading-tight font-medium sm:text-base">
                 {result.pricepart2}
               </span>
             )}
@@ -146,14 +146,14 @@ export function ResultsCard({ result }: { result: MeqasaListing }) {
           {/* Description */}
           {result.description && (
             <p
-              className="line-clamp-2 pt-2 sm:pt-3 text-sm text-brand-muted leading-relaxed transition-colors group-hover:text-gray-700 sm:text-base"
+              className="text-brand-muted line-clamp-2 pt-2 text-sm leading-relaxed transition-colors group-hover:text-gray-700 sm:pt-3 sm:text-base"
               dangerouslySetInnerHTML={buildInnerHtml(result.description)}
             />
           )}
 
           {/* Property Details - Enhanced */}
-          <div className="flex items-center justify-between gap-2 pt-2 sm:pt-3 text-sm sm:text-base">
-            <div className="flex items-center gap-1 text-brand-muted flex-wrap sm:flex-nowrap overflow-hidden">
+          <div className="flex items-center justify-between gap-2 pt-2 text-sm sm:pt-3 sm:text-base">
+            <div className="text-brand-muted flex flex-wrap items-center gap-1 overflow-hidden sm:flex-nowrap">
               {result.bedroomcount && (
                 <div className="flex items-center gap-1 whitespace-nowrap">
                   <span className="font-medium">
@@ -163,7 +163,7 @@ export function ResultsCard({ result }: { result: MeqasaListing }) {
                   {(result.bathroomcount ||
                     result.garagecount ||
                     result.floorarea) && (
-                    <Dot className="h-3 w-3 sm:h-4 sm:w-4 text-brand-accent flex-shrink-0" />
+                    <Dot className="text-brand-accent h-3 w-3 flex-shrink-0 sm:h-4 sm:w-4" />
                   )}
                 </div>
               )}
@@ -174,7 +174,7 @@ export function ResultsCard({ result }: { result: MeqasaListing }) {
                     {parseInt(result.bathroomcount) !== 1 ? "s" : ""}
                   </span>
                   {(result.garagecount || result.floorarea) && (
-                    <Dot className="h-3 w-3 sm:h-4 sm:w-4 text-brand-accent flex-shrink-0" />
+                    <Dot className="text-brand-accent h-3 w-3 flex-shrink-0 sm:h-4 sm:w-4" />
                   )}
                 </div>
               )}
@@ -184,7 +184,7 @@ export function ResultsCard({ result }: { result: MeqasaListing }) {
                     {result.garagecount} Parking
                   </span>
                   {result.floorarea && (
-                    <Dot className="h-3 w-3 sm:h-4 sm:w-4 text-brand-accent flex-shrink-0" />
+                    <Dot className="text-brand-accent h-3 w-3 flex-shrink-0 sm:h-4 sm:w-4" />
                   )}
                 </div>
               )}
@@ -203,13 +203,13 @@ export function ResultsCard({ result }: { result: MeqasaListing }) {
         <CardFooter className="mt-4 flex items-center justify-between p-0">
           {/* Agent Info */}
           <div className="flex items-center gap-3">
-            <Avatar className="h-10 w-10 border border-brand-border shadow-sm transition-transform group-hover:scale-105">
+            <Avatar className="border-brand-border h-10 w-10 border shadow-sm transition-transform group-hover:scale-105">
               <AvatarImage
                 src={agentImageUrl}
                 className="rounded-full object-cover"
                 alt={`${result.owner.name || "Agent"} avatar`}
               />
-              <AvatarFallback className="flex h-10 w-10 items-center justify-center rounded-full border bg-slate-50 text-sm sm:text-base font-semibold text-brand-accent">
+              <AvatarFallback className="text-brand-accent flex h-10 w-10 items-center justify-center rounded-full border bg-slate-50 text-sm font-semibold sm:text-base">
                 {result.owner.name
                   ? result.owner.name.slice(0, 2).toUpperCase()
                   : "NA"}
@@ -218,7 +218,7 @@ export function ResultsCard({ result }: { result: MeqasaListing }) {
 
             <div className="flex flex-col">
               {result.owner.name && (
-                <span className="text-sm font-medium text-brand-accent line-clamp-1 sm:text-base md:hidden">
+                <span className="text-brand-accent line-clamp-1 text-sm font-medium sm:text-base md:hidden">
                   {result.owner.name}
                 </span>
               )}
@@ -226,7 +226,7 @@ export function ResultsCard({ result }: { result: MeqasaListing }) {
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <span className="line-clamp-1 w-fit text-left text-sm text-brand-muted cursor-help hover:text-brand-accent transition-colors sm:text-base">
+                      <span className="text-brand-muted hover:text-brand-accent line-clamp-1 w-fit cursor-help text-left text-sm transition-colors sm:text-base">
                         Updated {result.recency}
                       </span>
                     </TooltipTrigger>
@@ -236,7 +236,7 @@ export function ResultsCard({ result }: { result: MeqasaListing }) {
                   </Tooltip>
                 </TooltipProvider>
               </div>
-              <span className="text-xs text-brand-muted md:hidden sm:text-sm">
+              <span className="text-brand-muted text-xs sm:text-sm md:hidden">
                 Updated {result.recency}
               </span>
             </div>
@@ -249,13 +249,13 @@ export function ResultsCard({ result }: { result: MeqasaListing }) {
                 <Button
                   variant="outline"
                   size="icon"
-                  className="h-9 w-9 shadow-none text-brand-accent border-brand-border hover:shadow-sm"
+                  className="text-brand-accent border-brand-border h-9 w-9 shadow-none hover:shadow-sm"
                   aria-label={`Contact ${result.owner.name || "agent"}`}
                 >
                   <Phone className="h-4 w-4" />
                 </Button>
               </DialogTrigger>
-              <DialogContent className="max-w-lg w-full overflow-hidden p-4 sm:p-6">
+              <DialogContent className="w-full max-w-lg overflow-hidden p-4 sm:p-6">
                 <DeveloperContactCard
                   developerName={result.owner.name || "Agent"}
                   developerId={result.listingid}
@@ -270,7 +270,7 @@ export function ResultsCard({ result }: { result: MeqasaListing }) {
               href={detailsLink}
               className={cn(
                 buttonVariants({ variant: "default", size: "sm" }),
-                "w-28 sm:w-32 font-semibold bg-brand-primary hover:bg-brand-primary-dark text-white transition-all duration-200 hover:shadow-md active:scale-95"
+                "bg-brand-primary hover:bg-brand-primary-dark w-28 font-semibold text-white transition-all duration-200 hover:shadow-md active:scale-95 sm:w-32"
               )}
             >
               <span className="hidden sm:inline">View details</span>

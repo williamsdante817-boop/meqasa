@@ -50,13 +50,13 @@ export function PriceInput({
   return (
     <Popover>
       <PopoverTrigger
-        className={`flex min-w-[150px] max-w-[200px] cursor-pointer items-center rounded-lg text-base font-medium text-white ${className}`}
+        className={`flex max-w-[200px] min-w-[150px] cursor-pointer items-center rounded-lg text-base font-medium text-white ${className}`}
       >
         {getDisplayText()}
       </PopoverTrigger>
-      <PopoverContent className="w-80 z-[100]">
+      <PopoverContent className="z-[100] w-80">
         <div className="space-y-4">
-          <h4 className="font-medium leading-none">{title}</h4>
+          <h4 className="leading-none font-medium">{title}</h4>
           <div className="grid grid-cols-2 gap-2">
             <div>
               <Label htmlFor="min-price">Min ({unit})</Label>

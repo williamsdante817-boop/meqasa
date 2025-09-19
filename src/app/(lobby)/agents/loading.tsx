@@ -30,45 +30,45 @@ export default function AgentsLoading() {
 
           {/* Agent Search Section Skeleton */}
           <div className="mb-8">
-            <Skeleton className="h-7 w-32 mb-4" /> {/* Find an Agent title */}
+            <Skeleton className="mb-4 h-7 w-32" /> {/* Find an Agent title */}
             <Skeleton className="h-12 w-full max-w-md" /> {/* Search input */}
           </div>
 
           {/* Main Content */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
             {/* Left Column - Agents */}
-            <div className="lg:col-span-2 space-y-6">
+            <div className="space-y-6 lg:col-span-2">
               {/* Info Section - Exact match */}
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-                <Skeleton className="h-6 w-80 mb-3" />{" "}
+              <div className="rounded-lg border border-blue-200 bg-blue-50 p-6">
+                <Skeleton className="mb-3 h-6 w-80" />{" "}
                 {/* "Real Estate Agents and Brokers on meQasa" */}
-                <div className="text-sm space-y-2">
+                <div className="space-y-2 text-sm">
                   <div className="space-y-2">
                     <Skeleton className="h-4 w-full" />
                     <Skeleton className="h-4 w-full" />
                     <Skeleton className="h-4 w-3/4" />
                   </div>
-                  <Skeleton className="h-4 w-64 mt-2" />{" "}
+                  <Skeleton className="mt-2 h-4 w-64" />{" "}
                   {/* "Join the real estate professionals" link */}
                 </div>
               </div>
 
               {/* Featured Agents Section */}
               <div>
-                <Skeleton className="h-6 w-36 mb-4" />{" "}
+                <Skeleton className="mb-4 h-6 w-36" />{" "}
                 {/* "Featured Agents" title */}
                 {/* Agent Cards - Vertical Layout to match AgentsList */}
                 <div className="flex flex-col gap-6">
                   {/* Page info skeleton */}
-                  <Skeleton className="h-4 w-48 mx-auto" />{" "}
+                  <Skeleton className="mx-auto h-4 w-48" />{" "}
                   {/* "Showing X to Y of Z agents" */}
                   {/* Agent Cards Skeletons */}
                   {Array.from({ length: 6 }).map((_, index) => (
                     <Card key={index} className="p-6">
                       <div className="flex items-start justify-between gap-4">
-                        <div className="flex items-start gap-4 flex-1">
+                        <div className="flex flex-1 items-start gap-4">
                           {/* Agent Logo/Photo */}
-                          <Skeleton className="h-20 w-20 rounded-lg flex-shrink-0" />
+                          <Skeleton className="h-20 w-20 flex-shrink-0 rounded-lg" />
 
                           <div className="flex-1 space-y-3">
                             {/* Agent Name & Verification */}
@@ -114,7 +114,7 @@ export default function AgentsLoading() {
                     </Card>
                   ))}
                   {/* Pagination Skeleton */}
-                  <div className="flex justify-center mt-8">
+                  <div className="mt-8 flex justify-center">
                     <div className="flex space-x-2">
                       {Array.from({ length: 5 }).map((_, index) => (
                         <Skeleton key={index} className="h-10 w-10" />
@@ -128,7 +128,7 @@ export default function AgentsLoading() {
             {/* Right Column - FAQ Skeleton */}
             <div className="lg:col-span-1">
               <Card className="p-6">
-                <Skeleton className="h-6 w-32 mb-6" /> {/* FAQ title */}
+                <Skeleton className="mb-6 h-6 w-32" /> {/* FAQ title */}
                 <div className="space-y-4">
                   {Array.from({ length: 6 }).map((_, index) => (
                     <div

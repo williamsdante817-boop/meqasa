@@ -59,7 +59,7 @@ export default function ContentSection({
 
   return (
     <section
-      className={cn("space-y-6 w-full mx-auto max-w-[1120px]", className)}
+      className={cn("mx-auto w-full max-w-[1120px] space-y-6", className)}
       aria-labelledby={`${uniqueId}-title`}
       {...props}
     >
@@ -73,7 +73,7 @@ export default function ContentSection({
           <h2
             id={`${uniqueId}-title`}
             className={cn(
-              "leading-tight tracking-tighter text-brand-accent text-2xl lg:text-3xl font-bold mb-1",
+              "text-brand-accent mb-1 text-2xl leading-tight font-bold tracking-tighter lg:text-3xl",
               !btnHidden && "lg:font-extrabold"
             )}
           >
@@ -82,7 +82,7 @@ export default function ContentSection({
           {description && (
             <p
               id={`${uniqueId}-description`}
-              className="max-w-[46.875rem] text-balance text-sm leading-normal text-brand-muted sm:text-base sm:leading-7"
+              className="text-brand-muted max-w-[46.875rem] text-sm leading-normal text-balance sm:text-base sm:leading-7"
             >
               {description}
             </p>
@@ -91,7 +91,7 @@ export default function ContentSection({
         {!btnHidden && (
           <Button
             variant="ghost"
-            className="hidden lg:flex text-brand-blue text-base font-semibold hover:text-brand-blue focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2"
+            className="text-brand-blue hover:text-brand-blue focus-visible:ring-brand-blue hidden text-base font-semibold focus-visible:ring-2 focus-visible:ring-offset-2 lg:flex"
             asChild
           >
             <Link href={href} aria-label={`${linkText} for ${title}`}>

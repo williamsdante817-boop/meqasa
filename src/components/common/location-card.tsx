@@ -29,9 +29,9 @@ export default function LocationCard({
       aria-label={`View properties in ${location}`}
       role="article"
     >
-      <div className="relative h-48 rounded-lg overflow-hidden bg-gray-100">
+      <div className="relative h-48 overflow-hidden rounded-lg bg-gray-100">
         {imageLoading && (
-          <Skeleton className="absolute inset-0 w-full h-full bg-gray-100 rounded-lg" />
+          <Skeleton className="absolute inset-0 h-full w-full rounded-lg bg-gray-100" />
         )}
 
         <ImageWithFallback
@@ -40,7 +40,7 @@ export default function LocationCard({
           sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw, 20vw"
           fill
           priority={priority}
-          className={`w-full h-full object-cover transition-all duration-500 group-hover:brightness-105 ${
+          className={`h-full w-full object-cover transition-all duration-500 group-hover:brightness-105 ${
             imageLoading ? "opacity-0" : "opacity-100"
           }`}
           onLoad={() => setImageLoading(false)}
@@ -48,16 +48,16 @@ export default function LocationCard({
           quality={90}
         />
 
-        <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
       </div>
 
       <div className="mt-4">
-        <h3 className="text-gray-900 font-medium transition-colors duration-200 group-hover:text-blue-600 capitalize line-clamp-2 lg:text-lg">
+        <h3 className="line-clamp-2 font-medium text-gray-900 capitalize transition-colors duration-200 group-hover:text-blue-600 lg:text-lg">
           {location}
         </h3>
         {description && (
           <p
-            className="mt-1 text-sm text-gray-600 line-clamp-2"
+            className="mt-1 line-clamp-2 text-sm text-gray-600"
             aria-label={`Description for ${location}`}
           >
             {description}

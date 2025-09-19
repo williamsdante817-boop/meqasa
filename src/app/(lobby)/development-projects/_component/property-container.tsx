@@ -102,24 +102,24 @@ function PropertyContainerError({
 }) {
   return (
     <div
-      className="flex flex-col items-center justify-center min-h-[400px] p-8 text-center"
+      className="flex min-h-[400px] flex-col items-center justify-center p-8 text-center"
       role="alert"
       aria-live="polite"
     >
-      <AlertCircle className="h-16 w-16 text-red-500 mb-4" aria-hidden="true" />
-      <h2 className="text-2xl font-bold text-gray-900 mb-2">
+      <AlertCircle className="mb-4 h-16 w-16 text-red-500" aria-hidden="true" />
+      <h2 className="mb-2 text-2xl font-bold text-gray-900">
         Something went wrong
       </h2>
-      <p className="text-gray-600 mb-4 max-w-md">
+      <p className="mb-4 max-w-md text-gray-600">
         We couldn&apos;t load the project details. Please try again or contact
         support if the problem persists.
       </p>
       {errorId && (
-        <p className="text-xs text-gray-400 mb-6">Error ID: {errorId}</p>
+        <p className="mb-6 text-xs text-gray-400">Error ID: {errorId}</p>
       )}
       <button
         onClick={retry}
-        className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center gap-2"
+        className="flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-3 text-white transition-colors hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
         aria-label="Retry loading project details"
       >
         <RefreshCw className="h-4 w-4" />
@@ -278,28 +278,28 @@ function PropertyContainerContent({
 
     return projectData.minmax.map((obj, index) => (
       <div
-        className="mt-6 flex items-center justify-between rounded-lg border border-orange-200 bg-gradient-to-r from-gray-50 to-gray-50 p-4 md:p-6 shadow-sm transition-shadow"
+        className="mt-6 flex items-center justify-between rounded-lg border border-orange-200 bg-gradient-to-r from-gray-50 to-gray-50 p-4 shadow-sm transition-shadow md:p-6"
         key={`${projectData.project.projectid}-${index}`}
       >
         <div>
           <div className="mb-3">
-            <span className="text-sm font-semibold text-brand-accent lg:text-base">
+            <span className="text-brand-accent text-sm font-semibold lg:text-base">
               Price Range
             </span>
-            <span className="text-xs text-brand-muted block"> (minimum)</span>
+            <span className="text-brand-muted block text-xs"> (minimum)</span>
           </div>
-          <span className="text-xl font-extrabold text-brand-accent lg:text-2xl lg:font-bold">
+          <span className="text-brand-accent text-xl font-extrabold lg:text-2xl lg:font-bold">
             {formatPrice(obj.minprice, { currency: "GHS" })}
           </span>
         </div>
         <div>
           <div className="mb-3">
-            <span className="text-sm font-semibold text-brand-accent lg:text-base">
+            <span className="text-brand-accent text-sm font-semibold lg:text-base">
               Price Range
             </span>
-            <span className="text-xs text-brand-muted block"> (maximum)</span>
+            <span className="text-brand-muted block text-xs"> (maximum)</span>
           </div>
-          <span className="text-xl font-extrabold text-brand-accent lg:text-2xl lg:font-bold">
+          <span className="text-brand-accent text-xl font-extrabold lg:text-2xl lg:font-bold">
             {formatPrice(obj.maxprice, { currency: "GHS" })}
           </span>
         </div>
@@ -347,14 +347,14 @@ function PropertyContainerContent({
     <>
       <PropertyScrollNav sectionRefs={sectionRefs} />
       <Shell>
-        <div className="grid grid-cols-1 text-brand-accent w-full mt-4 lg:grid-cols-[2fr_1fr] lg:gap-8">
+        <div className="text-brand-accent mt-4 grid w-full grid-cols-1 lg:grid-cols-[2fr_1fr] lg:gap-8">
           <div className="mt-6 grid gap-8 pb-3 transition-all duration-300 ease-in lg:grid-cols-1 lg:px-0">
             <div>
               <div className="text-brand-accent">
                 <span className="text-base font-semibold">
                   Project Highlight
                 </span>
-                <div className="item-center mb-1 mt-3 flex h-full gap-4">
+                <div className="item-center mt-3 mb-1 flex h-full gap-4">
                   <h1 className="text-3xl font-extrabold text-inherit">
                     {projectData.project.projectname}
                   </h1>
@@ -373,7 +373,7 @@ function PropertyContainerContent({
                 <div className="mb-2 text-sm">
                   <span className="flex items-center font-light text-inherit">
                     {projectType} <Dot className="h-4 w-4" aria-hidden="true" />
-                    <span className="uppercase line-clamp-1">
+                    <span className="line-clamp-1 uppercase">
                       {unityTypes.map((type) => type)}
                     </span>
                   </span>
@@ -390,7 +390,7 @@ function PropertyContainerContent({
               </div>
 
               {priceRangeDisplay ?? (
-                <div className="mt-6 p-4 md:p-6 bg-gradient-to-r from-gray-50 to-gray-50 rounded-lg border border-gray-200 text-center">
+                <div className="mt-6 rounded-lg border border-gray-200 bg-gradient-to-r from-gray-50 to-gray-50 p-4 text-center md:p-6">
                   <p className="text-brand-muted text-sm">
                     Price information not available
                   </p>
@@ -403,7 +403,7 @@ function PropertyContainerContent({
                     title="About Developer"
                     description=""
                     href=""
-                    className="pt-14 px-0 md:pt-20 pb-10 md:pb-0"
+                    className="px-0 pt-14 pb-10 md:pt-20 md:pb-0"
                     btnHidden
                   >
                     <ExpandableDescription
@@ -419,7 +419,7 @@ function PropertyContainerContent({
                     title="Explore More"
                     description=""
                     href="/listings"
-                    className="pt-14 px-0 md:pt-20 hidden md:block"
+                    className="hidden px-0 pt-14 md:block md:pt-20"
                     btnHidden
                   >
                     <PropertyShowcase images={images} />
@@ -430,7 +430,7 @@ function PropertyContainerContent({
                   title="Project Details"
                   description=""
                   href=""
-                  className="pt-14 px-0 md:pt-20 hidden md:block"
+                  className="hidden px-0 pt-14 md:block md:pt-20"
                   btnHidden
                 >
                   <PropertyDetailsTable details={projectDetails} />
@@ -441,7 +441,7 @@ function PropertyContainerContent({
                     title="Amenities"
                     description=""
                     href=""
-                    className="pt-14 px-0 md:pt-20"
+                    className="px-0 pt-14 md:pt-20"
                     btnHidden
                   >
                     <Amenities
@@ -458,14 +458,14 @@ function PropertyContainerContent({
                   title="Site Plans"
                   description=""
                   href=""
-                  className="pt-14 px-0 md:pt-20"
+                  className="px-0 pt-14 md:pt-20"
                   btnHidden
                   sectionId="site-plan"
                 >
                   <div
                     id="site-plan"
                     ref={sectionRefs["site-plan"]}
-                    className="h-96 bg-gradient-to-r from-gray-50 to-gray-50 rounded-lg border border-gray-200 flex items-center justify-center"
+                    className="flex h-96 items-center justify-center rounded-lg border border-gray-200 bg-gradient-to-r from-gray-50 to-gray-50"
                   >
                     <p className="text-brand-muted text-sm">
                       Site plans will be available soon
@@ -475,7 +475,7 @@ function PropertyContainerContent({
               </div>
             </div>
           </div>
-          <aside className="hidden lg:block pb-6">
+          <aside className="hidden pb-6 lg:block">
             <ContactCard
               src
               name={projectData.project.companyname}
@@ -497,7 +497,7 @@ function PropertyContainerContent({
               title="Floor Plans"
               description="View available floor plan layouts"
               href="#floor-plan"
-              className="pt-14 px-0 md:pt-20"
+              className="px-0 pt-14 md:pt-20"
               btnHidden
               id="floor-plans-heading"
             >
@@ -508,14 +508,14 @@ function PropertyContainerContent({
           <section
             id="location"
             ref={sectionRefs.location}
-            className="py-16 w-full"
+            className="w-full py-16"
             aria-labelledby="location-heading"
           >
             <ContentSection
               title="Nearest Establishments"
               description="View nearby points of interest"
               href="#location"
-              className="pt-14 px-0 md:pt-20"
+              className="px-0 pt-14 md:pt-20"
               btnHidden
               id="location-heading"
             >
@@ -555,7 +555,7 @@ function PropertyContainerContent({
             description=""
             href="/listings"
             className={cn(
-              "py-14 px-0 md:pt-20 md:block lg:max-w-7xl lg:mx-auto [&_p]:px-4 [&_h2]:px-4"
+              "px-0 py-14 md:block md:pt-20 lg:mx-auto lg:max-w-7xl [&_h2]:px-4 [&_p]:px-4"
             )}
           >
             <PropertyListings

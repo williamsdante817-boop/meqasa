@@ -378,7 +378,7 @@ function PropertyScrollNavComponent({ sectionRefs }: PropertyScrollNavProps) {
       aria-label="Property sections navigation"
       aria-describedby="nav-instructions"
       className={cn(
-        "sticky top-16 z-10 w-full bg-white border-y transition-all duration-200",
+        "sticky top-16 z-10 w-full border-y bg-white transition-all duration-200",
         isSticky && "shadow-md"
       )}
     >
@@ -393,7 +393,7 @@ function PropertyScrollNavComponent({ sectionRefs }: PropertyScrollNavProps) {
           <div className="flex items-center justify-between">
             <div
               className={cn(
-                "flex overflow-x-auto scrollbar-hide touch-pan-x",
+                "scrollbar-hide flex touch-pan-x overflow-x-auto",
                 "w-full md:w-auto", // Full width on mobile, auto on desktop
                 "snap-x snap-mandatory", // Add snap scrolling for better mobile UX
                 "-mx-2 px-2 md:mx-0 md:px-0" // Negative margin on mobile to use full width
@@ -425,7 +425,7 @@ function PropertyScrollNavComponent({ sectionRefs }: PropertyScrollNavProps) {
                     onClick={() => scrollToSection(item.id)}
                     onKeyDown={(e) => handleKeyDown(e, item.id)}
                     className={cn(
-                      "flex items-center whitespace-nowrap flex-shrink-0 font-medium transition-all duration-200 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2 focus-visible:ring-offset-white",
+                      "focus-visible:ring-brand-blue flex flex-shrink-0 cursor-pointer items-center font-medium whitespace-nowrap transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none",
                       // Responsive padding - smaller on mobile
                       "px-3 py-3 md:px-6 md:py-4",
                       // Responsive text size
@@ -435,8 +435,8 @@ function PropertyScrollNavComponent({ sectionRefs }: PropertyScrollNavProps) {
                       // Minimum width to prevent squashing
                       "min-w-fit",
                       isActive
-                        ? "text-brand-blue border-b-2 border-brand-blue bg-blue-50/50"
-                        : "text-brand-muted hover:text-brand-blue hover:bg-gray-50/50 hover:border-transparent",
+                        ? "text-brand-blue border-brand-blue border-b-2 bg-blue-50/50"
+                        : "text-brand-muted hover:text-brand-blue hover:border-transparent hover:bg-gray-50/50",
                       "disabled:pointer-events-none disabled:opacity-50"
                     )}
                   >
@@ -447,7 +447,7 @@ function PropertyScrollNavComponent({ sectionRefs }: PropertyScrollNavProps) {
                     <span
                       aria-hidden="true"
                       role="img"
-                      className="mr-1.5 md:mr-2 flex-shrink-0"
+                      className="mr-1.5 flex-shrink-0 md:mr-2"
                     >
                       {item.icon}
                     </span>
@@ -465,9 +465,9 @@ function PropertyScrollNavComponent({ sectionRefs }: PropertyScrollNavProps) {
               })}
             </div>
             {isSticky && (
-              <div className="flex-shrink-0 ml-2">
+              <div className="ml-2 flex-shrink-0">
                 <BrochureButton
-                  className="hidden rounded-md md:flex items-center justify-center bg-brand-accent font-semibold hover:bg-brand-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                  className="bg-brand-accent hover:bg-brand-accent focus-visible:ring-primary hidden items-center justify-center rounded-md font-semibold focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none md:flex"
                   showIcon
                   aria-label="Download property brochure"
                 />
@@ -486,8 +486,8 @@ const PropertyScrollNav = memo(
   PropertyScrollNavComponent,
   (prevProps, nextProps) => {
     // Custom comparison to check if sectionRefs object keys changed
-    const prevKeys = Object.keys(prevProps.sectionRefs).sort();
-    const nextKeys = Object.keys(nextProps.sectionRefs).sort();
+    const prevKeys = Object.keys(prevProps.sectionRefs || {}).sort();
+    const nextKeys = Object.keys(nextProps.sectionRefs || {}).sort();
 
     if (prevKeys.length !== nextKeys.length) return false;
 

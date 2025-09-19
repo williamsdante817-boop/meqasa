@@ -17,26 +17,26 @@ export default function ImprovedAppPromotion() {
 
   return (
     <section
-      className="bg-[#f0f5ff] py-16 px-4 md:px-8 lg:px-16 rounded-xl overflow-hidden relative"
+      className="relative overflow-hidden rounded-xl bg-[#f0f5ff] px-4 py-16 md:px-8 lg:px-16"
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
     >
-      <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-8 items-center">
+      <div className="mx-auto grid max-w-6xl items-center gap-8 md:grid-cols-2">
         <div className="max-w-lg">
-          <h2 className="text-3xl md:text-4xl font-bold text-[#1e2b5c] mb-4">
+          <h2 className="mb-4 text-3xl font-bold text-[#1e2b5c] md:text-4xl">
             Do more on the app.
           </h2>
-          <p className="text-lg md:text-xl text-[#1e2b5c] mb-2">
+          <p className="mb-2 text-lg text-[#1e2b5c] md:text-xl">
             Save your searches, track enquiries and more.
           </p>
-          <p className="text-lg md:text-xl text-[#1e2b5c] mb-8">
+          <p className="mb-8 text-lg text-[#1e2b5c] md:text-xl">
             Available on iOS and Android
           </p>
 
           <div className="flex flex-wrap gap-4">
             {/* App Store Button */}
             <Link href="#" className="inline-block">
-              <div className="bg-black text-white rounded-lg flex items-center justify-center px-4 py-2 w-[200px] h-[60px]">
+              <div className="flex h-[60px] w-[200px] items-center justify-center rounded-lg bg-black px-4 py-2 text-white">
                 <div className="mr-3">
                   <svg
                     viewBox="0 0 24 24"
@@ -56,7 +56,7 @@ export default function ImprovedAppPromotion() {
 
             {/* Google Play Button */}
             <Link href="#" className="inline-block">
-              <div className="bg-black text-white rounded-lg flex items-center justify-center px-4 py-2 w-[200px] h-[60px]">
+              <div className="flex h-[60px] w-[200px] items-center justify-center rounded-lg bg-black px-4 py-2 text-white">
                 <div className="mr-3">
                   <svg viewBox="0 0 512 512" width="30" height="30">
                     <path
@@ -90,89 +90,89 @@ export default function ImprovedAppPromotion() {
           </div>
         </div>
 
-        <div className="relative h-[400px] md:h-[500px] overflow-visible">
+        <div className="relative h-[400px] overflow-visible md:h-[500px]">
           {/* Featured Properties Phone */}
           <div
-            className={`absolute right-[-20px] top-[-30px] transform -rotate-6 z-10 transition-all duration-700 ${isHovering ? "translate-y-[-10px]" : "translate-y-[0px]"}`}
+            className={`absolute top-[-30px] right-[-20px] z-10 -rotate-6 transform transition-all duration-700 ${isHovering ? "translate-y-[-10px]" : "translate-y-[0px]"}`}
             style={{ transformStyle: "preserve-3d", perspective: "1000px" }}
           >
             <div
-              className="relative w-[220px] h-[450px] bg-white rounded-3xl overflow-hidden shadow-2xl border-8 border-white"
+              className="relative h-[450px] w-[220px] overflow-hidden rounded-3xl border-8 border-white bg-white shadow-2xl"
               style={{
                 boxShadow:
                   "0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 15px rgba(0, 0, 0, 0.1)",
               }}
             >
-              <div className="absolute top-0 left-0 w-full h-full flex flex-col">
+              <div className="absolute top-0 left-0 flex h-full w-full flex-col">
                 <div className="bg-white p-3">
-                  <div className="text-sm font-semibold text-gray-800 rotate-[6deg] transform origin-top-left">
+                  <div className="origin-top-left rotate-[6deg] transform text-sm font-semibold text-gray-800">
                     Featured Projects
                     <span className="text-blue-500">See all</span>
                   </div>
                 </div>
                 <div className="flex-1 bg-gray-100 p-2">
-                  <div className="bg-white rounded-lg overflow-hidden mb-3">
+                  <div className="mb-3 overflow-hidden rounded-lg bg-white">
                     <div className="h-24 bg-gray-200"></div>
                     <div className="p-2">
-                      <div className="h-2 bg-gray-200 rounded w-3/4 mb-1"></div>
-                      <div className="h-2 bg-gray-200 rounded w-1/2"></div>
+                      <div className="mb-1 h-2 w-3/4 rounded bg-gray-200"></div>
+                      <div className="h-2 w-1/2 rounded bg-gray-200"></div>
                     </div>
                   </div>
-                  <div className="bg-white rounded-lg overflow-hidden">
+                  <div className="overflow-hidden rounded-lg bg-white">
                     <div className="h-24 bg-gray-200"></div>
                     <div className="p-2">
-                      <div className="h-2 bg-gray-200 rounded w-3/4 mb-1"></div>
-                      <div className="h-2 bg-gray-200 rounded w-1/2"></div>
+                      <div className="mb-1 h-2 w-3/4 rounded bg-gray-200"></div>
+                      <div className="h-2 w-1/2 rounded bg-gray-200"></div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
             {/* Phone reflection/shadow effect */}
-            <div className="absolute bottom-[-15px] left-[10px] right-[10px] h-[20px] bg-black opacity-20 blur-md rounded-full transform -rotate-6"></div>
+            <div className="absolute right-[10px] bottom-[-15px] left-[10px] h-[20px] -rotate-6 transform rounded-full bg-black opacity-20 blur-md"></div>
           </div>
 
           {/* Search Interface Phone */}
           <div
-            className={`absolute right-[100px] top-[20px] transform rotate-6 z-0 transition-all duration-700 ${isHovering ? "translate-y-[-10px] delay-300" : "translate-y-[0px]"}`}
+            className={`absolute top-[20px] right-[100px] z-0 rotate-6 transform transition-all duration-700 ${isHovering ? "translate-y-[-10px] delay-300" : "translate-y-[0px]"}`}
             style={{ transformStyle: "preserve-3d", perspective: "1000px" }}
           >
             <div
-              className="relative w-[220px] h-[450px] bg-white rounded-3xl overflow-hidden shadow-2xl border-8 border-white"
+              className="relative h-[450px] w-[220px] overflow-hidden rounded-3xl border-8 border-white bg-white shadow-2xl"
               style={{
                 boxShadow:
                   "0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 15px rgba(0, 0, 0, 0.1)",
               }}
             >
-              <div className="absolute top-0 left-0 w-full h-full flex flex-col">
+              <div className="absolute top-0 left-0 flex h-full w-full flex-col">
                 <div className="bg-white p-3">
-                  <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+                  <div className="mb-2 h-4 w-1/2 rounded bg-gray-200"></div>
                 </div>
                 <div className="flex-1 bg-gray-100 p-2">
-                  <div className="bg-white rounded-lg p-3 mb-3">
-                    <div className="h-3 bg-gray-200 rounded w-1/3 mb-2"></div>
-                    <div className="h-6 bg-gray-200 rounded mb-3"></div>
-                    <div className="h-3 bg-gray-200 rounded w-1/3 mb-2"></div>
-                    <div className="h-6 bg-gray-200 rounded mb-3"></div>
-                    <div className="grid grid-cols-2 gap-2 mb-3">
+                  <div className="mb-3 rounded-lg bg-white p-3">
+                    <div className="mb-2 h-3 w-1/3 rounded bg-gray-200"></div>
+                    <div className="mb-3 h-6 rounded bg-gray-200"></div>
+                    <div className="mb-2 h-3 w-1/3 rounded bg-gray-200"></div>
+                    <div className="mb-3 h-6 rounded bg-gray-200"></div>
+                    <div className="mb-3 grid grid-cols-2 gap-2">
                       <div>
-                        <div className="h-3 bg-gray-200 rounded w-1/2 mb-2"></div>
-                        <div className="h-6 bg-gray-200 rounded"></div>
+                        <div className="mb-2 h-3 w-1/2 rounded bg-gray-200"></div>
+                        <div className="h-6 rounded bg-gray-200"></div>
                       </div>
                       <div>
-                        <div className="h-3 bg-gray-200 rounded w-1/2 mb-2"></div>
-                        <div className="h-6 bg-gray-200 rounded"></div>
+                        <div className="mb-2 h-3 w-1/2 rounded bg-gray-200"></div>
+                        <div className="h-6 rounded bg-gray-200"></div>
                       </div>
                     </div>
-                    <div className="h-10 bg-red-500 rounded flex items-center justify-center">
-                      <div className="h-3 bg-white rounded w-1/3"></div>
+                    <div className="flex h-10 items-center justify-center rounded bg-red-500">
+                      <div className="h-3 w-1/3 rounded bg-white"></div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
             {/* Phone reflection/shadow effect */}
-            <div className="absolute bottom-[-15px] left-[10px] right-[10px] h-[20px] bg-black opacity-20 blur-md rounded-full transform rotate-6"></div>
+            <div className="absolute right-[10px] bottom-[-15px] left-[10px] h-[20px] rotate-6 transform rounded-full bg-black opacity-20 blur-md"></div>
           </div>
         </div>
       </div>

@@ -12,20 +12,28 @@ import { MapPin } from "lucide-react";
 import type { Unit } from "@/types";
 
 export function PropertyUnitCard({ unit }: { unit: Unit }) {
-  const url = `${unit?.beds}-bedrooms-${unit?.unittypeslug}-for-${unit?.terms}-in-${unit?.city.split(" ").join("-")}-unit-${unit?.unitid}`;
+  // Generate consistent URL format matching units-result-card
+  const bedrooms = unit?.beds || 0;
+  const citySlug = unit?.city?.split(" ").join("-").toLowerCase() || "ghana";
+  const typeSlug =
+    unit?.unittypeslug?.toLowerCase() ||
+    unit?.unittype?.toLowerCase() ||
+    "apartment";
+  const contractSlug = unit?.terms === "rent" ? "rent" : "sale";
+  const url = `/developer-unit/${bedrooms}-bedroom-${typeSlug}-for-${contractSlug}-in-${citySlug}-unit-${unit?.unitid}`;
 
   return (
     <Link
-      href={url.toLocaleLowerCase()}
+      href={url}
       aria-label={unit?.title === "" ? unit?.unittypename : unit?.title}
       className="block"
     >
-      <Card className="size-full rounded-xl p-0 relative gap-0 border-none shadow-none hover:shadow-md transition-shadow duration-200 cursor-pointer">
-        <CardHeader className="p-0 border-b border-b-gray-100 gap-0 rounded-xl shadow-elegant-sm">
+      <Card className="relative size-full cursor-pointer gap-0 rounded-xl border-none p-0 shadow-none transition-shadow duration-200 hover:shadow-md">
+        <CardHeader className="shadow-elegant-sm gap-0 rounded-xl border-b border-b-gray-100 p-0">
           <AspectRatio ratio={4 / 3}>
             {/* {photos.length > 0 && !imgError ? ( */}
             <Image
-              className="object-cover rounded-xl"
+              className="rounded-xl object-cover"
               src={`https://meqasa.com//uploads/imgs/${unit?.coverphoto}?dim=256x190`}
               // onError={() => setImgError(true)}
               sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw, 20vw"
@@ -39,26 +47,26 @@ export function PropertyUnitCard({ unit }: { unit: Unit }) {
             )} */}
           </AspectRatio>
 
-          <Badge className="absolute top-3 left-3 z-10 rounded-sm bg-accent-foreground capitalize">
+          <Badge className="bg-accent-foreground absolute top-3 left-3 z-10 rounded-sm capitalize">
             {"For Sale"}
           </Badge>
         </CardHeader>
 
-        <CardContent className="pt-4 px-0 pb-0 space-y-1">
-          <CardTitle className="line-clamp-1 font-medium text-[#f93a5d] text-md capitalize">
+        <CardContent className="space-y-1 px-0 pt-4 pb-0">
+          <CardTitle className="text-md line-clamp-1 font-medium text-[#f93a5d] capitalize">
             {unit?.title === "" ? unit?.unittypename : unit?.title}
           </CardTitle>
-          <div className="flex items-start gap-1 text-sm text-muted-foreground font-medium">
+          <div className="text-muted-foreground flex items-start gap-1 text-sm font-medium">
             <MapPin className="h-4 w-4 text-gray-400" />
-            <p className="text-md capitalize text-gray-400 line-clamp-1 w-full">
+            <p className="text-md line-clamp-1 w-full text-gray-400 capitalize">
               {unit?.address}
             </p>
           </div>
-          <div className=" flex items-center text-sm md:text-base text-muted-foreground">
+          <div className="text-muted-foreground flex items-center text-sm md:text-base">
             {unit?.beds} Beds{" "}
-            <Icons.dot className="h-[12px] w-[12px] text-b-accent" />{" "}
+            <Icons.dot className="text-b-accent h-[12px] w-[12px]" />{" "}
             {unit?.baths} Baths
-            <Icons.dot className="h-[12px] w-[12px] text-b-accent" />{" "}
+            <Icons.dot className="text-b-accent h-[12px] w-[12px]" />{" "}
             {unit?.garages} Parking
           </div>
         </CardContent>

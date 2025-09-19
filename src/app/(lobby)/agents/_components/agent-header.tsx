@@ -101,26 +101,26 @@ export function AgentHeader({ agent, logoUrl }: AgentHeaderProps) {
   return (
     <div className="w-full">
       {/* Agent Profile Section */}
-      <Card className="bg-white border border-gray-200 rounded-lg p-4 sm:p-6 lg:p-8 my-4 sm:my-6 lg:my-8 shadow-none">
-        <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 lg:gap-8">
+      <Card className="my-4 rounded-lg border border-gray-200 bg-white p-4 shadow-none sm:my-6 sm:p-6 lg:my-8 lg:p-8">
+        <div className="flex flex-col gap-4 sm:gap-6 lg:flex-row lg:gap-8">
           {/* Left: Agent Info */}
           <div className="flex-1">
-            <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6 mb-4 sm:mb-6">
+            <div className="mb-4 flex flex-col items-start gap-4 sm:mb-6 sm:flex-row sm:gap-6">
               {/* Logo */}
-              <div className="flex-shrink-0 mx-auto sm:mx-0">
-                <div className="relative w-32 h-32 md:w-16 md:h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden bg-gray-100 border border-gray-200">
+              <div className="mx-auto flex-shrink-0 sm:mx-0">
+                <div className="relative h-32 w-32 overflow-hidden rounded-lg border border-gray-200 bg-gray-100 sm:h-20 sm:w-20 md:h-16 md:w-16">
                   {logoUrl ? (
                     <ImageWithFallback
                       src={logoUrl}
                       alt={`${agent.name} logo`}
                       width={80}
                       height={80}
-                      className="w-full h-full object-contain"
+                      className="h-full w-full object-contain"
                       fallbackAlt={`${agent.name} logo`}
                       quality={95}
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-gray-200 text-gray-500 text-xs font-medium">
+                    <div className="flex h-full w-full items-center justify-center bg-gray-200 text-xs font-medium text-gray-500">
                       {agent.name.charAt(0).toUpperCase()}
                     </div>
                   )}
@@ -128,14 +128,14 @@ export function AgentHeader({ agent, logoUrl }: AgentHeaderProps) {
               </div>
 
               {/* Agent Details */}
-              <div className="flex-1 w-full">
-                <div className="flex text-center sm:text-left flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-2 mb-3 sm:mb-2">
+              <div className="w-full flex-1">
+                <div className="mb-3 flex flex-col gap-3 text-center sm:mb-2 sm:flex-row sm:items-start sm:justify-between sm:gap-2 sm:text-left">
                   <div className="flex flex-row items-center justify-center gap-2">
-                    <h1 className="text-xl sm:text-2xl font-semibold text-brand-accent break-words">
+                    <h1 className="text-brand-accent text-xl font-semibold break-words sm:text-2xl">
                       {agent.name}
                     </h1>
                     {isVerified && (
-                      <div className="flex items-center gap-1 bg-green-100 text-green-700 px-2 py-1 rounded-sm text-xs font-medium w-fit">
+                      <div className="flex w-fit items-center gap-1 rounded-sm bg-green-100 px-2 py-1 text-xs font-medium text-green-700">
                         <CheckCircle className="h-3 w-3" />
                         <span className="hidden sm:inline">
                           {agent.verified === "plus"
@@ -158,21 +158,21 @@ export function AgentHeader({ agent, logoUrl }: AgentHeaderProps) {
                       </div>
                     )}
                   </div>
-                  <div className="md:hidden flex items-center gap-4 mb-4">
+                  <div className="mb-4 flex items-center gap-4 md:hidden">
                     <div className="flex items-center gap-1">
-                      <MapPin className="h-4 w-4 text-brand-muted flex-shrink-0" />
-                      <span className="text-sm text-brand-muted break-words">
+                      <MapPin className="text-brand-muted h-4 w-4 flex-shrink-0" />
+                      <span className="text-brand-muted text-sm break-words">
                         {location || "Not available"}
                       </span>
                     </div>
                   </div>
-                  <div className="flex flex-col items-start sm:items-end gap-2">
+                  <div className="flex flex-col items-start gap-2 sm:items-end">
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={handleShare}
                       disabled={isSharing}
-                      className="flex shadow-none items-center gap-2 text-brand-muted hover:text-brand-accent w-full sm:w-auto"
+                      className="text-brand-muted hover:text-brand-accent flex w-full items-center gap-2 shadow-none sm:w-auto"
                       aria-label={`Share ${agent.name}'s profile`}
                     >
                       <Share className="h-4 w-4" />
@@ -184,17 +184,17 @@ export function AgentHeader({ agent, logoUrl }: AgentHeaderProps) {
                       </span>
                     </Button>
                     {shareMessage && (
-                      <span className="text-xs text-brand-muted">
+                      <span className="text-brand-muted text-xs">
                         {shareMessage}
                       </span>
                     )}
                   </div>
                 </div>
 
-                <div className="hidden md:flex items-center gap-4 mb-4">
+                <div className="mb-4 hidden items-center gap-4 md:flex">
                   <div className="flex items-center gap-1">
-                    <MapPin className="h-4 w-4 text-brand-muted flex-shrink-0" />
-                    <span className="text-sm text-brand-muted break-words">
+                    <MapPin className="text-brand-muted h-4 w-4 flex-shrink-0" />
+                    <span className="text-brand-muted text-sm break-words">
                       {location || "Not available"}
                     </span>
                   </div>
@@ -205,7 +205,7 @@ export function AgentHeader({ agent, logoUrl }: AgentHeaderProps) {
                   <div className="mb-4 hidden md:block">
                     <div
                       ref={aboutRef}
-                      className={`text-sm text-brand-muted leading-relaxed transition-all duration-300 ease-in-out ${
+                      className={`text-brand-muted text-sm leading-relaxed transition-all duration-300 ease-in-out ${
                         showFullAbout ? "" : "overflow-hidden"
                       }`}
                       style={{
@@ -222,7 +222,7 @@ export function AgentHeader({ agent, logoUrl }: AgentHeaderProps) {
                     {shouldShowToggle && (
                       <button
                         onClick={toggleAbout}
-                        className="text-sm text-brand-accent hover:text-brand-accent/80 font-medium mt-2 transition-all duration-200 ease-in-out hover:scale-105 active:scale-95"
+                        className="text-brand-accent hover:text-brand-accent/80 mt-2 text-sm font-medium transition-all duration-200 ease-in-out hover:scale-105 active:scale-95"
                       >
                         {showFullAbout ? "See less" : "See more"}
                       </button>
@@ -232,20 +232,20 @@ export function AgentHeader({ agent, logoUrl }: AgentHeaderProps) {
 
                 {/* Commission Information */}
                 {(agent.rentcommission ?? agent.salecommission) && (
-                  <div className="grid grid-cols-2 gap-3 sm:gap-4 p-3 sm:p-4 bg-gray-50 rounded-lg border border-gray-200">
+                  <div className="grid grid-cols-2 gap-3 rounded-lg border border-gray-200 bg-gray-50 p-3 sm:gap-4 sm:p-4">
                     <div className="text-center">
-                      <p className="text-xs sm:text-sm font-medium text-brand-muted mb-1">
+                      <p className="text-brand-muted mb-1 text-xs font-medium sm:text-sm">
                         Rental Commission
                       </p>
-                      <p className="text-base sm:text-lg font-semibold text-brand-accent">
+                      <p className="text-brand-accent text-base font-semibold sm:text-lg">
                         {formatCommission(agent.rentcommission)}
                       </p>
                     </div>
                     <div className="text-center">
-                      <p className="text-xs sm:text-sm font-medium text-brand-muted mb-1">
+                      <p className="text-brand-muted mb-1 text-xs font-medium sm:text-sm">
                         Sale Commission
                       </p>
-                      <p className="text-base sm:text-lg font-semibold text-brand-accent">
+                      <p className="text-brand-accent text-base font-semibold sm:text-lg">
                         {formatCommission(agent.salecommission)}
                       </p>
                     </div>
@@ -256,15 +256,15 @@ export function AgentHeader({ agent, logoUrl }: AgentHeaderProps) {
           </div>
 
           {/* Right: Stats */}
-          <div className="hidden md:flex flex-row sm:flex-col lg:flex-row gap-4 sm:gap-6 lg:gap-8 justify-center lg:justify-start">
+          <div className="hidden flex-row justify-center gap-4 sm:flex-col sm:gap-6 md:flex lg:flex-row lg:justify-start lg:gap-8">
             <div className="text-center">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                <Building2 className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" />
+              <div className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 sm:h-12 sm:w-12">
+                <Building2 className="h-5 w-5 text-blue-600 sm:h-6 sm:w-6" />
               </div>
-              <div className="font-semibold text-brand-accent text-lg sm:text-xl">
+              <div className="text-brand-accent text-lg font-semibold sm:text-xl">
                 {totalListings}
               </div>
-              <div className="text-xs sm:text-sm text-brand-muted">
+              <div className="text-brand-muted text-xs sm:text-sm">
                 Active Listings
               </div>
             </div>

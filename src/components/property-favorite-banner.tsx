@@ -57,11 +57,11 @@ export default function PropertyFavoritesBanner({
   };
 
   return (
-    <div className="w-full py-10 mt-4">
-      <Card className="w-full bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
+    <div className="mt-4 w-full py-10">
+      <Card className="w-full rounded-lg border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50 p-6 shadow-sm transition-shadow hover:shadow-md">
         <div className="flex items-center gap-4">
           <div className="flex-1">
-            <h3 className="text-lg font-semibold text-brand-accent mb-2">
+            <h3 className="text-brand-accent mb-2 text-lg font-semibold">
               Save This {propertyType === "listing" ? "Property" : "Project"}
             </h3>
             <p className="text-brand-muted mb-4">
@@ -70,7 +70,7 @@ export default function PropertyFavoritesBanner({
             </p>
             <div
               className={cn(
-                "inline-flex items-center gap-3 bg-white border border-rose-200 rounded-lg px-4 py-3 relative cursor-pointer transition-all hover:shadow-md",
+                "relative inline-flex cursor-pointer items-center gap-3 rounded-lg border border-rose-200 bg-white px-4 py-3 transition-all hover:shadow-md",
                 isFavorite && "border-rose-300 bg-rose-50 shadow-sm",
                 "hover:border-rose-300 hover:bg-rose-50"
               )}
@@ -94,7 +94,7 @@ export default function PropertyFavoritesBanner({
                   >
                     <Heart
                       className={cn(
-                        "h-5 w-5 text-brand-primary",
+                        "text-brand-primary h-5 w-5",
                         isFavorite && "fill-current"
                       )}
                     />
@@ -107,11 +107,11 @@ export default function PropertyFavoritesBanner({
                     exit={{ scale: 0.8, opacity: 0 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <Heart className="h-5 w-5 text-brand-primary" />
+                    <Heart className="text-brand-primary h-5 w-5" />
                   </motion.div>
                 )}
               </AnimatePresence>
-              <span className="font-medium text-brand-accent">
+              <span className="text-brand-accent font-medium">
                 {isFavorite ? "Added to Favorites!" : "Add to Favorites"}
               </span>
             </div>

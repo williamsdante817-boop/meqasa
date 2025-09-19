@@ -585,30 +585,30 @@ export function DeveloperContactCard({
   // Show success state with agent information
   if (isSuccess && agentInfo) {
     return (
-      <div className="w-full max-w-lg mx-auto">
-        <div className="flex flex-col items-center mb-4 sm:mb-6">
-          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border border-gray-200 mb-3 sm:mb-4">
+      <div className="mx-auto w-full max-w-lg">
+        <div className="mb-4 flex flex-col items-center sm:mb-6">
+          <div className="mb-3 h-16 w-16 overflow-hidden rounded-full border border-gray-200 sm:mb-4 sm:h-20 sm:w-20">
             <ImageWithFallback
               src={logoSrc || fallbackImage}
               alt={`${developerName} logo`}
               width={80}
               height={80}
-              className="w-full h-full object-contain"
+              className="h-full w-full object-contain"
             />
           </div>
-          <h3 className="text-base sm:text-lg font-semibold text-brand-accent text-center">
+          <h3 className="text-brand-accent text-center text-base font-semibold sm:text-lg">
             {developerName}
           </h3>
         </div>
 
         {/* Agent Information Card */}
-        <div className="bg-gray-50 rounded-lg p-4 sm:p-6 mb-4 sm:mb-6">
+        <div className="mb-4 rounded-lg bg-gray-50 p-4 sm:mb-6 sm:p-6">
           {/* Phone Number */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Phone className="h-4 w-4 text-brand-muted" />
-                <span className="text-sm text-brand-muted">Phone Number</span>
+                <Phone className="text-brand-muted h-4 w-4" />
+                <span className="text-brand-muted text-sm">Phone Number</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="font-mono text-sm font-medium">
@@ -632,8 +632,8 @@ export function DeveloperContactCard({
             {agentInfo.whatsappNumber && (
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <MessageSquare className="h-4 w-4 text-brand-muted" />
-                  <span className="text-sm text-brand-muted">WhatsApp</span>
+                  <MessageSquare className="text-brand-muted h-4 w-4" />
+                  <span className="text-brand-muted text-sm">WhatsApp</span>
                 </div>
                 <span className="font-mono text-sm font-medium">
                   {toInternationalDisplay(
@@ -648,10 +648,10 @@ export function DeveloperContactCard({
             {agentInfo.email && (
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Mail className="h-4 w-4 text-brand-muted" />
-                  <span className="text-sm text-brand-muted">Email</span>
+                  <Mail className="text-brand-muted h-4 w-4" />
+                  <span className="text-brand-muted text-sm">Email</span>
                 </div>
-                <span className="text-sm font-medium text-brand-blue">
+                <span className="text-brand-blue text-sm font-medium">
                   {agentInfo.email}
                 </span>
               </div>
@@ -661,8 +661,8 @@ export function DeveloperContactCard({
 
         {/* Email Form Section - Only show if we have agent email */}
         {agentInfo.email && (
-          <div className="bg-white border border-gray-200 rounded-lg p-4 sm:p-6 mb-4 sm:mb-6">
-            <h5 className="font-semibold text-brand-accent mb-3 sm:mb-4">
+          <div className="mb-4 rounded-lg border border-gray-200 bg-white p-4 sm:mb-6 sm:p-6">
+            <h5 className="text-brand-accent mb-3 font-semibold sm:mb-4">
               Send Email Message
             </h5>
             <div className="space-y-3 sm:space-y-4">
@@ -694,16 +694,16 @@ export function DeveloperContactCard({
               <Button
                 onClick={handleEmailAgent}
                 disabled={isLoading}
-                className="w-full bg-brand-primary hover:bg-brand-primary-darken text-white"
+                className="bg-brand-primary hover:bg-brand-primary-darken w-full text-white"
               >
                 {isLoading ? (
                   <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    <div className="mr-2 h-4 w-4 animate-spin rounded-full border-b-2 border-white"></div>
                     Sending...
                   </>
                 ) : (
                   <>
-                    <Mail className="h-4 w-4 mr-2" />
+                    <Mail className="mr-2 h-4 w-4" />
                     Send Email
                   </>
                 )}
@@ -716,9 +716,9 @@ export function DeveloperContactCard({
         <div className="space-y-2 sm:space-y-3">
           <Button
             onClick={handleCallAgent}
-            className="w-full bg-brand-primary hover:bg-brand-primary-darken text-white"
+            className="bg-brand-primary hover:bg-brand-primary-darken w-full text-white"
           >
-            <Phone className="h-4 w-4 mr-2" />
+            <Phone className="mr-2 h-4 w-4" />
             Call Agent
           </Button>
 
@@ -728,7 +728,7 @@ export function DeveloperContactCard({
               variant="outline"
               className="w-full border-green-600 text-green-600 hover:bg-green-50 hover:text-green-600"
             >
-              <MessageSquare className="h-4 w-4 mr-2" />
+              <MessageSquare className="mr-2 h-4 w-4" />
               Open WhatsApp
             </Button>
           )}
@@ -739,7 +739,7 @@ export function DeveloperContactCard({
               variant="outline"
               className="w-full"
             >
-              <Mail className="h-4 w-4 mr-2" />
+              <Mail className="mr-2 h-4 w-4" />
               Send Email
             </Button>
           )}
@@ -748,11 +748,11 @@ export function DeveloperContactCard({
         {/* Copy Success Message */}
         {copiedNumber && (
           <div
-            className="mt-3 sm:mt-4 text-center"
+            className="mt-3 text-center sm:mt-4"
             role="status"
             aria-live="polite"
           >
-            <p className="text-sm text-brand-badge-completed">
+            <p className="text-brand-badge-completed text-sm">
               Phone number copied to clipboard!
             </p>
           </div>
@@ -762,18 +762,18 @@ export function DeveloperContactCard({
   }
 
   return (
-    <div className="w-full max-w-lg mx-auto">
-      <div className="flex flex-col items-center mb-4 sm:mb-6">
-        <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border border-gray-200 mb-3 sm:mb-4">
+    <div className="mx-auto w-full max-w-lg">
+      <div className="mb-4 flex flex-col items-center sm:mb-6">
+        <div className="mb-3 h-16 w-16 overflow-hidden rounded-full border border-gray-200 sm:mb-4 sm:h-20 sm:w-20">
           <ImageWithFallback
             src={logoSrc || fallbackImage}
             alt={`${developerName} logo`}
             width={80}
             height={80}
-            className="w-full h-full object-contain"
+            className="h-full w-full object-contain"
           />
         </div>
-        <h3 className="text-base sm:text-lg font-semibold text-brand-accent text-center">
+        <h3 className="text-brand-accent text-center text-base font-semibold sm:text-lg">
           {developerName}
         </h3>
       </div>
@@ -781,18 +781,18 @@ export function DeveloperContactCard({
       {/* Error Banner */}
       {bannerError && (
         <div
-          className="mb-3 sm:mb-4 p-2 sm:p-3 bg-red-50 border border-red-200 rounded-md"
+          className="mb-3 rounded-md border border-red-200 bg-red-50 p-2 sm:mb-4 sm:p-3"
           role="alert"
           aria-live="polite"
         >
           <div className="flex items-center justify-between">
-            <p className="text-xs sm:text-sm text-red-600">{bannerError}</p>
+            <p className="text-xs text-red-600 sm:text-sm">{bannerError}</p>
             {retryCount > 0 && retryCount < 2 && (
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => void handleSubmit(retryCount)}
-                className="text-xs h-6 px-2"
+                className="h-6 px-2 text-xs"
                 aria-label="Retry submission"
               >
                 Retry
@@ -806,7 +806,7 @@ export function DeveloperContactCard({
         <TabsList className="grid w-full grid-cols-3 gap-1">
           <TabsTrigger
             value="phone"
-            className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm"
+            className="flex items-center gap-1 text-xs sm:gap-2 sm:text-sm"
           >
             <Phone className="h-3 w-3 sm:h-4 sm:w-4" />
             <span className="hidden sm:inline">Phone</span>
@@ -814,7 +814,7 @@ export function DeveloperContactCard({
           </TabsTrigger>
           <TabsTrigger
             value="whatsapp"
-            className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm"
+            className="flex items-center gap-1 text-xs sm:gap-2 sm:text-sm"
           >
             <MessageSquare className="h-3 w-3 sm:h-4 sm:w-4" />
             <span className="hidden sm:inline">WhatsApp</span>
@@ -822,7 +822,7 @@ export function DeveloperContactCard({
           </TabsTrigger>
           <TabsTrigger
             value="email"
-            className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm"
+            className="flex items-center gap-1 text-xs sm:gap-2 sm:text-sm"
           >
             <Mail className="h-3 w-3 sm:h-4 sm:w-4" />
             <span className="hidden sm:inline">Email</span>
@@ -831,7 +831,7 @@ export function DeveloperContactCard({
         </TabsList>
 
         {/* Tab content container - responsive height for mobile */}
-        <div className="mt-4 sm:mt-6 max-h-[70vh] sm:max-h-96 overflow-y-auto scrollbar-hide">
+        <div className="scrollbar-hide mt-4 max-h-[70vh] overflow-y-auto sm:mt-6 sm:max-h-96">
           <TabsContent value="phone" className="space-y-3 sm:space-y-4">
             <div className="space-y-3 sm:space-y-4">
               <div>
@@ -841,11 +841,11 @@ export function DeveloperContactCard({
                   value={contactForm.name}
                   onChange={(e) => handleInputChange("name", e.target.value)}
                   placeholder="Enter your full name"
-                  className={`${errors.name ? "border-red-500" : ""} h-10 sm:h-10 text-base sm:text-sm`}
+                  className={`${errors.name ? "border-red-500" : ""} h-10 text-base sm:h-10 sm:text-sm`}
                   disabled={formSubmitted}
                 />
                 {errors.name && (
-                  <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+                  <p className="mt-1 text-sm text-red-500">{errors.name}</p>
                 )}
               </div>
 
@@ -879,7 +879,7 @@ export function DeveloperContactCard({
                   disabled={formSubmitted}
                 />
                 {errors.phone && (
-                  <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
+                  <p className="mt-1 text-sm text-red-500">{errors.phone}</p>
                 )}
               </div>
 
@@ -898,15 +898,15 @@ export function DeveloperContactCard({
               </div>
 
               {formSubmitted ? (
-                <div className="text-center py-4">
+                <div className="py-4 text-center">
                   <Button
                     onClick={handleShowCachedNumber}
                     disabled={isLoading}
-                    className="w-full bg-brand-primary hover:bg-brand-primary-darken text-white"
+                    className="bg-brand-primary hover:bg-brand-primary-darken w-full text-white"
                   >
                     {isLoading ? (
                       <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                        <div className="mr-2 h-4 w-4 animate-spin rounded-full border-b-2 border-white"></div>
                         Getting Number...
                       </>
                     ) : (
@@ -916,7 +916,7 @@ export function DeveloperContactCard({
                   <Button
                     variant="outline"
                     onClick={handleUseDifferentInfo}
-                    className="w-full mt-2 text-sm"
+                    className="mt-2 w-full text-sm"
                   >
                     Use Different Info
                   </Button>
@@ -925,11 +925,11 @@ export function DeveloperContactCard({
                 <Button
                   onClick={() => void handleSubmit()}
                   disabled={isLoading}
-                  className="w-full bg-brand-primary hover:bg-brand-primary-darken text-white"
+                  className="bg-brand-primary hover:bg-brand-primary-darken w-full text-white"
                 >
                   {isLoading ? (
                     <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      <div className="mr-2 h-4 w-4 animate-spin rounded-full border-b-2 border-white"></div>
                       Getting Number...
                     </>
                   ) : (
@@ -949,11 +949,11 @@ export function DeveloperContactCard({
                   value={contactForm.name}
                   onChange={(e) => handleInputChange("name", e.target.value)}
                   placeholder="Enter your full name"
-                  className={`${errors.name ? "border-red-500" : ""} h-10 sm:h-10 text-base sm:text-sm`}
+                  className={`${errors.name ? "border-red-500" : ""} h-10 text-base sm:h-10 sm:text-sm`}
                   disabled={formSubmitted}
                 />
                 {errors.name && (
-                  <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+                  <p className="mt-1 text-sm text-red-500">{errors.name}</p>
                 )}
               </div>
 
@@ -987,7 +987,7 @@ export function DeveloperContactCard({
                   disabled={formSubmitted}
                 />
                 {errors.phone && (
-                  <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
+                  <p className="mt-1 text-sm text-red-500">{errors.phone}</p>
                 )}
               </div>
 
@@ -1006,15 +1006,15 @@ export function DeveloperContactCard({
               </div>
 
               {formSubmitted ? (
-                <div className="text-center py-4">
+                <div className="py-4 text-center">
                   <Button
                     onClick={handleShowCachedNumberForWhatsApp}
                     disabled={isLoading}
-                    className="w-full bg-green-600 hover:bg-green-700 text-white"
+                    className="w-full bg-green-600 text-white hover:bg-green-700"
                   >
                     {isLoading ? (
                       <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                        <div className="mr-2 h-4 w-4 animate-spin rounded-full border-b-2 border-white"></div>
                         Opening...
                       </>
                     ) : (
@@ -1024,7 +1024,7 @@ export function DeveloperContactCard({
                   <Button
                     variant="outline"
                     onClick={handleUseDifferentInfo}
-                    className="w-full mt-2 text-sm"
+                    className="mt-2 w-full text-sm"
                   >
                     Use Different Info
                   </Button>
@@ -1033,11 +1033,11 @@ export function DeveloperContactCard({
                 <Button
                   onClick={handleWhatsAppSubmit}
                   disabled={isLoading}
-                  className="w-full bg-green-600 hover:bg-green-700 text-white"
+                  className="w-full bg-green-600 text-white hover:bg-green-700"
                 >
                   {isLoading ? (
                     <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      <div className="mr-2 h-4 w-4 animate-spin rounded-full border-b-2 border-white"></div>
                       Getting Number...
                     </>
                   ) : (
@@ -1051,11 +1051,11 @@ export function DeveloperContactCard({
           <TabsContent value="email" className="space-y-3 sm:space-y-4">
             <div className="space-y-3 sm:space-y-4">
               {emailSent ? (
-                <div className="text-center py-4">
-                  <div className="flex justify-center mb-4">
-                    <CheckCircle className="h-12 w-12 text-brand-badge-completed" />
+                <div className="py-4 text-center">
+                  <div className="mb-4 flex justify-center">
+                    <CheckCircle className="text-brand-badge-completed h-12 w-12" />
                   </div>
-                  <h4 className="text-lg font-semibold text-brand-badge-completed mb-2">
+                  <h4 className="text-brand-badge-completed mb-2 text-lg font-semibold">
                     Email Sent Successfully!
                   </h4>
                   <p className="text-brand-muted mb-4">
@@ -1084,11 +1084,11 @@ export function DeveloperContactCard({
                         handleInputChange("name", e.target.value)
                       }
                       placeholder="Enter your full name"
-                      className={`${errors.name ? "border-red-500" : ""} h-10 sm:h-10 text-base sm:text-sm`}
+                      className={`${errors.name ? "border-red-500" : ""} h-10 text-base sm:h-10 sm:text-sm`}
                       disabled={formSubmitted}
                     />
                     {errors.name && (
-                      <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+                      <p className="mt-1 text-sm text-red-500">{errors.name}</p>
                     )}
                   </div>
 
@@ -1124,7 +1124,7 @@ export function DeveloperContactCard({
                       disabled={formSubmitted}
                     />
                     {errors.phone && (
-                      <p className="text-red-500 text-sm mt-1">
+                      <p className="mt-1 text-sm text-red-500">
                         {errors.phone}
                       </p>
                     )}
@@ -1140,10 +1140,10 @@ export function DeveloperContactCard({
                         handleInputChange("email", e.target.value)
                       }
                       placeholder="Enter your email address"
-                      className={`${errors.email ? "border-red-500" : ""} h-10 sm:h-10 text-base sm:text-sm`}
+                      className={`${errors.email ? "border-red-500" : ""} h-10 text-base sm:h-10 sm:text-sm`}
                     />
                     {errors.email && (
-                      <p className="text-red-500 text-sm mt-1">
+                      <p className="mt-1 text-sm text-red-500">
                         {errors.email}
                       </p>
                     )}
@@ -1162,7 +1162,7 @@ export function DeveloperContactCard({
                       className={`${errors.message ? "border-red-500" : ""} text-base sm:text-sm`}
                     />
                     {errors.message && (
-                      <p className="text-red-500 text-sm mt-1">
+                      <p className="mt-1 text-sm text-red-500">
                         {errors.message}
                       </p>
                     )}
@@ -1182,15 +1182,15 @@ export function DeveloperContactCard({
                   </div>
 
                   {formSubmitted ? (
-                    <div className="text-center py-4">
+                    <div className="py-4 text-center">
                       <Button
                         onClick={() => void handleSubmit()}
                         disabled={isLoading}
-                        className="w-full bg-brand-primary hover:bg-brand-primary-darken text-white"
+                        className="bg-brand-primary hover:bg-brand-primary-darken w-full text-white"
                       >
                         {isLoading ? (
                           <>
-                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                            <div className="mr-2 h-4 w-4 animate-spin rounded-full border-b-2 border-white"></div>
                             Sending...
                           </>
                         ) : (
@@ -1200,7 +1200,7 @@ export function DeveloperContactCard({
                       <Button
                         variant="outline"
                         onClick={handleUseDifferentInfo}
-                        className="w-full mt-2 text-sm"
+                        className="mt-2 w-full text-sm"
                       >
                         Use Different Info
                       </Button>
@@ -1209,11 +1209,11 @@ export function DeveloperContactCard({
                     <Button
                       onClick={() => void handleSubmit()}
                       disabled={isLoading}
-                      className="w-full bg-brand-primary hover:bg-brand-primary-darken text-white"
+                      className="bg-brand-primary hover:bg-brand-primary-darken w-full text-white"
                     >
                       {isLoading ? (
                         <>
-                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                          <div className="mr-2 h-4 w-4 animate-spin rounded-full border-b-2 border-white"></div>
                           Sending...
                         </>
                       ) : (
@@ -1229,7 +1229,7 @@ export function DeveloperContactCard({
       </Tabs>
 
       {/* Info Text */}
-      <p className="text-xs sm:text-sm text-brand-muted mt-3 sm:mt-4 text-center px-2">
+      <p className="text-brand-muted mt-3 px-2 text-center text-xs sm:mt-4 sm:text-sm">
         NB: First submit your contact info once. If you are unable to reach the
         developer, then they can reach you.
       </p>

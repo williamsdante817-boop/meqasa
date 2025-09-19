@@ -87,7 +87,7 @@ export function MobileCommonFilters({
             value={formState.propertyType}
             onValueChange={(value) => updateFormState({ propertyType: value })}
           >
-            <SelectTrigger className="h-12 bg-gray-50 border-gray-200 rounded-lg shadow-none text-base text-gray-700">
+            <SelectTrigger className="h-12 rounded-lg border-gray-200 bg-gray-50 text-base text-gray-700 shadow-none">
               <SelectValue
                 placeholder="Select property type"
                 className="text-base text-gray-700"
@@ -123,7 +123,7 @@ export function MobileCommonFilters({
             value={formState.howShort ?? "- Any -"}
             onValueChange={(value) => updateFormState({ howShort: value })}
           >
-            <SelectTrigger className="h-12 bg-gray-50 border-gray-200 rounded-lg shadow-none text-base text-gray-700">
+            <SelectTrigger className="h-12 rounded-lg border-gray-200 bg-gray-50 text-base text-gray-700 shadow-none">
               <SelectValue
                 placeholder="Select duration"
                 className="text-base text-gray-700"
@@ -163,7 +163,7 @@ export function MobileCommonFilters({
               value={formState.bedrooms}
               onValueChange={(value) => updateFormState({ bedrooms: value })}
             >
-              <SelectTrigger className="h-12 bg-gray-50 border-gray-200 rounded-lg shadow-none text-base text-gray-700">
+              <SelectTrigger className="h-12 rounded-lg border-gray-200 bg-gray-50 text-base text-gray-700 shadow-none">
                 <SelectValue
                   placeholder="Any"
                   className="text-base text-gray-700"
@@ -199,7 +199,7 @@ export function MobileCommonFilters({
               value={formState.bathrooms}
               onValueChange={(value) => updateFormState({ bathrooms: value })}
             >
-              <SelectTrigger className="h-12 bg-gray-50 border-gray-200 rounded-lg shadow-none text-base text-gray-700">
+              <SelectTrigger className="h-12 rounded-lg border-gray-200 bg-gray-50 text-base text-gray-700 shadow-none">
                 <SelectValue
                   placeholder="Any"
                   className="text-base text-gray-700"

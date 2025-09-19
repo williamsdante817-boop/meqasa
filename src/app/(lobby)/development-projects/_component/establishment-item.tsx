@@ -88,25 +88,25 @@ function EstablishmentItemComponent({
       <Button
         variant="ghost"
         className={cn(
-          "w-full h-auto p-4 justify-start hover:bg-brand-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue transition-all duration-200",
+          "hover:bg-brand-primary/5 focus-visible:ring-brand-blue h-auto w-full justify-start p-4 transition-all duration-200 focus-visible:ring-2 focus-visible:outline-none",
           className
         )}
         onClick={handleClick}
         aria-label={`${establishment.name}, ${formatDistance(establishment.distance)} away`}
       >
-        <div className="flex items-center justify-between w-full">
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1">
+        <div className="flex w-full items-center justify-between">
+          <div className="min-w-0 flex-1">
+            <div className="mb-1 flex items-center gap-2">
               <Badge
                 variant="secondary"
-                className={cn("text-xs px-2 py-0.5", typeConfig.color)}
+                className={cn("px-2 py-0.5 text-xs", typeConfig.color)}
               >
                 {typeConfig.label}
               </Badge>
               {establishment.openNow === true && (
                 <Badge
                   variant="outline"
-                  className="text-xs text-green-600 border-green-300"
+                  className="border-green-300 text-xs text-green-600"
                 >
                   Open
                 </Badge>
@@ -114,33 +114,33 @@ function EstablishmentItemComponent({
               {establishment.openNow === false && (
                 <Badge
                   variant="outline"
-                  className="text-xs text-red-600 border-red-300"
+                  className="border-red-300 text-xs text-red-600"
                 >
                   Closed
                 </Badge>
               )}
             </div>
-            <h4 className="font-semibold text-brand-accent text-left truncate mb-1">
+            <h4 className="text-brand-accent mb-1 truncate text-left font-semibold">
               {establishment.name}
             </h4>
-            <p className="text-sm text-brand-muted text-left truncate">
+            <p className="text-brand-muted truncate text-left text-sm">
               {establishment.address}
             </p>
           </div>
-          <div className="flex flex-col items-end gap-1 ml-4 flex-shrink-0">
-            <div className="flex items-center gap-1 text-brand-blue font-medium text-sm">
-              <MapPin className="w-3 h-3" aria-hidden="true" />
+          <div className="ml-4 flex flex-shrink-0 flex-col items-end gap-1">
+            <div className="text-brand-blue flex items-center gap-1 text-sm font-medium">
+              <MapPin className="h-3 w-3" aria-hidden="true" />
               <span>{formatDistance(establishment.distance)}</span>
             </div>
             {establishment.travelTime && (
-              <div className="flex items-center gap-1 text-brand-muted text-xs">
-                <Clock className="w-3 h-3" aria-hidden="true" />
+              <div className="text-brand-muted flex items-center gap-1 text-xs">
+                <Clock className="h-3 w-3" aria-hidden="true" />
                 <span>{establishment.travelTime}min</span>
               </div>
             )}
             {establishment.rating && (
-              <div className="flex items-center gap-1 text-amber-600 text-xs">
-                <Star className="w-3 h-3 fill-current" aria-hidden="true" />
+              <div className="flex items-center gap-1 text-xs text-amber-600">
+                <Star className="h-3 w-3 fill-current" aria-hidden="true" />
                 <span>{establishment.rating}</span>
               </div>
             )}
@@ -155,8 +155,8 @@ function EstablishmentItemComponent({
       <div className="space-y-4">
         {/* Header */}
         <div className="flex items-start justify-between">
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-2">
+          <div className="min-w-0 flex-1">
+            <div className="mb-2 flex items-center gap-2">
               <Badge
                 variant="secondary"
                 className={cn("text-xs", typeConfig.color)}
@@ -169,15 +169,15 @@ function EstablishmentItemComponent({
                   className={cn(
                     "text-xs",
                     establishment.openNow
-                      ? "text-green-600 border-green-300"
-                      : "text-red-600 border-red-300"
+                      ? "border-green-300 text-green-600"
+                      : "border-red-300 text-red-600"
                   )}
                 >
                   {establishment.openNow ? "Open" : "Closed"}
                 </Badge>
               )}
             </div>
-            <h3 className="text-lg font-semibold text-brand-accent mb-1">
+            <h3 className="text-brand-accent mb-1 text-lg font-semibold">
               {establishment.name}
             </h3>
             <p className="text-brand-muted mb-2">{establishment.address}</p>
@@ -187,31 +187,31 @@ function EstablishmentItemComponent({
               variant="outline"
               size="sm"
               onClick={handleExternalLink}
-              className="flex-shrink-0 ml-4"
+              className="ml-4 flex-shrink-0"
               aria-label={`Visit ${establishment.name} website`}
             >
-              <ExternalLink className="w-4 h-4" />
+              <ExternalLink className="h-4 w-4" />
             </Button>
           )}
         </div>
 
         {/* Metrics */}
         <div className="flex items-center gap-6 text-sm">
-          <div className="flex items-center gap-2 text-brand-blue">
-            <MapPin className="w-4 h-4" aria-hidden="true" />
+          <div className="text-brand-blue flex items-center gap-2">
+            <MapPin className="h-4 w-4" aria-hidden="true" />
             <span className="font-medium">
               {formatDistance(establishment.distance)} away
             </span>
           </div>
           {establishment.travelTime && (
-            <div className="flex items-center gap-2 text-brand-muted">
-              <Clock className="w-4 h-4" aria-hidden="true" />
+            <div className="text-brand-muted flex items-center gap-2">
+              <Clock className="h-4 w-4" aria-hidden="true" />
               <span>{establishment.travelTime} min drive</span>
             </div>
           )}
           {establishment.rating && (
             <div className="flex items-center gap-2 text-amber-600">
-              <Star className="w-4 h-4 fill-current" aria-hidden="true" />
+              <Star className="h-4 w-4 fill-current" aria-hidden="true" />
               <span>{establishment.rating}/5</span>
             </div>
           )}

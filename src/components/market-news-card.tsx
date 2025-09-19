@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { memo } from "react";
+import { formatDisplayDate, isValidDateString } from "@/lib/utils";
 
 interface MarketNewsCardProps {
   index: number;
@@ -21,30 +22,23 @@ function MarketNewsCard({
   // Placeholder href until backend routes are ready
   const postUrl = "/blog";
 
-  const hasValidISO = dateISO ? !Number.isNaN(Date.parse(dateISO)) : false;
+  const hasValidISO = dateISO ? isValidDateString(dateISO) : false;
   const readableDate =
-    displayDate ??
-    (hasValidISO
-      ? new Date(dateISO!).toLocaleDateString(undefined, {
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-        })
-      : undefined);
+    displayDate ?? (hasValidISO && dateISO ? formatDisplayDate(dateISO) : undefined);
 
   return (
     <article className="mt-12 grid grid-cols-[min-content_minmax(0,1fr)] gap-[16px]">
       <p
-        className="text-[28px] font-black leading-8 text-brand-muted opacity-50"
+        className="text-brand-muted text-[28px] leading-8 font-black opacity-50"
         aria-hidden="true"
       >
         {formatIndex(index)}
       </p>
       <div className="space-y-2">
-        <h3 className="text-lg font-semibold text-brand-accent mb-1 leading-tight">
+        <h3 className="text-brand-accent mb-1 text-lg leading-tight font-semibold">
           <Link
             href={postUrl}
-            className="line-clamp-2 text-[15px] cursor-pointer font-semibold text-brand-accent hover:underline focus:outline-none focus:ring-2 focus:ring-brand-accent focus:ring-offset-2"
+            className="text-brand-accent focus:ring-brand-accent line-clamp-2 cursor-pointer text-[15px] font-semibold hover:underline focus:ring-2 focus:ring-offset-2 focus:outline-none"
           >
             {title}
           </Link>
@@ -52,7 +46,7 @@ function MarketNewsCard({
         {readableDate ? (
           <time
             {...(hasValidISO ? { dateTime: dateISO! } : {})}
-            className="mt-2 block text-sm text-brand-muted"
+            className="text-brand-muted mt-2 block text-sm"
           >
             {readableDate}
           </time>

@@ -71,7 +71,7 @@ class StreamingErrorBoundaryClass extends React.Component<
         <Shell className="hidden lg:block">
           <AlertCard variant="destructive">
             <div className="flex flex-col items-center space-y-2 text-center">
-              <AlertTitle className="text-lg text-brand-accent">
+              <AlertTitle className="text-brand-accent text-lg">
                 Content Loading Error
               </AlertTitle>
               <AlertDescription className="text-brand-muted">

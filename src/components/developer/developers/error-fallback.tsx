@@ -2,7 +2,7 @@
 
 export function ErrorFallback() {
   return (
-    <div className="text-center py-12">
+    <div className="py-12 text-center">
       <p className="text-brand-muted mb-4">
         Unable to load developers at this time.
       </p>

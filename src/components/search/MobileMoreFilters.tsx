@@ -50,14 +50,14 @@ export function MobileMoreFilters({
       case "buy":
         return {
           title: "For Sale By Owner",
-          description: "Properties sold directly by owners"
+          description: "Properties sold directly by owners",
         };
       case "rent":
       case "short-let":
       default:
         return {
-          title: "For Rent By Owner", 
-          description: "Properties rented directly by owners"
+          title: "For Rent By Owner",
+          description: "Properties rented directly by owners",
         };
     }
   };
@@ -82,7 +82,7 @@ export function MobileMoreFilters({
   return (
     <div className="space-y-4">
       {/* Advanced Filters Header */}
-      <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+      <div className="flex items-center justify-between border-t border-gray-100 pt-2">
         <h3 className="text-base font-medium text-gray-700">
           Advanced Filters
         </h3>
@@ -91,7 +91,7 @@ export function MobileMoreFilters({
             type="button"
             variant="ghost"
             onClick={resetFilters}
-            className="flex items-center gap-1 h-auto p-1 text-xs text-gray-500 hover:text-gray-700"
+            className="flex h-auto items-center gap-1 p-1 text-xs text-gray-500 hover:text-gray-700"
           >
             <RotateCcw className="h-3 w-3" />
             Reset
@@ -106,7 +106,7 @@ export function MobileMoreFilters({
           value={formState.sort}
           onValueChange={(value) => updateFormState({ sort: value })}
         >
-          <SelectTrigger className="h-12 bg-gray-50 border-gray-200 rounded-lg shadow-none text-base text-gray-700">
+          <SelectTrigger className="h-12 rounded-lg border-gray-200 bg-gray-50 text-base text-gray-700 shadow-none">
             <SelectValue
               placeholder="Default sorting"
               className="text-base text-gray-700"
@@ -142,7 +142,7 @@ export function MobileMoreFilters({
             value={formState.period}
             onValueChange={(value) => updateFormState({ period: value })}
           >
-            <SelectTrigger className="h-12 bg-gray-50 border-gray-200 rounded-lg shadow-none text-base text-gray-700">
+            <SelectTrigger className="h-12 rounded-lg border-gray-200 bg-gray-50 text-base text-gray-700 shadow-none">
               <SelectValue
                 placeholder="Any period"
                 className="text-base text-gray-700"
@@ -181,7 +181,7 @@ export function MobileMoreFilters({
             <div className="space-y-1 text-left">
               <Label
                 htmlFor="furnished"
-                className="text-base font-medium text-gray-700 cursor-pointer"
+                className="cursor-pointer text-base font-medium text-gray-700"
               >
                 Furnished Properties Only
               </Label>
@@ -203,13 +203,11 @@ export function MobileMoreFilters({
             <div className="space-y-1 text-left">
               <Label
                 htmlFor="owner"
-                className="text-base font-medium text-gray-700 cursor-pointer"
+                className="cursor-pointer text-base font-medium text-gray-700"
               >
                 {ownerText.title}
               </Label>
-              <p className="text-xs text-gray-500">
-                {ownerText.description}
-              </p>
+              <p className="text-xs text-gray-500">{ownerText.description}</p>
             </div>
           </div>
         </div>

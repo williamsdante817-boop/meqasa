@@ -216,7 +216,7 @@ export default async function AgentDetailsPage({
         </Shell>
 
         <Shell className="mt-20">
-          <div className="grid grid-cols-1 text-brand-accent w-full mt-4 lg:grid-cols-[2fr_1fr] lg:gap-8 lg:px-0">
+          <div className="text-brand-accent mt-4 grid w-full grid-cols-1 lg:grid-cols-[2fr_1fr] lg:gap-8 lg:px-0">
             {/* <section className="grid md:grid-cols-[736px,1fr] md:gap-8"> */}
             <div>
               <Breadcrumbs

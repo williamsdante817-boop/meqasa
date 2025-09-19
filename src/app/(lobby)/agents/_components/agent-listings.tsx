@@ -157,21 +157,21 @@ export function AgentListings({
       {/* Listings Section */}
       <div
         ref={listingsTopRef}
-        className="grid grid-cols-1 lg:grid-cols-4 gap-8"
+        className="grid grid-cols-1 gap-8 lg:grid-cols-4"
       >
         {/* Left: Property Listings */}
         <div className="lg:col-span-3">
           {/* Header */}
-          <div className="flex items-center gap-3 mb-2">
-            <h2 className="text-xl font-semibold text-brand-accent">
+          <div className="mb-2 flex items-center gap-3">
+            <h2 className="text-brand-accent text-xl font-semibold">
               Listings By {agentName}
             </h2>
-            <Badge className="bg-brand-primary text-white font-medium">
+            <Badge className="bg-brand-primary font-medium text-white">
               {totalCount} total
             </Badge>
           </div>
 
-          <p className="text-brand-muted text-sm mb-6">
+          <p className="text-brand-muted mb-6 text-sm">
             {hasListings && totalCount > 0
               ? totalCount <= ITEMS_PER_PAGE
                 ? `Showing all ${totalCount} listings`
@@ -181,7 +181,7 @@ export function AgentListings({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-8 mb-8">
+      <div className="mb-8 grid grid-cols-1 gap-8">
         {listings?.map((listing, index) => (
           <AgentPropertyCard
             key={listing.listingid ?? index}
@@ -191,7 +191,7 @@ export function AgentListings({
       </div>
 
       {listings.length > 0 && totalPages > 1 && (
-        <div className="flex justify-center text-brand-accent">
+        <div className="text-brand-accent flex justify-center">
           <Pagination>
             <PaginationContent>
               <PaginationItem>
@@ -206,7 +206,7 @@ export function AgentListings({
                   aria-disabled={currentPage === 1 || isPaginationLoading}
                   aria-label={`Go to previous page (${currentPage - 1})`}
                   className={
-                    isPaginationLoading ? "opacity-50 cursor-not-allowed" : ""
+                    isPaginationLoading ? "cursor-not-allowed opacity-50" : ""
                   }
                 />
               </PaginationItem>
@@ -247,7 +247,7 @@ export function AgentListings({
                   }
                   aria-label={`Go to next page (${currentPage + 1})`}
                   className={
-                    isPaginationLoading ? "opacity-50 cursor-not-allowed" : ""
+                    isPaginationLoading ? "cursor-not-allowed opacity-50" : ""
                   }
                 />
               </PaginationItem>
@@ -257,7 +257,7 @@ export function AgentListings({
       )}
 
       {listings.length === 0 && !isLoading && !error && (
-        <div className="text-center py-12 text-gray-500">
+        <div className="py-12 text-center text-gray-500">
           No properties found for this agent.
         </div>
       )}

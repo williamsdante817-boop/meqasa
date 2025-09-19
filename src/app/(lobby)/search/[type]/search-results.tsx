@@ -104,33 +104,40 @@ export function SearchResults({
     setMounted(true);
   }, []);
 
+  // Track the last processed initial search ID to prevent duplicate processing
+  const lastProcessedSearchId = useRef<number | null>(null);
+
   // Sync component state with new server data when initial props change
   // This handles cases where user clicks property type links and page re-renders with new server data
   useEffect(() => {
-    // Only sync if we have genuinely new search data from server (different searchId)
+    // Only sync if we have genuinely new search data from server that we haven't processed yet
     if (
-      mounted && 
-      initialSearchId !== null && 
+      mounted &&
+      initialSearchId !== null &&
+      initialSearchId !== lastProcessedSearchId.current &&
       initialSearchId !== searchId &&
       !isLoading // Don't interfere with ongoing operations
     ) {
+      // Mark this searchId as processed to prevent duplicate updates
+      lastProcessedSearchId.current = initialSearchId;
+
       // Reset all state to match new server data
       setSearchResults(initialResults);
       setTotalResults(initialTotal);
       setSearch(initialSearchState);
       setSearchId(initialSearchId);
       setCurrentPage(initialPage);
-      
+
       // Clear prefetched data since it's for the old search
       setPrefetchedNextPage(null);
       setPrefetchedTotal(null);
       setPrefetchedSearch(null);
       isPrefetching.current = false;
-      
+
       // Reset the initial data processing flag for the new search
       hasProcessedInitialData.current = false;
     }
-  }, [mounted, initialSearchId, initialResults, initialTotal, initialSearchState, initialPage, searchId, isLoading]);
+  }, [mounted, initialSearchId, searchId, isLoading]); // Only depend on stable primitive values
 
   // Prefetch next page
   const [prefetchedNextPage, setPrefetchedNextPage] = useState<
@@ -536,7 +543,7 @@ export function SearchResults({
           {searchResults.length > 0 && (
             <>
               {/* Desktop/tablet pagination */}
-              <div className="my-8 text-brand-accent w-full overflow-x-auto hidden md:flex justify-center">
+              <div className="text-brand-accent my-8 hidden w-full justify-center overflow-x-auto md:flex">
                 <Pagination>
                   <PaginationContent>
                     <PaginationItem>
@@ -597,10 +604,10 @@ export function SearchResults({
                 </Pagination>
               </div>
               {/* Mobile Load More button */}
-              <div className="my-8 block md:hidden w-full text-center">
+              <div className="my-8 block w-full text-center md:hidden">
                 {searchResults.length < totalResults && (
                   <Button
-                    className="px-4 py-2 rounded text-brand-accent font-semibold"
+                    className="text-brand-accent rounded px-4 py-2 font-semibold"
                     onClick={handleLoadMore}
                     disabled={isLoading}
                     variant="outline"
@@ -614,7 +621,7 @@ export function SearchResults({
         </div>
       </div>
       {searchResults.length === 0 && (
-        <div className="text-center py-12 text-gray-500">
+        <div className="py-12 text-center text-gray-500">
           No properties found. Try adjusting your search criteria.
         </div>
       )}

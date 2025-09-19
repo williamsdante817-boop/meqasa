@@ -13,8 +13,8 @@ export default function AgentsError({ error, reset }: AgentsErrorProps) {
   return (
     <Shell>
       <div className="py-8">
-        <div className="min-h-[50vh] flex items-center justify-center">
-          <div className="max-w-lg w-full">
+        <div className="flex min-h-[50vh] items-center justify-center">
+          <div className="w-full max-w-lg">
             <ErrorCard
               icon={AlertTriangle}
               title="Unable to Load Agents"
@@ -26,11 +26,11 @@ export default function AgentsError({ error, reset }: AgentsErrorProps) {
 
             {/* Development Error Details */}
             {process.env.NODE_ENV === "development" && (
-              <details className="mt-6 bg-gray-100 rounded-lg p-4">
-                <summary className="cursor-pointer font-medium text-gray-700 mb-2">
+              <details className="mt-6 rounded-lg bg-gray-100 p-4">
+                <summary className="mb-2 cursor-pointer font-medium text-gray-700">
                   Technical Details
                 </summary>
-                <div className="text-sm text-gray-600 space-y-2">
+                <div className="space-y-2 text-sm text-gray-600">
                   <p>
                     <strong>Error:</strong> {error.message}
                   </p>

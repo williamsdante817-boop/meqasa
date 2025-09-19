@@ -26,12 +26,12 @@ export function AgentPropertyCard({ listing }: { listing: AgentListing }) {
   // Data validation with fallbacks
   if (!listing) {
     return (
-      <Card className="flex flex-col gap-4 rounded-lg text-brand-accent shadow-none lg:flex-row lg:border lg:border-[##fea3b1] lg:p-4">
-        <div className="min-h-[202px] min-w-[256px] rounded-lg bg-gray-100 animate-pulse" />
+      <Card className="text-brand-accent flex flex-col gap-4 rounded-lg shadow-none lg:flex-row lg:border lg:border-[##fea3b1] lg:p-4">
+        <div className="min-h-[202px] min-w-[256px] animate-pulse rounded-lg bg-gray-100" />
         <div className="px-4 py-4">
-          <div className="h-6 bg-gray-100 animate-pulse rounded mb-2" />
-          <div className="h-4 bg-gray-100 animate-pulse rounded mb-2" />
-          <div className="h-4 bg-gray-100 animate-pulse rounded" />
+          <div className="mb-2 h-6 animate-pulse rounded bg-gray-100" />
+          <div className="mb-2 h-4 animate-pulse rounded bg-gray-100" />
+          <div className="h-4 animate-pulse rounded bg-gray-100" />
         </div>
       </Card>
     );
@@ -66,9 +66,9 @@ export function AgentPropertyCard({ listing }: { listing: AgentListing }) {
   ) : null;
 
   return (
-    <Card className="flex flex-col gap-4 rounded-lg text-brand-accent shadow-none lg:flex-row lg:border lg:border-[##fea3b1] lg:p-4">
+    <Card className="text-brand-accent flex flex-col gap-4 rounded-lg shadow-none lg:flex-row lg:border lg:border-[##fea3b1] lg:p-4">
       <CardHeader className="min-w-[256px] p-0">
-        <div className="relative min-h-[202px] min-w-[256px] rounded-t-lg md:rounded-lg overflow-hidden">
+        <div className="relative min-h-[202px] min-w-[256px] overflow-hidden rounded-t-lg md:rounded-lg">
           <Link
             href={detailsLink}
             className="absolute inset-0 z-10"
@@ -80,7 +80,7 @@ export function AgentPropertyCard({ listing }: { listing: AgentListing }) {
                 alt={listing.summary ?? "Property image"}
                 fill
                 className={cn(
-                  "object-cover rounded-t-lg md:rounded-lg transition-opacity duration-300",
+                  "rounded-t-lg object-cover transition-opacity duration-300 md:rounded-lg",
                   isLoading ? "opacity-0" : "opacity-100"
                 )}
                 sizes="(max-width: 640px) 100vw, (max-width: 768px) 256px, (max-width: 1024px) 300px, 256px"
@@ -93,11 +93,11 @@ export function AgentPropertyCard({ listing }: { listing: AgentListing }) {
                 }}
               />
               {isLoading && !imgError && (
-                <div className="absolute inset-0 bg-gray-100 animate-pulse rounded-lg" />
+                <div className="absolute inset-0 animate-pulse rounded-lg bg-gray-100" />
               )}
               {imgError && (
-                <div className="absolute inset-0 bg-gray-200 rounded-lg flex items-center justify-center">
-                  <span className="text-gray-500 text-sm">
+                <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-gray-200">
+                  <span className="text-sm text-gray-500">
                     Image unavailable
                   </span>
                 </div>
@@ -105,23 +105,23 @@ export function AgentPropertyCard({ listing }: { listing: AgentListing }) {
             </AspectRatio>
           </Link>
           {listing.availability && (
-            <Badge className="absolute left-4 top-4 z-30 h-6 bg-brand-accent uppercase">
+            <Badge className="bg-brand-accent absolute top-4 left-4 z-30 h-6 uppercase">
               {listing.availability}
             </Badge>
           )}
-          <div className="absolute right-4 top-4 z-10">
+          <div className="absolute top-4 right-4 z-10">
             <AddFavoriteButton listingId={listing.listingid} />
           </div>
           {listing.photocount && (
             <Button
-              className="absolute bottom-4 right-4 h-6 w-12 bg-white p-0 text-xs uppercase shadow-none hover:bg-white"
+              className="absolute right-4 bottom-4 h-6 w-12 bg-white p-0 text-xs uppercase shadow-none hover:bg-white"
               aria-label={`${listing.photocount} photos available`}
             >
               <Camera
-                className="mr-1 h-5 w-5 text-brand-accent"
+                className="text-brand-accent mr-1 h-5 w-5"
                 strokeWidth="1.3"
               />
-              <p className="font-bold text-brand-accent">
+              <p className="text-brand-accent font-bold">
                 {listing.photocount}
               </p>
             </Button>
@@ -130,19 +130,19 @@ export function AgentPropertyCard({ listing }: { listing: AgentListing }) {
       </CardHeader>
       <CardContent className="flex flex-col justify-between px-4 pb-4 lg:p-0">
         <Link href={detailsLink}>
-          <h3 className="font-bold text-base sm:text-lg line-clamp-2 capitalize">
+          <h3 className="line-clamp-2 text-base font-bold capitalize sm:text-lg">
             {listing.summary ?? "Property details"}
           </h3>
           <div className="flex h-fit items-center gap-2 pt-3">
             {priceDisplay}
             {listing.pricepart2 && (
-              <span className="text-sm sm:text-base font-normal text-brand-muted">
+              <span className="text-brand-muted text-sm font-normal sm:text-base">
                 {listing.pricepart2}
               </span>
             )}
           </div>
           {listing.description && (
-            <p className="line-clamp-2 pt-3 text-sm sm:text-base text-brand-muted">
+            <p className="text-brand-muted line-clamp-2 pt-3 text-sm sm:text-base">
               {listing.description}
             </p>
           )}
@@ -174,7 +174,7 @@ export function AgentPropertyCard({ listing }: { listing: AgentListing }) {
         </Link>
         <CardFooter className="mt-3 flex items-center justify-between p-0">
           <div className="flex items-center gap-2">
-            <Avatar className="flex h-11 w-11 items-center rounded-full text-brand-accent shadow-none border">
+            <Avatar className="text-brand-accent flex h-11 w-11 items-center rounded-full border shadow-none">
               <AvatarImage
                 src={avatarImageUrl}
                 className="rounded-full border border-gray-50 object-contain"
@@ -191,7 +191,7 @@ export function AgentPropertyCard({ listing }: { listing: AgentListing }) {
                 href={detailsLink}
                 className={cn(
                   buttonVariants({ variant: "default", size: "sm" }),
-                  "w-32 font-semibold bg-brand-primary hover:bg-brand-primary"
+                  "bg-brand-primary hover:bg-brand-primary w-32 font-semibold"
                 )}
                 aria-label={`View full details for ${listing.summary ?? "property"}`}
               >

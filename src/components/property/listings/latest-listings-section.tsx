@@ -26,7 +26,7 @@ export function LatestListingsSection({
       title="Latest Listings"
       description="View all recent property listings available."
       href={href}
-      className="pt-14 md:pt-20 lg:pt-24 w-full [&_p]:px-4 [&_h2]:px-4 md:[&_p]:px-0 md:[&_h2]:px-0"
+      className="w-full pt-14 md:pt-20 lg:pt-24 [&_h2]:px-4 md:[&_h2]:px-0 [&_p]:px-4 md:[&_p]:px-0"
     >
       <LatestListingsTab
         rentListings={rentListings}

@@ -56,23 +56,23 @@ export function ForgotPasswordForm({
   if (isSuccess) {
     return (
       <div className={cn("text-center", className)} {...props}>
-        <div className="flex justify-center mb-4">
-          <CheckCircle className="h-10 sm:h-12 w-10 sm:w-12 text-green-500" />
+        <div className="mb-4 flex justify-center">
+          <CheckCircle className="h-10 w-10 text-green-500 sm:h-12 sm:w-12" />
         </div>
-        <h3 className="text-base sm:text-lg font-medium text-brand-accent mb-2">
+        <h3 className="text-brand-accent mb-2 text-base font-medium sm:text-lg">
           Check your email
         </h3>
-        <p className="text-sm text-brand-muted mb-4 px-2">
+        <p className="text-brand-muted mb-4 px-2 text-sm">
           We&apos;ve sent a password reset link to <strong>{email}</strong>
         </p>
-        <p className="text-xs text-brand-muted px-2">
+        <p className="text-brand-muted px-2 text-xs">
           Didn&apos;t receive the email? Check your spam folder or{" "}
           <button
             onClick={() => {
               setIsSuccess(false);
               setEmail("");
             }}
-            className="text-brand-primary hover:text-brand-primary-dark transition-colors underline"
+            className="text-brand-primary hover:text-brand-primary-dark underline transition-colors"
           >
             try a different email address
           </button>
@@ -88,12 +88,12 @@ export function ForgotPasswordForm({
           <div>
             <Label
               htmlFor="email"
-              className="text-sm font-medium text-brand-accent"
+              className="text-brand-accent text-sm font-medium"
             >
               Email address
             </Label>
-            <div className="mt-1 relative">
-              <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-brand-muted" />
+            <div className="relative mt-1">
+              <Mail className="text-brand-muted absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
               <Input
                 id="email"
                 name="email"
@@ -109,19 +109,19 @@ export function ForgotPasswordForm({
                   if (error) setError("");
                 }}
                 className={cn(
-                  "pl-10 h-11 sm:h-12 text-base border-brand-border focus:border-brand-primary focus:ring-brand-primary",
+                  "border-brand-border focus:border-brand-primary focus:ring-brand-primary h-11 pl-10 text-base sm:h-12",
                   error &&
                     "border-destructive focus:border-destructive focus:ring-destructive"
                 )}
               />
             </div>
-            {error && <p className="mt-1 text-sm text-destructive">{error}</p>}
+            {error && <p className="text-destructive mt-1 text-sm">{error}</p>}
           </div>
 
           <Button
             disabled={isLoading}
             type="submit"
-            className="w-full h-11 sm:h-12 text-base bg-brand-primary hover:bg-brand-primary-dark text-white font-medium"
+            className="bg-brand-primary hover:bg-brand-primary-dark h-11 w-full text-base font-medium text-white sm:h-12"
           >
             {isLoading ? (
               <>

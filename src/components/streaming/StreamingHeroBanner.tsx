@@ -19,13 +19,19 @@ export async function StreamingHeroBanner({
 
     return (
       <HeroBanner
-        src={`https://dve7rykno93gs.cloudfront.net${heroBanner.src}`}
-        href={heroBanner.href}
+        src={
+          heroBanner.src
+            ? `https://dve7rykno93gs.cloudfront.net${heroBanner.src}`
+            : ""
+        }
+        href={heroBanner.href || ""}
         alt="Hero banner showcasing featured properties"
       />
     );
   } catch (error) {
-    logError("Failed to load hero banner", error, { component: "StreamingHeroBanner" });
+    logError("Failed to load hero banner", error, {
+      component: "StreamingHeroBanner",
+    });
     return <HeroBannerSkeleton />;
   }
 }

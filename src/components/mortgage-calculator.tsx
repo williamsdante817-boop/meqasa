@@ -171,10 +171,10 @@ export default function MortgageCalculator({ price }: { price: string }) {
   }, [downPayment, propertyPrice]);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:items-start">
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:items-start">
       {/* Left Column - Inputs */}
-      <Card className="p-4 rounded-lg">
-        <CardContent className="pt-0 px-3">
+      <Card className="rounded-lg p-4">
+        <CardContent className="px-3 pt-0">
           <div className="space-y-6">
             <div className="space-y-6">
               <div className="space-y-2">
@@ -182,7 +182,7 @@ export default function MortgageCalculator({ price }: { price: string }) {
                   Property Price
                 </Label>
                 <div className="flex">
-                  <span className="inline-flex items-center px-3 bg-gray-100 border border-r-0 border-gray-300 rounded-l-md text-brand-muted">
+                  <span className="text-brand-muted inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-100 px-3">
                     GH₵
                   </span>
                   <Input
@@ -191,7 +191,7 @@ export default function MortgageCalculator({ price }: { price: string }) {
                     value={propertyPrice || ""}
                     onChange={handlePropertyPriceChange}
                     min={0}
-                    className="rounded-l-none text-brand-accent"
+                    className="text-brand-accent rounded-l-none"
                     placeholder="Enter property price"
                   />
                 </div>
@@ -202,7 +202,7 @@ export default function MortgageCalculator({ price }: { price: string }) {
                   Down Payment
                 </Label>
                 <div className="flex">
-                  <span className="inline-flex items-center px-3 bg-gray-100 border border-r-0 border-gray-300 rounded-l-md text-brand-muted">
+                  <span className="text-brand-muted inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-100 px-3">
                     GH₵
                   </span>
                   <Input
@@ -211,7 +211,7 @@ export default function MortgageCalculator({ price }: { price: string }) {
                     value={downPayment || ""}
                     onChange={handleDownPaymentChange}
                     min={0}
-                    className="rounded-l-none text-brand-accent"
+                    className="text-brand-accent rounded-l-none"
                     placeholder="Enter down payment"
                   />
                 </div>
@@ -228,11 +228,11 @@ export default function MortgageCalculator({ price }: { price: string }) {
                       type="number"
                       value={tenure}
                       onChange={handleTenureChange}
-                      className="w-20 h-8 mr-2 text-brand-accent"
+                      className="text-brand-accent mr-2 h-8 w-20"
                       min={1}
                       max={30}
                     />
-                    <span className="text-sm bg-gray-100 px-3 py-1 rounded-md text-brand-muted">
+                    <span className="text-brand-muted rounded-md bg-gray-100 px-3 py-1 text-sm">
                       yrs
                     </span>
                   </div>
@@ -259,12 +259,12 @@ export default function MortgageCalculator({ price }: { price: string }) {
                       type="number"
                       value={interestRate}
                       onChange={handleInterestRateChange}
-                      className="w-20 h-8 mr-2 text-brand-accent"
+                      className="text-brand-accent mr-2 h-8 w-20"
                       min={0}
                       max={30}
                       step={0.1}
                     />
-                    <span className="text-sm bg-gray-100 px-3 py-1 rounded-md text-brand-muted">
+                    <span className="text-brand-muted rounded-md bg-gray-100 px-3 py-1 text-sm">
                       %
                     </span>
                   </div>
@@ -283,9 +283,9 @@ export default function MortgageCalculator({ price }: { price: string }) {
               </div>
             </div>
 
-            <div className="bg-blue-50 p-4 rounded-lg border border-blue-100 mt-4 flex gap-3">
-              <InfoIcon className="text-blue-500 h-5 w-5 flex-shrink-0 mt-0.5" />
-              <p className="text-xs md:text-sm text-brand-muted">
+            <div className="mt-4 flex gap-3 rounded-lg border border-blue-100 bg-blue-50 p-4">
+              <InfoIcon className="mt-0.5 h-5 w-5 flex-shrink-0 text-blue-500" />
+              <p className="text-brand-muted text-xs md:text-sm">
                 Adjust the sliders to see how different loan terms and interest
                 rates affect your monthly payments. The calculator helps you
                 plan your mortgage by showing both principal and interest
@@ -299,11 +299,11 @@ export default function MortgageCalculator({ price }: { price: string }) {
       {/* Right Column - Results */}
       <Card className="rounded-lg">
         <CardContent className="p-4">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-semibold text-brand-accent">
+          <div className="mb-6 flex items-center justify-between">
+            <h2 className="text-brand-accent text-xl font-semibold">
               Mortgage Breakdown
             </h2>
-            <span className="text-sm text-brand-muted">
+            <span className="text-brand-muted text-sm">
               at {interestRate.toFixed(1)}% interest rate
             </span>
           </div>
@@ -311,12 +311,12 @@ export default function MortgageCalculator({ price }: { price: string }) {
           <div className="grid grid-cols-2 gap-6">
             {/* Loan Amount Chart */}
             <div className="flex flex-col items-center">
-              <div className="circle-chart relative w-40 h-40 sm:w-44 sm:h-44 lg:w-48 lg:h-48 xl:w-52 xl:h-52 mb-4">
+              <div className="circle-chart relative mb-4 h-40 w-40 sm:h-44 sm:w-44 lg:h-48 lg:w-48 xl:h-52 xl:w-52">
                 {hasValidData ? (
                   <>
                     <svg
                       viewBox="0 0 100 100"
-                      className="w-full h-full transition-all duration-300"
+                      className="h-full w-full transition-all duration-300"
                     >
                       {/* Background circle */}
                       <circle
@@ -345,23 +345,23 @@ export default function MortgageCalculator({ price }: { price: string }) {
                         }}
                       />
                     </svg>
-                    <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-3">
-                      <div className="font-bold text-sm sm:text-base text-brand-accent leading-tight overflow-hidden">
-                        <div className="truncate max-w-full">
+                    <div className="absolute inset-0 flex flex-col items-center justify-center px-3 text-center">
+                      <div className="text-brand-accent overflow-hidden text-sm leading-tight font-bold sm:text-base">
+                        <div className="max-w-full truncate">
                           {formatCurrencyMemo(debouncedBreakdown.loanAmount)}
                         </div>
                       </div>
-                      <div className="text-xs text-brand-muted mt-0.5 text-center">
+                      <div className="text-brand-muted mt-0.5 text-center text-xs">
                         Loan Amount
                       </div>
-                      <div className="text-xs font-medium text-brand-blue">
+                      <div className="text-brand-blue text-xs font-medium">
                         {debouncedLoanPercent.toFixed(0)}%
                       </div>
                     </div>
                   </>
                 ) : (
-                  <div className="w-full h-full bg-gray-100 rounded-full flex items-center justify-center">
-                    <span className="text-gray-400 text-sm">Enter values</span>
+                  <div className="flex h-full w-full items-center justify-center rounded-full bg-gray-100">
+                    <span className="text-sm text-gray-400">Enter values</span>
                   </div>
                 )}
               </div>
@@ -369,12 +369,12 @@ export default function MortgageCalculator({ price }: { price: string }) {
 
             {/* Monthly Payment Chart */}
             <div className="flex flex-col items-center">
-              <div className="circle-chart relative w-40 h-40 sm:w-44 sm:h-44 lg:w-48 lg:h-48 xl:w-52 xl:h-52 mb-4">
+              <div className="circle-chart relative mb-4 h-40 w-40 sm:h-44 sm:w-44 lg:h-48 lg:w-48 xl:h-52 xl:w-52">
                 {hasValidData && debouncedBreakdown.monthlyPayment > 0 ? (
                   <>
                     <svg
                       viewBox="0 0 100 100"
-                      className="w-full h-full transition-all duration-500"
+                      className="h-full w-full transition-all duration-500"
                     >
                       {/* Background circle */}
                       <circle
@@ -403,25 +403,25 @@ export default function MortgageCalculator({ price }: { price: string }) {
                         }}
                       />
                     </svg>
-                    <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-3">
-                      <div className="font-bold text-sm sm:text-base text-brand-accent leading-tight overflow-hidden">
-                        <div className="truncate max-w-full">
+                    <div className="absolute inset-0 flex flex-col items-center justify-center px-3 text-center">
+                      <div className="text-brand-accent overflow-hidden text-sm leading-tight font-bold sm:text-base">
+                        <div className="max-w-full truncate">
                           {formatCurrencyMemo(
                             debouncedBreakdown.monthlyPayment
                           )}
                         </div>
                       </div>
-                      <div className="text-xs text-brand-muted mt-0.5 text-center">
+                      <div className="text-brand-muted mt-0.5 text-center text-xs">
                         Monthly Payment
                       </div>
-                      <div className="text-xs font-medium text-brand-blue">
+                      <div className="text-brand-blue text-xs font-medium">
                         /month
                       </div>
                     </div>
                   </>
                 ) : (
-                  <div className="w-full h-full bg-gray-100 rounded-full flex items-center justify-center">
-                    <span className="text-gray-400 text-sm">Enter values</span>
+                  <div className="flex h-full w-full items-center justify-center rounded-full bg-gray-100">
+                    <span className="text-sm text-gray-400">Enter values</span>
                   </div>
                 )}
               </div>
@@ -431,17 +431,17 @@ export default function MortgageCalculator({ price }: { price: string }) {
           {/* Summary Section */}
           <div className="mt-8 space-y-6">
             {/* Down Payment Info */}
-            <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg p-4 border border-gray-200">
-              <div className="flex justify-between items-center">
+            <div className="rounded-lg border border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100 p-4">
+              <div className="flex items-center justify-between">
                 <div>
-                  <span className="text-sm font-medium text-brand-accent">
+                  <span className="text-brand-accent text-sm font-medium">
                     Down Payment
                   </span>
-                  <div className="text-xs text-brand-muted">
+                  <div className="text-brand-muted text-xs">
                     {downPaymentPercent.toFixed(0)}% of property price
                   </div>
                 </div>
-                <span className="font-bold text-lg text-brand-accent">
+                <span className="text-brand-accent text-lg font-bold">
                   {formatCurrencyMemo(downPayment)}
                 </span>
               </div>
@@ -452,12 +452,12 @@ export default function MortgageCalculator({ price }: { price: string }) {
               <div className="pt-4">
                 <button
                   onClick={() => setShowBreakdown(!showBreakdown)}
-                  className="w-full bg-gradient-to-r from-brand-blue/10 shadow-none cursor-pointer to-brand-blue/5 hover:from-brand-blue/20 hover:to-brand-blue/10 border border-brand-blue/20 rounded-lg p-3 transition-all duration-200 hover:shadow-sm group"
+                  className="from-brand-blue/10 to-brand-blue/5 hover:from-brand-blue/20 hover:to-brand-blue/10 border-brand-blue/20 group w-full cursor-pointer rounded-lg border bg-gradient-to-r p-3 shadow-none transition-all duration-200 hover:shadow-sm"
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="w-2 h-2 bg-brand-blue rounded-full"></div>
-                      <span className="font-medium text-brand-accent">
+                      <div className="bg-brand-blue h-2 w-2 rounded-full"></div>
+                      <span className="text-brand-accent font-medium">
                         {showBreakdown ? "Hide" : "View"} Payment Breakdown
                       </span>
                     </div>
@@ -467,7 +467,7 @@ export default function MortgageCalculator({ price }: { price: string }) {
                       }`}
                     >
                       <svg
-                        className="w-4 h-4 text-brand-blue"
+                        className="text-brand-blue h-4 w-4"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -489,24 +489,24 @@ export default function MortgageCalculator({ price }: { price: string }) {
             {hasValidData &&
               debouncedBreakdown.monthlyPayment > 0 &&
               showBreakdown && (
-                <div className="mt-6 animate-in fade-in duration-300">
+                <div className="animate-in fade-in mt-6 duration-300">
                   <div>
-                    <h3 className="text-base font-semibold mb-4 text-brand-accent">
+                    <h3 className="text-brand-accent mb-4 text-base font-semibold">
                       Monthly Payment Breakdown
                     </h3>
                     <div className="space-y-4">
                       {/* Principal */}
-                      <div className="bg-gradient-to-r from-emerald-50 to-emerald-100/50 rounded-lg p-4 border border-emerald-200/60 hover:from-emerald-100 hover:to-emerald-200/50 transition-all duration-300">
-                        <div className="flex justify-between items-center">
+                      <div className="rounded-lg border border-emerald-200/60 bg-gradient-to-r from-emerald-50 to-emerald-100/50 p-4 transition-all duration-300 hover:from-emerald-100 hover:to-emerald-200/50">
+                        <div className="flex items-center justify-between">
                           <div className="flex items-center">
-                            <div className="w-5 h-5 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-500 mr-4 shadow-lg flex items-center justify-center">
-                              <div className="w-2 h-2 bg-white rounded-full opacity-80"></div>
+                            <div className="mr-4 flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-emerald-500 shadow-lg">
+                              <div className="h-2 w-2 rounded-full bg-white opacity-80"></div>
                             </div>
                             <div>
                               <span className="font-semibold text-emerald-700">
                                 Principal Payment
                               </span>
-                              <div className="text-xs text-emerald-600/80 mt-0.5">
+                              <div className="mt-0.5 text-xs text-emerald-600/80">
                                 {debouncedBreakdown.monthlyPayment > 0
                                   ? (
                                       (debouncedBreakdown.principalPayment /
@@ -519,12 +519,12 @@ export default function MortgageCalculator({ price }: { price: string }) {
                             </div>
                           </div>
                           <div className="text-right">
-                            <span className="font-bold text-xl text-emerald-700">
+                            <span className="text-xl font-bold text-emerald-700">
                               {formatCurrencyMemo(
                                 debouncedBreakdown.principalPayment
                               )}
                             </span>
-                            <div className="text-xs text-emerald-600/70 mt-0.5">
+                            <div className="mt-0.5 text-xs text-emerald-600/70">
                               goes to equity
                             </div>
                           </div>
@@ -532,17 +532,17 @@ export default function MortgageCalculator({ price }: { price: string }) {
                       </div>
 
                       {/* Interest */}
-                      <div className="bg-gradient-to-r from-amber-50 to-amber-100/50 rounded-lg p-4 border border-amber-200/60 hover:from-amber-100 hover:to-amber-200/50 transition-all duration-300">
-                        <div className="flex justify-between items-center">
+                      <div className="rounded-lg border border-amber-200/60 bg-gradient-to-r from-amber-50 to-amber-100/50 p-4 transition-all duration-300 hover:from-amber-100 hover:to-amber-200/50">
+                        <div className="flex items-center justify-between">
                           <div className="flex items-center">
-                            <div className="w-5 h-5 rounded-full bg-gradient-to-br from-amber-400 to-amber-500 mr-4 shadow-lg flex items-center justify-center">
-                              <div className="w-2 h-2 bg-white rounded-full opacity-80"></div>
+                            <div className="mr-4 flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br from-amber-400 to-amber-500 shadow-lg">
+                              <div className="h-2 w-2 rounded-full bg-white opacity-80"></div>
                             </div>
                             <div>
                               <span className="font-semibold text-amber-700">
                                 Interest Payment
                               </span>
-                              <div className="text-xs text-amber-600/80 mt-0.5">
+                              <div className="mt-0.5 text-xs text-amber-600/80">
                                 {debouncedBreakdown.monthlyPayment > 0
                                   ? (
                                       (debouncedBreakdown.interestPayment /
@@ -555,12 +555,12 @@ export default function MortgageCalculator({ price }: { price: string }) {
                             </div>
                           </div>
                           <div className="text-right">
-                            <span className="font-bold text-xl text-amber-700">
+                            <span className="text-xl font-bold text-amber-700">
                               {formatCurrencyMemo(
                                 debouncedBreakdown.interestPayment
                               )}
                             </span>
-                            <div className="text-xs text-amber-600/70 mt-0.5">
+                            <div className="mt-0.5 text-xs text-amber-600/70">
                               cost of borrowing
                             </div>
                           </div>
@@ -569,35 +569,35 @@ export default function MortgageCalculator({ price }: { price: string }) {
                     </div>
 
                     {/* Total Summary */}
-                    <div className="mt-6 bg-gradient-to-r from-slate-50 to-slate-100/50 rounded-lg p-5 border border-slate-200/60 hover:from-slate-100 hover:to-slate-200/50 transition-all duration-300">
-                      <h4 className="font-semibold text-slate-700 mb-3 flex items-center">
-                        <div className="w-2 h-2 bg-slate-400 rounded-full mr-2"></div>
+                    <div className="mt-6 rounded-lg border border-slate-200/60 bg-gradient-to-r from-slate-50 to-slate-100/50 p-5 transition-all duration-300 hover:from-slate-100 hover:to-slate-200/50">
+                      <h4 className="mb-3 flex items-center font-semibold text-slate-700">
+                        <div className="mr-2 h-2 w-2 rounded-full bg-slate-400"></div>
                         Loan Summary
                       </h4>
                       <div className="space-y-3">
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm text-slate-600 font-medium">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium text-slate-600">
                             Total paid over {tenure} years
                           </span>
-                          <span className="font-bold text-lg text-slate-700">
+                          <span className="text-lg font-bold text-slate-700">
                             {formatCurrencyMemo(
                               debouncedBreakdown.monthlyPayment * tenure * 12
                             )}
                           </span>
                         </div>
                         <div className="h-px bg-slate-200"></div>
-                        <div className="flex justify-between items-center">
+                        <div className="flex items-center justify-between">
                           <span className="text-sm text-slate-600">
                             Total interest cost
                           </span>
-                          <span className="font-semibold text-base text-amber-600">
+                          <span className="text-base font-semibold text-amber-600">
                             {formatCurrencyMemo(
                               debouncedBreakdown.monthlyPayment * tenure * 12 -
                                 debouncedBreakdown.loanAmount
                             )}
                           </span>
                         </div>
-                        <div className="flex justify-between items-center pt-1">
+                        <div className="flex items-center justify-between pt-1">
                           <span className="text-xs text-slate-500">
                             Interest as % of total
                           </span>

@@ -3,9 +3,10 @@ import { StreamingErrorBoundary } from "@/components/streaming/StreamingErrorBou
 
 // Dynamic imports for non-critical components (remove ssr: false for Server Components)
 const HomepagePopup = dynamic(
-  () => import("@/components/homepage-popup").then((mod) => ({ 
-    default: mod.HomepagePopup 
-  })),
+  () =>
+    import("@/components/homepage-popup").then((mod) => ({
+      default: mod.HomepagePopup,
+    })),
   {
     loading: () => (
       <div className="sr-only" role="status">
@@ -35,11 +36,12 @@ import { StreamingHeroBanner } from "@/components/streaming/StreamingHeroBanner"
 import { StreamingLatestListings } from "@/components/streaming/StreamingLatestListings";
 // Dynamic import for blog section (below fold)
 const StreamingBlog = dynamic(
-  () => import("@/components/streaming/StreamingBlog").then((mod) => ({
-    default: mod.StreamingBlog
-  })),
+  () =>
+    import("@/components/streaming/StreamingBlog").then((mod) => ({
+      default: mod.StreamingBlog,
+    })),
   {
-    loading: () => <div className="py-14 animate-pulse bg-gray-50" />,
+    loading: () => <div className="animate-pulse bg-gray-50 py-14" />,
   }
 );
 import type { FeaturedListingsResponse } from "@/lib/get-featured-listings";
@@ -120,7 +122,7 @@ async function LobbyContent({
         <StaticLocationSection staticData={staticData} />
         <StaticFooterContent />
       </div>
-      <StreamingErrorBoundary 
+      <StreamingErrorBoundary
         errorFallback={
           <div className="sr-only" role="status">
             Homepage popup failed to load

@@ -315,16 +315,16 @@ export default async function SearchPage({
         <div className="sticky top-[56px] z-50 bg-white">
           <ResultSearchFilter />
         </div>
-        <Shell className="mt-12 flex gap-8 md:px-0 max-w-[1250px]">
+        <Shell className="mt-12 flex max-w-[1250px] gap-8 md:px-0">
           <PropertyTypeLinks />
           <div className="w-full">
             <Breadcrumbs className="capitalize" segments={segments} />
             <header className="space-y-6">
               <div>
-                <h1 className="mt-2 text-lg font-bold leading-6 text-brand-accent capitalize md:text-xl">
+                <h1 className="text-brand-accent mt-2 text-lg leading-6 font-bold capitalize md:text-xl">
                   {generateDynamicHeading(type, location, resolvedSearchParams)}
                 </h1>
-                <p className="mt-3 text-sm text-brand-muted">
+                <p className="text-brand-muted mt-3 text-sm">
                   {generateDynamicSubheading(
                     type,
                     location,
@@ -335,7 +335,7 @@ export default async function SearchPage({
               </div>
 
               {/* Unified Reference Search Component - Properties + Units */}
-              <div className="bg-gradient-to-r from-blue-50 to-green-50 border border-blue-200 rounded-lg p-4">
+              <div className="rounded-lg border border-blue-200 bg-gradient-to-r from-blue-50 to-green-50 p-4">
                 <ReferenceSearch
                   showLabel={true}
                   size="default"
@@ -346,7 +346,7 @@ export default async function SearchPage({
               </div>
             </header>
 
-            <div className="grid grid-cols-1 gap-8 mt-8 md:px-0 lg:grid-cols-[minmax(0,736px)_1fr] w-full">
+            <div className="mt-8 grid w-full grid-cols-1 gap-8 md:px-0 lg:grid-cols-[minmax(0,736px)_1fr]">
               <div>
                 {/* Streaming Flexi Banner - non-critical, loads progressively */}
                 <StreamingFlexiBannerWrapper />

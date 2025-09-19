@@ -8,10 +8,10 @@ interface PropertyCardProps {
   index?: number;
 }
 
-export default function PropertyCard({ 
-  property, 
+export default function PropertyCard({
+  property,
   priority = false,
-  index = 0 
+  index = 0,
 }: PropertyCardProps) {
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("en-GH", {
@@ -28,14 +28,14 @@ export default function PropertyCard({
       href={listingUrl}
       target="_blank"
       rel="noopener noreferrer"
-      className="block bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200"
+      className="block rounded-lg bg-white shadow-md transition-shadow duration-200 hover:shadow-lg"
     >
       <div className="relative h-48 w-full">
         <Image
           src={property.image || "/placeholder-property.jpg"}
           alt={property.summary}
           fill
-          className="object-cover rounded-t-lg"
+          className="rounded-t-lg object-cover"
           sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 300px"
           priority={priority && index < 4}
           loading={priority && index < 4 ? undefined : "lazy"}
@@ -43,35 +43,35 @@ export default function PropertyCard({
           blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAEAAQDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
         />
         {property.availability === "furnished" && (
-          <span className="absolute top-2 right-2 bg-[#cf007a] text-white px-2 py-1 rounded text-sm">
+          <span className="absolute top-2 right-2 rounded bg-[#cf007a] px-2 py-1 text-sm text-white">
             Furnished
           </span>
         )}
       </div>
 
       <div className="p-4">
-        <h3 className="font-semibold text-lg mb-2 line-clamp-2">
+        <h3 className="mb-2 line-clamp-2 text-lg font-semibold">
           {property.summary}
         </h3>
 
-        <div className="text-[#cf007a] text-xl mb-2">
+        <div className="mb-2 text-xl text-[#cf007a]">
           <span className="font-bold">
             {formatPrice(Number(property.pricepart1))}
           </span>
           {property.contract === "rent" && (
-            <span className="text-sm text-gray-500 ml-1 font-normal">
+            <span className="ml-1 text-sm font-normal text-gray-500">
               /{property.pricepart2}
             </span>
           )}
         </div>
 
-        <div className="text-gray-600 mb-2">{property.locationstring}</div>
+        <div className="mb-2 text-gray-600">{property.locationstring}</div>
 
         <div className="flex items-center gap-4 text-sm text-gray-500">
           {property.bedroomcount && (
             <div className="flex items-center">
               <svg
-                className="w-4 h-4 mr-1"
+                className="mr-1 h-4 w-4"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -90,7 +90,7 @@ export default function PropertyCard({
           {property.bathroomcount && (
             <div className="flex items-center">
               <svg
-                className="w-4 h-4 mr-1"
+                className="mr-1 h-4 w-4"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"

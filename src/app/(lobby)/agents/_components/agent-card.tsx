@@ -120,7 +120,7 @@ export function AgentCard({
   return (
     <>
       <Card
-        className={`w-full bg-white transition-all duration-300 rounded-lg overflow-hidden hover:shadow-md ${
+        className={`w-full overflow-hidden rounded-lg bg-white transition-all duration-300 hover:shadow-md ${
           className ?? ""
         }`}
         role="article"
@@ -128,13 +128,13 @@ export function AgentCard({
       >
         <div className="p-4 md:p-8">
           {/* Header Section */}
-          <div className="flex flex-col sm:flex-row gap-6 mb-6">
+          <div className="mb-6 flex flex-col gap-6 sm:flex-row">
             {/* Logo/Avatar Section */}
             <div className="flex-shrink-0">
-              <div className="relative w-16 h-16 rounded-md overflow-hidden bg-gray-100 border border-gray-200">
+              <div className="relative h-16 w-16 overflow-hidden rounded-md border border-gray-200 bg-gray-100">
                 {logoLoading && !logoError && (
                   <Skeleton
-                    className="absolute bg-gray-50 animate-pulse top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-12 h-12 rounded-md"
+                    className="absolute top-1/2 left-1/2 h-12 w-12 -translate-x-1/2 -translate-y-1/2 transform animate-pulse rounded-md bg-gray-50"
                     aria-label="Loading logo"
                   />
                 )}
@@ -142,7 +142,7 @@ export function AgentCard({
                 <ImageWithFallback
                   src={logoSrc || fallbackImage}
                   alt={`${agentName} logo`}
-                  className={`w-full h-full object-contain transition-opacity duration-300 ${
+                  className={`h-full w-full object-contain transition-opacity duration-300 ${
                     logoLoading ? "opacity-0" : "opacity-100"
                   }`}
                   width={96}
@@ -155,52 +155,52 @@ export function AgentCard({
             </div>
 
             {/* Agent Info Section */}
-            <div className="flex-1 min-w-0">
-              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+            <div className="min-w-0 flex-1">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                 <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-2">
+                  <div className="mb-2 flex items-center gap-2">
                     <Link
                       href={agentDetailUrl}
                       className="hover:text-brand-accent-darken transition-colors duration-200"
                     >
-                      <h2 className="text-brand-accent font-semibold text-xl line-clamp-1">
+                      <h2 className="text-brand-accent line-clamp-1 text-xl font-semibold">
                         {agentName}
                       </h2>
                     </Link>
                     {isVerified === true ||
                     isVerified === "plus" ||
                     isVerified === "basic" ? (
-                      <div className="flex items-center gap-1 px-2 py-1 bg-green-50 border border-green-200 rounded-md">
+                      <div className="flex items-center gap-1 rounded-md border border-green-200 bg-green-50 px-2 py-1">
                         <CheckCircle
-                          className="h-4 w-4 text-green-600 flex-shrink-0"
+                          className="h-4 w-4 flex-shrink-0 text-green-600"
                           aria-label="Verified agent"
                         />
-                        <span className="text-xs text-green-700 font-medium line-clamp-1">
+                        <span className="line-clamp-1 text-xs font-medium text-green-700">
                           {isVerified === "plus"
                             ? "Premium Verified"
                             : "Verified"}
                         </span>
                       </div>
                     ) : (
-                      <div className="flex items-center gap-1 px-2 py-1 bg-gray-50 border border-gray-200 rounded-md">
-                        <span className="text-xs text-brand-muted font-medium">
+                      <div className="flex items-center gap-1 rounded-md border border-gray-200 bg-gray-50 px-2 py-1">
+                        <span className="text-brand-muted text-xs font-medium">
                           Unverified
                         </span>
                       </div>
                     )}
                   </div>
 
-                  <div className="flex items-center gap-2 text-brand-muted mb-3 flex-nowrap overflow-hidden">
-                    <MapPin className="h-4 w-4 flex-shrink-0 text-brand-muted" />
-                    <span className="text-sm truncate">
+                  <div className="text-brand-muted mb-3 flex flex-nowrap items-center gap-2 overflow-hidden">
+                    <MapPin className="text-brand-muted h-4 w-4 flex-shrink-0" />
+                    <span className="truncate text-sm">
                       {location || "Location not available"}
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-3 mb-3">
+                  <div className="mb-3 flex items-center gap-3">
                     <Badge
                       variant="secondary"
-                      className="bg-blue-50 text-blue-700 rounded-sm hover:bg-blue-100 border-blue-200"
+                      className="rounded-sm border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100"
                     >
                       {listingsCount} listings
                     </Badge>
@@ -211,7 +211,7 @@ export function AgentCard({
                 <div className="relative z-10">
                   <Button
                     onClick={handleContactAgent}
-                    className="bg-brand-primary cursor-pointer hover:bg-brand-primary-darken text-white px-6 py-2 rounded-md transition-all"
+                    className="bg-brand-primary hover:bg-brand-primary-darken cursor-pointer rounded-md px-6 py-2 text-white transition-all"
                   >
                     Contact Agent
                   </Button>
@@ -222,8 +222,8 @@ export function AgentCard({
 
           {/* Social Media Section */}
           {socialIcons.length > 0 && (
-            <div className="flex items-center gap-3 mb-6">
-              <span className="text-sm text-brand-muted mr-2">Follow:</span>
+            <div className="mb-6 flex items-center gap-3">
+              <span className="text-brand-muted mr-2 text-sm">Follow:</span>
               {socialIcons.map(({ platform, icon: Icon, url, hoverColor }) => (
                 <button
                   key={platform}
@@ -231,7 +231,7 @@ export function AgentCard({
                     e.stopPropagation();
                     handleSocialClick(platform, url);
                   }}
-                  className={`p-3 rounded-full border border-gray-200 text-brand-muted transition-all duration-200 hover:border-transparent ${hoverColor} hover:scale-110 active:scale-95`}
+                  className={`text-brand-muted rounded-full border border-gray-200 p-3 transition-all duration-200 hover:border-transparent ${hoverColor} hover:scale-110 active:scale-95`}
                   aria-label={`Visit ${agentName}'s ${platform} profile`}
                 >
                   <Icon className="h-4 w-4" />
@@ -243,7 +243,7 @@ export function AgentCard({
           {/* Description Section */}
           {description && (
             <div className="space-y-4">
-              <div className="text-brand-muted leading-relaxed line-clamp-3">
+              <div className="text-brand-muted line-clamp-3 leading-relaxed">
                 {description}
               </div>
             </div>
@@ -253,7 +253,7 @@ export function AgentCard({
           <div className="mt-4">
             <Link
               href={agentDetailUrl}
-              className="inline-flex items-center text-brand-accent hover:text-brand-accent-darken transition-colors duration-200 font-medium"
+              className="text-brand-accent hover:text-brand-accent-darken inline-flex items-center font-medium transition-colors duration-200"
               aria-label={`View details for ${agentName}`}
             >
               View Details →
@@ -265,7 +265,7 @@ export function AgentCard({
       {/* Contact Dialog */}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent
-          className="max-w-lg w-full overflow-hidden p-4 sm:p-6"
+          className="w-full max-w-lg overflow-hidden p-4 sm:p-6"
           aria-label={`Contact ${name} dialog`}
         >
           <DeveloperContactCard

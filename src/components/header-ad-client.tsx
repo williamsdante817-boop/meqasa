@@ -36,14 +36,14 @@ export default function HeaderAdClient() {
 
   return (
     <div
-      className="py-[10px] border-b border-gray-200 hidden lg:flex"
+      className="hidden border-b border-gray-200 py-[10px] lg:flex"
       role="banner"
       aria-label="Header advertisement"
     >
-      <div className="mx-auto flex justify-between h-auto max-w-6xl w-[72rem]">
+      <div className="mx-auto flex h-auto w-[72rem] max-w-6xl justify-between">
         <Link
           href="/"
-          className="relative w-[240px] h-[90px]"
+          className="relative h-[90px] w-[240px]"
           aria-label="Meqasa Home"
         >
           <Image

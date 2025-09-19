@@ -57,7 +57,7 @@ export function FeaturedPropertyVariantCard({
 
   return (
     <Card
-      className="relative mb-8 h-[230px] md:h-[321px] w-full p-0 overflow-hidden rounded-lg border-none text-brand-accent"
+      className="text-brand-accent relative mb-8 h-[230px] w-full overflow-hidden rounded-lg border-none p-0 md:h-[321px]"
       role="article"
       aria-labelledby={`project-title-${projectid}`}
     >
@@ -94,7 +94,7 @@ export function FeaturedPropertyVariantCard({
 
         {isLoading && !imgError && (
           <div
-            className="absolute inset-0 bg-gray-100 animate-pulse rounded-lg"
+            className="absolute inset-0 animate-pulse rounded-lg bg-gray-100"
             aria-hidden="true"
           />
         )}
@@ -109,7 +109,7 @@ export function FeaturedPropertyVariantCard({
                 >
                   <Link
                     href={projectLink}
-                    className="hover:underline focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-transparent rounded"
+                    className="rounded hover:underline focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-transparent focus:outline-none"
                     aria-label={`View details for ${projectname}`}
                   >
                     {projectname}
@@ -127,7 +127,7 @@ export function FeaturedPropertyVariantCard({
 
                 <Button
                   asChild
-                  className="mt-3 bg-brand-primary hover:bg-brand-primary focus:ring-2 focus:ring-white focus:ring-offset-2"
+                  className="bg-brand-primary hover:bg-brand-primary mt-3 focus:ring-2 focus:ring-white focus:ring-offset-2"
                 >
                   <Link
                     href={projectLink}

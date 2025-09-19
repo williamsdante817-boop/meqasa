@@ -8,7 +8,7 @@ export default function AgentSearch({
 }) {
   return (
     <div className="mb-8">
-      <h1 className="text-2xl font-medium text-brand-accent mb-4">
+      <h1 className="text-brand-accent mb-4 text-2xl font-medium">
         Find an Agent
       </h1>
       <SearchInput

@@ -39,7 +39,7 @@ export function PaginatedContent<T>({
   } = usePagination({ items, itemsPerPage });
 
   if (items.length === 0) {
-    return <div className="text-center py-8 text-gray-500">{emptyMessage}</div>;
+    return <div className="py-8 text-center text-gray-500">{emptyMessage}</div>;
   }
 
   const renderPaginationNumbers = () => {

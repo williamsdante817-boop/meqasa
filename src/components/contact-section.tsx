@@ -467,33 +467,35 @@ export default function ContactSection({
   };
 
   return (
-    <div className="bg-gray-50 border-t border-b border-gray-200 py-16 flex flex-col items-center mt-10">
-      <div className="w-20 h-20 rounded-full overflow-hidden border border-gray-200 mb-4">
+    <div className="mt-10 flex flex-col items-center border-t border-b border-gray-200 bg-gray-50 py-16">
+      <div className="mb-4 h-20 w-20 overflow-hidden rounded-full border border-gray-200">
         {imageError ? (
-          <div className="w-full h-full flex items-center justify-center">
-            <User className="w-12 h-12 text-gray-400" />
+          <div className="flex h-full w-full items-center justify-center">
+            <User className="h-12 w-12 text-gray-400" />
           </div>
         ) : (
           <Image
             src={
-              src
-                ? `https://meqasa.com/uploads/imgs/${image}`
-                : `https://dve7rykno93gs.cloudfront.net${image}`
+              image
+                ? src
+                  ? `https://meqasa.com/uploads/imgs/${image}`
+                  : `https://dve7rykno93gs.cloudfront.net${image}`
+                : "/placeholder-image.png"
             }
             alt={name}
             width={80}
             height={80}
-            className="object-contain w-full h-full"
+            className="h-full w-full object-contain"
             onError={() => setImageError(true)}
           />
         )}
       </div>
 
-      <h2 className="text-center text-xl font-bold text-brand-accent mb-2">
+      <h2 className="text-brand-accent mb-2 text-center text-xl font-bold">
         {name}
       </h2>
 
-      <div className="flex items-center gap-2 mb-6">
+      <div className="mb-6 flex items-center gap-2">
         {showNumber ? (
           <span className="text-brand-blue">
             {phoneNumber
@@ -502,15 +504,15 @@ export default function ContactSection({
           </span>
         ) : state.formSubmitted && state.showNumberLoading ? (
           <div className="flex items-center gap-2">
-            <div className="h-4 w-32 bg-gray-200 rounded animate-pulse"></div>
-            <div className="h-4 w-4 bg-gray-200 rounded animate-pulse"></div>
+            <div className="h-4 w-32 animate-pulse rounded bg-gray-200"></div>
+            <div className="h-4 w-4 animate-pulse rounded bg-gray-200"></div>
           </div>
         ) : state.formSubmitted ? (
           // User has saved contact info, show button without modal
           <Button
             variant="outline"
             size="sm"
-            className="h-7 text-sm text-brand-blue border-brand-blue hover:text-brand-blue hover:bg-blue-50"
+            className="text-brand-blue border-brand-blue hover:text-brand-blue h-7 text-sm hover:bg-blue-50"
             onClick={handleViewNumberClick}
             disabled={state.showNumberLoading}
           >
@@ -523,7 +525,7 @@ export default function ContactSection({
             <Button
               variant="outline"
               size="sm"
-              className="h-7 text-sm text-brand-blue border-brand-blue hover:text-brand-blue hover:bg-blue-50"
+              className="text-brand-blue border-brand-blue hover:text-brand-blue h-7 text-sm hover:bg-blue-50"
               onClick={() => {
                 dispatch({
                   type: "setField",
@@ -539,15 +541,15 @@ export default function ContactSection({
         )}
       </div>
 
-      <div className="flex gap-4 w-full max-w-md px-4">
+      <div className="flex w-full max-w-md gap-4 px-4">
         {state.formSubmitted ? (
           // User has saved contact info, show button without modal
           <Button
-            className="flex-1 bg-brand-badge-completed hover:bg-green-700 text-white h-12 gap-2"
+            className="bg-brand-badge-completed h-12 flex-1 gap-2 text-white hover:bg-green-700"
             onClick={handleWhatsAppClick}
             disabled={state.whatsAppLoading}
           >
-            <MessageSquare className="w-5 h-5" />
+            <MessageSquare className="h-5 w-5" />
             {state.whatsAppLoading ? "Opening..." : "WhatsApp"}
           </Button>
         ) : (
@@ -560,7 +562,7 @@ export default function ContactSection({
           >
             <DialogTrigger asChild>
               <Button
-                className="flex-1 bg-brand-badge-completed hover:bg-green-700 text-white h-12 gap-2"
+                className="bg-brand-badge-completed h-12 flex-1 gap-2 text-white hover:bg-green-700"
                 onClick={() => {
                   dispatch({
                     type: "setField",
@@ -574,7 +576,7 @@ export default function ContactSection({
                   });
                 }}
               >
-                <MessageSquare className="w-5 h-5" />
+                <MessageSquare className="h-5 w-5" />
                 WhatsApp
               </Button>
             </DialogTrigger>
@@ -588,7 +590,7 @@ export default function ContactSection({
                 </DialogDescription>
               </DialogHeader>
               {!state.formSubmitted ? (
-                <form onSubmit={handleFormSubmit} className="space-y-4 mt-2">
+                <form onSubmit={handleFormSubmit} className="mt-2 space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="cs-phone-1">Your Phone Number</Label>
                     <PhoneInput
@@ -643,7 +645,7 @@ export default function ContactSection({
                       }}
                     />
                     {state.errors.phone && (
-                      <p className="text-red-500 text-xs">
+                      <p className="text-xs text-red-500">
                         {state.errors.phone}
                       </p>
                     )}
@@ -667,14 +669,14 @@ export default function ContactSection({
                       }
                     />
                     {state.errors.name && (
-                      <p className="text-red-500 text-xs">
+                      <p className="text-xs text-red-500">
                         {state.errors.name}
                       </p>
                     )}
                   </div>
                   <Button
                     type="submit"
-                    className="w-full bg-[#232335] text-white h-12 text-lg font-bold mt-2"
+                    className="mt-2 h-12 w-full bg-[#232335] text-lg font-bold text-white"
                     disabled={
                       state.activeModal === "whatsapp"
                         ? state.whatsAppLoading
@@ -691,17 +693,17 @@ export default function ContactSection({
                   </Button>
                 </form>
               ) : !showNumber ? (
-                <div className="text-center py-6">
-                  <div className="text-lg font-semibold mb-2">
+                <div className="py-6 text-center">
+                  <div className="mb-2 text-lg font-semibold">
                     Contact Info Saved
                   </div>
-                  <div className="text-sm text-gray-600 mb-4">
+                  <div className="mb-4 text-sm text-gray-600">
                     We&apos;ll use your saved contact info: {state.userName} (
                     {state.userPhone})
                   </div>
                   <Button
                     onClick={handleGetNumberWithSavedInfo}
-                    className="w-full bg-[#232335] text-white h-12 text-lg font-bold"
+                    className="h-12 w-full bg-[#232335] text-lg font-bold text-white"
                     disabled={state.showNumberLoading}
                   >
                     {state.showNumberLoading
@@ -728,14 +730,14 @@ export default function ContactSection({
                         value: "",
                       });
                     }}
-                    className="w-full mt-2 text-sm"
+                    className="mt-2 w-full text-sm"
                   >
                     Use Different Info
                   </Button>
                 </div>
               ) : (
-                <div className="text-center py-6">
-                  <div className="text-lg font-semibold mb-2">
+                <div className="py-6 text-center">
+                  <div className="mb-2 text-lg font-semibold">
                     {phoneNumber
                       ? toInternationalDisplay(
                           phoneNumber,
@@ -744,7 +746,7 @@ export default function ContactSection({
                       : ""}
                   </div>
                   {whatsappNumber && (
-                    <div className="text-sm text-brand-muted mb-2">
+                    <div className="text-brand-muted mb-2 text-sm">
                       WhatsApp:{" "}
                       {toInternationalDisplay(
                         whatsappNumber,
@@ -767,10 +769,10 @@ export default function ContactSection({
         <Dialog open={emailModalOpen} onOpenChange={setEmailModalOpen}>
           <DialogTrigger asChild>
             <Button
-              className="flex-1 bg-brand-blue hover:bg-blue-700 text-white h-12 gap-2"
+              className="bg-brand-blue h-12 flex-1 gap-2 text-white hover:bg-blue-700"
               onClick={() => setEmailModalOpen(true)}
             >
-              <Mail className="w-5 h-5" />
+              <Mail className="h-5 w-5" />
               Enquire now
             </Button>
           </DialogTrigger>
@@ -783,7 +785,7 @@ export default function ContactSection({
               </DialogDescription>
             </DialogHeader>
             {!emailFormSubmitted ? (
-              <form onSubmit={handleEmailFormSubmit} className="space-y-4 mt-2">
+              <form onSubmit={handleEmailFormSubmit} className="mt-2 space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="cs-email">Your Email Address*</Label>
                   <Input
@@ -797,7 +799,7 @@ export default function ContactSection({
                     onChange={(e) => setUserEmail(e.target.value)}
                   />
                   {emailError && (
-                    <p className="text-red-500 text-xs">{emailError}</p>
+                    <p className="text-xs text-red-500">{emailError}</p>
                   )}
                 </div>
                 <div className="space-y-2">
@@ -850,7 +852,7 @@ export default function ContactSection({
                     }}
                   />
                   {emailPhoneError && (
-                    <p className="text-red-500 text-xs">{emailPhoneError}</p>
+                    <p className="text-xs text-red-500">{emailPhoneError}</p>
                   )}
                 </div>
                 <div className="space-y-2">
@@ -872,7 +874,7 @@ export default function ContactSection({
                     }
                   />
                   {emailNameError && (
-                    <p className="text-red-500 text-xs">{emailNameError}</p>
+                    <p className="text-xs text-red-500">{emailNameError}</p>
                   )}
                 </div>
                 <div className="space-y-2">
@@ -888,7 +890,7 @@ export default function ContactSection({
                     rows={3}
                   />
                   {messageError && (
-                    <p className="text-red-500 text-xs">{messageError}</p>
+                    <p className="text-xs text-red-500">{messageError}</p>
                   )}
                 </div>
                 <div className="flex items-center gap-2">
@@ -909,15 +911,15 @@ export default function ContactSection({
                 </div>
                 <Button
                   type="submit"
-                  className="w-full bg-[#232335] text-white h-12 text-lg font-bold mt-2"
+                  className="mt-2 h-12 w-full bg-[#232335] text-lg font-bold text-white"
                   disabled={emailLoading}
                 >
                   {emailLoading ? "Sending..." : "Send"}
                 </Button>
               </form>
             ) : (
-              <div className="text-center py-6">
-                <div className="text-lg font-semibold mb-2 text-green-700">
+              <div className="py-6 text-center">
+                <div className="mb-2 text-lg font-semibold text-green-700">
                   Your enquiry has been sent!
                 </div>
                 <div className="text-brand-muted">
@@ -949,7 +951,7 @@ export default function ContactSection({
             </DialogDescription>
           </DialogHeader>
           {!state.formSubmitted ? (
-            <form onSubmit={handleFormSubmit} className="space-y-4 mt-2">
+            <form onSubmit={handleFormSubmit} className="mt-2 space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="cs-phone-3">Your Phone Number</Label>
                 <PhoneInput
@@ -1004,7 +1006,7 @@ export default function ContactSection({
                   }}
                 />
                 {state.errors.phone && (
-                  <p className="text-red-500 text-xs">{state.errors.phone}</p>
+                  <p className="text-xs text-red-500">{state.errors.phone}</p>
                 )}
               </div>
               <div className="space-y-2">
@@ -1026,12 +1028,12 @@ export default function ContactSection({
                   }
                 />
                 {state.errors.name && (
-                  <p className="text-red-500 text-xs">{state.errors.name}</p>
+                  <p className="text-xs text-red-500">{state.errors.name}</p>
                 )}
               </div>
               <Button
                 type="submit"
-                className="w-full bg-[#232335] text-white h-12 text-lg font-bold mt-2"
+                className="mt-2 h-12 w-full bg-[#232335] text-lg font-bold text-white"
                 disabled={
                   state.activeModal === "whatsapp"
                     ? state.whatsAppLoading
@@ -1048,14 +1050,14 @@ export default function ContactSection({
               </Button>
             </form>
           ) : !showNumber && state.activeModal !== "whatsapp" ? (
-            <div className="text-center py-6">
-              <div className="text-sm text-gray-600 mb-4">
+            <div className="py-6 text-center">
+              <div className="mb-4 text-sm text-gray-600">
                 We&apos;ll use your saved contact info: {state.userName} (
                 {state.userPhone})
               </div>
               <Button
                 onClick={handleGetNumberWithSavedInfo}
-                className="w-full bg-[#232335] text-white h-12 text-lg font-bold"
+                className="h-12 w-full bg-[#232335] text-lg font-bold text-white"
                 disabled={state.showNumberLoading}
               >
                 {state.showNumberLoading ? "Getting Number..." : "Get Number"}
@@ -1072,20 +1074,20 @@ export default function ContactSection({
                   dispatch({ type: "setField", field: "userName", value: "" });
                   dispatch({ type: "setField", field: "userPhone", value: "" });
                 }}
-                className="w-full mt-2 text-sm"
+                className="mt-2 w-full text-sm"
               >
                 Use Different Info
               </Button>
             </div>
           ) : showNumber ? (
-            <div className="text-center py-6">
-              <div className="text-lg font-semibold mb-2">
+            <div className="py-6 text-center">
+              <div className="mb-2 text-lg font-semibold">
                 {phoneNumber
                   ? toInternationalDisplay(phoneNumber, state.userCountryIso)
                   : ""}
               </div>
               {whatsappNumber && (
-                <div className="text-sm text-brand-muted mb-2">
+                <div className="text-brand-muted mb-2 text-sm">
                   WhatsApp:{" "}
                   {toInternationalDisplay(whatsappNumber, state.userCountryIso)}
                 </div>
@@ -1101,7 +1103,7 @@ export default function ContactSection({
         </DialogContent>
       </Dialog>
 
-      <p className="text-sm text-brand-muted mt-4 max-w-md px-4">
+      <p className="text-brand-muted mt-4 max-w-md px-4 text-sm">
         NB: First submit your contact info once. If you are unable to reach the
         developer, then they can reach you.
       </p>

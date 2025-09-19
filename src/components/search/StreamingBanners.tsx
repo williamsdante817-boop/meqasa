@@ -13,7 +13,7 @@ async function StreamingRectangleBanners() {
   }
 
   return (
-    <aside className="w-full items-center grid grid-cols-1 gap-8">
+    <aside className="grid w-full grid-cols-1 items-center gap-8">
       {rectangleBanners.map((banner, idx) => (
         <RealEstateAd key={idx} src={banner.src} href={banner.href} />
       ))}
@@ -32,7 +32,7 @@ async function StreamingFlexiBanner() {
 
   return (
     <div
-      className="mb-8 border border-orange-300 rounded-lg shadow-sm overflow-hidden"
+      className="mb-8 overflow-hidden rounded-lg border border-orange-300 shadow-sm"
       role="banner"
       aria-label="Flexi banner showcasing featured projects"
       dangerouslySetInnerHTML={sanitizeRichHtmlToInnerHtml(flexiBanner)}

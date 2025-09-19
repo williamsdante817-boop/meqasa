@@ -139,7 +139,7 @@ export function AgentsList({ agents }: AgentsListProps) {
       <div ref={agentsTopRef} />
 
       {/* Page info */}
-      <div className="text-sm text-muted-foreground text-center">
+      <div className="text-muted-foreground text-center text-sm">
         Showing {(currentPage - 1) * PAGE_SIZE + 1} to{" "}
         {Math.min(currentPage * PAGE_SIZE, validAgents.length)} of{" "}
         {validAgents.length} agents
@@ -161,7 +161,7 @@ export function AgentsList({ agents }: AgentsListProps) {
       ))}
 
       {/* Pagination */}
-      <div className="mt-6 flex justify-center relative z-10">
+      <div className="relative z-10 mt-6 flex justify-center">
         <Pagination className="isolate">
           <PaginationContent>
             <PaginationItem>
@@ -177,7 +177,7 @@ export function AgentsList({ agents }: AgentsListProps) {
                 aria-label={`Go to previous page (${currentPage - 1})`}
                 className={`cursor-pointer ${
                   currentPage === 1
-                    ? "opacity-50 cursor-not-allowed pointer-events-none"
+                    ? "pointer-events-none cursor-not-allowed opacity-50"
                     : ""
                 }`}
                 style={{
@@ -202,7 +202,7 @@ export function AgentsList({ agents }: AgentsListProps) {
                       }
                     }}
                     isActive={currentPage === item}
-                    className="text-brand-accent shadow-none cursor-pointer"
+                    className="text-brand-accent cursor-pointer shadow-none"
                     aria-label={`Go to page ${item}`}
                     aria-current={currentPage === item ? "page" : undefined}
                     style={{
@@ -230,7 +230,7 @@ export function AgentsList({ agents }: AgentsListProps) {
                 aria-label={`Go to next page (${currentPage + 1})`}
                 className={`cursor-pointer ${
                   currentPage === totalPages
-                    ? "opacity-50 cursor-not-allowed pointer-events-none"
+                    ? "pointer-events-none cursor-not-allowed opacity-50"
                     : ""
                 }`}
                 style={{

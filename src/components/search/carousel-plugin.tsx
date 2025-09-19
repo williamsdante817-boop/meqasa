@@ -51,16 +51,16 @@ export function CarouselPlugin({ children }: { children: React.ReactNode }) {
         },
       }}
       plugins={childrenArray.length > 1 ? [autoplayRef.current] : []}
-      className="w-full mb-6 sm:mb-8"
+      className="mb-6 w-full sm:mb-8"
       onMouseEnter={() => autoplayRef.current?.stop()}
       onMouseLeave={() => autoplayRef.current?.reset()}
     >
-      <div className="flex items-center justify-between mb-4">
+      <div className="mb-4 flex items-center justify-between">
         <div>
-          <h2 className="text-xl font-bold text-brand-accent mb-1">
+          <h2 className="text-brand-accent mb-1 text-xl font-bold">
             Featured Properties
           </h2>
-          <p className="text-sm text-brand-muted">
+          <p className="text-brand-muted text-sm">
             Premium listings available.
           </p>
         </div>
@@ -69,13 +69,13 @@ export function CarouselPlugin({ children }: { children: React.ReactNode }) {
         {childrenArray.length > 1 && (
           <>
             {/* Desktop counter */}
-            <div className="hidden md:flex items-center gap-2 text-sm text-brand-muted">
+            <div className="text-brand-muted hidden items-center gap-2 text-sm md:flex">
               <span>
                 {currentSlide + 1} of {childrenArray.length}
               </span>
-              <div className="w-16 h-1 bg-gray-200 rounded-full overflow-hidden">
+              <div className="h-1 w-16 overflow-hidden rounded-full bg-gray-200">
                 <div
-                  className="h-full bg-brand-primary rounded-full transition-all duration-300"
+                  className="bg-brand-primary h-full rounded-full transition-all duration-300"
                   style={{
                     width: `${((currentSlide + 1) / childrenArray.length) * 100}%`,
                   }}
@@ -107,7 +107,7 @@ export function CarouselPlugin({ children }: { children: React.ReactNode }) {
         {childrenArray.map((child, index) => (
           <CarouselItem
             key={index}
-            className="pl-2 md:pl-4 basis-full md:basis-[calc(100%-120px)] lg:basis-[calc(100%-150px)] xl:basis-[calc(100%-200px)]"
+            className="basis-full pl-2 md:basis-[calc(100%-120px)] md:pl-4 lg:basis-[calc(100%-150px)] xl:basis-[calc(100%-200px)]"
           >
             <div className="h-full">{child}</div>
           </CarouselItem>
@@ -116,21 +116,21 @@ export function CarouselPlugin({ children }: { children: React.ReactNode }) {
 
       {childrenArray.length > 1 && (
         <>
-          <CarouselPrevious className="left-2 md:left-4 h-10 w-10 md:h-12 md:w-12 bg-white/90 backdrop-blur-sm shadow-lg border-brand-border hover:bg-white hover:shadow-xl hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hidden md:flex" />
-          <CarouselNext className="right-2 md:right-4 h-10 w-10 md:h-12 md:w-12 bg-white/90 backdrop-blur-sm shadow-lg border-brand-border hover:bg-white hover:shadow-xl hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hidden md:flex" />
+          <CarouselPrevious className="border-brand-border left-2 hidden h-10 w-10 bg-white/90 shadow-lg backdrop-blur-sm transition-all duration-200 hover:scale-105 hover:bg-white hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-50 md:left-4 md:flex md:h-12 md:w-12" />
+          <CarouselNext className="border-brand-border right-2 hidden h-10 w-10 bg-white/90 shadow-lg backdrop-blur-sm transition-all duration-200 hover:scale-105 hover:bg-white hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-50 md:right-4 md:flex md:h-12 md:w-12" />
         </>
       )}
 
       {/* Progress indicator for mobile */}
       {childrenArray.length > 1 && (
-        <div className="flex justify-center mt-4 md:hidden">
+        <div className="mt-4 flex justify-center md:hidden">
           <div className="flex items-center gap-2">
-            <span className="text-xs text-brand-muted">
+            <span className="text-brand-muted text-xs">
               {currentSlide + 1} of {childrenArray.length} • Swipe to explore
             </span>
-            <div className="w-12 h-1 bg-gray-200 rounded-full overflow-hidden">
+            <div className="h-1 w-12 overflow-hidden rounded-full bg-gray-200">
               <div
-                className="h-full bg-brand-primary rounded-full transition-all duration-300"
+                className="bg-brand-primary h-full rounded-full transition-all duration-300"
                 style={{
                   width: `${((currentSlide + 1) / childrenArray.length) * 100}%`,
                 }}

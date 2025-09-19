@@ -71,7 +71,7 @@ export default function FeaturedProjectsCarousel({
   }, [api, properties]);
 
   return (
-    <Card className="mb-4 rounded-none border-0 bg-transparent md:border md:rounded-lg md:bg-gray-50 overflow-hidden">
+    <Card className="mb-4 overflow-hidden rounded-none border-0 bg-transparent md:rounded-lg md:border md:bg-gray-50">
       {/* Live region for screen reader announcements */}
       <div id="carousel-announcement" className="sr-only" aria-live="polite" />
 
@@ -79,7 +79,7 @@ export default function FeaturedProjectsCarousel({
         plugins={shouldAutoplay ? [plugin.current] : undefined}
         setApi={setApi}
         opts={{ align: "start", loop: true }}
-        className="w-full max-w-full md:px-4 md:pb-6 md:pt-14 relative"
+        className="relative w-full max-w-full md:px-4 md:pt-14 md:pb-6"
         aria-label="Featured Projects Carousel"
       >
         <CarouselContent
@@ -90,7 +90,7 @@ export default function FeaturedProjectsCarousel({
           {properties.map((item, index) => (
             <CarouselItem
               key={item.projectid}
-              className="basis-[88%] md:basis-[500px] pl-4"
+              className="basis-[88%] pl-4 md:basis-[500px]"
               role="listitem"
               aria-label={`Featured Project ${index + 1} of ${properties.length}`}
             >
@@ -99,7 +99,7 @@ export default function FeaturedProjectsCarousel({
           ))}
         </CarouselContent>
         <div
-          className="absolute right-16 top-8 hidden md:flex gap-4 w-8"
+          className="absolute top-8 right-16 hidden w-8 gap-4 md:flex"
           role="navigation"
           aria-label="Carousel Navigation Controls"
         >

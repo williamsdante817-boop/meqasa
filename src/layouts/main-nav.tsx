@@ -78,9 +78,10 @@ export function MainNav({ items }: MainNavProps) {
                 <nav>
                   <NavigationMenuLink
                     href={
-                      item.title === "Land"
+                      item.href ||
+                      (item.title === "Land"
                         ? "/search/sale?q=ghana&ftype=land"
-                        : `/${item.title.toLowerCase()}`
+                        : `/${item.title.toLowerCase()}`)
                     }
                     className={cn(
                       navigationMenuTriggerStyle(),

@@ -209,7 +209,7 @@ export default async function DeveloperProfilePage({
           role="main"
           aria-label={`${developer.developer.companyname} developer profile`}
         >
-          <div className="relative w-full min-h-[200px] h-[300px] sm:min-h-[250px] sm:h-[350px] md:min-h-[400px] md:h-[50vh] md:max-h-[600px] overflow-hidden flex">
+          <div className="relative flex h-[300px] min-h-[200px] w-full overflow-hidden sm:h-[350px] sm:min-h-[250px] md:h-[50vh] md:max-h-[600px] md:min-h-[400px]">
             {/* Background Image with fallback */}
             {developer.developer.hero ? (
               <ImageWithFallback
@@ -223,9 +223,9 @@ export default async function DeveloperProfilePage({
                 fallbackAlt="Developer office building"
               />
             ) : (
-              <div className="w-full h-full bg-gradient-to-br from-brand-primary to-brand-primary/80 flex items-center justify-center">
+              <div className="from-brand-primary to-brand-primary/80 flex h-full w-full items-center justify-center bg-gradient-to-br">
                 <div className="text-center text-white">
-                  <Building2 className="w-16 h-16 mx-auto mb-4 opacity-50" />
+                  <Building2 className="mx-auto mb-4 h-16 w-16 opacity-50" />
                   <h2 className="text-2xl font-semibold opacity-75">
                     {developer.developer.companyname}
                   </h2>
@@ -236,14 +236,14 @@ export default async function DeveloperProfilePage({
             <Shell>
               {/* Content Container */}
               <div
-                className="absolute bottom-0 left-0 w-full h-48 sm:h-56 md:h-64 bg-gradient-to-t from-black/95 to-transparent"
+                className="absolute bottom-0 left-0 h-48 w-full bg-gradient-to-t from-black/95 to-transparent sm:h-56 md:h-64"
                 aria-hidden="true"
               />
-              <div className="absolute bottom-4 md:pb-4 z-10 px-0 flex flex-col sm:flex-row items-start sm:items-end h-fit gap-4 sm:gap-6">
+              <div className="absolute bottom-4 z-10 flex h-fit flex-col items-start gap-4 px-0 sm:flex-row sm:items-end sm:gap-6 md:pb-4">
                 {/* Company Logo Card */}
                 {developer.developer.logo && (
                   <div
-                    className="bg-white/90 backdrop-blur-sm rounded-md p-2 min-w-[120px] min-h-[120px] sm:min-w-[140px] sm:min-h-[140px] md:min-w-[160px] md:min-h-[160px] w-[120px] h-[120px] sm:w-[140px] sm:h-[140px] md:w-[160px] md:h-[160px] md:flex items-center justify-center shadow-lg hidden"
+                    className="hidden h-[120px] min-h-[120px] w-[120px] min-w-[120px] items-center justify-center rounded-md bg-white/90 p-2 shadow-lg backdrop-blur-sm sm:h-[140px] sm:min-h-[140px] sm:w-[140px] sm:min-w-[140px] md:flex md:h-[160px] md:min-h-[160px] md:w-[160px] md:min-w-[160px]"
                     role="img"
                     aria-label={`${developer.developer.companyname} logo`}
                   >
@@ -252,7 +252,7 @@ export default async function DeveloperProfilePage({
                       alt={`${developer.developer.companyname} logo`}
                       width={120}
                       height={120}
-                      className="object-contain w-auto h-auto"
+                      className="h-auto w-auto object-contain"
                       fallbackAlt={`${developer.developer.companyname} logo`}
                     />
                   </div>
@@ -260,27 +260,27 @@ export default async function DeveloperProfilePage({
 
                 {/* Company Info */}
                 <div className="text-white drop-shadow-lg">
-                  <h1 className="text-2xl sm:text-3xl font-semibold mb-2 sm:mb-3 text-white">
+                  <h1 className="mb-2 text-2xl font-semibold text-white sm:mb-3 sm:text-3xl">
                     {developer.developer.companyname}
                   </h1>
-                  <div className="flex items-center mb-2">
+                  <div className="mb-2 flex items-center">
                     <CheckCircle
-                      className="w-4 h-4 sm:w-5 sm:w-5 text-green-400 mr-2"
+                      className="mr-2 h-4 w-4 text-green-400 sm:w-5"
                       aria-hidden="true"
                       role="img"
                     />
-                    <span className="text-xs sm:text-sm font-medium text-white/90">
+                    <span className="text-xs font-medium text-white/90 sm:text-sm">
                       <span className="sr-only">Status: </span>
                       active on meqasa
                     </span>
                   </div>
                   <div className="flex items-center">
                     <MapPin
-                      className="w-5 h-5 text-brand-primary mr-2 flex-shrink-0"
+                      className="text-brand-primary mr-2 h-5 w-5 flex-shrink-0"
                       aria-hidden="true"
                       role="img"
                     />
-                    <span className="text-xs sm:text-sm font-medium text-white/90 line-clamp-1">
+                    <span className="line-clamp-1 text-xs font-medium text-white/90 sm:text-sm">
                       <span className="sr-only">Location: </span>
                       {developer.developer.address}
                     </span>
@@ -290,7 +290,7 @@ export default async function DeveloperProfilePage({
             </Shell>
           </div>
           <Shell>
-            <div className="grid grid-cols-1 text-brand-accent w-full mt-4 lg:grid-cols-[2fr_1fr] lg:gap-8 lg:px-0">
+            <div className="text-brand-accent mt-4 grid w-full grid-cols-1 lg:grid-cols-[2fr_1fr] lg:gap-8 lg:px-0">
               <div>
                 <nav aria-label="Breadcrumb navigation">
                   <Breadcrumbs
@@ -307,20 +307,20 @@ export default async function DeveloperProfilePage({
                 <StreamingErrorBoundary
                   errorFallback={
                     <div
-                      className="flex flex-col items-center justify-center min-h-[400px] p-8 text-center"
+                      className="flex min-h-[400px] flex-col items-center justify-center p-8 text-center"
                       role="alert"
                       aria-live="polite"
                     >
-                      <h2 className="text-2xl font-semibold text-red-600 mb-4">
+                      <h2 className="mb-4 text-2xl font-semibold text-red-600">
                         Something went wrong
                       </h2>
-                      <p className="text-gray-600 mb-6 max-w-md">
+                      <p className="mb-6 max-w-md text-gray-600">
                         We encountered an error while loading the developer
                         projects. Please try again.
                       </p>
                       <button
                         onClick={() => window.location.reload()}
-                        className="px-4 py-2 bg-brand-primary text-white rounded-md hover:bg-brand-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2"
+                        className="bg-brand-primary hover:bg-brand-primary/90 focus:ring-brand-primary rounded-md px-4 py-2 text-white transition-colors focus:ring-2 focus:ring-offset-2 focus:outline-none"
                         aria-label="Retry loading developer projects"
                       >
                         Try again
@@ -348,7 +348,7 @@ export default async function DeveloperProfilePage({
                     title="About Developer"
                     description=""
                     href=""
-                    className="pt-10 sm:pt-14 md:pt-20 pb-8 sm:pb-10 md:pb-0"
+                    className="pt-10 pb-8 sm:pt-14 sm:pb-10 md:pt-20 md:pb-0"
                     btnHidden
                   >
                     <ExpandableDescription
@@ -366,27 +366,27 @@ export default async function DeveloperProfilePage({
                     title={`What clients are saying about ${developer.developer.companyname}`}
                     description=""
                     href=""
-                    className="pt-10 sm:pt-14 md:pt-20 pb-8 sm:pb-10 md:pb-0"
+                    className="pt-10 pb-8 sm:pt-14 sm:pb-10 md:pt-20 md:pb-0"
                     btnHidden
                   >
                     {/* Error boundary around ClientReviews */}
                     <StreamingErrorBoundary
                       errorFallback={
                         <div
-                          className="flex flex-col items-center justify-center min-h-[200px] p-8 text-center"
+                          className="flex min-h-[200px] flex-col items-center justify-center p-8 text-center"
                           role="alert"
                           aria-live="polite"
                         >
-                          <h2 className="text-xl font-semibold text-red-600 mb-4">
+                          <h2 className="mb-4 text-xl font-semibold text-red-600">
                             Something went wrong
                           </h2>
-                          <p className="text-gray-600 mb-6 max-w-md">
+                          <p className="mb-6 max-w-md text-gray-600">
                             We encountered an error while loading client
                             reviews. Please try again.
                           </p>
                           <button
                             onClick={() => window.location.reload()}
-                            className="px-4 py-2 bg-brand-primary text-white rounded-md hover:bg-brand-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2"
+                            className="bg-brand-primary hover:bg-brand-primary/90 focus:ring-brand-primary rounded-md px-4 py-2 text-white transition-colors focus:ring-2 focus:ring-offset-2 focus:outline-none"
                             aria-label="Retry loading client reviews"
                           >
                             Try again
@@ -412,7 +412,7 @@ export default async function DeveloperProfilePage({
                 </section>
               </div>
               <aside
-                className="hidden md:block pb-6"
+                className="hidden pb-6 md:block"
                 aria-label="Contact information"
               >
                 <ContactCard

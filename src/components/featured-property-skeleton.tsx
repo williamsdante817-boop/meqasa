@@ -17,7 +17,7 @@ export default function FeaturedPropertySkeleton({
 
   return (
     <Card
-      className={`relative mb-8 ${cardHeight} w-full p-0 overflow-hidden rounded-lg border-none text-brand-accent ${className}`}
+      className={`relative mb-8 ${cardHeight} text-brand-accent w-full overflow-hidden rounded-lg border-none p-0 ${className}`}
       role="status"
       aria-label="Loading featured property"
     >
@@ -43,7 +43,7 @@ export default function FeaturedPropertySkeleton({
           <div className="absolute inset-x-4 bottom-4 z-20">
             <div className="flex items-end justify-between">
               {/* Left content - project info */}
-              <div className="text-white space-y-2">
+              <div className="space-y-2 text-white">
                 {/* Project title skeleton */}
                 <Skeleton
                   variant="light"

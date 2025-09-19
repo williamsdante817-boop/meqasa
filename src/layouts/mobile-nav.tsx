@@ -67,9 +67,15 @@ export function MobileNav({ items: _ }: MobileNavProps) {
     },
     {
       title: "All Projects",
-      href: "/projects",
+      href: "/developers/projects",
+      icon: Building2,
+      description: "Explore all development projects",
+    },
+    {
+      title: "Newly Built Units",
+      href: "/newly-built-units",
       icon: MapPin,
-      description: "Explore all projects",
+      description: "Explore newly built units",
     },
     {
       title: "Contact",
@@ -299,3 +305,4 @@ function MobileLink({
     </Link>
   );
 }
+
