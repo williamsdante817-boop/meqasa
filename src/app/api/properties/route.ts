@@ -153,9 +153,11 @@ export async function POST(request: NextRequest) {
       if (
         searchParams.ftype &&
         VALID_PROPERTY_TYPES.includes(searchParams.ftype) &&
-        !isShortLet // Don't send regular ftype for short-let requests
+        !isShortLet // For regular searches, send the property type
       ) {
-        postParams.set("ftype", searchParams.ftype);
+        // Map frontend property type to backend API type
+        const mappedPropertyType = mapPropertyTypeForAPI(searchParams.ftype);
+        postParams.set("ftype", mappedPropertyType);
       }
 
       if (searchParams.fbeds && searchParams.fbeds !== "- Any -") {
@@ -212,24 +214,72 @@ export async function POST(request: NextRequest) {
       if (isShortLet) {
         // Set required short-let parameters
         postParams.set("frentperiod", "shortrent");
+        postParams.set("ftype", "- Any -"); // Required for short-let searches according to API docs
 
-        postParams.set("ftype", "- Any -"); // Required for short-let searches (property type filtering not supported)
+        // Add ALL regular search parameters for short-let requests (as per API documentation)
+        if (searchParams.fbeds && searchParams.fbeds !== "- Any -") {
+          const fbedsNum = Number(searchParams.fbeds);
+          if (!isNaN(fbedsNum)) {
+            postParams.set("fbeds", String(fbedsNum));
+          }
+        }
 
-        // Add short-let duration only if provided
+        if (searchParams.fbaths && searchParams.fbaths !== "- Any -") {
+          const fbathsNum = Number(searchParams.fbaths);
+          if (!isNaN(fbathsNum)) {
+            postParams.set("fbaths", String(fbathsNum));
+          }
+        }
+
+        if (searchParams.fmin && Number(searchParams.fmin) > 0) {
+          const fminNum = Number(searchParams.fmin);
+          if (!isNaN(fminNum) && fminNum > 0) {
+            postParams.set("fmin", String(fminNum));
+          }
+        }
+
+        if (searchParams.fmax && Number(searchParams.fmax) > 0) {
+          const fmaxNum = Number(searchParams.fmax);
+          if (!isNaN(fmaxNum) && fmaxNum > 0) {
+            postParams.set("fmax", String(fmaxNum));
+          }
+        }
+
+        if (searchParams.fisfurnished === "1") {
+          postParams.set("fisfurnished", "1");
+        }
+
+        if (searchParams.ffsbo === "1") {
+          postParams.set("ffsbo", "1");
+        }
+
+        if (
+          searchParams.fsort &&
+          VALID_SORT_OPTIONS.includes(searchParams.fsort)
+        ) {
+          postParams.set("fsort", searchParams.fsort);
+        }
+
+        // Only send fhowshort when user explicitly selects a duration
+        // Omitting fhowshort shows all short-let properties (matching live Meqasa behavior)
         if (
           searchParams.fhowshort &&
           VALID_SHORT_LET_DURATIONS.includes(searchParams.fhowshort)
         ) {
           postParams.set("fhowshort", searchParams.fhowshort);
-          console.log(
-            "🔍 Sending fhowshort parameter:",
-            searchParams.fhowshort
-          );
-        } else {
-          console.log(
-            "🔍 No fhowshort parameter sent - using default behavior"
-          );
         }
+
+        // DETAILED SHORT-LET LOGGING - Request Details
+        console.log("🏠 SHORT-LET SEARCH REQUEST:");
+        console.log("  📍 URL:", finalUrl);
+        console.log("  📝 Method: POST");
+        console.log("  🔧 Raw Parameters:", {
+          originalSearchParams: searchParams,
+          finalPostParams: Object.fromEntries(postParams.entries()),
+          postBody: postParams.toString(),
+        });
+        console.log("  🎯 Duration Filter:", searchParams.fhowshort || "NONE (showing all short-let properties)");
+        console.log("  📊 Full Request Body:", postParams.toString());
       } else {
         // For non-short-let searches, handle ftype parameter
         if (
@@ -240,11 +290,9 @@ export async function POST(request: NextRequest) {
           const mappedPropertyType = mapPropertyTypeForAPI(searchParams.ftype);
           postParams.set("ftype", mappedPropertyType);
 
-          // Log property type mapping for debugging
+          // Property type mapping for non-short-let searches
           if (mappedPropertyType !== searchParams.ftype) {
-            console.log(
-              `🔄 Property type mapped: "${searchParams.ftype}" → "${mappedPropertyType}"`
-            );
+            // Mapping applied silently
           }
         }
       }
@@ -294,18 +342,21 @@ export async function POST(request: NextRequest) {
         component: "PropertiesAPI",
       });
 
-      console.log("🚀 API Request: POST", finalUrl, {
-        params: searchParams,
-        data: Object.fromEntries(postParams.entries()),
-      });
 
       const backendRequestTime = Date.now();
+      const actualRequestBody = Array.from(postParams.entries()).map(([key, value]) => `${key}=${value}`).join('&');
+
+      // Log the actual request body being sent (for short-let debugging)
+      if (isShortLet) {
+        console.log("🚀 ACTUAL REQUEST BODY SENT TO API:", actualRequestBody);
+      }
+
       const response = await fetch(finalUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },
-        body: postParams.toString(),
+        body: actualRequestBody,
       });
 
       const backendResponseTime = Date.now();
@@ -343,6 +394,35 @@ export async function POST(request: NextRequest) {
       const raw = (await response.json()) as MeqasaSearchResponse & {
         resultcount?: number | string | null;
       };
+
+      // DETAILED SHORT-LET LOGGING - Response Details (only for short-let searches)
+      if (isShortLet) {
+        console.log("🏠 SHORT-LET SEARCH RESPONSE:");
+        console.log("  ✅ HTTP Status:", response.status, response.statusText);
+        console.log("  ⏱️  Response Time:", `${backendDuration}ms`);
+        console.log("  📊 Raw Response Headers:", Object.fromEntries(response.headers.entries()));
+        console.log("  📦 Raw Response Body (UNMODIFIED):", JSON.stringify(raw, null, 2));
+        console.log("  🔢 Raw Result Count:", raw.resultcount, "(type:", typeof raw.resultcount, ")");
+        console.log("  📋 Raw Results Array Length:", raw.results?.length || 0);
+        console.log("  🏷️  Search ID:", raw.searchid);
+        console.log("  📝 Search Description:", raw.searchdesc);
+        console.log("  🎯 Top Ads Count:", raw.topads?.length || 0);
+        console.log("  📌 Bottom Ads Count:", raw.bottomads?.length || 0);
+        if (raw.results && raw.results.length > 0) {
+          console.log("  🏡 First 3 Properties (Raw):",
+            raw.results.slice(0, 3).map(property => ({
+              listingid: property.listingid,
+              summary: property.summary,
+              pricepart1: property.pricepart1,
+              pricepart2: property.pricepart2,
+              type: property.type,
+              contract: property.contract,
+              locationstring: property.locationstring
+            }))
+          );
+        }
+      }
+
       // Normalize result count in case the upstream API returns a string or 0 while results exist
       const normalized: MeqasaSearchResponse = {
         ...raw,
@@ -424,43 +504,7 @@ export async function POST(request: NextRequest) {
         component: "PropertiesAPI",
       });
 
-      console.log("✅ API Response: POST", finalUrl, {
-        status: response.status,
-        duration: `${backendDuration}ms`,
-        data: responseInfo,
-      });
 
-      // Log detailed search results data for development purposes
-      console.log("Detailed search results data:", {
-        searchId: normalized.searchid,
-        contract,
-        locality,
-        searchDesc: normalized.searchdesc,
-        totalResults: normalized.resultcount,
-        resultsPage: normalized.results.length,
-        topAdsCount: normalized.topads?.length || 0,
-        bottomAdsCount: normalized.bottomads?.length || 0,
-        hasProject1: normalized.project1 && !("empty" in normalized.project1),
-        hasProject2: normalized.project2 && !("empty" in normalized.project2),
-        results: normalized.results.map((result, index) => ({
-          index,
-          listingid: result.listingid,
-          summary: result.summary,
-          pricepart1: result.pricepart1,
-          pricepart2: result.pricepart2,
-          type: result.type,
-          contract: result.contract,
-          location: result.locationstring,
-          beds: result.bedroomcount,
-          baths: result.bathroomcount,
-          garages: result.garagecount,
-          floorarea: result.floorarea,
-          ownerName: result.owner?.name,
-          ownerType: result.owner?.type,
-          imageCount: parseInt(result.photocount || "0"),
-        })),
-        component: "SearchAPI",
-      });
 
       return NextResponse.json(normalized);
     } else if (type === "loadMore") {
@@ -531,11 +575,9 @@ export async function POST(request: NextRequest) {
         const mappedPropertyType = mapPropertyTypeForAPI(loadMoreParams.ftype);
         postParams.set("ftype", mappedPropertyType);
 
-        // Log property type mapping for debugging
+        // Property type mapping for non-short-let loadMore requests
         if (mappedPropertyType !== loadMoreParams.ftype) {
-          console.log(
-            `🔄 LoadMore property type mapped: "${loadMoreParams.ftype}" → "${mappedPropertyType}"`
-          );
+          // Mapping applied silently
         }
       }
 
@@ -593,16 +635,29 @@ export async function POST(request: NextRequest) {
       if (isShortLet) {
         // Set required short-let parameters
         postParams.set("frentperiod", "shortrent");
-
         postParams.set("ftype", "- Any -"); // Required for short-let searches (property type filtering not supported)
 
-        // Add short-let duration only if provided
+        // Only send fhowshort when user explicitly selects a duration
+        // Omitting fhowshort shows all short-let properties (matching live Meqasa behavior)
         if (
           loadMoreParams.fhowshort &&
           VALID_SHORT_LET_DURATIONS.includes(loadMoreParams.fhowshort)
         ) {
           postParams.set("fhowshort", loadMoreParams.fhowshort);
         }
+
+        // DETAILED SHORT-LET LOGGING - LoadMore Request Details
+        console.log("🏠 SHORT-LET LOAD-MORE REQUEST:");
+        console.log("  📍 URL:", finalUrl);
+        console.log("  📝 Method: POST");
+        console.log("  🔄 Load More Details:", { searchId, pageNumber });
+        console.log("  🔧 Raw Parameters:", {
+          originalLoadMoreParams: loadMoreParams,
+          finalPostParams: Object.fromEntries(postParams.entries()),
+          postBody: postParams.toString(),
+        });
+        console.log("  🎯 Duration Filter:", loadMoreParams.fhowshort || "NONE (showing all short-let properties)");
+        console.log("  📊 Full Request Body:", postParams.toString());
       }
       // Ensure default ftype for non–short-let when not explicitly provided
       if (!isShortLet && !postParams.has("ftype")) {
@@ -645,18 +700,21 @@ export async function POST(request: NextRequest) {
         component: "PropertiesAPI",
       });
 
-      console.log("🚀 API Request: POST", finalUrl, {
-        params: { searchId, pageNumber },
-        data: Object.fromEntries(postParams.entries()),
-      });
 
       const backendRequestTime = Date.now();
+      const actualRequestBody = Array.from(postParams.entries()).map(([key, value]) => `${key}=${value}`).join('&');
+
+      // Log the actual request body being sent (for short-let debugging)
+      if (isShortLet) {
+        console.log("🚀 ACTUAL REQUEST BODY SENT TO API:", actualRequestBody);
+      }
+
       const response = await fetch(finalUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },
-        body: postParams.toString(),
+        body: actualRequestBody,
       });
 
       const backendResponseTime = Date.now();
@@ -702,6 +760,35 @@ export async function POST(request: NextRequest) {
       const raw = (await response.json()) as MeqasaSearchResponse & {
         resultcount?: number | string | null;
       };
+
+      // DETAILED SHORT-LET LOGGING - LoadMore Response Details (only for short-let loadMore)
+      if (isShortLet) {
+        console.log("🏠 SHORT-LET LOAD-MORE RESPONSE:");
+        console.log("  ✅ HTTP Status:", response.status, response.statusText);
+        console.log("  ⏱️  Response Time:", `${backendDuration}ms`);
+        console.log("  📊 Raw Response Headers:", Object.fromEntries(response.headers.entries()));
+        console.log("  📦 Raw Response Body (UNMODIFIED):", JSON.stringify(raw, null, 2));
+        console.log("  🔢 Raw Result Count:", raw.resultcount, "(type:", typeof raw.resultcount, ")");
+        console.log("  📋 Raw Results Array Length:", raw.results?.length || 0);
+        console.log("  🏷️  Search ID:", raw.searchid);
+        console.log("  📄 Page Number:", pageNumber);
+        console.log("  🎯 Top Ads Count:", raw.topads?.length || 0);
+        console.log("  📌 Bottom Ads Count:", raw.bottomads?.length || 0);
+        if (raw.results && raw.results.length > 0) {
+          console.log("  🏡 First 3 Properties from Page (Raw):",
+            raw.results.slice(0, 3).map(property => ({
+              listingid: property.listingid,
+              summary: property.summary,
+              pricepart1: property.pricepart1,
+              pricepart2: property.pricepart2,
+              type: property.type,
+              contract: property.contract,
+              locationstring: property.locationstring
+            }))
+          );
+        }
+      }
+
       const normalized: MeqasaSearchResponse = {
         ...raw,
         resultcount: (() => {
@@ -767,43 +854,7 @@ export async function POST(request: NextRequest) {
         component: "PropertiesAPI",
       });
 
-      console.log("✅ API Response: POST", finalUrl, {
-        status: response.status,
-        duration: `${backendDuration}ms`,
-        data: loadMoreResponseInfo,
-      });
 
-      // Log detailed loadMore results data for development purposes
-      console.log("Detailed loadMore results data:", {
-        searchId: normalized.searchid,
-        pageNumber,
-        contract,
-        locality,
-        totalResults: normalized.resultcount,
-        resultsPage: normalized.results.length,
-        topAdsCount: normalized.topads?.length || 0,
-        bottomAdsCount: normalized.bottomads?.length || 0,
-        hasProject1: normalized.project1 && !("empty" in normalized.project1),
-        hasProject2: normalized.project2 && !("empty" in normalized.project2),
-        results: normalized.results.map((result, index) => ({
-          index,
-          listingid: result.listingid,
-          summary: result.summary,
-          pricepart1: result.pricepart1,
-          pricepart2: result.pricepart2,
-          type: result.type,
-          contract: result.contract,
-          location: result.locationstring,
-          beds: result.bedroomcount,
-          baths: result.bathroomcount,
-          garages: result.garagecount,
-          floorarea: result.floorarea,
-          ownerName: result.owner?.name,
-          ownerType: result.owner?.type,
-          imageCount: parseInt(result.photocount || "0"),
-        })),
-        component: "LoadMoreAPI",
-      });
 
       return NextResponse.json(normalized);
     } else {
@@ -829,11 +880,6 @@ export async function POST(request: NextRequest) {
       component: "PropertiesAPI",
     });
 
-    console.error("❌ API Error: POST /api/properties", {
-      requestId,
-      duration: `${totalRequestTime}ms`,
-      error: error instanceof Error ? error.message : String(error),
-    });
 
     return NextResponse.json(
       { error: "Failed to fetch properties", requestId },

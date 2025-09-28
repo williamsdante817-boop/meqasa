@@ -3,18 +3,21 @@ import Shell from "@/layouts/shell";
 import type { Metadata } from "next";
 import { ReferenceSearch } from "@/components/search/ReferenceSearch";
 import { StreamingFlexiBannerWrapper } from "@/components/search/StreamingBanners";
+// Optimized imports for better tree-shaking and bundle size
+import { UnitsSearchFilter } from "./_components/units-search-filter";
+import { UnitsSearchWrapper } from "./_components/units-search-wrapper";
 import {
-  UnitsSearchFilter,
-  UnitsSearchWrapper,
   generateSearchMetadata,
   generatePageTitle,
   generateSubtitle,
-  fetchUnitsSearchResults,
+} from "./_components/metadata-utils";
+import { fetchUnitsSearchResults } from "./_components/api-utils";
+import {
   SidebarLinks,
   DEFAULT_LOCATION_LINKS,
-  StructuredData,
-  type SearchParams,
-} from "./_components";
+} from "./_components/sidebar-links";
+import { StructuredData } from "./_components/structured-data";
+import type { SearchParams } from "./_components/types";
 
 interface UnitsSearchPageProps {
   searchParams: Promise<SearchParams>;

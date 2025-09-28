@@ -536,7 +536,12 @@ export function NearestEstablishments({
 
   if (error) {
     return (
-      <Card className={cn("w-full border-red-100 bg-red-50/30", className)}>
+      <Card
+        className={cn(
+          "w-full rounded-lg border-red-100 bg-red-50/30",
+          className
+        )}
+      >
         <CardContent className="p-6">
           <div className="flex items-center justify-center py-8 text-center">
             <div className="max-w-md space-y-6">
@@ -590,7 +595,7 @@ export function NearestEstablishments({
   }
 
   return (
-    <Card className={cn("w-full", className)}>
+    <Card className={cn("w-full rounded-lg", className)}>
       <CardHeader className="pb-4">
         <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
           <div>

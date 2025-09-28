@@ -94,9 +94,18 @@ export function UnitsResultCard({
   const developerLogo = unit.developerlogo;
   const timestamp = unit.updated_at || unit.dateadded;
 
-  // Generate alt text
-  const altText =
-    `${unit.title} - ${displayContract} in ${unit.city || unit.location}`.trim();
+  // Construct title following live MeQasa pattern: "{bedrooms} Bedroom {property_type} For {transaction_type} in {location}"
+  const constructedTitle = (() => {
+    const bedroomText = bedrooms === 1 ? "1 Bedroom" : `${bedrooms} Bedroom`;
+    const propertyType = unit.unittypename || unit.unittype || "Apartment";
+    const transactionType = unit.terms === "rent" ? "For Rent" : "For Sale";
+    const location = unit.city || unit.location || "Ghana";
+
+    return `${bedroomText} ${propertyType} ${transactionType} in ${location}`;
+  })();
+
+  // Generate alt text using constructed title
+  const altText = `${constructedTitle} - ${displayContract}`.trim();
 
   // Generate SEO-friendly link URL (matching search results card pattern)
   const citySlug =
@@ -111,39 +120,83 @@ export function UnitsResultCard({
 
   const linkUrl = `/developer-unit/${bedrooms}-bedroom-${typeSlug}-for-${contractSlug}-in-${citySlug}-unit-${unit.unitid || unit.id}`;
 
-  // Use actual price values from API without transformation
+  // Use MeQasa's exact price display logic for consistency
   const formatPrice = (): { pricepart1: string; pricepart2?: string } => {
     const contractType = unit.terms === "rent" ? "rent" : "sale";
 
     if (contractType === "rent") {
-      // For rental properties, use the actual rent price fields from API
-      if (unit.rentpricepermonth && unit.rentpricecsignpermonth) {
-        return {
-          pricepart1: `${unit.rentpricecsignpermonth}${unit.rentpricepermonth.toLocaleString()}`,
-          pricepart2: "/month",
-        };
+      // MeQasa's logic: USD properties use 'price' field, GHS properties use raw amount
+      const currencySign = unit.rentpricecsignpermonth;
+
+      if (currencySign === "$" && unit.price) {
+        // For USD properties: Use MeQasa's converted price field
+        if (unit.price.includes("/month")) {
+          const parts = unit.price.split("/month");
+          const firstPart = parts.length > 0 && parts[0] ? parts[0].trim() : "";
+          return {
+            pricepart1: firstPart,
+            pricepart2: "/month",
+          };
+        } else if (unit.price.includes("/day")) {
+          const parts = unit.price.split("/day");
+          const firstPart = parts.length > 0 && parts[0] ? parts[0].trim() : "";
+          return {
+            pricepart1: firstPart,
+            pricepart2: "/day",
+          };
+        } else if (unit.price.includes("/week")) {
+          const parts = unit.price.split("/week");
+          const firstPart = parts.length > 0 && parts[0] ? parts[0].trim() : "";
+          return {
+            pricepart1: firstPart,
+            pricepart2: "/week",
+          };
+        }
+        return { pricepart1: unit.price };
+      } else if (currencySign === "¢" && unit.rentpricepermonth) {
+        // For GHS properties: Use original rent amount to avoid inflated calculations
+        const rentDurationType = unit.rentdurationtype || "permonth";
+
+        if (rentDurationType === "perday" && unit.rentpriceperday) {
+          return {
+            pricepart1: `&#8373;${unit.rentpriceperday.toLocaleString()}`,
+            pricepart2: "/day",
+          };
+        } else if (rentDurationType === "perweek" && unit.rentpriceperweek) {
+          return {
+            pricepart1: `&#8373;${unit.rentpriceperweek.toLocaleString()}`,
+            pricepart2: "/week",
+          };
+        } else {
+          return {
+            pricepart1: `&#8373;${unit.rentpricepermonth.toLocaleString()}`,
+            pricepart2: "/month",
+          };
+        }
+      }
+
+      // Fallback for rental properties
+      if (unit.price) {
+        return { pricepart1: unit.price };
       }
     } else {
-      // For sale properties, use the actual selling price fields from API
-      if (unit.sellingprice && unit.sellingpricecsign) {
-        return {
-          pricepart1: `${unit.sellingpricecsign}${unit.sellingprice.toLocaleString()}`,
-        };
-      }
-    }
+      // For sale properties: Check currency sign for same logic
+      const currencySign = unit.sellingpricecsign;
 
-    // Fallback to the price field if individual price components aren't available
-    if (unit.price) {
-      // For rental properties, split if it contains /month
-      if (contractType === "rent" && unit.price.includes("/month")) {
-        const parts = unit.price.split("/month");
-        const firstPart = parts.length > 0 && parts[0] ? parts[0].trim() : "";
+      if (currencySign === "$" && unit.price) {
+        // USD sale properties: Use converted price
+        return { pricepart1: unit.price };
+      } else if (currencySign === "¢" && unit.sellingprice) {
+        // GHS sale properties: Use original selling price
         return {
-          pricepart1: firstPart,
-          pricepart2: "/month",
+          pricepart1: `&#8373;${unit.sellingprice.toLocaleString()}`,
         };
       }
-      return { pricepart1: unit.price };
+
+      // Fallback for sale properties
+      if (unit.price) {
+        return { pricepart1: unit.price };
+      }
     }
 
     return { pricepart1: "Contact for Price" };
@@ -166,7 +219,7 @@ export function UnitsResultCard({
           <Link
             href={linkUrl}
             className="absolute inset-0 z-10"
-            aria-label={`View details for ${unit.title}`}
+            aria-label={`View details for ${constructedTitle}`}
           >
             <AspectRatio ratio={4 / 3}>
               {/* Loading Skeleton - only show when image hasn't loaded */}
@@ -227,7 +280,7 @@ export function UnitsResultCard({
           {/* Title - Primary hierarchy */}
           <Link href={linkUrl}>
             <h3 className="text-brand-accent line-clamp-2 text-base leading-tight font-bold capitalize sm:text-lg">
-              {unit.title || "Title not available"}
+              {constructedTitle}
             </h3>
           </Link>
 
@@ -289,13 +342,13 @@ export function UnitsResultCard({
         <CardFooter className="mt-4 flex items-center justify-between p-0">
           {/* Developer Info */}
           <div className="flex min-w-0 flex-1 items-center gap-3">
-            <Avatar className="border-brand-border h-10 w-10 flex-shrink-0 border shadow-sm transition-transform group-hover:scale-105">
+            <Avatar className="border-brand-border h-10 w-10 flex-shrink-0 border shadow-none transition-transform group-hover:scale-105">
               <AvatarImage
                 src={developerImageUrl || " "}
-                className="rounded-full bg-white object-contain p-1"
+                className="rounded-full bg-white object-contain"
                 alt={`${developer || "Developer"} logo`}
               />
-              <AvatarFallback className="text-brand-accent flex h-10 w-10 items-center justify-center rounded-full border text-sm font-semibold">
+              <AvatarFallback className="text-brand-accent bg-slate-50 text-sm font-semibold">
                 {developer ? developer.slice(0, 2).toUpperCase() : "DV"}
               </AvatarFallback>
             </Avatar>

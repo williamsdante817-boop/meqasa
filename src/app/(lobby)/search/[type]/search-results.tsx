@@ -171,8 +171,8 @@ export function SearchResults({
     if (!mounted) return;
 
     const urlPage = parseInt(searchParams.get("page") ?? "1");
-    const urlSearchId = searchParams.get("searchId")
-      ? parseInt(searchParams.get("searchId")!)
+    const urlSearchId = searchParams.get("y")
+      ? parseInt(searchParams.get("y")!)
       : null;
 
     // Skip initial server data on first mount

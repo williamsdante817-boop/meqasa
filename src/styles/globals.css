@@ -252,6 +252,10 @@
   animation: marquee var(--duration, 60s) linear infinite;
 }
 
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
 /* Persistent marquee animation that survives React re-renders */
 .animate-marquee-persistent {
   animation: marquee var(--duration, 60s) linear infinite;

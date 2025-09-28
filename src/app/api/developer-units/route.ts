@@ -37,10 +37,7 @@ export async function POST(request: NextRequest) {
     // Build query parameters to match live MeQasa site exactly
     const searchParams = new URLSearchParams();
 
-    // Always include app parameter
-    searchParams.set("app", "vercel");
-
-    // Include all parameters, even if empty (to match live site behavior)
+    // Include all parameters (app is already included in params from client)
     Object.entries(params).forEach(([key, value]) => {
       if (value !== undefined && value !== null) {
         searchParams.set(key, String(value));
@@ -67,12 +64,36 @@ export async function POST(request: NextRequest) {
         statusText: response.statusText,
         url: apiUrl,
       });
-      throw new Error(
-        `MeQasa API error: ${response.status} ${response.statusText}`
-      );
+      // Return empty array instead of throwing error
+      return NextResponse.json([], { status: 200 });
     }
 
-    const rawData = await response.json();
+    // Check if response is JSON before parsing
+    const contentType = response.headers.get("content-type");
+    if (!contentType || !contentType.includes("application/json")) {
+      // Get response text to see what we're actually receiving
+      const responseText = await response.text();
+      console.warn("Developer units API returned non-JSON response:", {
+        contentType,
+        url: apiUrl,
+        status: response.status,
+        statusText: response.statusText,
+        responsePreview: responseText.substring(0, 500), // First 500 chars
+        headers: Object.fromEntries(response.headers.entries()),
+      });
+      // Return empty array for non-JSON responses
+      return NextResponse.json([], { status: 200 });
+    }
+
+    let rawData;
+    try {
+      rawData = await response.json();
+      console.log("🔍 Raw API response data:", rawData);
+    } catch (parseError) {
+      console.error("Failed to parse JSON response:", parseError);
+      // Return empty array if JSON parsing fails
+      return NextResponse.json([], { status: 200 });
+    }
 
     if (!Array.isArray(rawData)) {
       console.warn("Developer units API returned non-array data:", rawData);
@@ -112,7 +133,16 @@ export async function POST(request: NextRequest) {
       unitid: unit.unitid,
       title:
         unit.title ||
-        `${String(unit.beds || 1)}BR ${String(unit.unittypename || unit.unittype)} in ${String(unit.city)}`,
+        (() => {
+          const beds = unit.beds || 1;
+          const bedroomText = beds === 1 ? "1 Bedroom" : `${beds} Bedroom`;
+          const propertyType = unit.unittypename || unit.unittype || "Apartment";
+          const terms = unit.terms || "sale";
+          const transactionText = terms === "rent" ? "For Rent" : "For Sale";
+          const location = unit.city || "Ghana";
+
+          return `${bedroomText} ${propertyType} ${transactionText} in ${location}`;
+        })(),
       price: unit.price, // Use the raw price field as-is
       location: `${String(unit.address || unit.city || "Ghana")}`,
       address: unit.address,

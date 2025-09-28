@@ -111,8 +111,8 @@ export default async function SearchPage({
     getResultsHeroBanner().catch(() => null),
     (async () => {
       const currentPage = parseInt(resolvedSearchParams.page ?? "1");
-      const urlSearchId = resolvedSearchParams.searchId
-        ? parseInt(resolvedSearchParams.searchId)
+      const urlSearchId = resolvedSearchParams.y
+        ? parseInt(resolvedSearchParams.y)
         : null;
 
       try {

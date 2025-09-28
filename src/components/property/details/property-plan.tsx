@@ -8,9 +8,15 @@ import { PlaceholderImage } from "@/components/common/placeholder-image";
 
 interface PropertyPlanProps {
   className?: string;
+  planUrl?: string;
+  planTitle?: string;
 }
 
-export default function PropertyPlan({ className }: PropertyPlanProps) {
+export default function PropertyPlan({
+  className,
+  planUrl,
+  planTitle = "Property floor plan"
+}: PropertyPlanProps) {
   const [imgError, setImgError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -18,11 +24,11 @@ export default function PropertyPlan({ className }: PropertyPlanProps) {
     <div className={cn("w-full", className)}>
       <Card className="overflow-hidden rounded-lg">
         <div className="relative h-[300px] md:h-[400px]">
-          {!imgError ? (
+          {planUrl && !imgError ? (
             <>
               <Image
-                src="/plan-4.webp"
-                alt="Property floor plan"
+                src={planUrl}
+                alt={planTitle}
                 fill
                 className={cn(
                   "object-contain transition-opacity duration-300",
@@ -39,7 +45,7 @@ export default function PropertyPlan({ className }: PropertyPlanProps) {
           ) : (
             <PlaceholderImage
               asChild
-              aria-label="Floor plan image placeholder"
+              aria-label="Property plan not available"
             />
           )}
         </div>

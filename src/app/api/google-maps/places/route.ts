@@ -44,7 +44,16 @@ const ENHANCED_TYPE_MAPPING: Record<
   },
 };
 
-function filterRelevantPlaces(places: any[], requestedType: string): any[] {
+type GooglePlace = {
+  place_id?: string;
+  name: string;
+  types?: string[];
+};
+
+function filterRelevantPlaces(
+  places: GooglePlace[],
+  requestedType: string
+): GooglePlace[] {
   const typeConfig = ENHANCED_TYPE_MAPPING[requestedType];
   if (!typeConfig) return places;
 
@@ -110,7 +119,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const allPlaces: any[] = [];
+    const allPlaces: GooglePlace[] = [];
 
     // Search by each relevant type
     for (const searchType of typeConfig.types) {
@@ -137,7 +146,7 @@ export async function GET(request: NextRequest) {
     );
 
     // Remove duplicates based on place_id
-    const uniquePlaces = allPlaces.filter(
+    const uniquePlaces: GooglePlace[] = allPlaces.filter(
       (place, index, self) =>
         index === self.findIndex((p) => p.place_id === place.place_id)
     );

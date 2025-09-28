@@ -111,13 +111,12 @@ export function SearchForm({
       searchParams.set("frentperiod", "shortrent");
       searchParams.set("ftype", "- Any -"); // Required for short-let searches
 
-      // Add short-let duration - always send a value (default to "day" if none selected)
+      // fhowshort is REQUIRED for short-let searches according to API docs
+      // Send user's actual selection, don't force defaults
       if (formState.howShort && formState.howShort !== "- Any -") {
         searchParams.set("fhowshort", formState.howShort);
-      } else {
-        // Send default duration when none is selected
-        searchParams.set("fhowshort", "day");
       }
+      // Don't send fhowshort when user selects "- Any -" - let API route handle the default
     }
 
     // console.log("Search Params:", Object.fromEntries(searchParams.entries()));

@@ -1,7 +1,7 @@
+import Shell from "@/layouts/shell";
 import { cn } from "@/lib/utils";
 import { BuildingIcon, LayoutIcon, MapIcon, MapPinIcon } from "lucide-react";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import Shell from "@/layouts/shell";
 import BrochureButton from "./brochure-button";
 
 type SectionRefs = Record<string, React.RefObject<HTMLDivElement | null>>;
@@ -14,42 +14,68 @@ interface NavItem {
 
 interface PropertyScrollNavProps {
   sectionRefs: SectionRefs;
+  projectData?: {
+    project: {
+      brochure?: string | null;
+      projectname?: string;
+      siteplan?: string | null;
+    };
+    floorplans?: any[];
+    units?: any[];
+  };
 }
 
-function PropertyScrollNavComponent({ sectionRefs }: PropertyScrollNavProps) {
-  const [activeSection, setActiveSection] = useState("floor-plan");
+function PropertyScrollNavComponent({
+  sectionRefs,
+  projectData,
+}: PropertyScrollNavProps) {
+  // Set initial active section based on first available nav item
+  const [activeSection, setActiveSection] = useState(() => {
+    // Default to floor-plan if no project data, otherwise use first available section
+    return projectData?.project?.siteplan ? "site-plan" : "floor-plan";
+  });
   const [isSticky, setIsSticky] = useState(false);
   const [isScrolling, setIsScrolling] = useState(false);
   const navRef = useRef<HTMLDivElement>(null);
   const mainNavHeight = 64; // Height of main navigation in pixels
   const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Memoize nav items to prevent unnecessary re-renders
-  const navItems: NavItem[] = useMemo(
-    () => [
-      {
+  // Dynamically generate nav items based on available data
+  const navItems: NavItem[] = useMemo(() => {
+    const items: NavItem[] = [];
+
+    // Only show site plan if data exists
+    if (projectData?.project?.siteplan) {
+      items.push({
         id: "site-plan",
         label: "Site Plan",
         icon: <MapIcon className="h-5 w-5" />,
-      },
-      {
-        id: "floor-plan",
-        label: "Floor Plan",
-        icon: <LayoutIcon className="h-5 w-5" />,
-      },
-      {
-        id: "location",
-        label: "Location",
-        icon: <MapPinIcon className="h-5 w-5" />,
-      },
-      {
-        id: "available-units",
-        label: "Available Units",
-        icon: <BuildingIcon className="h-5 w-5" />,
-      },
-    ],
-    []
-  );
+      });
+    }
+
+    // Always show floor plan section (it has default handling for empty state)
+    items.push({
+      id: "floor-plan",
+      label: "Floor Plan",
+      icon: <LayoutIcon className="h-5 w-5" />,
+    });
+
+    // Always show location section
+    items.push({
+      id: "location",
+      label: "Location",
+      icon: <MapPinIcon className="h-5 w-5" />,
+    });
+
+    // Always show available units section (it has default handling for empty state)
+    items.push({
+      id: "available-units",
+      label: "Available Units",
+      icon: <BuildingIcon className="h-5 w-5" />,
+    });
+
+    return items;
+  }, [projectData?.project?.siteplan]);
 
   // Enhanced scroll to section function with better error handling
   const scrollToSection = useCallback(
@@ -196,14 +222,15 @@ function PropertyScrollNavComponent({ sectionRefs }: PropertyScrollNavProps) {
           }
         });
 
-        // Fallback: if no section is intersecting, find the closest one
+        // Fallback: if no section is intersecting, find the closest available one
         if (!mostVisibleSection) {
           const scrollY = window.scrollY;
           let closestSection = "";
           let minDistance = Infinity;
 
-          Object.entries(sectionRefs).forEach(([sectionId, ref]) => {
-            if (ref.current) {
+          navItems.forEach(({ id: sectionId }) => {
+            const ref = sectionRefs[sectionId];
+            if (ref?.current) {
               const rect = ref.current.getBoundingClientRect();
               const sectionTop = rect.top + scrollY;
               const distance = Math.abs(sectionTop - scrollY - totalNavHeight);
@@ -231,10 +258,11 @@ function PropertyScrollNavComponent({ sectionRefs }: PropertyScrollNavProps) {
       observerOptions
     );
 
-    // Observe all sections with error handling
+    // Observe only sections that exist in navItems with error handling
     const observedElements: Element[] = [];
-    Object.entries(sectionRefs).forEach(([sectionId, ref]) => {
-      if (ref.current) {
+    navItems.forEach(({ id: sectionId }) => {
+      const ref = sectionRefs[sectionId];
+      if (ref?.current) {
         observer.observe(ref.current);
         observedElements.push(ref.current);
       } else {
@@ -242,13 +270,15 @@ function PropertyScrollNavComponent({ sectionRefs }: PropertyScrollNavProps) {
       }
     });
 
-    // Initial active section detection
+    // Initial active section detection using available nav items
     if (observedElements.length > 0 && !activeSection) {
       const scrollY = window.scrollY;
-      let initialSection = navItems[0]?.id ?? "site-plan"; // Default to first section
+      let initialSection = navItems[0]?.id ?? "floor-plan"; // Default to first available section
 
-      Object.entries(sectionRefs).forEach(([sectionId, ref]) => {
-        if (ref.current) {
+      // Only check sections that exist in navItems
+      navItems.forEach(({ id: sectionId }) => {
+        const ref = sectionRefs[sectionId];
+        if (ref?.current) {
           const rect = ref.current.getBoundingClientRect();
           const sectionTop = rect.top + scrollY;
 
@@ -464,12 +494,14 @@ function PropertyScrollNavComponent({ sectionRefs }: PropertyScrollNavProps) {
                 );
               })}
             </div>
-            {isSticky && (
+            {/* Only show brochure button when sticky and brochure exists */}
+            {isSticky && projectData?.project?.brochure && (
               <div className="ml-2 flex-shrink-0">
                 <BrochureButton
                   className="bg-brand-accent hover:bg-brand-accent focus-visible:ring-primary hidden items-center justify-center rounded-md font-semibold focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none md:flex"
                   showIcon
-                  aria-label="Download property brochure"
+                  href={projectData.project.brochure}
+                  aria-label={`Download ${projectData.project.projectname || "property"} brochure`}
                 />
               </div>
             )}

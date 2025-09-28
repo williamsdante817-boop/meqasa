@@ -1,4 +1,4 @@
-import { FileIcon } from "@radix-ui/react-icons";
+import { File } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
@@ -33,7 +33,7 @@ export function AlertCard({
   ariaLabel,
   ...props
 }: AlertCardProps) {
-  const Icon = icon ? Icons[icon] : FileIcon;
+  const Icon = icon ? Icons[icon] : File;
 
   return (
     <Alert

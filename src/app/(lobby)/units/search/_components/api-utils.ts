@@ -1,4 +1,4 @@
-import type { SearchParams, ApiSearchParams, DeveloperUnit } from "./types";
+import type { ApiSearchParams, DeveloperUnit, SearchParams } from "./types";
 
 // API utilities for units search
 export function mapSearchParamsToApi(
@@ -73,8 +73,13 @@ export async function fetchUnitsSearchResults(
     const apiParams = mapSearchParamsToApi(searchParams);
 
     // Use environment variable or fallback to localhost
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3001";
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
     const apiUrl = `${baseUrl}/api/developer-units`;
+
+    console.log("Units search API call:", {
+      apiUrl,
+      apiParams,
+    });
 
     const response = await fetch(apiUrl, {
       method: "POST",
@@ -88,10 +93,15 @@ export async function fetchUnitsSearchResults(
     });
 
     if (!response.ok) {
+      console.error(`Units search API error: ${response.status}`);
       return [];
     }
 
     const units: unknown = await response.json();
+    console.log("Units search API response:", {
+      totalUnits: Array.isArray(units) ? units.length : 0,
+      data: units,
+    });
 
     return Array.isArray(units) ? units as DeveloperUnit[] : [];
   } catch {

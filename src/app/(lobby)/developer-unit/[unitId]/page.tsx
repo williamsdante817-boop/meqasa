@@ -367,15 +367,21 @@ export default async function DeveloperUnitPage({
 
             <SafetyTipsCard />
 
-            <ContentSection
-              title="Property Plan"
-              description=""
-              href=""
-              className="pt-14 md:pt-20"
-              btnHidden
-            >
-              <PropertyPlan />
-            </ContentSection>
+            {/* Only show property plan if it exists in the data */}
+            {unitDetails.unit.floorplan && (
+              <ContentSection
+                title="Property Plan"
+                description=""
+                href=""
+                className="pt-14 md:pt-20"
+                btnHidden
+              >
+                <PropertyPlan
+                  planUrl={`https://meqasa.com/uploads/imgs/${unitDetails.unit.floorplan}`}
+                  planTitle={`Floor plan for ${unitDetails.unit.title || unitDetails.unit.unittypename}`}
+                />
+              </ContentSection>
+            )}
 
             <PropertyInsight
               location={unitDetails.unit.city ?? unitDetails.unit.address ?? ""}

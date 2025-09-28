@@ -225,7 +225,7 @@ export async function POST(request: NextRequest) {
       const response = await fetch(
         "https://meqasa.com/real-estate-developments",
         {
-          method: "POST",
+          method: "GET",
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
           },

@@ -1,6 +1,7 @@
 "use client";
 
 import { DevelopmentCard } from "./development-card";
+import { useRouter } from "next/navigation";
 
 interface Development {
   id: string;
@@ -9,25 +10,44 @@ interface Development {
   location: string;
   developerName: string;
   developerLogo?: string;
-  projectValue?: string;
+  city: string;
+  projectId: number;
+  webUrl?: string;
 }
 
 interface DevelopmentCardsGridProps {
   developments: Development[];
 }
 
+// Helper function to create project URL slug to match existing pattern
+function createProjectSlug(projectName: string, city: string, projectId: number): string {
+  const nameSlug = projectName.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+  const citySlug = city.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+  return `${citySlug}-${nameSlug}-${projectId}`;
+}
+
 export function DevelopmentCardsGrid({
   developments,
 }: DevelopmentCardsGridProps) {
-  // Handler functions for the development cards
-  const handleViewProject = (id: string) => {
-    // Navigate to project details page (to be implemented later)
-    console.log("View project:", id);
-  };
+  const router = useRouter();
 
-  const handleDevelopmentClick = (id: string) => {
-    // Navigate to development details page (to be implemented later)
-    console.log("Development clicked:", id);
+  const handleDevelopmentClick = (development: Development) => {
+    // Navigate to internal project details page using project ID
+    if (development.projectId) {
+      const projectSlug = createProjectSlug(
+        development.developmentName,
+        development.city,
+        development.projectId
+      );
+      router.push(`/development-projects/${projectSlug}`);
+      return;
+    }
+
+    // Fallback: if no project ID, check for external webUrl
+    if (development.webUrl && development.webUrl.trim() !== '') {
+      window.open(development.webUrl, '_blank');
+      return;
+    }
   };
 
   return (
@@ -41,9 +61,7 @@ export function DevelopmentCardsGrid({
           location={development.location}
           developerName={development.developerName}
           developerLogo={development.developerLogo}
-          projectValue={development.projectValue}
-          onViewProject={handleViewProject}
-          onClick={handleDevelopmentClick}
+          onClick={() => handleDevelopmentClick(development)}
         />
       ))}
     </div>

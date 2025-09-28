@@ -1,14 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { ImageWithFallback } from "@/components/common/image-with-fallback";
-import { ArrowRight, Star, MapPin, Building2 } from "lucide-react";
-import Link from "next/link";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { cn, formatNumber } from "@/lib/utils";
+import { ArrowRight, Building2, MapPin, Star } from "lucide-react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
 interface FeaturedDevelopment {
   projectid: number;
@@ -55,7 +55,7 @@ export default function FeaturedDevelopments() {
         .slice(0, 2);
     } catch (error) {
       console.error("Error fetching featured development projects:", error);
-      return [];
+      return [] as FeaturedDevelopment[];
     }
   };
 

@@ -123,6 +123,8 @@ export interface ProjectDetails extends BaseProject {
   logo: string;
   date: string;
   url: string;
+  brochure?: string | null;
+  siteplan?: string | null;
   photos: Photo[];
 }
 
@@ -140,7 +142,7 @@ export interface FeaturedProject {
   unitsizes: string;
 }
 
-import type { Unit } from "./property";
+import type { FloorPlan, Unit } from "./property";
 
 export interface DeveloperDetails {
   units: Unit[];
@@ -164,6 +166,7 @@ export interface DeveloperProject {
   saleunits: unknown[];
   rentunits: unknown[];
   presaleunits: unknown[];
+  floorplans?: FloorPlan[];
 }
 
 export interface WorkingHours {

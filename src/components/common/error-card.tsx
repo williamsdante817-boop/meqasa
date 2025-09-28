@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import { AlertTriangle } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -18,7 +18,7 @@ interface ErrorCardProps extends React.ComponentPropsWithoutRef<typeof Card> {
 }
 
 export function ErrorCard({
-  icon: Icon = ExclamationTriangleIcon,
+  icon: Icon = AlertTriangle,
   title,
   description,
   retryLink,

@@ -165,7 +165,7 @@ function FloorPlansComponent({
   // Empty state
   if (!floorPlans.length) {
     return (
-      <Card className="p-8 text-center">
+      <Card className="rounded-lg p-8 text-center">
         <div className="space-y-4">
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
             <Home className="h-6 w-6 text-gray-400" />

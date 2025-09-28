@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import DevelopmentProjectCard from "./development-project-card";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
 import { logError } from "@/lib/logger";
+import { Loader2 } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
+import DevelopmentProjectCard from "./development-project-card";
 
 interface DevelopmentProject {
   projectid: number;
@@ -56,7 +56,7 @@ export default function DevelopmentProjectsGrid({
         component: "DevelopmentProjectsGrid",
         action: "fetchProjects",
       });
-      return [];
+      return [] as DevelopmentProject[];
     }
   };
 

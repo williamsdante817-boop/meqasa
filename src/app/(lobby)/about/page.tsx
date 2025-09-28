@@ -1,9 +1,10 @@
-import React from "react";
-import type { Metadata } from "next";
-import { siteConfig } from "@/config/site";
-import Shell from "@/layouts/shell";
 import { Breadcrumbs } from "@/components/layout/bread-crumbs";
 import { StructuredData } from "@/components/structured-data";
+import { Button } from "@/components/ui/button";
+import { siteConfig } from "@/config/site";
+import Shell from "@/layouts/shell";
+import { Building2, Search } from "lucide-react";
+import type { Metadata } from "next";
 import Link from "next/link";
 
 // Generate metadata for SEO
@@ -129,7 +130,6 @@ export default function About() {
               { title: "About", href: "#" },
             ]}
           />
-
           {/* Hero Section */}
           <div className="mb-16 text-center">
             <h1 className="text-brand-accent mb-6 text-4xl font-bold md:text-5xl">
@@ -141,7 +141,6 @@ export default function About() {
               and developers across Accra, Tema, and beyond.
             </p>
           </div>
-
           {/* Mission Section */}
           <div className="mb-16 grid gap-12 md:grid-cols-2">
             <div>
@@ -177,7 +176,6 @@ export default function About() {
               </p>
             </div>
           </div>
-
           {/* What We Do Section */}
           <div className="mb-16">
             <h2 className="text-brand-accent mb-8 text-center text-3xl font-bold">
@@ -213,7 +211,6 @@ export default function About() {
               </div>
             </div>
           </div>
-
           {/* Why Choose MeQasa Section */}
           <div className="mb-16">
             <h2 className="text-brand-accent mb-8 text-center text-3xl font-bold">
@@ -266,34 +263,46 @@ export default function About() {
               </div>
             </div>
           </div>
-
           {/* Contact Section */}
-          <div className="rounded-lg bg-gray-50 p-12 text-center">
-            <h2 className="text-brand-accent mb-4 text-3xl font-bold">
+        </div>
+      </Shell>
+      <section className="border-brand-border border-t bg-gray-50">
+        <Shell className="py-16 md:py-20">
+          <div className="mx-auto max-w-3xl text-center">
+            <h2 className="text-brand-accent mb-6 text-3xl leading-tight font-bold md:text-4xl">
               Ready to Find Your Perfect Property?
             </h2>
-            <p className="text-brand-muted mx-auto mb-8 max-w-2xl">
+            <p className="text-brand-muted mb-8 text-lg leading-relaxed md:text-xl">
               Join thousands of satisfied customers who have found their dream
               homes through MeQasa. Start your property search today or get in
               touch with our team for personalized assistance.
             </p>
-            <div className="flex flex-col justify-center gap-4 sm:flex-row">
-              <Link
-                href="/"
-                className="bg-brand-primary hover:bg-brand-primary-dark rounded-lg px-8 py-3 text-white transition-colors"
+            <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
+              <Button
+                asChild
+                size="lg"
+                className="bg-brand-primary hover:bg-brand-primary-dark w-full text-white sm:w-auto"
               >
-                Browse Properties
-              </Link>
-              <Link
-                href="/agents"
-                className="border-brand-primary text-brand-primary hover:bg-brand-primary rounded-lg border px-8 py-3 transition-colors hover:text-white"
+                <Link href="/">
+                  <Search className="mr-2 h-5 w-5" />
+                  Browse Properties
+                </Link>
+              </Button>
+              <Button
+                asChild
+                variant="outline"
+                size="lg"
+                className="text-brand-accent border-brand-primary hover:text-brand-accent w-full sm:w-auto"
               >
-                Find an Agent
-              </Link>
+                <Link href="/agents">
+                  <Building2 className="mr-2 h-5 w-5" />
+                  Find an Agent
+                </Link>
+              </Button>
             </div>
           </div>
-        </div>
-      </Shell>
+        </Shell>
+      </section>
     </>
   );
 }

@@ -120,12 +120,6 @@ export const siteConfig: SiteConfig = {
           items: [],
         },
 
-        {
-          title: "Rented Properties",
-          href: "/search/rent?q=ghana&ftype=sold",
-          description: "View properties that have been rented.",
-          items: [],
-        },
       ],
     },
 
@@ -150,12 +144,6 @@ export const siteConfig: SiteConfig = {
           title: "Office Spaces",
           href: "/search/sale?q=ghana&ftype=office",
           description: "Find office spaces available for sale in Accra.",
-          items: [],
-        },
-        {
-          title: "Sold Properties",
-          href: "/search/sale?q=ghana&ftype=sold",
-          description: "View properties that have been sold.",
           items: [],
         },
       ],
@@ -238,36 +226,6 @@ export const siteConfig: SiteConfig = {
       description:
         "Browse properties for sale, including houses and apartments.",
       items: [],
-    },
-    {
-      title: "More",
-      description: "Learn more about MeQasa, get help, and access important resources.",
-      items: [
-        {
-          title: "About Us",
-          href: "/about",
-          description: "Learn about MeQasa's mission and how we're revolutionizing Ghana's real estate market.",
-          items: [],
-        },
-        {
-          title: "Contact Us",
-          href: "/contact",
-          description: "Get in touch with our support team for assistance with your property needs.",
-          items: [],
-        },
-        {
-          title: "Help & FAQ",
-          href: "/help",
-          description: "Find answers to frequently asked questions and get help with using MeQasa.",
-          items: [],
-        },
-        {
-          title: "Terms of Service",
-          href: "/terms",
-          description: "Read our terms and conditions for using the MeQasa platform.",
-          items: [],
-        },
-      ],
     },
   ] satisfies MainNavItem[],
   footerNav: [

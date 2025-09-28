@@ -27,9 +27,9 @@ export function SearchResultsWrapper({
   const searchParams = useSearchParams();
 
   const handleSearchIdUpdate = (searchId: number, page: number) => {
-    // Update URL with new searchId and page
+    // Update URL with new y (search ID) and page - matching Meqasa URL structure
     const newSearchParams = new URLSearchParams(searchParams.toString());
-    newSearchParams.set("searchId", searchId.toString());
+    newSearchParams.set("y", searchId.toString());
     newSearchParams.set("page", page.toString());
     router.push(`?${newSearchParams.toString()}`, { scroll: false });
   };

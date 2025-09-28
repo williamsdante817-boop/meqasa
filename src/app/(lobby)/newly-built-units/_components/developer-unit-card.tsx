@@ -50,9 +50,19 @@ export default function DeveloperUnitCard({
   // Get display values
   const displayContract = unit.terms === "rent" ? "For Rent" : "For Sale";
 
-  // Optimized alt text generation
-  const altText =
-    `${unit.title} - ${displayContract} in ${unit.location}`.trim();
+  // Construct title following live MeQasa pattern: "{bedrooms} Bedroom {property_type} For {transaction_type} in {location}"
+  const constructedTitle = (() => {
+    const bedrooms = unit.beds || unit.bedrooms || 1;
+    const bedroomText = bedrooms === 1 ? "1 Bedroom" : `${bedrooms} Bedroom`;
+    const propertyType = unit.unittypename || unit.unittype || "Apartment";
+    const transactionType = unit.terms === "rent" ? "For Rent" : "For Sale";
+    const location = unit.city || unit.location || "Ghana";
+
+    return `${bedroomText} ${propertyType} ${transactionType} in ${location}`;
+  })();
+
+  // Optimized alt text generation using constructed title
+  const altText = `${constructedTitle} - ${displayContract}`.trim();
 
   // Generate SEO-friendly link URL
   const citySlug =
@@ -83,7 +93,7 @@ export default function DeveloperUnitCard({
       <Link
         href={linkUrl}
         className="focus-visible:ring-brand-primary block rounded-lg focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
-        aria-label={`View details for ${unit.title} - ${displayContract} in ${unit.location}`}
+        aria-label={`View details for ${constructedTitle}`}
       >
         <div className="hover:border-brand-primary/20 min-h-0 overflow-hidden rounded-lg border border-gray-200 bg-white transition-all duration-300">
           {/* Image Container */}
@@ -104,7 +114,7 @@ export default function DeveloperUnitCard({
               fill
               priority={priority}
               alt={altText}
-              fallbackAlt={`${unit.title} property image`}
+              fallbackAlt={`${constructedTitle} property image`}
               quality={75}
               onLoad={handleImageLoad}
               onError={handleImageError}
@@ -126,7 +136,7 @@ export default function DeveloperUnitCard({
               id={`unit-title-${unit.id}`}
               className="text-brand-accent group-hover:text-brand-primary line-clamp-2 text-sm leading-snug font-semibold transition-colors duration-200"
             >
-              {unit.title}
+              {constructedTitle}
             </h3>
           </div>
         </div>

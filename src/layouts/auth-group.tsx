@@ -4,11 +4,11 @@ import Link from "next/link";
 import * as React from "react";
 // import type { User } from "@clerk/nextjs/server";
 import {
-  DashboardIcon,
-  ExitIcon,
-  GearIcon,
-  HomeIcon,
-} from "@radix-ui/react-icons";
+  LayoutDashboard,
+  LogOut,
+  Settings,
+  Home,
+} from "lucide-react";
 
 // import { getStoreByUserId } from "@/lib/queries/store";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -106,7 +106,7 @@ export function AuthDropdown({
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <Link href="/signout">
-            <ExitIcon className="mr-2 size-4" aria-hidden="true" />
+            <LogOut className="mr-2 size-4" aria-hidden="true" />
             Log out
           </Link>
         </DropdownMenuItem>
@@ -124,20 +124,20 @@ function AuthDropdownGroup() {
     <DropdownMenuGroup>
       <DropdownMenuItem asChild>
         <Link href={"/onboarding"}>
-          <DashboardIcon className="mr-2 size-4" aria-hidden="true" />
+          <LayoutDashboard className="mr-2 size-4" aria-hidden="true" />
           Dashboard
         </Link>
       </DropdownMenuItem>
       <DropdownMenuItem asChild>
         <Link href="/dashboard/billing">
           {/* <Icons.home aria-hidden="true" /> */}
-          <HomeIcon className="mr-2 size-4" aria-hidden="true" />
+          <Home className="mr-2 size-4" aria-hidden="true" />
           List Property
         </Link>
       </DropdownMenuItem>
       <DropdownMenuItem asChild>
         <Link href="/dashboard/settings">
-          <GearIcon className="mr-2 size-4" aria-hidden="true" />
+          <Settings className="mr-2 size-4" aria-hidden="true" />
           Settings
         </Link>
       </DropdownMenuItem>

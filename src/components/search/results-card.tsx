@@ -209,7 +209,7 @@ export function ResultsCard({ result }: { result: MeqasaListing }) {
                 className="rounded-full object-cover"
                 alt={`${result.owner.name || "Agent"} avatar`}
               />
-              <AvatarFallback className="text-brand-accent flex h-10 w-10 items-center justify-center rounded-full border bg-slate-50 text-sm font-semibold sm:text-base">
+              <AvatarFallback className="text-brand-accent bg-slate-50 text-sm font-semibold sm:text-base">
                 {result.owner.name
                   ? result.owner.name.slice(0, 2).toUpperCase()
                   : "NA"}

@@ -414,7 +414,7 @@ async function getEstablishmentsFromLocalData(
 
   if (!locationData) {
     console.warn(`No establishment data found for location: ${locationKey}`);
-    return [];
+    return [] as Establishment[];
   }
 
   const establishments: Establishment[] = [];

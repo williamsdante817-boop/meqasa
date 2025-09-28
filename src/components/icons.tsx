@@ -1,10 +1,10 @@
 import {
-  AvatarIcon,
-  ChevronLeftIcon,
-  GearIcon,
-  HomeIcon,
-  ImageIcon,
-} from "@radix-ui/react-icons";
+  User,
+  ChevronLeft,
+  Settings,
+  Home,
+  Image,
+} from "lucide-react";
 
 export type IconProps = React.HTMLAttributes<SVGElement>;
 
@@ -439,9 +439,9 @@ export const Icons = {
     </svg>
   ),
 
-  dashboard: HomeIcon,
-  avatar: AvatarIcon,
-  placeholder: ImageIcon,
-  settings: GearIcon,
-  chevronLeft: ChevronLeftIcon,
+  dashboard: Home,
+  avatar: User,
+  placeholder: Image,
+  settings: Settings,
+  chevronLeft: ChevronLeft,
 };

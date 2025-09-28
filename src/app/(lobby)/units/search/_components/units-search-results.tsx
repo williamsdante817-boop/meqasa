@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { UnitsResultCard } from "./units-result-card";
 import { UnitsSearchSkeleton } from "./units-search-skeleton";
+import { Home, AlertTriangle } from "lucide-react";
 
 interface DeveloperUnit {
   id: string;
@@ -191,7 +192,9 @@ export function UnitsSearchResults({
     return (
       <div className="py-12 text-center">
         <div className="space-y-4">
-          <div className="text-xl text-red-500">⚠️</div>
+          <div className="flex justify-center">
+            <AlertTriangle className="h-8 w-8 text-red-500" />
+          </div>
           <h3 className="text-brand-accent text-xl font-semibold">
             Error Loading Units
           </h3>
@@ -206,7 +209,9 @@ export function UnitsSearchResults({
     return (
       <div className="py-12 text-center">
         <div className="space-y-4">
-          <div className="text-6xl opacity-20">🏠</div>
+          <div className="flex justify-center">
+            <Home className="h-16 w-16 text-gray-300" />
+          </div>
           <h3 className="text-brand-accent text-xl font-semibold">
             No units found
           </h3>

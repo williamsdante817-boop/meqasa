@@ -294,13 +294,17 @@ export default async function DeveloperProjectPage({
                     </div>
                   </div>
 
-                  <div className="ml-4 flex flex-shrink-0 items-center gap-2">
-                    <BrochureButton
-                      className="bg-brand-accent hover:bg-brand-accent/90 hidden items-center justify-center rounded-lg font-semibold text-white shadow-md transition-colors md:flex"
-                      showIcon
-                      aria-label={`Download ${projectData.project.projectname} brochure`}
-                    />
-                  </div>
+                  {/* Only show brochure button if brochure data exists */}
+                  {projectData.project.brochure && (
+                    <div className="ml-4 flex flex-shrink-0 items-center gap-2">
+                      <BrochureButton
+                        className="bg-brand-accent hover:bg-brand-accent/90 hidden items-center justify-center rounded-lg font-semibold text-white shadow-md transition-colors md:flex"
+                        showIcon
+                        href={projectData.project.brochure}
+                        aria-label={`Download ${projectData.project.projectname} brochure`}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
