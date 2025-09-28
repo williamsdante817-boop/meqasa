@@ -6,6 +6,7 @@ import type {
   MeqasaSearchResponse,
 } from "@/types/meqasa";
 import { logInfo, logError, logWarn } from "@/lib/logger";
+import { isShortLetQuery } from "@/lib/search/short-let";
 
 const MEQASA_API_BASE = "https://meqasa.com";
 
@@ -50,11 +51,6 @@ interface RequestBody {
     contract: string;
     locality: string;
   };
-}
-
-// Helper function to detect short-let requests
-function isShortLetRequest(params: MeqasaSearchParams): boolean {
-  return params.frentperiod === "shortrent" || params.fhowshort !== undefined;
 }
 
 // Map frontend property types to backend API types
@@ -142,7 +138,7 @@ export async function POST(request: NextRequest) {
       postParams.set("app", "vercel");
 
       // Check if this is a short-let request
-      const isShortLet = isShortLetRequest(searchParams);
+      const isShortLet = isShortLetQuery(searchParams);
 
       // Use short-let endpoint if applicable
       const finalUrl = isShortLet
@@ -557,7 +553,7 @@ export async function POST(request: NextRequest) {
       postParams.set("app", "vercel");
 
       // Check if this is a short-let request
-      const isShortLet = isShortLetRequest(loadMoreParams);
+      const isShortLet = isShortLetQuery(loadMoreParams);
 
       // Use short-let endpoint if applicable
       const finalUrl = isShortLet

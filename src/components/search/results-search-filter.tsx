@@ -18,6 +18,7 @@ import { AlertCircle, Search } from "lucide-react";
 import { siteConfig } from "@/config/site";
 import { searchConfig } from "@/config/search";
 import { type FormState } from "@/types/search";
+import { isShortLetQuery } from "@/lib/search/short-let";
 import { ActiveFilterChips } from "./ActiveFilterChips";
 import { PriceRangeSelect } from "@/components/ui/price-range-select";
 import { MoreFiltersPopover } from "@/components/ui/more-filters-popover";
@@ -163,7 +164,10 @@ export function ResultSearchFilter() {
     const urlContractType = pathSegments[pathSegments.length - 1];
     return (
       urlContractType === "rent" &&
-      searchParams.get("frentperiod") === "shortrent"
+      isShortLetQuery({
+        frentperiod: searchParams.get("frentperiod"),
+        fhowshort: searchParams.get("fhowshort"),
+      })
     );
   };
 

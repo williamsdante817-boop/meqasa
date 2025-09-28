@@ -17,6 +17,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import type { MeqasaListing, MeqasaSearchResponse } from "@/types/meqasa";
+import { isShortLetQuery } from "@/lib/search/short-let";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
@@ -95,9 +96,12 @@ export function SearchResults({
   const [isLoading, setIsLoading] = useState(false);
 
   // Helper function to detect if this is a short-let search
-  const isShortLetSearch = () => {
-    return type === "rent" && searchParams.get("frentperiod") === "shortrent";
-  };
+  const isShortLetSearch = () =>
+    type === "rent" &&
+    isShortLetQuery({
+      frentperiod: searchParams.get("frentperiod"),
+      fhowshort: searchParams.get("fhowshort"),
+    });
 
   // Ensure component is mounted before running client-side effects
   useEffect(() => {
