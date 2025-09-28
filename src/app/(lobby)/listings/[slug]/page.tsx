@@ -8,7 +8,6 @@ import ContactCard from "@/components/common/contact-card";
 import ContactSection from "@/components/contact-section";
 import ContentSection from "@/components/layout/content-section";
 import { DynamicCarousel } from "@/components/common/dynamic-carousel";
-import { Icons } from "@/components/icons";
 import LeaseOptions from "@/components/lease-option";
 import MortgageCalculator from "@/components/mortgage-calculator";
 import PropertyDetailsTable from "@/components/property/details/property-details";
@@ -21,24 +20,14 @@ import TrendingPropertyCard from "@/components/common/trending-property-card";
 import PropertyContextCard from "@/components/common/property-context-card";
 import PropertyFeatures from "@/components/common/property-features";
 import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
 import { getListingDetails } from "@/lib/get-listing-detail";
 import {
   extractPropertyData,
   hasCompressedData,
 } from "@/lib/compressed-data-utils";
-import { buildInnerHtml, cn, formatNumber } from "@/lib/utils";
+import { buildInnerHtml, cn } from "@/lib/utils";
 import { sanitizeHtml } from "@/lib/dom-sanitizer";
-import {
-  BathIcon,
-  BedIcon,
-  ParkingSquare,
-  Square,
-  ShieldCheck,
-  Tag,
-  ExternalLink,
-} from "lucide-react";
-import Link from "next/link";
+import { ShieldCheck } from "lucide-react";
 import ProjectVideo from "../../development-projects/_component/project-video";
 import type { Metadata } from "next";
 import { createPropertyError } from "@/lib/error-handling";

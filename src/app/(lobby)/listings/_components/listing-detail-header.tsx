@@ -11,12 +11,10 @@ import { getIsFurnished } from "./listing-detail-utils";
 
 interface ListingDetailHeaderProps {
   listingDetail: ListingDetails;
-  agentHref: string;
 }
 
 export function ListingDetailHeader({
   listingDetail,
-  agentHref,
 }: ListingDetailHeaderProps) {
   const isFurnished = getIsFurnished(listingDetail.isfurnished);
 

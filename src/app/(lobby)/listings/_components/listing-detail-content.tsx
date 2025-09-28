@@ -24,13 +24,11 @@ import {
 interface ListingDetailContentProps {
   listingDetail: ListingDetails;
   agentHref: string;
-  similarSearchHref: string;
 }
 
 export function ListingDetailContent({
   listingDetail,
   agentHref,
-  similarSearchHref,
 }: ListingDetailContentProps) {
   const propertyDetails = buildPropertyDetails(listingDetail);
 

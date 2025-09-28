@@ -5,7 +5,6 @@ import { Camera, Dot, Phone } from "lucide-react";
 import Link from "next/link";
 import React, { useState } from "react";
 
-import { AddFavoriteButton } from "@/components/add-favorite-button";
 import { ImageWithFallback } from "@/components/common/image-with-fallback";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";

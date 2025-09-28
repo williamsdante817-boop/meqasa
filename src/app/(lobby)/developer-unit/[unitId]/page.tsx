@@ -5,7 +5,6 @@ import ContactCard from "@/components/common/contact-card";
 import { DynamicCarousel } from "@/components/common/dynamic-carousel";
 import ContactSection from "@/components/contact-section";
 import { ExpandableDescription } from "@/components/expandable-description";
-import { Icons } from "@/components/icons";
 import { Breadcrumbs } from "@/components/layout/bread-crumbs";
 import ContentSection from "@/components/layout/content-section";
 import MortgageCalculator from "@/components/mortgage-calculator";
@@ -17,7 +16,6 @@ import PropertyShowcase from "@/components/property/details/property-showcase";
 import PropertyListings from "@/components/property/listings/property-listings";
 import SafetyTipsCard from "@/components/safety-tip";
 import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
 import Shell from "@/layouts/shell";
 import {
   extractUnitData,
@@ -25,20 +23,11 @@ import {
 } from "@/lib/compressed-data-utils";
 import { getUnitDetails } from "@/lib/get-unit-details";
 import { buildInnerHtml, cn, formatNumber, slugify } from "@/lib/utils";
-import {
-  BathIcon,
-  BedIcon,
-  ParkingSquare,
-  Square,
-  Tag,
-  ExternalLink,
-} from "lucide-react";
 import { logInfo } from "@/lib/logger";
 import ProjectVideo from "../../development-projects/_component/project-video";
 import TrendingPropertyCard from "@/components/common/trending-property-card";
 import PropertyContextCard from "@/components/common/property-context-card";
 import PropertyFeatures from "@/components/common/property-features";
-import Link from "next/link";
 export default async function DeveloperUnitPage({
   params,
   searchParams,

@@ -43,7 +43,7 @@ interface UnitsSearchResultsProps {
 export function UnitsSearchResults({
   initialUnits,
   searchParams: initialSearchParams,
-  onSearchUpdate, // Accept but don't use (handled internally via useRouter)
+  onSearchUpdate: _onSearchUpdate,
 }: UnitsSearchResultsProps) {
   const searchParams = useSearchParams();
   const [mounted, setMounted] = useState(false);
@@ -51,7 +51,6 @@ export function UnitsSearchResults({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(true);
-  const [page, setPage] = useState(1);
 
   const fetchUnits = useCallback(
     async (reset = false) => {
@@ -120,15 +119,13 @@ export function UnitsSearchResults({
 
         if (reset) {
           setUnits(fetchedUnits);
-          setPage(1);
         } else {
           setUnits((prev) => [...prev, ...fetchedUnits]);
-          setPage((prev) => prev + 1);
         }
 
         // For now, disable load more since the API doesn't support pagination
         setHasMore(false);
-      } catch (err) {
+      } catch {
         setError("Failed to load units. Please try again.");
         if (reset) {
           setUnits([]);

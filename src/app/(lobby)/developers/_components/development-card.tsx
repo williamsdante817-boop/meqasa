@@ -15,7 +15,7 @@ interface DevelopmentCardProps {
 }
 
 export function DevelopmentCard({
-  id,
+  id: _id,
   imageUrl,
   developmentName,
   location,

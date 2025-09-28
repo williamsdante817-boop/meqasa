@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { formatNumber } from "@/lib/utils";
-import { TrendingUp, Eye, Flame } from "lucide-react";
+import { TrendingUp, Flame } from "lucide-react";
 
 interface TrendingPropertyCardProps {
   /** Property type to determine the contact text */

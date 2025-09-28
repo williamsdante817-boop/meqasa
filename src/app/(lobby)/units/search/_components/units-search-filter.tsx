@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/select";
 import { SearchInputWithSuggestions } from "@/components/ui/search-input-with-suggestions";
 import { ActiveFilterChips } from "@/components/search/ActiveFilterChips";
-import { siteConfig } from "@/config/site";
 
 interface UnitsSearchFilterProps {
   resultCount?: number;
@@ -200,7 +199,7 @@ export function UnitsSearchFilter({}: UnitsSearchFilterProps) {
 
       // Navigate to search page
       router.push(`/units/search?${searchParams.toString()}`);
-    } catch (err) {
+    } catch {
       setError(
         "An error occurred while processing your search. Please try again."
       );
