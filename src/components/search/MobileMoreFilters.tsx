@@ -13,6 +13,14 @@ import {
 import { RotateCcw } from "lucide-react";
 import { type FormState } from "@/types/search";
 import { searchConfig } from "@/config/search";
+import {
+  MEQASA_RENT_PERIODS,
+  MEQASA_SORT_OPTIONS,
+} from "@/lib/search/constants";
+import {
+  FALLBACK_RENT_PERIOD_OPTIONS,
+  FALLBACK_SORT_OPTIONS,
+} from "@/lib/search/options";
 
 interface MobileMoreFiltersProps {
   formState: FormState;
@@ -21,22 +29,8 @@ interface MobileMoreFiltersProps {
 }
 
 // Fallback options
-const fallbackSortOptions = [
-  { value: "newest", label: "Newest First" },
-  { value: "oldest", label: "Oldest First" },
-  { value: "price-low-high", label: "Price: Low to High" },
-  { value: "price-high-low", label: "Price: High to Low" },
-];
-
-const fallbackPeriodOptions = [
-  { value: "daily", label: "Daily" },
-  { value: "weekly", label: "Weekly" },
-  { value: "monthly", label: "Monthly" },
-  { value: "annually", label: "Annually" },
-];
-
-const DEFAULT_SORT = "date";
-const DEFAULT_RENT_PERIOD = "- Any -";
+const DEFAULT_SORT = MEQASA_SORT_OPTIONS[0];
+const DEFAULT_RENT_PERIOD = MEQASA_RENT_PERIODS[0];
 
 export function MobileMoreFilters({
   formState,
@@ -44,8 +38,8 @@ export function MobileMoreFilters({
   contractType = "rent",
 }: MobileMoreFiltersProps) {
   const config = searchConfig?.selectOptions;
-  const sortOptions = config?.sort || fallbackSortOptions;
-  const periodOptions = config?.period || fallbackPeriodOptions;
+  const sortOptions = config?.sort || FALLBACK_SORT_OPTIONS;
+  const periodOptions = config?.period || FALLBACK_RENT_PERIOD_OPTIONS;
 
   // Determine the correct text based on contract type
   const getOwnerText = () => {
@@ -116,15 +110,9 @@ export function MobileMoreFilters({
             />
           </SelectTrigger>
           <SelectContent className="z-[999999]" style={{ zIndex: 999999 }}>
-            <SelectItem
-              value="default"
-              className="h-12 text-base text-gray-700"
-            >
-              Default
-            </SelectItem>
-            {sortOptions.map(({ value, label }) => (
+            {sortOptions.map(({ value, label }, index) => (
               <SelectItem
-                key={value}
+                key={`${value}-${index}`}
                 value={value}
                 className="h-12 text-base text-gray-700"
               >
@@ -158,9 +146,9 @@ export function MobileMoreFilters({
               >
                 Any Period
               </SelectItem>
-              {periodOptions.map(({ value, label }) => (
+              {periodOptions.map(({ value, label }, index) => (
                 <SelectItem
-                  key={value}
+                  key={`${value}-${index}`}
                   value={value}
                   className="h-12 text-base text-gray-700"
                 >

@@ -1,5 +1,7 @@
-const SHORT_LET_SENTINEL = "- Any -";
-export const SHORT_LET_RENT_PERIOD = "shortrent";
+import { ANY_SENTINEL, MEQASA_RENT_PERIODS } from "./constants";
+
+const SHORT_LET_SENTINEL = ANY_SENTINEL;
+export const SHORT_LET_RENT_PERIOD = MEQASA_RENT_PERIODS[1];
 
 type NullableString = string | null | undefined;
 

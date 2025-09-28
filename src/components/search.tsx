@@ -7,6 +7,10 @@ import Link from "next/link";
 
 import { searchConfig } from "@/config/search";
 import { type FormState } from "@/types/search";
+import {
+  MEQASA_RENT_PERIODS,
+  MEQASA_SORT_OPTIONS,
+} from "@/lib/search/constants";
 import { useState } from "react";
 import { CommonFilters } from "./search/CommonFilters";
 import { PriceRangeSelect } from "@/components/ui/price-range-select";
@@ -23,8 +27,8 @@ const getDefaultFormState = (): FormState => ({
   maxPrice: "",
   minArea: "",
   maxArea: "",
-  period: "- Any -",
-  sort: "date",
+  period: MEQASA_RENT_PERIODS[0],
+  sort: MEQASA_SORT_OPTIONS[0],
   furnished: false,
   owner: false,
   howShort: "- Any -",

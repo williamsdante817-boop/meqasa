@@ -17,6 +17,10 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { SlidersHorizontal } from "lucide-react";
+import {
+  FALLBACK_RENT_PERIOD_OPTIONS,
+  FALLBACK_SORT_OPTIONS,
+} from "@/lib/search/options";
 
 interface FilterOption {
   value: string;
@@ -49,18 +53,8 @@ interface MoreFiltersPopoverProps {
 
 // Default filter options
 const defaultConfig: FilterConfig = {
-  period: [
-    { value: "shortrent", label: "Daily" },
-    { value: "shortrent", label: "Weekly" },
-    { value: "longrent", label: "Up to 6 months" },
-    { value: "longrent", label: "12 months plus" },
-  ],
-  sort: [
-    { value: "date", label: "New to old" },
-    { value: "date2", label: "Old to new" },
-    { value: "price", label: "Lower to higher" },
-    { value: "price2", label: "Higher to lower" },
-  ],
+  period: [...FALLBACK_RENT_PERIOD_OPTIONS],
+  sort: [...FALLBACK_SORT_OPTIONS],
 };
 
 export function MoreFiltersPopover({

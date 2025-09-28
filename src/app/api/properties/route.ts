@@ -6,6 +6,11 @@ import type {
   MeqasaSearchResponse,
 } from "@/types/meqasa";
 import { logInfo, logError, logWarn } from "@/lib/logger";
+import {
+  MEQASA_RENT_PERIODS,
+  MEQASA_SHORT_LET_DURATIONS,
+  MEQASA_SORT_OPTIONS,
+} from "@/lib/search/constants";
 import { isShortLetQuery } from "@/lib/search/short-let";
 
 const MEQASA_API_BASE = "https://meqasa.com";
@@ -28,21 +33,6 @@ const VALID_PROPERTY_TYPES = [
   "beach house", // Frontend type (maps to "Beachhouse")
   "hotel", // ✅ 1 result
   "studio apartment", // ✅ 11 results
-] as const;
-
-// Valid sort options according to API docs
-const VALID_SORT_OPTIONS = ["date", "date2", "price", "price2"] as const;
-
-// Valid rent period options according to API docs
-const VALID_RENT_PERIODS = ["- Any -", "shortrent", "longrent"] as const;
-
-// Valid short-let duration options according to API docs
-const VALID_SHORT_LET_DURATIONS = [
-  "day",
-  "week",
-  "month",
-  "month3",
-  "month6",
 ] as const;
 
 interface RequestBody {
@@ -194,14 +184,14 @@ export async function POST(request: NextRequest) {
 
       if (
         searchParams.frentperiod &&
-        VALID_RENT_PERIODS.includes(searchParams.frentperiod)
+        MEQASA_RENT_PERIODS.includes(searchParams.frentperiod)
       ) {
         postParams.set("frentperiod", searchParams.frentperiod);
       }
 
       if (
         searchParams.fsort &&
-        VALID_SORT_OPTIONS.includes(searchParams.fsort)
+        MEQASA_SORT_OPTIONS.includes(searchParams.fsort)
       ) {
         postParams.set("fsort", searchParams.fsort);
       }
@@ -251,7 +241,7 @@ export async function POST(request: NextRequest) {
 
         if (
           searchParams.fsort &&
-          VALID_SORT_OPTIONS.includes(searchParams.fsort)
+          MEQASA_SORT_OPTIONS.includes(searchParams.fsort)
         ) {
           postParams.set("fsort", searchParams.fsort);
         }
@@ -260,7 +250,7 @@ export async function POST(request: NextRequest) {
         // Omitting fhowshort shows all short-let properties (matching live Meqasa behavior)
         if (
           searchParams.fhowshort &&
-          VALID_SHORT_LET_DURATIONS.includes(searchParams.fhowshort)
+          MEQASA_SHORT_LET_DURATIONS.includes(searchParams.fhowshort)
         ) {
           postParams.set("fhowshort", searchParams.fhowshort);
         }
@@ -280,7 +270,7 @@ export async function POST(request: NextRequest) {
         // For non-short-let searches, handle ftype parameter
         if (
           searchParams.ftype &&
-          VALID_PROPERTY_TYPES.includes(searchParams.ftype)
+        VALID_PROPERTY_TYPES.includes(searchParams.ftype)
         ) {
           // Map frontend property type to backend API type
           const mappedPropertyType = mapPropertyTypeForAPI(searchParams.ftype);
@@ -615,14 +605,14 @@ export async function POST(request: NextRequest) {
 
       if (
         loadMoreParams.frentperiod &&
-        VALID_RENT_PERIODS.includes(loadMoreParams.frentperiod)
+        MEQASA_RENT_PERIODS.includes(loadMoreParams.frentperiod)
       ) {
         postParams.set("frentperiod", loadMoreParams.frentperiod);
       }
 
       if (
         loadMoreParams.fsort &&
-        VALID_SORT_OPTIONS.includes(loadMoreParams.fsort)
+        MEQASA_SORT_OPTIONS.includes(loadMoreParams.fsort)
       ) {
         postParams.set("fsort", loadMoreParams.fsort);
       }
@@ -637,7 +627,7 @@ export async function POST(request: NextRequest) {
         // Omitting fhowshort shows all short-let properties (matching live Meqasa behavior)
         if (
           loadMoreParams.fhowshort &&
-          VALID_SHORT_LET_DURATIONS.includes(loadMoreParams.fhowshort)
+          MEQASA_SHORT_LET_DURATIONS.includes(loadMoreParams.fhowshort)
         ) {
           postParams.set("fhowshort", loadMoreParams.fhowshort);
         }

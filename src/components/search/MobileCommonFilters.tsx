@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/select";
 import { searchConfig } from "@/config/search";
 import { type FormState } from "@/types/search";
+import { MEQASA_SHORT_LET_DURATIONS } from "@/lib/search/constants";
 import { MobileMoreFilters } from "./MobileMoreFilters";
 import { MobilePriceInput } from "./MobilePriceInput";
 
@@ -55,12 +56,15 @@ const fallbackOptions = {
     { value: "5", label: "5+ Bathrooms" },
   ],
   howShort: [
-    { value: "day", label: "Daily" },
-    { value: "week", label: "Weekly" },
-    { value: "month", label: "Monthly" },
-    { value: "month3", label: "3 Months" },
-    { value: "month6", label: "6 Months" },
-  ],
+    { value: MEQASA_SHORT_LET_DURATIONS[0], label: "Daily" },
+    { value: MEQASA_SHORT_LET_DURATIONS[1], label: "Weekly" },
+    { value: MEQASA_SHORT_LET_DURATIONS[2], label: "Monthly" },
+    { value: MEQASA_SHORT_LET_DURATIONS[3], label: "3 Months" },
+    { value: MEQASA_SHORT_LET_DURATIONS[4], label: "6 Months" },
+  ] satisfies {
+    value: (typeof MEQASA_SHORT_LET_DURATIONS)[number];
+    label: string;
+  }[],
 };
 
 export function MobileCommonFilters({
