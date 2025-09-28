@@ -136,7 +136,7 @@ export function getStatusBadgeVariant(projectStatus?: string) {
 
 // Memoize units mapping helper
 export function mapProjectUnits(units: Unit[]): Listing[] {
-  if (!units || units.length === 0) return [] as Listing[];
+  if (!units || units.length === 0) return [];
 
   return units.map(
     (unit): Listing => ({

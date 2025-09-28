@@ -10,23 +10,47 @@ interface DeveloperUnitParams {
   app?: string;
 }
 
-interface DeveloperUnit {
-  unitid: number;
-  floorarea: number;
-  beds: number;
-  baths: number;
-  description: string;
-  sellingprice: number;
-  sellingpricecsign: string;
-  unittype: string;
-  terms: string;
-  city: string;
-  address: string;
-  coverphoto: string;
-  companyname: string;
-  name: string;
-  price: string;
-  [key: string]: any;
+interface RawDeveloperUnit {
+  unitid?: number | string;
+  unitname?: string;
+  title?: string;
+  unittypename?: string;
+  unittype?: string;
+  beds?: number | string;
+  baths?: number | string;
+  terms?: string;
+  city?: string;
+  location?: string;
+  address?: string;
+  coverphoto?: string;
+  companyname?: string;
+  name?: string;
+  description?: string;
+  price?: number | string;
+  rentpricepermonth?: number | string;
+  rentpricecsignpermonth?: string;
+  rentpriceperweek?: number | string;
+  rentpricecsignperweek?: string;
+  rentpriceperday?: number | string;
+  rentpricecsignperday?: string;
+  sellingprice?: number | string;
+  sellingpricecsign?: string;
+  featured?: boolean;
+  developerlogo?: string;
+  logo?: string;
+  developermobile?: string;
+  mobile?: string;
+  developeremail?: string;
+  email?: string;
+  floorarea?: number | string;
+  timestamp?: string;
+  dateadded?: string;
+  updated_at?: string;
+  photos?: unknown;
+  images?: unknown;
+  photo?: unknown;
+  gallery?: unknown;
+  [key: string]: unknown;
 }
 
 export async function POST(request: NextRequest) {
@@ -39,7 +63,7 @@ export async function POST(request: NextRequest) {
 
     // Include all parameters (app is already included in params from client)
     Object.entries(params).forEach(([key, value]) => {
-      if (value !== undefined && value !== null) {
+      if (value != null) {
         searchParams.set(key, String(value));
       }
     });
@@ -70,7 +94,7 @@ export async function POST(request: NextRequest) {
 
     // Check if response is JSON before parsing
     const contentType = response.headers.get("content-type");
-    if (!contentType || !contentType.includes("application/json")) {
+    if (!contentType?.includes("application/json")) {
       // Get response text to see what we're actually receiving
       const responseText = await response.text();
       console.warn("Developer units API returned non-JSON response:", {
@@ -100,88 +124,132 @@ export async function POST(request: NextRequest) {
       return NextResponse.json([], { status: 200 });
     }
 
-    console.log(`✅ Developer units API returned ${rawData.length} units`);
+    const units = rawData as RawDeveloperUnit[];
+
+    console.log(`✅ Developer units API returned ${units.length} units`);
 
     // Debug: Log first unit to see what fields are available
-    if (rawData.length > 0) {
+    if (units.length > 0) {
+      const firstUnit = units[0];
       console.log("🔍 First unit raw data:", {
-        unitid: rawData[0].unitid,
-        title: rawData[0].title,
-        coverphoto: rawData[0].coverphoto,
-        photos: rawData[0].photos,
-        images: rawData[0].images,
-        photo: rawData[0].photo,
-        gallery: rawData[0].gallery,
-        keys: Object.keys(rawData[0]),
+        unitid: firstUnit.unitid,
+        title: firstUnit.title,
+        coverphoto: firstUnit.coverphoto,
+        photos: firstUnit.photos,
+        images: firstUnit.images,
+        photo: firstUnit.photo,
+        gallery: firstUnit.gallery,
+        keys: Object.keys(firstUnit),
       });
 
       // Debug date fields specifically
       console.log("📅 Date fields debug:", {
-        unitid: rawData[0].unitid,
-        timestamp: rawData[0].timestamp,
-        dateadded: rawData[0].dateadded,
-        updated_at: rawData[0].updated_at,
-        timestampType: typeof rawData[0].timestamp,
-        dateaddedType: typeof rawData[0].dateadded,
-        updated_atType: typeof rawData[0].updated_at,
+        unitid: firstUnit.unitid,
+        timestamp: firstUnit.timestamp,
+        dateadded: firstUnit.dateadded,
+        updated_at: firstUnit.updated_at,
+        timestampType: typeof firstUnit.timestamp,
+        dateaddedType: typeof firstUnit.dateadded,
+        updated_atType: typeof firstUnit.updated_at,
       });
     }
 
     // Transform the data to a consistent format
-    const transformedData = rawData.map((unit: Record<string, unknown>) => ({
-      id: unit.unitid?.toString() || Math.random().toString(),
-      unitid: unit.unitid,
-      title:
-        unit.title ||
-        (() => {
-          const beds = unit.beds || 1;
-          const bedroomText = beds === 1 ? "1 Bedroom" : `${beds} Bedroom`;
-          const propertyType = unit.unittypename || unit.unittype || "Apartment";
-          const terms = unit.terms || "sale";
-          const transactionText = terms === "rent" ? "For Rent" : "For Sale";
-          const location = unit.city || "Ghana";
+    const transformedData = units.map((unit) => {
+      const unitIdString = unit.unitid != null ? String(unit.unitid) : Math.random().toString();
+      const bedsValue = Number(unit.beds ?? 0) || 0;
+      const bathsValue = Number(unit.baths ?? 0) || 0;
+      const propertyType = (unit.unittypename ?? unit.unittype ?? "Apartment").toString();
+      const terms = (unit.terms ?? "sale").toString();
+      const locationSource = unit.address ?? unit.city ?? unit.location ?? "Ghana";
+      const locationText = typeof locationSource === "string" ? locationSource : String(locationSource);
+      const coverPhoto = typeof unit.coverphoto === "string" ? unit.coverphoto : undefined;
+      const fallbackImage = "https://dve7rykno93gs.cloudfront.net/pieoq/1572277987";
+      const imageUrl = coverPhoto
+        ? `https://dve7rykno93gs.cloudfront.net/temp/${coverPhoto}`
+        : fallbackImage;
 
-          return `${bedroomText} ${propertyType} ${transactionText} in ${location}`;
-        })(),
-      price: unit.price, // Use the raw price field as-is
-      location: `${String(unit.address || unit.city || "Ghana")}`,
-      address: unit.address,
-      city: unit.city,
-      bedrooms: unit.beds || 0,
-      beds: unit.beds || 0,
-      bathrooms: unit.baths || 0,
-      baths: unit.baths || 0,
-      unittype: unit.unittype || "apartment",
-      unittypename: unit.unittypename || "Apartment",
-      terms: unit.terms || "sale",
-      image: unit.coverphoto
-        ? `https://dve7rykno93gs.cloudfront.net/temp/${String(unit.coverphoto)}`
-        : `https://dve7rykno93gs.cloudfront.net/pieoq/1572277987`,
-      coverphoto: unit.coverphoto,
-      developer: unit.companyname || unit.name || "Developer",
-      companyname: unit.companyname,
-      name: unit.name,
-      area: unit.floorarea ? `${String(unit.floorarea)} sqm` : undefined,
-      floorarea: unit.floorarea,
-      // Pass through all the price fields as-is from the API
-      sellingprice: unit.sellingprice,
-      sellingpricecsign: unit.sellingpricecsign,
-      rentpricepermonth: unit.rentpricepermonth,
-      rentpricecsignpermonth: unit.rentpricecsignpermonth,
-      rentpriceperweek: unit.rentpriceperweek,
-      rentpricecsignperweek: unit.rentpricecsignperweek,
-      rentpriceperday: unit.rentpriceperday,
-      rentpricecsignperday: unit.rentpricecsignperday,
-      description: unit.description,
-      featured: false,
-      // Developer logo fields
-      developerlogo: unit.developerlogo || unit.logo,
-      developermobile: unit.developermobile || unit.mobile,
-      developeremail: unit.developeremail || unit.email,
-      timestamp: unit.timestamp || unit.dateadded,
-      dateadded: unit.dateadded,
-      ...unit, // Include all original fields
-    }));
+      const priceValue = unit.price != null ? String(unit.price) : "";
+      const sellingPriceValue = unit.sellingprice != null ? String(unit.sellingprice) : undefined;
+
+      return {
+        id: unitIdString,
+        unitid: unit.unitid,
+        title:
+          typeof unit.title === "string" && unit.title.trim() !== ""
+            ? unit.title
+            : (() => {
+                const bedroomText = bedsValue === 1 ? "1 Bedroom" : `${bedsValue} Bedroom`;
+                const transactionText = terms === "rent" ? "For Rent" : "For Sale";
+                return `${bedroomText} ${propertyType} ${transactionText} in ${locationText}`;
+              })(),
+        price: priceValue,
+        location: locationText,
+        address: typeof unit.address === "string" ? unit.address : undefined,
+        city: typeof unit.city === "string" ? unit.city : undefined,
+        bedrooms: bedsValue,
+        beds: bedsValue,
+        bathrooms: bathsValue,
+        baths: bathsValue,
+        unittype: (unit.unittype ?? "apartment").toString(),
+        unittypename: propertyType,
+        terms,
+        image: imageUrl,
+        coverphoto: coverPhoto,
+        developer:
+          typeof unit.companyname === "string"
+            ? unit.companyname
+            : typeof unit.name === "string"
+              ? unit.name
+              : "Developer",
+        companyname: typeof unit.companyname === "string" ? unit.companyname : undefined,
+        name: typeof unit.name === "string" ? unit.name : undefined,
+        area:
+          unit.floorarea != null && unit.floorarea !== ""
+            ? `${String(unit.floorarea)} sqm`
+            : undefined,
+        floorarea:
+          typeof unit.floorarea === "number"
+            ? unit.floorarea
+            : unit.floorarea != null
+              ? Number(unit.floorarea) || undefined
+              : undefined,
+        sellingprice: sellingPriceValue,
+        sellingpricecsign: unit.sellingpricecsign,
+        rentpricepermonth:
+          unit.rentpricepermonth != null ? String(unit.rentpricepermonth) : undefined,
+        rentpricecsignpermonth: unit.rentpricecsignpermonth,
+        rentpriceperweek:
+          unit.rentpriceperweek != null ? String(unit.rentpriceperweek) : undefined,
+        rentpricecsignperweek: unit.rentpricecsignperweek,
+        rentpriceperday:
+          unit.rentpriceperday != null ? String(unit.rentpriceperday) : undefined,
+        rentpricecsignperday: unit.rentpricecsignperday,
+        description: typeof unit.description === "string" ? unit.description : undefined,
+        featured: Boolean(unit.featured),
+        developerlogo:
+          typeof unit.developerlogo === "string"
+            ? unit.developerlogo
+            : typeof unit.logo === "string"
+              ? unit.logo
+              : undefined,
+        developermobile:
+          typeof unit.developermobile === "string"
+            ? unit.developermobile
+            : typeof unit.mobile === "string"
+              ? unit.mobile
+              : undefined,
+        developeremail:
+          typeof unit.developeremail === "string"
+            ? unit.developeremail
+            : typeof unit.email === "string"
+              ? unit.email
+              : undefined,
+        timestamp: unit.timestamp ?? unit.dateadded ?? undefined,
+        dateadded: unit.dateadded,
+        ...unit,
+      };
+    });
 
     console.log(
       `🏠 Transformed ${transformedData.length} developer units for response`

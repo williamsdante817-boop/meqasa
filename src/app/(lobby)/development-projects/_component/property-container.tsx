@@ -74,7 +74,7 @@ function PropertyContainerContent({
 
   // Memoize units mapping using utility function
   const mappedUnits = useMemo<Listing[]>(() => {
-    return mapProjectUnits(projectData.units ?? []) as Listing[];
+    return mapProjectUnits(projectData.units ?? []);
   }, [projectData.units]);
 
   // Validate data AFTER all hooks have been called

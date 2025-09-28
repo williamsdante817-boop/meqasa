@@ -5,7 +5,7 @@ import type {
   MeqasaLoadMoreParams,
   MeqasaSearchResponse,
 } from "@/types/meqasa";
-import { logInfo, logError, logWarn } from "@/lib/logger";
+import { logInfo, logError } from "@/lib/logger";
 import {
   MEQASA_RENT_PERIODS,
   MEQASA_SHORT_LET_DURATIONS,
@@ -463,23 +463,6 @@ export async function POST(request: NextRequest) {
 
       const totalRequestTime = Date.now() - requestStartTime;
 
-      const responseInfo = {
-        searchId: normalized.searchid,
-        resultCount: normalized.resultcount,
-        resultsLength: normalized.results.length,
-        searchDesc: normalized.searchdesc,
-        rawResultCount: raw.resultcount,
-        rawResultCountType: typeof raw.resultcount,
-        firstResult: normalized.results[0]
-          ? {
-              listingid: normalized.results[0].listingid,
-              summary: normalized.results[0].summary,
-              pricepart1: normalized.results[0].pricepart1,
-              pricepart2: normalized.results[0].pricepart2,
-            }
-          : null,
-      };
-
       logInfo("Backend API response processed - SEARCH", {
         requestId,
         backendUrl: finalUrl,
@@ -843,15 +826,6 @@ export async function POST(request: NextRequest) {
         })(),
       };
       const totalRequestTime = Date.now() - requestStartTime;
-
-      const loadMoreResponseInfo = {
-        searchId: normalized.searchid,
-        resultCount: normalized.resultcount,
-        resultsLength: normalized.results.length,
-        rawResultCount: raw.resultcount,
-        rawResultCountType: typeof raw.resultcount,
-        data: normalized,
-      };
 
       logInfo("Backend API response processed - LOAD_MORE", {
         requestId,
