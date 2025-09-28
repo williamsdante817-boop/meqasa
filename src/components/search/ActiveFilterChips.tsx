@@ -104,11 +104,7 @@ export function ActiveFilterChips({
     }
 
     // Rent period filter
-    if (
-      formState.period &&
-      formState.period !== "- Any -" &&
-      formState.period !== "any"
-    ) {
+    if (formState.period && formState.period !== "- Any -") {
       const periodMap: Record<string, string> = {
         shortrent: "Short term",
         longrent: "Long term",

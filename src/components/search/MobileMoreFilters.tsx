@@ -35,6 +35,9 @@ const fallbackPeriodOptions = [
   { value: "annually", label: "Annually" },
 ];
 
+const DEFAULT_SORT = "date";
+const DEFAULT_RENT_PERIOD = "- Any -";
+
 export function MobileMoreFilters({
   formState,
   updateFormState,
@@ -66,16 +69,16 @@ export function MobileMoreFilters({
 
   const resetFilters = () => {
     updateFormState({
-      sort: "default",
-      period: "any",
+      sort: DEFAULT_SORT,
+      period: DEFAULT_RENT_PERIOD,
       furnished: false,
       owner: false,
     });
   };
 
   const hasActiveFilters =
-    (formState.sort && formState.sort !== "default") ||
-    (formState.period && formState.period !== "any") ||
+    (formState.sort && formState.sort !== DEFAULT_SORT) ||
+    (formState.period && formState.period !== DEFAULT_RENT_PERIOD) ||
     formState.furnished ||
     formState.owner;
 
@@ -149,7 +152,10 @@ export function MobileMoreFilters({
               />
             </SelectTrigger>
             <SelectContent className="z-[999999]">
-              <SelectItem value="any" className="h-12 text-base text-gray-700">
+              <SelectItem
+                value="- Any -"
+                className="h-12 text-base text-gray-700"
+              >
                 Any Period
               </SelectItem>
               {periodOptions.map(({ value, label }) => (
