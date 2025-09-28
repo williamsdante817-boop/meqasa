@@ -15,6 +15,13 @@ import { isShortLetQuery } from "@/lib/search/short-let";
 
 const MEQASA_API_BASE = "https://meqasa.com";
 
+const isDebugLoggingEnabled = process.env.NODE_ENV !== "production";
+const debugLog = (...args: Parameters<typeof console.log>) => {
+  if (isDebugLoggingEnabled) {
+    console.log(...args);
+  }
+};
+
 // Valid contract types according to API docs
 const VALID_CONTRACTS = ["rent", "sale"] as const;
 
@@ -255,17 +262,23 @@ export async function POST(request: NextRequest) {
           postParams.set("fhowshort", searchParams.fhowshort);
         }
 
-        // DETAILED SHORT-LET LOGGING - Request Details
-        console.log("🏠 SHORT-LET SEARCH REQUEST:");
-        console.log("  📍 URL:", finalUrl);
-        console.log("  📝 Method: POST");
-        console.log("  🔧 Raw Parameters:", {
-          originalSearchParams: searchParams,
-          finalPostParams: Object.fromEntries(postParams.entries()),
-          postBody: postParams.toString(),
-        });
-        console.log("  🎯 Duration Filter:", searchParams.fhowshort || "NONE (showing all short-let properties)");
-        console.log("  📊 Full Request Body:", postParams.toString());
+        if (isDebugLoggingEnabled) {
+          const serializedParams = postParams.toString();
+          debugLog("🏠 SHORT-LET SEARCH REQUEST:");
+          debugLog("  📍 URL:", finalUrl);
+          debugLog("  📝 Method: POST");
+          debugLog("  🔧 Raw Parameters:", {
+            originalSearchParams: searchParams,
+            finalPostParams: Object.fromEntries(postParams.entries()),
+            postBody: serializedParams,
+          });
+          debugLog(
+            "  🎯 Duration Filter:",
+            searchParams.fhowshort ||
+              "NONE (showing all short-let properties)"
+          );
+          debugLog("  📊 Full Request Body:", serializedParams);
+        }
       } else {
         // For non-short-let searches, handle ftype parameter
         if (
@@ -333,8 +346,8 @@ export async function POST(request: NextRequest) {
       const actualRequestBody = Array.from(postParams.entries()).map(([key, value]) => `${key}=${value}`).join('&');
 
       // Log the actual request body being sent (for short-let debugging)
-      if (isShortLet) {
-        console.log("🚀 ACTUAL REQUEST BODY SENT TO API:", actualRequestBody);
+      if (isShortLet && isDebugLoggingEnabled) {
+        debugLog("🚀 ACTUAL REQUEST BODY SENT TO API:", actualRequestBody);
       }
 
       const response = await fetch(finalUrl, {
@@ -382,30 +395,41 @@ export async function POST(request: NextRequest) {
       };
 
       // DETAILED SHORT-LET LOGGING - Response Details (only for short-let searches)
-      if (isShortLet) {
-        console.log("🏠 SHORT-LET SEARCH RESPONSE:");
-        console.log("  ✅ HTTP Status:", response.status, response.statusText);
-        console.log("  ⏱️  Response Time:", `${backendDuration}ms`);
-        console.log("  📊 Raw Response Headers:", Object.fromEntries(response.headers.entries()));
-        console.log("  📦 Raw Response Body (UNMODIFIED):", JSON.stringify(raw, null, 2));
-        console.log("  🔢 Raw Result Count:", raw.resultcount, "(type:", typeof raw.resultcount, ")");
-        console.log("  📋 Raw Results Array Length:", raw.results?.length || 0);
-        console.log("  🏷️  Search ID:", raw.searchid);
-        console.log("  📝 Search Description:", raw.searchdesc);
-        console.log("  🎯 Top Ads Count:", raw.topads?.length || 0);
-        console.log("  📌 Bottom Ads Count:", raw.bottomads?.length || 0);
+      if (isShortLet && isDebugLoggingEnabled) {
+        debugLog("🏠 SHORT-LET SEARCH RESPONSE:");
+        debugLog("  ✅ HTTP Status:", response.status, response.statusText);
+        debugLog("  ⏱️  Response Time:", `${backendDuration}ms`);
+        debugLog(
+          "  📊 Raw Response Headers:",
+          Object.fromEntries(response.headers.entries())
+        );
+        debugLog(
+          "  📦 Raw Response Body (UNMODIFIED):",
+          JSON.stringify(raw, null, 2)
+        );
+        debugLog(
+          "  🔢 Raw Result Count:",
+          raw.resultcount,
+          "(type:",
+          typeof raw.resultcount,
+          ")"
+        );
+        debugLog("  📋 Raw Results Array Length:", raw.results?.length || 0);
+        debugLog("  🏷️  Search ID:", raw.searchid);
+        debugLog("  📝 Search Description:", raw.searchdesc);
+        debugLog("  🎯 Top Ads Count:", raw.topads?.length || 0);
+        debugLog("  📌 Bottom Ads Count:", raw.bottomads?.length || 0);
         if (raw.results && raw.results.length > 0) {
-          console.log("  🏡 First 3 Properties (Raw):",
-            raw.results.slice(0, 3).map(property => ({
-              listingid: property.listingid,
-              summary: property.summary,
-              pricepart1: property.pricepart1,
-              pricepart2: property.pricepart2,
-              type: property.type,
-              contract: property.contract,
-              locationstring: property.locationstring
-            }))
-          );
+          const firstResults = raw.results.slice(0, 3).map((property) => ({
+            listingid: property.listingid,
+            summary: property.summary,
+            pricepart1: property.pricepart1,
+            pricepart2: property.pricepart2,
+            type: property.type,
+            contract: property.contract,
+            locationstring: property.locationstring,
+          }));
+          debugLog("  🏡 First 3 Properties (Raw):", firstResults);
         }
       }
 
@@ -632,18 +656,24 @@ export async function POST(request: NextRequest) {
           postParams.set("fhowshort", loadMoreParams.fhowshort);
         }
 
-        // DETAILED SHORT-LET LOGGING - LoadMore Request Details
-        console.log("🏠 SHORT-LET LOAD-MORE REQUEST:");
-        console.log("  📍 URL:", finalUrl);
-        console.log("  📝 Method: POST");
-        console.log("  🔄 Load More Details:", { searchId, pageNumber });
-        console.log("  🔧 Raw Parameters:", {
-          originalLoadMoreParams: loadMoreParams,
-          finalPostParams: Object.fromEntries(postParams.entries()),
-          postBody: postParams.toString(),
-        });
-        console.log("  🎯 Duration Filter:", loadMoreParams.fhowshort || "NONE (showing all short-let properties)");
-        console.log("  📊 Full Request Body:", postParams.toString());
+        if (isDebugLoggingEnabled) {
+          const serializedParams = postParams.toString();
+          debugLog("🏠 SHORT-LET LOAD-MORE REQUEST:");
+          debugLog("  📍 URL:", finalUrl);
+          debugLog("  📝 Method: POST");
+          debugLog("  🔄 Load More Details:", { searchId, pageNumber });
+          debugLog("  🔧 Raw Parameters:", {
+            originalLoadMoreParams: loadMoreParams,
+            finalPostParams: Object.fromEntries(postParams.entries()),
+            postBody: serializedParams,
+          });
+          debugLog(
+            "  🎯 Duration Filter:",
+            loadMoreParams.fhowshort ||
+              "NONE (showing all short-let properties)"
+          );
+          debugLog("  📊 Full Request Body:", serializedParams);
+        }
       }
       // Ensure default ftype for non–short-let when not explicitly provided
       if (!isShortLet && !postParams.has("ftype")) {
@@ -691,8 +721,8 @@ export async function POST(request: NextRequest) {
       const actualRequestBody = Array.from(postParams.entries()).map(([key, value]) => `${key}=${value}`).join('&');
 
       // Log the actual request body being sent (for short-let debugging)
-      if (isShortLet) {
-        console.log("🚀 ACTUAL REQUEST BODY SENT TO API:", actualRequestBody);
+      if (isShortLet && isDebugLoggingEnabled) {
+        debugLog("🚀 ACTUAL REQUEST BODY SENT TO API:", actualRequestBody);
       }
 
       const response = await fetch(finalUrl, {
@@ -748,30 +778,41 @@ export async function POST(request: NextRequest) {
       };
 
       // DETAILED SHORT-LET LOGGING - LoadMore Response Details (only for short-let loadMore)
-      if (isShortLet) {
-        console.log("🏠 SHORT-LET LOAD-MORE RESPONSE:");
-        console.log("  ✅ HTTP Status:", response.status, response.statusText);
-        console.log("  ⏱️  Response Time:", `${backendDuration}ms`);
-        console.log("  📊 Raw Response Headers:", Object.fromEntries(response.headers.entries()));
-        console.log("  📦 Raw Response Body (UNMODIFIED):", JSON.stringify(raw, null, 2));
-        console.log("  🔢 Raw Result Count:", raw.resultcount, "(type:", typeof raw.resultcount, ")");
-        console.log("  📋 Raw Results Array Length:", raw.results?.length || 0);
-        console.log("  🏷️  Search ID:", raw.searchid);
-        console.log("  📄 Page Number:", pageNumber);
-        console.log("  🎯 Top Ads Count:", raw.topads?.length || 0);
-        console.log("  📌 Bottom Ads Count:", raw.bottomads?.length || 0);
+      if (isShortLet && isDebugLoggingEnabled) {
+        debugLog("🏠 SHORT-LET LOAD-MORE RESPONSE:");
+        debugLog("  ✅ HTTP Status:", response.status, response.statusText);
+        debugLog("  ⏱️  Response Time:", `${backendDuration}ms`);
+        debugLog(
+          "  📊 Raw Response Headers:",
+          Object.fromEntries(response.headers.entries())
+        );
+        debugLog(
+          "  📦 Raw Response Body (UNMODIFIED):",
+          JSON.stringify(raw, null, 2)
+        );
+        debugLog(
+          "  🔢 Raw Result Count:",
+          raw.resultcount,
+          "(type:",
+          typeof raw.resultcount,
+          ")"
+        );
+        debugLog("  📋 Raw Results Array Length:", raw.results?.length || 0);
+        debugLog("  🏷️  Search ID:", raw.searchid);
+        debugLog("  📄 Page Number:", pageNumber);
+        debugLog("  🎯 Top Ads Count:", raw.topads?.length || 0);
+        debugLog("  📌 Bottom Ads Count:", raw.bottomads?.length || 0);
         if (raw.results && raw.results.length > 0) {
-          console.log("  🏡 First 3 Properties from Page (Raw):",
-            raw.results.slice(0, 3).map(property => ({
-              listingid: property.listingid,
-              summary: property.summary,
-              pricepart1: property.pricepart1,
-              pricepart2: property.pricepart2,
-              type: property.type,
-              contract: property.contract,
-              locationstring: property.locationstring
-            }))
-          );
+          const firstResults = raw.results.slice(0, 3).map((property) => ({
+            listingid: property.listingid,
+            summary: property.summary,
+            pricepart1: property.pricepart1,
+            pricepart2: property.pricepart2,
+            type: property.type,
+            contract: property.contract,
+            locationstring: property.locationstring,
+          }));
+          debugLog("  🏡 First 3 Properties from Page (Raw):", firstResults);
         }
       }
 
