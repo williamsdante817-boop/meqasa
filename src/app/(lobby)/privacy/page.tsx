@@ -3,7 +3,7 @@ import Shell from "@/layouts/shell";
 import type { Metadata } from "next";
 import { siteConfig } from "@/config/site";
 import { Shield, Lock, Eye, Database, UserCheck, Clock } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export const metadata: Metadata = {
@@ -108,7 +108,7 @@ export default function PrivacyPage() {
           <p className="text-brand-muted mx-auto mb-6 max-w-3xl text-xl">
             Your privacy is important to us. This policy explains how we
             collect, use, and protect your personal information when you use
-            MeQasa's services.
+            MeQasa&apos;s services.
           </p>
           <div className="text-brand-muted flex items-center justify-center gap-2">
             <Clock className="h-4 w-4" />

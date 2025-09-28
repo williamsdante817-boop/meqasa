@@ -181,10 +181,10 @@ export default function TermsPage() {
               1. Acceptance of Terms
             </h2>
             <p className="text-brand-muted mb-4 leading-relaxed">
-              These Terms of Service ("Terms") constitute a legally binding
+              These Terms of Service (&quot;Terms&quot;) constitute a legally binding
               agreement between you and MeQasa regarding your use of the MeQasa
               platform, website, mobile applications, and related services
-              (collectively, the "Services").
+              (collectively, the &quot;Services&quot;).
             </p>
             <p className="text-brand-muted leading-relaxed">
               By creating an account, accessing, or using our Services, you
@@ -387,7 +387,7 @@ export default function TermsPage() {
             </h2>
             <p className="text-brand-muted mx-auto mb-6 max-w-2xl">
               If you have any questions about these Terms of Service or need
-              clarification on any provisions, please don't hesitate to contact
+              clarification on any provisions, please don&apos;t hesitate to contact
               our legal team.
             </p>
             <div className="flex flex-col justify-center gap-4 sm:flex-row">

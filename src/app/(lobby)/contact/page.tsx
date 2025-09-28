@@ -145,7 +145,7 @@ export default function ContactPage() {
             Get in Touch
           </h1>
           <p className="text-brand-muted mx-auto mb-8 max-w-3xl text-xl leading-relaxed md:text-2xl">
-            Have a question, need assistance, or want to partner with us? We're
+            Have a question, need assistance, or want to partner with us? We&apos;re
             here to help you with all your real estate needs.
           </p>
         </section>
@@ -194,7 +194,7 @@ export default function ContactPage() {
                 Send us a Message
               </CardTitle>
               <p className="text-brand-muted">
-                Fill out the form below and we'll get back to you as soon as
+                Fill out the form below and we&apos;ll get back to you as soon as
                 possible.
               </p>
             </CardHeader>
@@ -377,7 +377,7 @@ export default function ContactPage() {
               </h3>
               <p className="text-brand-muted mb-4">
                 You can list your property by creating an account and using our
-                "List Property" feature. Our team will verify your listing
+                &quot;List Property&quot; feature. Our team will verify your listing
                 within 24 hours.
               </p>
             </div>
@@ -409,7 +409,7 @@ export default function ContactPage() {
               </h3>
               <p className="text-brand-muted mb-4">
                 Yes! You can request viewings directly through our platform, and
-                we'll coordinate with the property owner or agent to arrange a
+                we&apos;ll coordinate with the property owner or agent to arrange a
                 convenient time.
               </p>
             </div>
@@ -428,7 +428,7 @@ export default function ContactPage() {
             Emergency or Urgent Issues?
           </h2>
           <p className="mb-6 text-red-700">
-            If you're experiencing a serious issue with a property or need
+            If you&apos;re experiencing a serious issue with a property or need
             immediate assistance, please contact our emergency hotline.
           </p>
           <div className="flex flex-col justify-center gap-4 sm:flex-row">

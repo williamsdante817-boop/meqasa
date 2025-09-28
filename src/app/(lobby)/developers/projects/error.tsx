@@ -48,7 +48,7 @@ export default function DeveloperProjectsError({ error, reset }: ErrorProps) {
             </h1>
 
             <p className="text-brand-muted mb-8 text-base leading-relaxed md:text-lg">
-              We're having trouble loading the developer projects page. This could be due to a temporary issue with our servers.
+              We&apos;re having trouble loading the developer projects page. This could be due to a temporary issue with our servers.
             </p>
 
             <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">

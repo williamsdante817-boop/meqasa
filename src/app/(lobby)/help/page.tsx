@@ -2,8 +2,6 @@
 
 import { Breadcrumbs } from "@/components/layout/bread-crumbs";
 import Shell from "@/layouts/shell";
-import type { Metadata } from "next";
-import { siteConfig } from "@/config/site";
 import {
   HelpCircle,
   Search,
@@ -12,9 +10,8 @@ import {
   CreditCard,
   Shield,
   MessageSquare,
-  ChevronDown,
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -25,25 +22,6 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useState } from "react";
-
-const metadata: Metadata = {
-  title: "Help & FAQ - MeQasa Support Center | Get Answers",
-  description:
-    "Find answers to frequently asked questions about MeQasa's property platform. Get help with listings, searches, payments, account management, and more.",
-  keywords: [
-    "meqasa help",
-    "faq ghana property",
-    "real estate support",
-    "property listing help",
-    "meqasa support center",
-    "user guide ghana",
-    "property search help",
-  ],
-  robots: {
-    index: true,
-    follow: true,
-  },
-};
 
 interface FAQ {
   id: string;
@@ -233,7 +211,7 @@ export default function HelpPage() {
           </h1>
           <p className="text-brand-muted mx-auto mb-8 max-w-3xl text-xl">
             Find answers to frequently asked questions, get help with common
-            issues, and learn how to make the most of MeQasa's services.
+            issues, and learn how to make the most of MeQasa&apos;s services.
           </p>
 
           {/* Search Bar */}
@@ -413,7 +391,7 @@ export default function HelpPage() {
               Still Need Help?
             </h2>
             <p className="text-brand-muted mx-auto mb-6 max-w-2xl">
-              Can't find the answer you're looking for? Our support team is
+              Can&apos;t find the answer you&apos;re looking for? Our support team is
               ready to assist you with any questions or issues you may have.
             </p>
             <div className="flex flex-col justify-center gap-4 sm:flex-row">
