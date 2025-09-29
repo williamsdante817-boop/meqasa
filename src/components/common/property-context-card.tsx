@@ -2,6 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Tag, ExternalLink } from "lucide-react";
 import Link from "next/link";
+import { ANY_SENTINEL } from "@/lib/search/constants";
 
 interface PropertyContextCardProps {
   /** Property type to determine the context display */
@@ -61,6 +62,19 @@ export default function PropertyContextCard({
 
   // Render content based on property and owner type
   const renderContent = () => {
+    const propertyTypeQuery =
+      type && type !== ANY_SENTINEL
+        ? `&ftype=${encodeURIComponent(type.toLowerCase())}`
+        : "";
+    const typeLabel =
+      type && type !== ANY_SENTINEL
+        ? type.toLowerCase()
+        : "property";
+    const typePluralLabel =
+      type && type !== ANY_SENTINEL
+        ? `${typeLabel}${typeLabel.endsWith("s") ? "" : "s"}`
+        : "properties";
+
     if (propertyType === "developer-unit" && developerData) {
       return (
         <div className="space-y-2">
@@ -89,22 +103,22 @@ export default function PropertyContextCard({
 
     // Agent listings
     if (ownerType === "Agent" && listingData) {
-      return (
-        <div className="space-y-2">
-          <Link
-            href={`/search/${contract.toLowerCase()}?q=ghana&ftype=${type.toLowerCase()}&page=1`}
-            className="group flex items-center gap-2 text-sm text-blue-600 transition-colors hover:text-blue-700 hover:underline"
-            key={listingData.parenttext}
-          >
-            <span className="font-medium">{listingData.parenttext}</span>
+          return (
+            <div className="space-y-2">
+              <Link
+                href={`/search/${contract.toLowerCase()}?q=ghana${propertyTypeQuery}&w=1`}
+                className="group flex items-center gap-2 text-sm text-blue-600 transition-colors hover:text-blue-700 hover:underline"
+                key={listingData.parenttext}
+              >
+                <span className="font-medium">{listingData.parenttext}</span>
             <ExternalLink className="h-3 w-3 opacity-0 transition-opacity group-hover:opacity-100" />
           </Link>
-          <Link
-            href={`/search/${contract.toLowerCase()}?q=${location.toLowerCase()}&ftype=${type.toLowerCase()}&page=1`}
-            className="group flex items-center gap-2 text-sm text-blue-600 transition-colors hover:text-blue-700 hover:underline"
-            key={listingData.categorytext}
-          >
-            <span className="font-medium">{listingData.categorytext}</span>
+              <Link
+                href={`/search/${contract.toLowerCase()}?q=${location.toLowerCase()}${propertyTypeQuery}&w=1`}
+                className="group flex items-center gap-2 text-sm text-blue-600 transition-colors hover:text-blue-700 hover:underline"
+                key={listingData.categorytext}
+              >
+                <span className="font-medium">{listingData.categorytext}</span>
             <ExternalLink className="h-3 w-3 opacity-0 transition-opacity group-hover:opacity-100" />
           </Link>
         </div>
@@ -121,11 +135,11 @@ export default function PropertyContextCard({
             </span>
           </div>
           <Link
-            href={`/search/${contract.toLowerCase()}?ffsbo=1&q=${location.toLowerCase()}&ftype=${type.toLowerCase()}&page=1`}
+            href={`/search/${contract.toLowerCase()}?ffsbo=1&q=${location.toLowerCase()}${propertyTypeQuery}&w=1`}
             className="group flex items-center gap-2 text-sm text-blue-600 transition-colors hover:text-blue-700 hover:underline"
           >
             <span className="font-medium">
-              More owner-direct {type.toLowerCase()}s in {location}
+              More owner-direct {typePluralLabel} in {location}
             </span>
             <ExternalLink className="h-3 w-3 opacity-0 transition-opacity group-hover:opacity-100" />
           </Link>
@@ -135,16 +149,16 @@ export default function PropertyContextCard({
 
     // Other/Project type (fallback)
     return (
-      <div className="space-y-2">
-        <h3 className="text-brand-accent text-base font-semibold">
-          Part of {ownerName} Development
-        </h3>
-        <Link
-          href={`/search/${contract.toLowerCase()}?q=${location.toLowerCase()}&ftype=${type.toLowerCase()}&page=1`}
-          className="group flex items-center gap-2 text-sm text-blue-600 transition-colors hover:text-blue-700 hover:underline"
-        >
-          <span className="font-medium">More properties in this area</span>
-          <ExternalLink className="h-3 w-3 opacity-0 transition-opacity group-hover:opacity-100" />
+        <div className="space-y-2">
+          <h3 className="text-brand-accent text-base font-semibold">
+            Part of {ownerName} Development
+          </h3>
+          <Link
+            href={`/search/${contract.toLowerCase()}?q=${location.toLowerCase()}${propertyTypeQuery}&w=1`}
+            className="group flex items-center gap-2 text-sm text-blue-600 transition-colors hover:text-blue-700 hover:underline"
+          >
+            <span className="font-medium">More properties in this area</span>
+            <ExternalLink className="h-3 w-3 opacity-0 transition-opacity group-hover:opacity-100" />
         </Link>
       </div>
     );

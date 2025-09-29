@@ -100,7 +100,7 @@ export function PropertyErrorUI({
 
           {errorDetails.showBrowseProperties && (
             <Link
-              href="/search/rent?q=ghana&page=1"
+              href="/search/rent?q=ghana&w=1"
               className="border-input bg-background hover:bg-accent hover:text-accent-foreground inline-flex shrink-0 items-center rounded-md border px-4 py-2 whitespace-nowrap transition-colors"
             >
               <svg

@@ -1,4 +1,5 @@
 import { Breadcrumbs } from "@/components/layout/bread-crumbs";
+import { ResultsPopup } from "@/components/results-popup";
 import { HeroBannerSkeleton } from "@/components/search/BannerSkeleton";
 import { HeroBanner } from "@/components/search/HeroBanner";
 import PropertyTypeLinks from "@/components/search/PropertyTypeLinks";
@@ -8,13 +9,13 @@ import {
   StreamingFlexiBannerWrapper,
   StreamingSidebarBanners,
 } from "@/components/search/StreamingBanners";
-import { ResultsPopup } from "@/components/results-popup";
+import { siteConfig } from "@/config/site";
 import Shell from "@/layouts/shell";
 import { getResultsHeroBanner } from "@/lib/banners";
 import { loadMoreProperties, searchProperties } from "@/lib/meqasa";
-import { SearchResultsWrapper } from "./SearchResultsWrapper";
+import { ANY_SENTINEL } from "@/lib/search/constants";
 import type { Metadata } from "next";
-import { siteConfig } from "@/config/site";
+import { SearchResultsWrapper } from "./SearchResultsWrapper";
 
 interface SearchPageProps {
   params: Promise<{ type: string }>;
@@ -29,6 +30,16 @@ export async function generateMetadata({
   const { type } = await params;
   const resolvedSearchParams = await searchParams;
   const location = resolvedSearchParams.q ?? "Ghana";
+  const isShortLet =
+    resolvedSearchParams.frentperiod === "shortrent" ||
+    resolvedSearchParams.fhowshort !== undefined;
+  const headingParams: Record<string, string> = {
+    ...resolvedSearchParams,
+  };
+  if (isShortLet) {
+    headingParams.frentperiod = "shortrent";
+    headingParams.ftype = ANY_SENTINEL;
+  }
 
   const typeDisplay = type.charAt(0).toUpperCase() + type.slice(1);
   const locationDisplay = location.charAt(0).toUpperCase() + location.slice(1);
@@ -105,27 +116,75 @@ export default async function SearchPage({
   const { type } = await params;
   const resolvedSearchParams = await searchParams;
   const location = resolvedSearchParams.q ?? "Ghana";
+  const isShortLet =
+    resolvedSearchParams.frentperiod === "shortrent" ||
+    resolvedSearchParams.fhowshort !== undefined;
+
+  const headingParams: Record<string, string> = {
+    ...resolvedSearchParams,
+  };
+  if (isShortLet) {
+    headingParams.frentperiod = "shortrent";
+    headingParams.ftype = ANY_SENTINEL;
+  }
 
   // Load critical data on server: hero banner and search results
   const [heroBanner, searchData] = await Promise.all([
     getResultsHeroBanner().catch(() => null),
     (async () => {
-      const currentPage = parseInt(resolvedSearchParams.page ?? "1");
+      const currentPage = parseInt(resolvedSearchParams.w ?? "1");
       const urlSearchId = resolvedSearchParams.y
         ? parseInt(resolvedSearchParams.y)
         : null;
 
+      const canonicalResultTotalRaw = resolvedSearchParams.rtotal;
+      const canonicalResultTotal =
+        canonicalResultTotalRaw !== undefined
+          ? Number(canonicalResultTotalRaw)
+          : null;
+
       try {
         if (currentPage > 1 && urlSearchId) {
-          return await loadMoreProperties(type, location, {
+          const loadMoreResult = await loadMoreProperties(type, location, {
             y: urlSearchId,
             w: currentPage,
           });
+          if (
+            canonicalResultTotal !== null &&
+            !Number.isNaN(canonicalResultTotal)
+          ) {
+            return {
+              ...loadMoreResult,
+              resultcount: canonicalResultTotal,
+            };
+          }
+          return loadMoreResult;
         } else {
-          return await searchProperties(type, location, {
-            ...resolvedSearchParams,
+          const sanitizedSearchParams = { ...resolvedSearchParams };
+          delete sanitizedSearchParams.w;
+          delete sanitizedSearchParams.page;
+          delete sanitizedSearchParams.rtotal;
+          if (
+            sanitizedSearchParams.frentperiod === "shortrent" ||
+            sanitizedSearchParams.fhowshort !== undefined
+          ) {
+            sanitizedSearchParams.ftype = ANY_SENTINEL;
+            sanitizedSearchParams.frentperiod = "shortrent";
+          }
+          const searchResult = await searchProperties(type, location, {
+            ...sanitizedSearchParams,
             app: "vercel",
           });
+          if (
+            canonicalResultTotal !== null &&
+            !Number.isNaN(canonicalResultTotal)
+          ) {
+            return {
+              ...searchResult,
+              resultcount: canonicalResultTotal,
+            };
+          }
+          return searchResult;
         }
       } catch (error) {
         console.error("Error fetching search data:", error);
@@ -144,10 +203,28 @@ export default async function SearchPage({
     })(),
   ]);
 
+  const canonicalResultTotalFromUrlRaw = resolvedSearchParams.rtotal;
+  const canonicalResultTotalFromUrl =
+    canonicalResultTotalFromUrlRaw !== undefined
+      ? Number(canonicalResultTotalFromUrlRaw)
+      : null;
+  const normalizedResultCount = Number(searchData.resultcount) || 0;
+  const initialTotal =
+    canonicalResultTotalFromUrl !== null &&
+    !Number.isNaN(canonicalResultTotalFromUrl)
+      ? canonicalResultTotalFromUrl
+      : normalizedResultCount;
+  const hydratedSearchData = {
+    ...searchData,
+    resultcount: initialTotal,
+  };
+
   const segments = [
     { title: "Home", href: "/", key: "home" },
     {
-      title: `For ${type.charAt(0).toUpperCase() + type.slice(1)}`,
+      title: isShortLet
+        ? "Short-term Rentals"
+        : `For ${type.charAt(0).toUpperCase() + type.slice(1)}`,
       href: `/search/${type}`,
       key: `search-${type}`,
     },
@@ -160,8 +237,14 @@ export default async function SearchPage({
     location: string,
     searchParams: Record<string, string>
   ): string => {
-    const typeDisplay =
-      type === "rent" ? "Rental" : type === "sale" ? "Sale" : type;
+    const isShortTerm = searchParams.frentperiod === "shortrent";
+    const typeDisplay = isShortTerm
+      ? "Short-term Rentals"
+      : type === "rent"
+        ? "Rental"
+        : type === "sale"
+          ? "Sale"
+          : type;
     const locationDisplay = location === "ghana" ? "Ghana" : location;
 
     // Check for specific filters to make heading more specific
@@ -169,12 +252,18 @@ export default async function SearchPage({
     const bedrooms = searchParams.fbeds;
     const furnished = searchParams.fisfurnished;
     const owner = searchParams.ffsbo;
-    const period = searchParams.frentperiod;
 
     // Build contextual heading
-    let heading = `${typeDisplay} Properties`;
+    let heading = isShortTerm
+      ? "Short-term Rentals"
+      : `${typeDisplay} Properties`;
 
-    if (propertyType && propertyType !== "all") {
+    if (
+      !isShortTerm &&
+      propertyType &&
+      propertyType !== "all" &&
+      propertyType !== ANY_SENTINEL
+    ) {
       const propertyTypeMap: Record<string, string> = {
         house: "Houses",
         apartment: "Apartments",
@@ -196,10 +285,6 @@ export default async function SearchPage({
 
     if (owner === "1") {
       heading = `Owner-Direct ${heading}`;
-    }
-
-    if (period === "shortrent") {
-      heading = `Short-term ${heading}`;
     }
 
     heading += ` in ${locationDisplay}`;
@@ -238,7 +323,11 @@ export default async function SearchPage({
 
     // Add property type context
     const propertyType = searchParams.ftype;
-    if (propertyType && propertyType !== "all") {
+    if (
+      propertyType &&
+      propertyType !== "all" &&
+      propertyType !== ANY_SENTINEL
+    ) {
       const propertyTypeMap: Record<string, string> = {
         house: "houses",
         apartment: "apartments",
@@ -257,12 +346,16 @@ export default async function SearchPage({
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    name: `Properties for ${type} in ${location}`,
-    description: `Search results for properties available for ${type} in ${location}`,
+    name: isShortLet
+      ? `Short-term rentals in ${location}`
+      : `Properties for ${type} in ${location}`,
+    description: isShortLet
+      ? `Search results for short-term rentals in ${location}`
+      : `Search results for properties available for ${type} in ${location}`,
     url: `${siteConfig.url}/search/${type}?q=${encodeURIComponent(location)}`,
-    numberOfItems: searchData.resultcount ?? 0,
+    numberOfItems: initialTotal,
     itemListElement:
-      searchData.results?.map((property, index) => ({
+      hydratedSearchData.results?.map((property, index) => ({
         "@type": "ListItem",
         position: index + 1,
         item: {
@@ -322,14 +415,14 @@ export default async function SearchPage({
             <header className="space-y-6">
               <div>
                 <h1 className="text-brand-accent mt-2 text-lg leading-6 font-bold capitalize md:text-xl">
-                  {generateDynamicHeading(type, location, resolvedSearchParams)}
+                  {generateDynamicHeading(type, location, headingParams)}
                 </h1>
                 <p className="text-brand-muted mt-3 text-sm">
                   {generateDynamicSubheading(
                     type,
                     location,
-                    searchData.resultcount,
-                    resolvedSearchParams
+                    initialTotal,
+                    headingParams
                   )}
                 </p>
               </div>
@@ -355,11 +448,11 @@ export default async function SearchPage({
                 <SearchResultsWrapper
                   type={type}
                   location={location}
-                  initialResults={searchData.results}
-                  initialTotal={searchData.resultcount}
-                  initialSearchId={searchData.searchid ?? 0}
-                  initialPage={parseInt(resolvedSearchParams.page ?? "1")}
-                  initialSearchData={searchData}
+                  initialResults={hydratedSearchData.results}
+                  initialTotal={initialTotal}
+                  initialSearchId={hydratedSearchData.searchid ?? 0}
+                  initialPage={parseInt(resolvedSearchParams.w ?? "1")}
+                  initialSearchData={hydratedSearchData}
                 />
               </div>
 

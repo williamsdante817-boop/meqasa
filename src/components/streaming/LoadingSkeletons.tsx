@@ -158,7 +158,7 @@ export function LatestListingsSkeleton() {
     <ContentSection
       title="Latest Listings"
       description="View all recent property listings available."
-      href="/search/rent?q=ghana&page=1"
+      href="/search/rent?q=ghana&w=1"
       className="mx-auto w-full pt-14 md:max-w-[720px] md:pt-20 lg:max-w-[960px] lg:pt-24 xl:max-w-[1140px] 2xl:max-w-[1320px] [&_h2]:px-4 [&_p]:px-4"
     >
       <div className="space-y-8">
@@ -235,7 +235,7 @@ export function FeaturedListingsSkeleton() {
     <ContentSection
       title="Featured Listings"
       description="View all featured property listings available."
-      href="/search/rent?q=ghana&page=1"
+      href="/search/rent?q=ghana&w=1"
       className="w-full pt-14 md:pt-20 lg:pt-24 [&_h2]:px-4 md:[&_h2]:px-0 [&_p]:px-4 md:[&_p]:px-0"
     >
       <div className="space-y-8">

@@ -18,8 +18,8 @@ export function FeaturedListingsSection({
 
   const href =
     activeTab === "rent"
-      ? "/search/rent?q=ghana&page=1"
-      : "/search/sale?q=ghana&page=1";
+      ? "/search/rent?q=ghana&w=1"
+      : "/search/sale?q=ghana&w=1";
 
   return (
     <ContentSection

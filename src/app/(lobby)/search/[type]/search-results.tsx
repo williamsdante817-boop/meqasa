@@ -18,8 +18,9 @@ import {
 } from "@/components/ui/pagination";
 import type { MeqasaListing, MeqasaSearchResponse } from "@/types/meqasa";
 import { isShortLetQuery } from "@/lib/search/short-let";
+import { ANY_SENTINEL } from "@/lib/search/constants";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 interface SearchResultsProps {
   type: string;
@@ -29,7 +30,7 @@ interface SearchResultsProps {
   initialSearchId: number;
   initialPage: number;
   initialSearchData: MeqasaSearchResponse;
-  onSearchIdUpdate?: (searchId: number, page: number) => void;
+  onSearchIdUpdate?: (searchId: number, page: number, total: number) => void;
 }
 
 function getPaginationItems(current: number, total: number) {
@@ -94,6 +95,23 @@ export function SearchResults({
   const [searchId, setSearchId] = useState<number | null>(initialSearchId);
   const [currentPage, setCurrentPage] = useState(initialPage);
   const [isLoading, setIsLoading] = useState(false);
+  const skipNextFetch = useRef(false);
+  const baseTotalRef = useRef<number>(initialTotal);
+  const lastSignatureRef = useRef<string | null>(null);
+
+  const searchSignature = useMemo(() => {
+    const entries = Array.from(searchParams.entries()).filter(
+      ([key]) => key !== "y" && key !== "w" && key !== "rtotal"
+    );
+    entries.sort(([a], [b]) => a.localeCompare(b));
+    return entries.map(([key, value]) => `${key}=${value}`).join("&");
+  }, [searchParams]);
+
+  useEffect(() => {
+    if (lastSignatureRef.current === null && searchSignature) {
+      lastSignatureRef.current = searchSignature;
+    }
+  }, [searchSignature]);
 
   // Helper function to detect if this is a short-let search
   const isShortLetSearch = () =>
@@ -128,9 +146,11 @@ export function SearchResults({
       // Reset all state to match new server data
       setSearchResults(initialResults);
       setTotalResults(initialTotal);
+      baseTotalRef.current = initialTotal;
       setSearch(initialSearchState);
       setSearchId(initialSearchId);
       setCurrentPage(initialPage);
+      lastSignatureRef.current = searchSignature;
 
       // Clear prefetched data since it's for the old search
       setPrefetchedNextPage(null);
@@ -141,7 +161,17 @@ export function SearchResults({
       // Reset the initial data processing flag for the new search
       hasProcessedInitialData.current = false;
     }
-  }, [mounted, initialSearchId, searchId, isLoading]); // Only depend on stable primitive values
+  }, [
+    mounted,
+    initialSearchId,
+    searchId,
+    isLoading,
+    initialResults,
+    initialTotal,
+    initialSearchState,
+    initialPage,
+    searchSignature,
+  ]); // Only depend on stable primitive values
 
   // Prefetch next page
   const [prefetchedNextPage, setPrefetchedNextPage] = useState<
@@ -174,7 +204,12 @@ export function SearchResults({
     // Only run on client side after component is mounted
     if (!mounted) return;
 
-    const urlPage = parseInt(searchParams.get("page") ?? "1");
+    if (skipNextFetch.current) {
+      skipNextFetch.current = false;
+      return;
+    }
+
+    const urlPage = parseInt(searchParams.get("w") ?? "1");
     const urlSearchId = searchParams.get("y")
       ? parseInt(searchParams.get("y")!)
       : null;
@@ -183,9 +218,27 @@ export function SearchResults({
     if (
       !hasProcessedInitialData.current &&
       urlPage === initialPage &&
-      urlSearchId === initialSearchId
+      (urlSearchId === initialSearchId || urlSearchId === null)
     ) {
       hasProcessedInitialData.current = true;
+      const urlTotal = searchParams.get("rtotal");
+      if (
+        onSearchIdUpdate &&
+        initialSearchId !== null &&
+        urlTotal !== baseTotalRef.current.toString()
+      ) {
+        skipNextFetch.current = true;
+        onSearchIdUpdate(initialSearchId, initialPage, baseTotalRef.current);
+        return;
+      }
+      if (
+        urlSearchId === null &&
+        onSearchIdUpdate &&
+        initialSearchId !== null
+      ) {
+        skipNextFetch.current = true;
+        onSearchIdUpdate(initialSearchId, initialPage, baseTotalRef.current);
+      }
       return;
     }
 
@@ -204,6 +257,11 @@ export function SearchResults({
         const searchParamsObj = searchParams
           ? Object.fromEntries(searchParams.entries())
           : {};
+        delete (searchParamsObj as Record<string, string>).page;
+        delete (searchParamsObj as Record<string, string>).rtotal;
+        if (isShortLetSearch()) {
+          (searchParamsObj as Record<string, string>).ftype = ANY_SENTINEL;
+        }
         const locality = searchParamsObj.q;
         const pageParam = urlPage;
         const currentSearchId = urlSearchId ?? searchId;
@@ -214,7 +272,9 @@ export function SearchResults({
         }
 
         // If we have a searchId and page param, fetch that specific page
-        if (currentSearchId && pageParam > 1) {
+        const isPaginationFetch = currentSearchId && pageParam > 1;
+
+        if (isPaginationFetch) {
           const response = await fetch("/api/properties", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -231,7 +291,7 @@ export function SearchResults({
                 // Add short-let specific parameters if this is a short-let search
                 ...(isShortLetSearch() && {
                   frentperiod: "shortrent",
-                  ftype: "- Any -",
+                  ftype: ANY_SENTINEL,
                   ...(searchParamsObj.fhowshort && {
                     fhowshort: searchParamsObj.fhowshort,
                   }),
@@ -243,16 +303,26 @@ export function SearchResults({
           if (!response.ok) throw new Error("Failed to fetch page");
           const data = (await response.json()) as MeqasaSearchResponse;
           setSearchResults(data.results);
-          setTotalResults(data.resultcount);
-          setSearch(data);
+          // Keep total results stable during pagination
+          setTotalResults(baseTotalRef.current);
+          setSearch({
+            ...data,
+            resultcount: baseTotalRef.current,
+            searchid: searchId ?? data.searchid,
+          });
           setCurrentPage(pageParam);
-          setSearchId(currentSearchId);
           setIsLoading(false);
           // Note: URL is already updated by handlePageChange, no need to update again
           return;
         }
 
         // Initial search - only if search parameters actually changed (not just page)
+        delete (searchParamsObj as Record<string, string>).w;
+        delete (searchParamsObj as Record<string, string>).rtotal;
+        if (isShortLetSearch()) {
+          (searchParamsObj as Record<string, string>).ftype = ANY_SENTINEL;
+        }
+
         const response = await fetch("/api/properties", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -267,7 +337,7 @@ export function SearchResults({
               // Add short-let specific parameters if this is a short-let search
               ...(isShortLetSearch() && {
                 frentperiod: "shortrent",
-                ftype: "- Any -",
+                ftype: ANY_SENTINEL,
                 ...(searchParamsObj.fhowshort && {
                   fhowshort: searchParamsObj.fhowshort,
                 }),
@@ -279,24 +349,32 @@ export function SearchResults({
         if (!response.ok) throw new Error("Failed to fetch properties");
         const data = (await response.json()) as MeqasaSearchResponse;
         setSearchResults(data.results);
-        setTotalResults(data.resultcount);
-        setSearch(data);
+        const normalizedCount = Number(data.resultcount) || 0;
+        const signatureChanged = lastSignatureRef.current !== searchSignature;
 
-        // When we get a new searchId from filter/location changes, reset to page 1
-        const newSearchId = data.searchid;
-        const isNewSearch = newSearchId !== searchId;
+        if (signatureChanged || baseTotalRef.current === 0) {
+          baseTotalRef.current = normalizedCount;
+          lastSignatureRef.current = searchSignature;
+        }
 
-        setSearchId(newSearchId);
+        setTotalResults(baseTotalRef.current);
 
-        if (isNewSearch) {
-          // Reset to page 1 for new searches
-          setCurrentPage(1);
-          // Update URL with new searchId via callback
-          onSearchIdUpdate?.(newSearchId, 1);
+        setSearch({
+          ...data,
+          resultcount: baseTotalRef.current,
+          searchid: searchId ?? data.searchid,
+        });
+
+        if (signatureChanged || searchId === null) {
+          const nextSearchId = data.searchid;
+          setSearchId(nextSearchId);
+          setCurrentPage(pageParam);
+          if (onSearchIdUpdate) {
+            skipNextFetch.current = true;
+            onSearchIdUpdate(nextSearchId, pageParam, baseTotalRef.current);
+          }
         } else {
           setCurrentPage(pageParam);
-          // Update URL with current searchId and page
-          onSearchIdUpdate?.(newSearchId, pageParam);
         }
       } catch (error) {
         console.error("Error fetching properties:", error);
@@ -317,7 +395,7 @@ export function SearchResults({
     searchParams.get("fbaths"),
     searchParams.get("fmin"),
     searchParams.get("fmax"),
-    searchParams.get("page"),
+    searchParams.get("w"),
     searchParams.get("frentperiod"), // Add short-let rent period
     searchParams.get("fhowshort"), // Add short-let duration
     type,
@@ -359,9 +437,10 @@ export function SearchResults({
       // console.log("🚀 Starting prefetch for page", currentPage + 1);
       isPrefetching.current = true;
       const nextPage = currentPage + 1;
-      const searchParamsObj = searchParams
-        ? Object.fromEntries(searchParams.entries())
-        : {};
+        const searchParamsObj = searchParams
+          ? Object.fromEntries(searchParams.entries())
+          : {};
+        delete (searchParamsObj as Record<string, string>).page;
 
       fetch("/api/properties", {
         method: "POST",
@@ -379,7 +458,7 @@ export function SearchResults({
             // Add short-let specific parameters if this is a short-let search
             ...(isShortLetSearch() && {
               frentperiod: "shortrent",
-              ftype: "- Any -",
+              ftype: ANY_SENTINEL,
               ...(searchParamsObj.fhowshort && {
                 fhowshort: searchParamsObj.fhowshort,
               }),
@@ -397,8 +476,12 @@ export function SearchResults({
           // Only set prefetched data if searchId hasn't changed
           if (data.searchid == searchId) {
             setPrefetchedNextPage(data.results);
-            setPrefetchedTotal(data.resultcount);
-            setPrefetchedSearch(data);
+            setPrefetchedTotal(baseTotalRef.current);
+            setPrefetchedSearch({
+              ...data,
+              resultcount: baseTotalRef.current,
+              searchid: searchId ?? data.searchid,
+            });
             // console.log("✅ Prefetched data set for page", currentPage + 1);
           } else {
             // console.log("❌ Prefetch searchId mismatch, discarding data");
@@ -437,7 +520,7 @@ export function SearchResults({
       setPrefetchedSearch(null);
 
       // Update URL via callback
-      onSearchIdUpdate?.(searchId, pageNumber);
+      onSearchIdUpdate?.(searchId, pageNumber, baseTotalRef.current);
 
       return; // Exit early - no need for useEffect to handle this
     }
@@ -446,7 +529,7 @@ export function SearchResults({
     setIsLoading(true);
 
     // Update URL via callback
-    onSearchIdUpdate?.(searchId, pageNumber);
+    onSearchIdUpdate?.(searchId, pageNumber, baseTotalRef.current);
 
     // The useEffect will handle fetching the data since page parameter changed
   };
@@ -456,12 +539,17 @@ export function SearchResults({
     const nextPage = currentPage + 1;
 
     // Update URL via callback
-    onSearchIdUpdate?.(searchId, nextPage);
+    onSearchIdUpdate?.(searchId, nextPage, baseTotalRef.current);
     setIsLoading(true);
     try {
       const searchParamsObj = searchParams
         ? Object.fromEntries(searchParams.entries())
         : {};
+      if (isShortLetSearch()) {
+        (searchParamsObj as Record<string, string>).ftype = ANY_SENTINEL;
+      }
+      delete (searchParamsObj as Record<string, string>).page;
+      delete (searchParamsObj as Record<string, string>).rtotal;
       const response = await fetch("/api/properties", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -492,7 +580,7 @@ export function SearchResults({
       // Only update state if the response searchId matches our current searchId
       if (Number(data.searchid) === Number(searchId)) {
         setSearchResults((prev) => [...prev, ...data.results]);
-        setTotalResults(data.resultcount);
+        setTotalResults(baseTotalRef.current);
         setSearch(data);
         setCurrentPage(nextPage);
       }

@@ -3,6 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { SearchResults } from "./search-results";
 import type { MeqasaListing, MeqasaSearchResponse } from "@/types/meqasa";
+import { ANY_SENTINEL } from "@/lib/search/constants";
 
 interface SearchResultsWrapperProps {
   type: string;
@@ -26,11 +27,31 @@ export function SearchResultsWrapper({
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const handleSearchIdUpdate = (searchId: number, page: number) => {
+  const handleSearchIdUpdate = (
+    searchId: number,
+    page: number,
+    total: number
+  ) => {
     // Update URL with new y (search ID) and page - matching Meqasa URL structure
     const newSearchParams = new URLSearchParams(searchParams.toString());
+    newSearchParams.delete("page");
+    newSearchParams.delete("rtotal");
     newSearchParams.set("y", searchId.toString());
-    newSearchParams.set("page", page.toString());
+    newSearchParams.set("w", page.toString());
+
+    const isShortLet =
+      newSearchParams.get("frentperiod") === "shortrent" ||
+      newSearchParams.has("fhowshort");
+
+    if (isShortLet) {
+      newSearchParams.set("frentperiod", "shortrent");
+      newSearchParams.set("ftype", ANY_SENTINEL);
+    }
+
+    if (total > 0) {
+      newSearchParams.set("rtotal", total.toString());
+    }
+
     router.push(`?${newSearchParams.toString()}`, { scroll: false });
   };
 
