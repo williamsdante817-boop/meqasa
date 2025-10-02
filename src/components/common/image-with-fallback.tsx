@@ -1,87 +1,85 @@
 "use client";
 
-import React from "react";
+import { cn } from "@/lib/utils";
 import Image from "next/image";
 import type { ComponentProps } from "react";
-import { cn } from "@/lib/utils";
+import React, { useEffect, useRef, useState } from "react";
 
 const ERROR_IMG_SRC =
-  "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODgiIGhlaWdodD0iODgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgc3Ryb2tlPSIjMDAwIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBvcGFjaXR5PSIuMyIgZmlsbD0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIzLjciPjxyZWN0IHg9IjE2IiB5PSIxNiIgd2lkdGg9IjU2IiBoZWlnaHQ9IjU2IiByeD0iNiIvPjxwYXRoIGQ9Im0xNiA1OCAxNi0xOCAzMiAzMiIvPjxjaXJjbGUgY3g9IjUzIiBjeT0iMzUiIHI9IjciLz48L3N2Zz4KCg==";
+  "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODgiIGhlaWdodD0iODgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgc3Ryb2tlPSIjMDAwIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBvcGFjaXR5PSIuMyIgZmlsbD0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIzLjciPjxyZWN0IHg9IjE2IiB5PSIxNiIgd2lkdGg9IjU2IiBoZWlnaHQ9IjU2IiByeD0iNiIvPjxwYXRoIGQ9Im0xNiA1OCAxNi0xOCAzMiAzMiIvPjxjaXJjbGUgY3g9IjUzIiBjeT0iMzUiIHI9IjciLz48L3N2Zz4K";
 
 export type ImageWithFallbackProps = ComponentProps<typeof Image> & {
   fallbackAlt?: string;
+  fallbackSrc?: string;
   withBlur?: boolean;
 };
 
 export function ImageWithFallback(props: ImageWithFallbackProps) {
-  const [didError, setDidError] = React.useState(false);
-  const [isLoading, setIsLoading] = React.useState(true);
-
   const {
     src,
     alt,
     className,
     fallbackAlt,
-    loading,
-    priority,
+    fallbackSrc,
     withBlur = true,
     onError: userOnError,
     onLoad: userOnLoad,
     ...rest
   } = props;
 
-  const handleError = (event: unknown) => {
-    setDidError(true);
-    setIsLoading(false);
-    if (typeof userOnError === "function") {
-      // @ts-expect-error - Next/Image onError typing is not strict here
-      userOnError(event);
-    }
-  };
+  const [isLoading, setIsLoading] = useState(Boolean(src));
+  const [usingFallback, setUsingFallback] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
 
-  const handleLoad = (event: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    setIsLoading(false);
-    if (typeof userOnLoad === "function") {
-      userOnLoad(event);
-    }
-  };
+  const prevSrcRef = useRef<string | null>(null);
 
-  // Reset states when src changes so new URLs can attempt loading
-  React.useEffect(() => {
-    setDidError(false);
-    setIsLoading(true);
+  // Reset only when src actually changes
+  useEffect(() => {
+    if (src !== prevSrcRef.current) {
+      prevSrcRef.current = src as string;
+      setUsingFallback(false);
+      setRetryCount(0);
+      setIsLoading(Boolean(src));
+    }
   }, [src]);
 
-  if (didError) {
-    return (
-      <Image
-        {...rest}
-        src={ERROR_IMG_SRC}
-        alt={fallbackAlt ?? "Error loading image"}
-        className={cn(
-          "duration-700 ease-in-out",
-          withBlur && "blur-0 scale-100",
-          className
-        )}
-        loading={loading ?? (priority ? undefined : "lazy")}
-        onError={undefined}
-        onLoad={() => setIsLoading(false)}
-      />
-    );
-  }
+  const handleError = (event: React.SyntheticEvent<HTMLImageElement>) => {
+    // If not already using fallback, switch to fallbackSrc (or ERROR_IMG_SRC)
+    if (!usingFallback) {
+      setUsingFallback(true);
+    } else if (retryCount < 1) {
+      // retry original once in case of transient failure
+      setUsingFallback(false);
+      setRetryCount((c) => c + 1);
+    }
+    setIsLoading(false);
+    userOnError?.(event);
+  };
+
+  const handleLoad = (event: React.SyntheticEvent<HTMLImageElement>) => {
+    setIsLoading(false);
+    userOnLoad?.(event);
+  };
+
+  // Respect explicit alt="" for decorative images
+  const safeAlt =
+    alt !== undefined ? alt : (fallbackAlt ?? "Image could not be loaded");
+
+  const effectiveSrc = usingFallback
+    ? (fallbackSrc ?? ERROR_IMG_SRC)
+    : ((src as string) ?? ERROR_IMG_SRC);
 
   return (
     <Image
       {...rest}
-      src={src}
-      alt={alt ?? ""}
+      src={effectiveSrc}
+      alt={safeAlt}
       className={cn(
         "duration-700 ease-in-out",
         withBlur && isLoading && "scale-105 blur-sm",
         withBlur && !isLoading && "blur-0 scale-100",
         className
       )}
-      loading={loading ?? (priority ? undefined : "lazy")}
       onError={handleError}
       onLoad={handleLoad}
     />

@@ -1,11 +1,8 @@
-import { Breadcrumbs } from "@/components/layout/bread-crumbs";
+import FeaturedPropertiesAsideWrapper from "@/components/about/featured-properties-aside-wrapper";
 import { StructuredData } from "@/components/structured-data";
-import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/config/site";
 import Shell from "@/layouts/shell";
-import { Building2, Search } from "lucide-react";
 import type { Metadata } from "next";
-import Link from "next/link";
 
 // Generate metadata for SEO
 export const metadata: Metadata = {
@@ -120,189 +117,61 @@ export default function About() {
       {/* Structured Data for SEO */}
       <StructuredData data={structuredData} />
 
-      <Shell>
-        <div className="py-8">
-          {/* Breadcrumb */}
-          <Breadcrumbs
-            className="mb-8"
-            segments={[
-              { title: "Home", href: "/" },
-              { title: "About", href: "#" },
-            ]}
-          />
-          {/* Hero Section */}
-          <div className="mb-16 text-center">
-            <h1 className="text-brand-accent mb-6 text-4xl font-bold md:text-5xl">
-              About MeQasa
-            </h1>
-            <p className="text-brand-muted mx-auto max-w-3xl text-xl">
-              MeQasa helps you find residential and commercial property to rent
-              or buy in Ghana. We connect property seekers with owners, brokers,
-              and developers across Accra, Tema, and beyond.
-            </p>
-          </div>
-          {/* Mission Section */}
-          <div className="mb-16 grid gap-12 md:grid-cols-2">
+      <Shell className="py-8">
+        {/* Two-column grid layout: Main content + Featured properties aside */}
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_380px]">
+          {/* Main content - About text */}
+          <main className="space-y-8 lg:col-span-1">
+            {/* 1. About Us Heading + Description */}
             <div>
-              <h2 className="text-brand-accent mb-4 text-3xl font-bold">
-                Our Mission
-              </h2>
-              <p className="text-brand-muted mb-6 leading-relaxed">
-                We collaborate with brokers, owners and tenants to create
-                complete and dynamic property profiles. MeQasa facilitates
-                communication and meetings between prospective tenants and
-                owners.
-              </p>
+              <h1 className="text-brand-accent mb-4 text-3xl font-bold">
+                About Us
+              </h1>
               <p className="text-brand-muted leading-relaxed">
-                We believe everyone deserves access to quality housing and
-                reliable real estate information, which is why we focus on
-                creating comprehensive property profiles and seamless
-                connections.
+                meQasa helps you find residential and commercial property to
+                rent or buy in Ghana. Our website features thousands of options
+                in the capital of Accra, Tema, and the other regions, whether
+                you are looking to buy or rent a new home or office space.
+                meQasa is your total solutions partner as you go through your
+                property search, offering countless housing alternatives as well
+                as offline support and expert advice on the real estate industry
+                in Ghana.
               </p>
             </div>
+
+            {/* 2. Mission Section */}
             <div>
-              <h2 className="text-brand-accent mb-4 text-3xl font-bold">
+              <h2 className="text-brand-accent mb-4 text-2xl font-bold">
+                Our Mission
+              </h2>
+              <p className="text-brand-muted leading-relaxed">
+                We collaborate with brokers, owners and tenants to create
+                complete and dynamic property profiles. We advertise online all
+                adequately profiled properties that are vacant. meQasa
+                facilitates communication and meetings between prospective
+                tenants and owners or their representatives.
+              </p>
+            </div>
+
+            {/* 3. Vision Section */}
+            <div>
+              <h2 className="text-brand-accent mb-4 text-2xl font-bold">
                 Our Vision
               </h2>
-              <p className="text-brand-muted mb-6 leading-relaxed">
-                MeQasa is working toward an efficient housing search experience
+              <p className="text-brand-muted leading-relaxed">
+                meQasa is working toward an efficient housing search experience
                 in Africa primarily for prospective tenants. We aspire to be the
                 source of reliable information on housing in Africa.
               </p>
-              <p className="text-brand-muted leading-relaxed">
-                We envision a future where finding property is seamless, secure,
-                and accessible to everyone across Ghana and throughout Africa,
-                with reliable and comprehensive property information.
-              </p>
             </div>
-          </div>
-          {/* What We Do Section */}
-          <div className="mb-16">
-            <h2 className="text-brand-accent mb-8 text-center text-3xl font-bold">
-              What We Do
-            </h2>
-            <div className="grid gap-8 md:grid-cols-3">
-              <div className="rounded-lg bg-blue-50 p-6 text-center">
-                <h3 className="text-brand-accent mb-4 text-xl font-semibold">
-                  Property Listings
-                </h3>
-                <p className="text-brand-muted">
-                  Browse thousands of verified property listings across Ghana,
-                  from apartments and houses to commercial spaces and land.
-                </p>
-              </div>
-              <div className="rounded-lg bg-orange-50 p-6 text-center">
-                <h3 className="text-brand-accent mb-4 text-xl font-semibold">
-                  Agent Network
-                </h3>
-                <p className="text-brand-muted">
-                  Connect with professional, verified real estate agents and
-                  brokers who understand the local market and your needs.
-                </p>
-              </div>
-              <div className="rounded-lg bg-green-50 p-6 text-center">
-                <h3 className="text-brand-accent mb-4 text-xl font-semibold">
-                  Development Projects
-                </h3>
-                <p className="text-brand-muted">
-                  Discover new development projects from trusted developers,
-                  with detailed information and transparent pricing.
-                </p>
-              </div>
-            </div>
-          </div>
-          {/* Why Choose MeQasa Section */}
-          <div className="mb-16">
-            <h2 className="text-brand-accent mb-8 text-center text-3xl font-bold">
-              Why Choose MeQasa
-            </h2>
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-              <div className="text-center">
-                <div className="bg-brand-primary mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full">
-                  <span className="font-bold text-white">✓</span>
-                </div>
-                <h3 className="text-brand-accent mb-2 font-semibold">
-                  Verified Listings
-                </h3>
-                <p className="text-brand-muted text-sm">
-                  All properties are verified for authenticity and accuracy
-                </p>
-              </div>
-              <div className="text-center">
-                <div className="bg-brand-primary mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full">
-                  <span className="font-bold text-white">🏆</span>
-                </div>
-                <h3 className="text-brand-accent mb-2 font-semibold">
-                  Trusted Platform
-                </h3>
-                <p className="text-brand-muted text-sm">
-                  Over a decade of serving Ghana&apos;s real estate market
-                </p>
-              </div>
-              <div className="text-center">
-                <div className="bg-brand-primary mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full">
-                  <span className="font-bold text-white">📱</span>
-                </div>
-                <h3 className="text-brand-accent mb-2 font-semibold">
-                  Easy to Use
-                </h3>
-                <p className="text-brand-muted text-sm">
-                  User-friendly platform accessible on all devices
-                </p>
-              </div>
-              <div className="text-center">
-                <div className="bg-brand-primary mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full">
-                  <span className="font-bold text-white">🤝</span>
-                </div>
-                <h3 className="text-brand-accent mb-2 font-semibold">
-                  Expert Support
-                </h3>
-                <p className="text-brand-muted text-sm">
-                  Professional agents and customer support team
-                </p>
-              </div>
-            </div>
-          </div>
-          {/* Contact Section */}
+          </main>
+
+          {/* Aside - Featured Properties (Streamed) - Hidden on mobile */}
+          <aside className="hidden lg:sticky lg:top-20 lg:block lg:self-start">
+            <FeaturedPropertiesAsideWrapper />
+          </aside>
         </div>
       </Shell>
-      <section className="border-brand-border border-t bg-gray-50">
-        <Shell className="py-16 md:py-20">
-          <div className="mx-auto max-w-3xl text-center">
-            <h2 className="text-brand-accent mb-6 text-3xl leading-tight font-bold md:text-4xl">
-              Ready to Find Your Perfect Property?
-            </h2>
-            <p className="text-brand-muted mb-8 text-lg leading-relaxed md:text-xl">
-              Join thousands of satisfied customers who have found their dream
-              homes through MeQasa. Start your property search today or get in
-              touch with our team for personalized assistance.
-            </p>
-            <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <Button
-                asChild
-                size="lg"
-                className="bg-brand-primary hover:bg-brand-primary-dark w-full text-white sm:w-auto"
-              >
-                <Link href="/">
-                  <Search className="mr-2 h-5 w-5" />
-                  Browse Properties
-                </Link>
-              </Button>
-              <Button
-                asChild
-                variant="outline"
-                size="lg"
-                className="text-brand-accent border-brand-primary hover:text-brand-accent w-full sm:w-auto"
-              >
-                <Link href="/agents">
-                  <Building2 className="mr-2 h-5 w-5" />
-                  Find an Agent
-                </Link>
-              </Button>
-            </div>
-          </div>
-        </Shell>
-      </section>
     </>
   );
 }

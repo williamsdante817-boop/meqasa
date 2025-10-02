@@ -1,413 +1,348 @@
-"use client";
-
-import { Breadcrumbs } from "@/components/layout/bread-crumbs";
-import Shell from "@/layouts/shell";
-import {
-  HelpCircle,
-  Search,
-  Home,
-  Users,
-  CreditCard,
-  Shield,
-  MessageSquare,
-} from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import FeaturedPropertiesAsideWrapper from "@/components/about/featured-properties-aside-wrapper";
+import { StructuredData } from "@/components/structured-data";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { useState } from "react";
+import { siteConfig } from "@/config/site";
+import Shell from "@/layouts/shell";
+import type { Metadata } from "next";
 
-interface FAQ {
-  id: string;
-  question: string;
-  answer: string;
-  category: string;
-}
+export const metadata: Metadata = {
+  title:
+    "Frequently Asked Questions - MeQasa Help Center | Ghana's Property Platform",
+  description:
+    "Find answers to frequently asked questions about MeQasa. Get help with property search, listings, agent verification, and more on Ghana's leading real estate platform.",
+  keywords: [
+    "meqasa faq",
+    "property platform help",
+    "ghana real estate faq",
+    "meqasa support",
+    "property search help",
+    "real estate questions",
+    "meqasa help center",
+    "property listing help",
+  ],
+  authors: [{ name: "MeQasa" }],
+  creator: "MeQasa",
+  publisher: "MeQasa",
+  metadataBase: new URL(siteConfig.url),
+  alternates: {
+    canonical: "/help",
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "/help",
+    siteName: siteConfig.name,
+    title: "Frequently Asked Questions - MeQasa Help Center",
+    description:
+      "Find answers to frequently asked questions about MeQasa. Get help with property search, listings, and more.",
+    images: [
+      {
+        url: `${siteConfig.url}/og-faq.jpg`,
+        width: 1200,
+        height: 630,
+        alt: "MeQasa FAQ - Help Center",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    site: "@meqasa",
+    creator: "@meqasa",
+    title: "Frequently Asked Questions - MeQasa Help Center",
+    description:
+      "Find answers to frequently asked questions about MeQasa. Get help with property search, listings, and more.",
+    images: [`${siteConfig.url}/og-faq.jpg`],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+};
 
-const faqData: FAQ[] = [
-  // Getting Started
+// FAQ data from the live MeQasa site
+const faqData = [
   {
-    id: "1",
-    category: "Getting Started",
-    question: "How do I create an account on MeQasa?",
+    id: "home-seeker-1",
+    category: "Home Seeker Questions",
+    question:
+      "I need a place to rent for just a few months. Do you have such options available?",
     answer:
-      "Creating an account is simple! Click the 'Sign Up' button at the top of any page, enter your email address, create a secure password, and verify your email. You can also sign up using your Google or Facebook account for faster registration.",
+      'Short stays are not the easiest to come by in Ghana and are often gone before they can be listed online. However when we do have some available, you can find them by selecting "1-to-6 months" from the "Rent period" drop-down menu on the search results page or be sure to go to the "Short Lease" tab when you start your search from the meQasa home page.',
   },
   {
-    id: "2",
-    category: "Getting Started",
-    question: "Is MeQasa free to use?",
+    id: "home-seeker-2",
+    category: "Home Seeker Questions",
+    question: "Can I find properties outside of Accra on meQasa.com?",
     answer:
-      "Yes! Browsing and searching for properties is completely free. Creating an account and contacting property owners is also free. Property owners may choose to pay for premium features like featured listings or enhanced visibility.",
+      "Absolutely! Our search portal features thousands of properties for rent and sale in Accra and beyond. You can find a house, apartment or commercial property in some of the other regions of Ghana including in major cities like Kumasi and Takoradi. Simply select the region and locality you are interested in from the filter options.",
   },
   {
-    id: "3",
-    category: "Getting Started",
-    question: "How do I search for properties?",
+    id: "home-seeker-3",
+    category: "Home Seeker Questions",
+    question:
+      "I'm finding a lot of amazing houses and apartments and want to save them for later review. Is that possible?",
     answer:
-      "Use our search bar on the homepage to enter your preferred location, then filter by property type (apartment, house, commercial), price range, number of bedrooms, and other criteria. You can also browse by popular locations or newly listed properties.",
+      "Definitely! You can favourite properties that you like in order to return to them easily. If you see a house, apartment or office you are interested in just click the star icon and it will save. On property results, the star is near the bottom right corner of the result. On property pages the star is below the photos display. You may be prompted to create or log in to your personal account.",
   },
-
-  // Property Listings
   {
-    id: "4",
-    category: "Property Listings",
-    question: "How do I list my property on MeQasa?",
+    id: "home-seeker-4",
+    category: "Home Seeker Questions",
+    question: "Does your website offer land for purchase?",
     answer:
-      "After creating an account, click 'List Property' and follow our step-by-step guide. You'll need to provide property details, upload high-quality photos, set your price, and add a detailed description. Our team will verify your listing within 24 hours.",
+      "No, we do not. We focus on real estate and have thousands of amazing residential and commercial properties for rent and purchase.",
   },
   {
-    id: "5",
-    category: "Property Listings",
-    question: "What makes a good property listing?",
+    id: "home-seeker-5",
+    category: "Home Seeker Questions",
+    question:
+      "I'm not a fan of working with agents due to past experience. Can't I just deal with the homeowner?",
     answer:
-      "Great listings include: clear, high-quality photos of all rooms, accurate property details, competitive pricing, detailed descriptions highlighting unique features, and prompt responses to inquiries. Properties with virtual tours and floor plans also perform better.",
+      "We understand your frustration. The house hunting process can be a stressful one. We do have a number of properties listed and managed by homeowners themselves but the truth is most times they enlist agents to assist them in finding a tenant faster. We try to work with the best real estate agents out there and offer them training so they can serve you in the best way possible. If you ever have an issue working with an agent managing a property listed on our website, please let us know.",
   },
   {
-    id: "6",
-    category: "Property Listings",
-    question: "How long do listings stay active?",
+    id: "home-seeker-6",
+    category: "Home Seeker Questions",
+    question: "What is the Reference Number/Ref No.?",
     answer:
-      "Listings remain active for 90 days by default. You can extend, edit, or deactivate your listing anytime through your account dashboard. We'll send reminders before your listing expires so you can renew if needed.",
+      "Every property listing on our website has a Reference Number, found at the very end of the description box. This number serves as an easy way for you to identify specific properties that you want to return to, show someone else or refer to when you call in with questions. From our home page you can simply enter the Ref No. and hit enter to go directly to its property page.",
   },
-
-  // Verification & Safety
   {
-    id: "7",
-    category: "Verification & Safety",
-    question: "How does MeQasa verify property listings?",
+    id: "home-seeker-7",
+    category: "Home Seeker Questions",
+    question: "This website is amazing! How can I stay active with meQasa?",
     answer:
-      "Our verification team conducts physical visits to confirm property existence, accuracy of details, and photo authenticity. We also verify ownership documents and contact information. Verified listings display a blue checkmark badge.",
+      "meQasa aims to make your property search experience as smooth and enjoyable as possible, not only via this website but also with our stellar offline customer support line, mobile application, highly read blog, e-newsletter and engaging social media presence on Facebook, Twitter, Instagram and LinkedIn. Whether you are just beginning to think about renting/buying property, have just started your process, have been unsuccessful using other websites, are helping friends and family with their search, are a professional in the industry or simply love all things related to real estate, you should definitely stay in the loop with us! Like and follow us today. If you have feedback, we appreciate that too. You can tell us your thoughts here.",
   },
   {
-    id: "8",
-    category: "Verification & Safety",
-    question: "How can I avoid property scams?",
+    id: "agent-1",
+    category: "Real Estate Professional Questions",
+    question: "How do I sign up for an agent account on meQasa?",
     answer:
-      "Always verify listings through MeQasa, meet agents/landlords in person, view properties before making payments, use secure payment methods, and report suspicious activity. Never send money to unverified accounts or make advance payments without proper documentation.",
+      'All you need is an email account. Click on Sign up at the top right corner of the page. Choose "Register to list properties". Select the account type you would like to use. Provide your phone number. Accept the terms of use. Once you have signed up, one of our sales executives will contact you to discuss account plan options and charges.',
   },
   {
-    id: "9",
-    category: "Verification & Safety",
-    question: "What should I do if I encounter a suspicious listing?",
+    id: "agent-2",
+    category: "Real Estate Professional Questions",
+    question: "How do I Log in and Log out of my account?",
     answer:
-      "Report it immediately using the 'Report Listing' button on the property page or contact our support team. Provide details about why you believe it's suspicious. We investigate all reports within 24 hours and take appropriate action.",
+      "To log in to your account, simply click on Log in at the top right area of the page and enter your log in details or select the email service you used to create your account. To log out of your account, simply click the Log out link at the top left corner of the page",
   },
-
-  // Payments & Fees
   {
-    id: "10",
-    category: "Payments & Fees",
-    question: "What are the costs for listing a property?",
+    id: "agent-3",
+    category: "Real Estate Professional Questions",
+    question: "How do I change my account details?",
     answer:
-      "Basic listings are free for the first 30 days. Premium features include: Featured listings (₵50/month), Professional photography (₵200), Virtual tours (₵300), and Top placement (₵100/month). Prices may vary based on location and property type.",
+      "You can edit your details under your Profile tab on your dashboard page. Log in or click Logged in as [Your Name] at the top left area of the page. To log out of your account, simply click the Log out link at the top left corner of the page",
   },
   {
-    id: "11",
-    category: "Payments & Fees",
-    question: "What payment methods do you accept?",
+    id: "agent-4",
+    category: "Real Estate Professional Questions",
+    question:
+      "Its amazing that the website offers so many property options to home seekers but I'd like my properties to be seen more prominently. How can I make that happen?",
     answer:
-      "We accept mobile money (MTN, Vodafone, AirtelTigo), bank transfers, credit/debit cards, and cash payments at our offices. All online payments are processed securely through our certified payment partners.",
+      'Amidst thousands of houses, apartments and office listings from several different real estate agents, developers and homeowners, you are right, it can be a struggle to have your listings stand out. To assist your sales potential we do offer advertising in 4 forms: Property of the Month Feature: Boost visibility of your listing and help it stand out to serious home seekers ready to buy now. Your listing will appear on our homepage. Top Ads: Secure for your listing the top position of property search results in its given locality. Bump Ups: Automatically refresh the listing for your available property periodically so it appears among the first recently updated listings. Featured Property: As part of our "Agent List Feature" offer, you get to select one of your listings to be featured on the meQasa homepage. Learn more about our advertising offers for real estate professionals and other advertising options.',
   },
   {
-    id: "12",
-    category: "Payments & Fees",
-    question: "Do you offer refunds?",
+    id: "verification-1",
+    category: "Questions About Agent/Agency Verification",
+    question: 'What Does "Verified Agent" Mean?',
     answer:
-      "Refund policies vary by service. Premium listing fees are generally non-refundable once activated, but we offer pro-rated refunds for unused periods in exceptional circumstances. Contact our support team to discuss your specific situation.",
+      "A verified agent has furnished meQasa with additional proof of their identity as a real estate professional. The Verified Agent symbol signals credibility of the verified agent and should reassure most property seekers they are dealing with a professional.",
   },
-
-  // Account Management
   {
-    id: "13",
-    category: "Account Management",
-    question: "How do I reset my password?",
+    id: "verification-2",
+    category: "Questions About Agent/Agency Verification",
+    question: "How Does meQasa Verify Agents/Agencies?",
     answer:
-      "Click 'Forgot Password' on the login page, enter your email address, and we'll send reset instructions. Check your spam folder if you don't see the email within 5 minutes. You can also update your password from your account settings.",
-  },
-  {
-    id: "14",
-    category: "Account Management",
-    question: "Can I change my email address?",
-    answer:
-      "Yes, you can update your email address in your account settings. You'll need to verify the new email address before the change takes effect. This helps ensure account security and prevents unauthorized changes.",
-  },
-  {
-    id: "15",
-    category: "Account Management",
-    question: "How do I delete my account?",
-    answer:
-      "Contact our support team to request account deletion. We'll remove your personal information within 30 days, but may retain some data for legal compliance. Active listings will be deactivated, and any unused premium services will be refunded per our policy.",
-  },
-];
-
-const categories = [
-  {
-    name: "Getting Started",
-    icon: <Home className="h-5 w-5" />,
-    color: "text-blue-600",
-  },
-  {
-    name: "Property Listings",
-    icon: <Search className="h-5 w-5" />,
-    color: "text-green-600",
-  },
-  {
-    name: "Verification & Safety",
-    icon: <Shield className="h-5 w-5" />,
-    color: "text-orange-600",
-  },
-  {
-    name: "Payments & Fees",
-    icon: <CreditCard className="h-5 w-5" />,
-    color: "text-purple-600",
-  },
-  {
-    name: "Account Management",
-    icon: <Users className="h-5 w-5" />,
-    color: "text-pink-600",
+      "To verify an agent, we request their Valid Driver's License, Passport or National ID card bearing the same name as the one indicated on meqasa.com account. And to verify an agency, we request their Certificate of Incorporation and business registration documents. The verification process helps ensure that users are dealing with legitimate real estate professionals.",
   },
 ];
 
 export default function HelpPage() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [openItem, setOpenItem] = useState<string>("");
-
-  const segments = [
-    { title: "Home", href: "/", key: "home" },
-    { title: "Help & FAQ", href: "/help", key: "help" },
-  ];
-
-  // Filter FAQs based on search term and selected category
-  const filteredFAQs = faqData.filter((faq) => {
-    const matchesSearch =
-      faq.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      faq.answer.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory =
-      !selectedCategory || faq.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqData.map((faq) => ({
+      "@type": "Question",
+      name: faq.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: faq.answer,
+      },
+    })),
+  };
 
   return (
-    <div className="min-h-screen bg-white">
-      <Shell className="py-8 md:py-12">
-        {/* Breadcrumbs */}
-        <Breadcrumbs segments={segments} className="mb-8" />
+    <>
+      {/* Structured Data for SEO */}
+      <StructuredData data={structuredData} />
 
-        {/* Header */}
-        <section className="mb-12 text-center">
-          <div className="mb-6 flex justify-center">
-            <HelpCircle className="text-brand-primary h-16 w-16" />
-          </div>
-          <h1 className="text-brand-accent mb-4 text-4xl font-bold md:text-5xl">
-            Help & Support Center
-          </h1>
-          <p className="text-brand-muted mx-auto mb-8 max-w-3xl text-xl">
-            Find answers to frequently asked questions, get help with common
-            issues, and learn how to make the most of MeQasa&apos;s services.
-          </p>
-
-          {/* Search Bar */}
-          <div className="mx-auto max-w-2xl">
-            <div className="relative">
-              <Search className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 transform text-gray-400" />
-              <Input
-                type="text"
-                placeholder="Search for answers..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="py-3 pr-4 pl-10 text-lg"
-              />
+      <Shell className="py-8">
+        {/* Two-column grid layout: Main content + Featured properties aside */}
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_380px]">
+          {/* Main content - FAQ sections */}
+          <main className="lg:col-span-1">
+            {/* FAQ Heading */}
+            <div className="mb-8">
+              <h1 className="text-brand-accent text-3xl font-bold md:text-4xl">
+                Frequently Asked Questions
+              </h1>
             </div>
-          </div>
-        </section>
 
-        {/* Quick Actions */}
-        <section className="mb-12">
-          <div className="grid gap-6 md:grid-cols-3">
-            <Card className="text-center transition-shadow hover:shadow-lg">
-              <CardContent className="p-6">
-                <MessageSquare className="text-brand-primary mx-auto mb-4 h-12 w-12" />
-                <h3 className="text-brand-accent mb-2 text-lg font-semibold">
-                  Contact Support
-                </h3>
-                <p className="text-brand-muted mb-4 text-sm">
-                  Get personalized help from our support team
-                </p>
-                <Button variant="outline" asChild>
-                  <a href="/contact">Contact Us</a>
-                </Button>
-              </CardContent>
-            </Card>
+            {/* Introductory Text */}
+            <div className="mb-8">
+              <p className="text-brand-muted text-lg leading-relaxed">
+                Searching for the perfect property to rent or buy presents a
+                number of questions that we get all the time. This page should
+                help make things a lot easier.
+              </p>
+            </div>
 
-            <Card className="text-center transition-shadow hover:shadow-lg">
-              <CardContent className="p-6">
-                <Home className="text-brand-primary mx-auto mb-4 h-12 w-12" />
-                <h3 className="text-brand-accent mb-2 text-lg font-semibold">
-                  List Your Property
-                </h3>
-                <p className="text-brand-muted mb-4 text-sm">
-                  Step-by-step guide to listing your property
-                </p>
-                <Button variant="outline" asChild>
-                  <a href="/list-property">Get Started</a>
-                </Button>
-              </CardContent>
-            </Card>
+            <div className="mb-8">
+              <p className="text-brand-muted text-lg leading-relaxed">
+                If you are a real estate professional, your goal is to assist
+                seekers to secure real estate and our website puts you in touch
+                with homeowners and renters-to-be through your dashboard. This
+                page should help you make the best of the tools we offer you to
+                succeed.
+              </p>
+            </div>
 
-            <Card className="text-center transition-shadow hover:shadow-lg">
-              <CardContent className="p-6">
-                <Search className="text-brand-primary mx-auto mb-4 h-12 w-12" />
-                <h3 className="text-brand-accent mb-2 text-lg font-semibold">
-                  Search Properties
-                </h3>
-                <p className="text-brand-muted mb-4 text-sm">
-                  Find your perfect property with our search tools
-                </p>
-                <Button variant="outline" asChild>
-                  <Link href="/">Browse Properties</Link>
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-        </section>
-
-        {/* Categories */}
-        <section className="mb-8">
-          <h2 className="text-brand-accent mb-6 text-2xl font-bold">
-            Browse by Category
-          </h2>
-          <div className="flex flex-wrap gap-3">
-            <Button
-              variant={selectedCategory === null ? "default" : "outline"}
-              onClick={() => setSelectedCategory(null)}
-              className="mb-2"
-            >
-              All Categories
-            </Button>
-            {categories.map((category) => (
-              <Button
-                key={category.name}
-                variant={
-                  selectedCategory === category.name ? "default" : "outline"
-                }
-                onClick={() => setSelectedCategory(category.name)}
-                className="mb-2 flex items-center gap-2"
+            {/* FAQ Navigation Links */}
+            <div className="mb-12 space-y-4">
+              <a
+                href="#home-seeker-questions"
+                className="text-brand-primary hover:text-brand-primary/80 focus-visible:ring-brand-primary block rounded-md p-3 transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
               >
-                <span className={category.color}>{category.icon}</span>
-                {category.name}
-              </Button>
-            ))}
-          </div>
-        </section>
-
-        {/* FAQ Section */}
-        <section>
-          <div className="mb-6 flex items-center justify-between">
-            <h2 className="text-brand-accent text-2xl font-bold">
-              {selectedCategory
-                ? `${selectedCategory} Questions`
-                : "Frequently Asked Questions"}
-            </h2>
-            <span className="text-brand-muted">
-              {filteredFAQs.length}{" "}
-              {filteredFAQs.length === 1 ? "question" : "questions"}
-            </span>
-          </div>
-
-          {filteredFAQs.length === 0 ? (
-            <Card className="p-12 text-center">
-              <CardContent>
-                <HelpCircle className="mx-auto mb-4 h-16 w-16 text-gray-400" />
-                <h3 className="text-brand-accent mb-2 text-xl font-semibold">
-                  No questions found
-                </h3>
-                <p className="text-brand-muted mb-6">
-                  Try adjusting your search terms or browse different
-                  categories.
-                </p>
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setSearchTerm("");
-                    setSelectedCategory(null);
-                  }}
-                >
-                  Clear Filters
-                </Button>
-              </CardContent>
-            </Card>
-          ) : (
-            <Accordion
-              type="single"
-              collapsible
-              value={openItem}
-              onValueChange={setOpenItem}
-            >
-              {filteredFAQs.map((faq) => (
-                <AccordionItem
-                  key={faq.id}
-                  value={faq.id}
-                  className="mb-4 overflow-hidden rounded-lg border border-gray-200"
-                >
-                  <AccordionTrigger className="px-6 py-4 text-left hover:bg-gray-50 [&[data-state=open]>svg]:rotate-180">
-                    <div className="flex w-full items-center justify-between">
-                      <span className="text-brand-accent text-lg font-semibold">
-                        {faq.question}
-                      </span>
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="px-6 pb-4">
-                    <div className="mb-3 flex items-center gap-2">
-                      {
-                        categories.find((cat) => cat.name === faq.category)
-                          ?.icon
-                      }
-                      <span className="text-brand-muted text-sm">
-                        {faq.category}
-                      </span>
-                    </div>
-                    <p className="text-brand-muted leading-relaxed">
-                      {faq.answer}
-                    </p>
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-          )}
-        </section>
-
-        {/* Still Need Help */}
-        <Card className="bg-brand-primary/5 border-brand-primary/20 mt-12">
-          <CardContent className="p-8 text-center">
-            <h2 className="text-brand-accent mb-4 text-2xl font-bold">
-              Still Need Help?
-            </h2>
-            <p className="text-brand-muted mx-auto mb-6 max-w-2xl">
-              Can&apos;t find the answer you&apos;re looking for? Our support team is
-              ready to assist you with any questions or issues you may have.
-            </p>
-            <div className="flex flex-col justify-center gap-4 sm:flex-row">
-              <Button asChild>
-                <a href="/contact">Contact Support</a>
-              </Button>
-              <Button variant="outline" asChild>
-                <a href="mailto:help@meqasa.com">Email Us</a>
-              </Button>
-              <Button variant="outline" asChild>
-                <a href="tel:+233506866060">Call Us</a>
-              </Button>
+                Home Seeker Questions
+              </a>
+              <a
+                href="#real-estate-professional-questions"
+                className="text-brand-primary hover:text-brand-primary/80 focus-visible:ring-brand-primary block rounded-md p-3 transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+              >
+                Real Estate Professional Questions
+              </a>
+              <a
+                href="#agent-verification-questions"
+                className="text-brand-primary hover:text-brand-primary/80 focus-visible:ring-brand-primary block rounded-md p-3 transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+              >
+                Questions About Agent/Agency Verification
+              </a>
             </div>
-          </CardContent>
-        </Card>
+
+            {/* Home Seeker Questions */}
+            <section id="home-seeker-questions" className="mb-12">
+              <h2 className="text-brand-accent mb-6 text-2xl font-bold underline">
+                Home Seeker Questions
+              </h2>
+              <Accordion type="single" collapsible className="space-y-4">
+                {faqData
+                  .filter((faq) => faq.category === "Home Seeker Questions")
+                  .map((faq) => (
+                    <AccordionItem
+                      key={faq.id}
+                      value={faq.id}
+                      className="overflow-hidden rounded-lg border border-gray-200"
+                    >
+                      <AccordionTrigger className="px-6 py-4 text-left hover:bg-gray-50">
+                        <span className="text-brand-accent text-lg font-semibold">
+                          {faq.question}
+                        </span>
+                      </AccordionTrigger>
+                      <AccordionContent className="px-6 pb-4">
+                        <p className="text-brand-muted leading-relaxed">
+                          {faq.answer}
+                        </p>
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+              </Accordion>
+            </section>
+
+            {/* Real Estate Professional Questions */}
+            <section id="real-estate-professional-questions" className="mb-12">
+              <h2 className="text-brand-accent mb-6 text-2xl font-bold underline">
+                Real Estate Professional Questions
+              </h2>
+              <Accordion type="single" collapsible className="space-y-4">
+                {faqData
+                  .filter(
+                    (faq) =>
+                      faq.category === "Real Estate Professional Questions"
+                  )
+                  .map((faq) => (
+                    <AccordionItem
+                      key={faq.id}
+                      value={faq.id}
+                      className="overflow-hidden rounded-lg border border-gray-200"
+                    >
+                      <AccordionTrigger className="px-6 py-4 text-left hover:bg-gray-50">
+                        <span className="text-brand-accent text-lg font-semibold">
+                          {faq.question}
+                        </span>
+                      </AccordionTrigger>
+                      <AccordionContent className="px-6 pb-4">
+                        <p className="text-brand-muted leading-relaxed">
+                          {faq.answer}
+                        </p>
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+              </Accordion>
+            </section>
+
+            {/* Agent/Agency Verification Questions */}
+            <section id="agent-verification-questions" className="mb-12">
+              <h2 className="text-brand-accent mb-6 text-2xl font-bold underline">
+                Questions About Agent/Agency Verification
+              </h2>
+              <Accordion type="single" collapsible className="space-y-4">
+                {faqData
+                  .filter(
+                    (faq) =>
+                      faq.category ===
+                      "Questions About Agent/Agency Verification"
+                  )
+                  .map((faq) => (
+                    <AccordionItem
+                      key={faq.id}
+                      value={faq.id}
+                      className="overflow-hidden rounded-lg border border-gray-200"
+                    >
+                      <AccordionTrigger className="px-6 py-4 text-left hover:bg-gray-50">
+                        <span className="text-brand-accent text-lg font-semibold">
+                          {faq.question}
+                        </span>
+                      </AccordionTrigger>
+                      <AccordionContent className="px-6 pb-4">
+                        <p className="text-brand-muted leading-relaxed">
+                          {faq.answer}
+                        </p>
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+              </Accordion>
+            </section>
+          </main>
+
+          {/* Aside - Featured Properties (Streamed) - Hidden on mobile */}
+          <aside className="hidden lg:sticky lg:top-20 lg:block lg:self-start">
+            <FeaturedPropertiesAsideWrapper />
+          </aside>
+        </div>
       </Shell>
-    </div>
+    </>
   );
 }

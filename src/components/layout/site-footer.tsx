@@ -1,9 +1,9 @@
-import Link from "next/link";
-import { siteConfig } from "@/config/site";
-import type { SiteConfig } from "@/types";
-import Shell from "@/layouts/shell";
-import ScrollTotop from "@/components/scroll-to-top";
 import PropertyAlertsForm from "@/components/property/forms/property-alerts-form";
+import ScrollTotop from "@/components/scroll-to-top";
+import { siteConfig } from "@/config/site";
+import Shell from "@/layouts/shell";
+import type { SiteConfig } from "@/types";
+import Link from "next/link";
 
 function isExternalHref(href: string): boolean {
   return (
@@ -78,11 +78,12 @@ function FooterCompanyLink() {
 
   const contactLinks: LinkItem[] = [
     { href: `mailto:${config.email}`, label: config.email },
-    { href: "/faq", label: "FAQ" },
-    { href: "/work", label: "Work with us" },
+    { href: "/help", label: "FAQ" },
+    { href: "/contact", label: "Contact us" },
+    { href: "/work-with-us", label: "Work with us" },
     { href: "/feedback", label: "Feedback" },
-    { href: "/house", label: "Housing guide" },
-    { href: "/guide", label: "Real estate guide 2020" },
+    { href: "/accra-housing-guide", label: "Housing guide" },
+    { href: "/real-estate-report", label: "Real estate guide 2020" },
     { href: "/ads", label: "Advertise with us" },
     { href: "/terms", label: "Terms of use" },
   ];

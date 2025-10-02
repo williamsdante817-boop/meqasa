@@ -119,7 +119,6 @@ export const siteConfig: SiteConfig = {
           description: "Discover houses for rent in Accra and beyond.",
           items: [],
         },
-
       ],
     },
 
@@ -253,7 +252,7 @@ export const siteConfig: SiteConfig = {
           external: false,
         },
         {
-          title: "Houses for rent in Dworwulu",
+          title: "Houses for rent in Dzorwulu",
           href: "/search/rent?q=dzorwulu&ftype=house",
           external: false,
         },
@@ -263,8 +262,8 @@ export const siteConfig: SiteConfig = {
           external: false,
         },
         {
-          title: "Houses for sale in Airport Area",
-          href: "/search/sale?q=airport&ftype=house",
+          title: "Houses for rent in Airport Area",
+          href: "/search/rent?q=airport&ftype=house",
           external: false,
         },
         {
@@ -483,7 +482,7 @@ export const siteConfig: SiteConfig = {
       title: "For Sale",
       items: [
         {
-          title: "Apartment For sale",
+          title: "Apartments For sale",
           href: "/search/sale?q=accra&ftype=apartment",
           external: false,
         },
@@ -565,51 +564,6 @@ export const siteConfig: SiteConfig = {
         {
           title: "Guest Houses For Sale",
           href: "/search/sale?q=ghana&ftype=guest house",
-          external: false,
-        },
-      ],
-    },
-    {
-      title: "Company",
-      items: [
-        {
-          title: "About Us",
-          href: "/about",
-          external: false,
-        },
-        {
-          title: "Contact Us",
-          href: "/contact",
-          external: false,
-        },
-        {
-          title: "Help & FAQ",
-          href: "/help",
-          external: false,
-        },
-        {
-          title: "Blog",
-          href: "https://blog.meqasa.com",
-          external: true,
-        },
-      ],
-    },
-    {
-      title: "Legal",
-      items: [
-        {
-          title: "Terms of Service",
-          href: "/terms",
-          external: false,
-        },
-        {
-          title: "Privacy Policy",
-          href: "/privacy",
-          external: false,
-        },
-        {
-          title: "Cookie Policy",
-          href: "/privacy#cookies",
           external: false,
         },
       ],

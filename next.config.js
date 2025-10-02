@@ -65,6 +65,24 @@ const config = {
       {
         pathname: "/plan-4.webp",
       },
+      {
+        pathname: "/accra-housing-guide.jpg",
+      },
+      {
+        pathname: "/real-estate-report.jpg",
+      },
+      {
+        pathname: "/meqasa-newsletter-leaderboard.png",
+      },
+      {
+        pathname: "/desktop-leaderboard.png",
+      },
+      {
+        pathname: "/leaderboard-ad.png",
+      },
+      {
+        pathname: "/mobile-ad.png",
+      },
     ],
     formats: ["image/webp", "image/avif"],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
@@ -85,7 +103,6 @@ const config = {
 // If ANALYZE=true, wrap config with bundle analyzer
 let finalConfig = config;
 if (process.env.ANALYZE === "true") {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const withBundleAnalyzer = require("@next/bundle-analyzer")({
     enabled: true,
   });

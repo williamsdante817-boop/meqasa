@@ -1,7 +1,7 @@
-import { GridAdWithImageLoading } from "@/components/streaming/GridAdWithImageLoading";
+import GridAd from "@/components/grid-ad";
 import Shell from "@/layouts/shell";
-import { logError } from "@/lib/logger";
 import type { getFlexiBanner } from "@/lib/get-flexi-banner";
+import { logError } from "@/lib/logger";
 
 interface StreamingGridBannerProps {
   flexiBannerPromise: ReturnType<typeof getFlexiBanner>;
@@ -22,7 +22,7 @@ export async function StreamingGridBanner({
 
     return (
       <Shell>
-        <GridAdWithImageLoading flexiBanner={flexiBanner} />
+        <GridAd flexiBanner={flexiBanner} />
       </Shell>
     );
   } catch (error) {

@@ -1,13 +1,11 @@
 "use client";
 
-import * as React from "react";
+import type { MainNavItem } from "@/types";
 import Link from "next/link";
 import { useSelectedLayoutSegment } from "next/navigation";
-import type { MainNavItem } from "@/types";
+import * as React from "react";
 
-import { siteConfig } from "@/config/site";
-import { cn } from "@/lib/utils";
-import { useMediaQuery } from "@/hooks/use-media-query";
+import { Icons } from "@/components/icons";
 import {
   Accordion,
   AccordionContent,
@@ -17,15 +15,17 @@ import {
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Icons } from "@/components/icons";
+import { siteConfig } from "@/config/site";
+import { useMediaQuery } from "@/hooks/use-media-query";
+import { cn } from "@/lib/utils";
 import {
-  Home,
-  Search,
-  Heart,
-  Phone,
-  Users,
   Building2,
+  Heart,
+  Home,
   MapPin,
+  Phone,
+  Search,
+  Users,
 } from "lucide-react";
 
 interface MobileNavProps {
@@ -83,6 +83,18 @@ export function MobileNav({ items: _ }: MobileNavProps) {
       icon: Phone,
       description: "Get in touch with us",
     },
+    {
+      title: "Work With Us",
+      href: "/work-with-us",
+      icon: Users,
+      description: "Join our team",
+    },
+    {
+      title: "Feedback",
+      href: "/feedback",
+      icon: Heart,
+      description: "Share your thoughts",
+    },
   ];
 
   // Primary navigation categories - simplified for mobile
@@ -107,7 +119,10 @@ export function MobileNav({ items: _ }: MobileNavProps) {
         { title: "Houses", href: "/search/sale?q=ghana&ftype=house" },
         { title: "Apartments", href: "/search/sale?q=ghana&ftype=apartment" },
         { title: "Office Spaces", href: "/search/sale?q=ghana&ftype=office" },
-        { title: "Commercial Spaces", href: "/search/sale?q=ghana&ftype=commercial space" },
+        {
+          title: "Commercial Spaces",
+          href: "/search/sale?q=ghana&ftype=commercial space",
+        },
       ],
     },
     {
@@ -133,7 +148,7 @@ export function MobileNav({ items: _ }: MobileNavProps) {
         <Button
           variant="outline"
           size="icon"
-          className="text-brand-accent shadow-none hover:text-brand-primary hover:bg-brand-primary/10 focus-visible:bg-brand-primary/10 focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-0 lg:hidden"
+          className="text-brand-accent hover:text-brand-primary hover:bg-brand-primary/10 focus-visible:bg-brand-primary/10 focus-visible:ring-brand-primary shadow-none focus-visible:ring-2 focus-visible:ring-offset-0 lg:hidden"
           aria-label="Toggle navigation menu"
           aria-expanded={open}
           aria-controls="mobile-nav"
@@ -150,7 +165,7 @@ export function MobileNav({ items: _ }: MobileNavProps) {
         aria-label="Mobile navigation"
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b bg-gradient-to-r from-brand-primary to-brand-primary-dark">
+        <div className="from-brand-primary to-brand-primary-dark flex items-center justify-between border-b bg-gradient-to-r p-6">
           <h2 className="sr-only">Mobile Navigation Menu</h2>
           <Link
             href="/"
@@ -159,17 +174,17 @@ export function MobileNav({ items: _ }: MobileNavProps) {
             aria-label="Home"
           >
             <Icons.logo className="mr-2 size-6 text-white" aria-hidden="true" />
-            <span className="font-bold text-white text-lg">
+            <span className="text-lg font-bold text-white">
               {siteConfig.name}
             </span>
           </Link>
         </div>
 
         <ScrollArea className="h-[calc(100vh-88px)]">
-          <div className="p-6 space-y-6">
+          <div className="space-y-6 p-6">
             {/* Quick Actions */}
             <div className="space-y-3">
-              <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">
+              <h3 className="text-sm font-semibold tracking-wider text-gray-500 uppercase">
                 Quick Access
               </h3>
               <div className="grid grid-cols-2 gap-3">
@@ -180,10 +195,10 @@ export function MobileNav({ items: _ }: MobileNavProps) {
                       key={action.title}
                       href={action.href}
                       onClick={() => setOpen(false)}
-                      className="flex flex-col items-center p-4 bg-gray-50 rounded-lg border hover:bg-gray-100 transition-colors group"
+                      className="group flex flex-col items-center rounded-lg border bg-gray-50 p-4 transition-colors hover:bg-gray-100"
                     >
-                      <IconComponent className="h-6 w-6 text-brand-primary stroke-[1.5] mb-2 group-hover:scale-110 transition-transform" />
-                      <span className="text-xs font-medium text-center text-gray-700">
+                      <IconComponent className="text-brand-primary mb-2 h-6 w-6 stroke-[1.5] transition-transform group-hover:scale-110" />
+                      <span className="text-center text-xs font-medium text-gray-700">
                         {action.title.split(" ")[0]}
                       </span>
                     </Link>
@@ -194,7 +209,7 @@ export function MobileNav({ items: _ }: MobileNavProps) {
 
             {/* Primary Categories */}
             <div className="space-y-3">
-              <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">
+              <h3 className="text-sm font-semibold tracking-wider text-gray-500 uppercase">
                 Browse Properties
               </h3>
               <Accordion type="single" className="w-full space-y-3" collapsible>
@@ -204,15 +219,14 @@ export function MobileNav({ items: _ }: MobileNavProps) {
                     <AccordionItem
                       value={category.title}
                       key={index}
-                      className="border rounded-lg bg-white shadow-none"
+                      className="rounded-lg border bg-white shadow-none"
                     >
                       <AccordionTrigger
-                        className="px-4 py-3 text-left hover:no-underline
-                         hover:bg-gray-50"
+                        className="px-4 py-3 text-left hover:bg-gray-50 hover:no-underline"
                         aria-label={`${category.title} menu`}
                       >
                         <div className="flex items-center gap-3">
-                          <IconComponent className="h-5 w-5 text-brand-primary stroke-[1.5]" />
+                          <IconComponent className="text-brand-primary h-5 w-5 stroke-[1.5]" />
                           <span className="font-medium text-gray-900">
                             {category.title}
                           </span>
@@ -226,7 +240,7 @@ export function MobileNav({ items: _ }: MobileNavProps) {
                               href={subItem.href}
                               segment={String(segment)}
                               setOpen={setOpen}
-                              className="p-3 rounded-md hover:bg-gray-50 transition-colors"
+                              className="rounded-md p-3 transition-colors hover:bg-gray-50"
                             >
                               {subItem.title}
                             </MobileLink>
@@ -240,7 +254,7 @@ export function MobileNav({ items: _ }: MobileNavProps) {
             </div>
 
             {/* Additional Links */}
-            <div className="space-y-3 pt-3 border-t">
+            <div className="space-y-3 border-t pt-3">
               <div className="space-y-2">
                 {quickActions.slice(4).map((action) => {
                   const IconComponent = action.icon;
@@ -249,9 +263,9 @@ export function MobileNav({ items: _ }: MobileNavProps) {
                       key={action.title}
                       href={action.href}
                       onClick={() => setOpen(false)}
-                      className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors"
+                      className="flex items-center gap-3 rounded-lg p-3 transition-colors hover:bg-gray-50"
                     >
-                      <IconComponent className="h-5 w-5 text-brand-primary stroke-[1.5]" />
+                      <IconComponent className="text-brand-primary h-5 w-5 stroke-[1.5]" />
                       <div>
                         <span className="font-medium text-gray-900">
                           {action.title}
@@ -293,7 +307,7 @@ function MobileLink({
     <Link
       href={href}
       className={cn(
-        "text-foreground/70 transition-colors hover:text-foreground",
+        "text-foreground/70 hover:text-foreground transition-colors",
         href.includes(segment) && "text-foreground",
         disabled && "pointer-events-none opacity-60",
         className
@@ -305,4 +319,3 @@ function MobileLink({
     </Link>
   );
 }
-

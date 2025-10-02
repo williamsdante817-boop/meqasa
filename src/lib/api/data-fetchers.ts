@@ -38,11 +38,12 @@ export const propertyDataFetchers = {
         const standardized = transformApiToPropertyListing(item);
 
         // Store original API fields for backward compatibility
-        (standardized as unknown as Record<string, unknown>).originalApiData = {
-          pricepart1: (item as Record<string, unknown>).pricepart1,
-          pricepart2: (item as Record<string, unknown>).pricepart2,
-          price: (item as Record<string, unknown>).price,
-        };
+        (standardized as unknown as Record<string, unknown>).summary = (
+          item as Record<string, unknown>
+        ).summary;
+        (standardized as unknown as Record<string, unknown>).description = (
+          item as Record<string, unknown>
+        ).description;
 
         return standardized;
       };
