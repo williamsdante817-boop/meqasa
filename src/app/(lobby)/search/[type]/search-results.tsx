@@ -179,6 +179,7 @@ export function SearchResults({
   const [prefetchedSearch, setPrefetchedSearch] =
     useState<MeqasaSearchResponse | null>(null);
   const isPrefetching = useRef(false);
+  const latestRequestRef = useRef(0);
 
   // Store searchId in sessionStorage whenever it changes (for backward compatibility)
   useEffect(() => {
@@ -209,6 +210,7 @@ export function SearchResults({
       : null;
 
     const fetchResults = async () => {
+      const requestId = ++latestRequestRef.current;
       setIsLoading(true);
       try {
         const searchParamsObj = searchParams
@@ -221,10 +223,13 @@ export function SearchResults({
         }
 
         const locality = searchParamsObj.q;
-        if (!locality) {
-          console.error("Missing required parameter: locality");
-          return;
-        }
+          if (!locality) {
+            console.error("Missing required parameter: locality");
+            if (latestRequestRef.current === requestId) {
+              setIsLoading(false);
+            }
+            return;
+          }
 
         const pageParam = urlPage;
         const effectiveSearchId = urlSearchId ?? searchId ?? null;
@@ -259,6 +264,9 @@ export function SearchResults({
 
           if (!response.ok) throw new Error("Failed to fetch page");
           const data = (await response.json()) as MeqasaSearchResponse;
+          if (latestRequestRef.current !== requestId) {
+            return;
+          }
           setSearchResults(data.results);
           setTotalResults(baseTotalRef.current);
           setSearch({
@@ -268,6 +276,7 @@ export function SearchResults({
           });
           setSearchId(effectiveSearchId ?? data.searchid ?? null);
           setCurrentPage(pageParam);
+          setIsLoading(false);
           return;
         }
 
@@ -303,6 +312,9 @@ export function SearchResults({
 
         if (!response.ok) throw new Error("Failed to fetch properties");
         const data = (await response.json()) as MeqasaSearchResponse;
+        if (latestRequestRef.current !== requestId) {
+          return;
+        }
         setSearchResults(data.results);
 
         const normalizedCount = Number(data.resultcount) || 0;
@@ -338,7 +350,9 @@ export function SearchResults({
       } catch (error) {
         console.error("Error fetching properties:", error);
       } finally {
-        setIsLoading(false);
+        if (latestRequestRef.current === requestId) {
+          setIsLoading(false);
+        }
       }
     };
 
@@ -480,6 +494,7 @@ export function SearchResults({
       // Update URL via callback
       skipNextFetch.current = true;
       onSearchIdUpdate?.(searchId, pageNumber, baseTotalRef.current);
+      setIsLoading(false);
 
       return; // Exit early - no need for useEffect to handle this
     }
@@ -545,6 +560,12 @@ export function SearchResults({
         setTotalResults(baseTotalRef.current);
         setSearch(data);
         setCurrentPage(nextPage);
+      } else {
+        console.warn(
+          "Ignoring load-more response due to searchId mismatch",
+          data.searchid,
+          searchId
+        );
       }
     } catch (error) {
       console.error("Error fetching page:", error);
