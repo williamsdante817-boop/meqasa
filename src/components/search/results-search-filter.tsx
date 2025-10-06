@@ -171,6 +171,9 @@ export function ResultSearchFilter() {
     );
   };
 
+  const shouldHidePropertyType =
+    formState.propertyType === "land" && formState.listingType === "sale";
+
   // Update form state when URL parameters change
   useEffect(() => {
     setFormState(initializeFormState());
@@ -448,8 +451,8 @@ export function ResultSearchFilter() {
               maxSuggestions={5}
             />
 
-            {/* Property Type - Hidden for short-let searches */}
-            {!isShortLetSearch() && (
+            {/* Property Type - Hidden for short-let searches and sale land */}
+            {!isShortLetSearch() && !shouldHidePropertyType && (
               <Select
                 value={formState.propertyType}
                 onValueChange={(value) =>
