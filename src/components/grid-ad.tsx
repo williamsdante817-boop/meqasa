@@ -2,7 +2,8 @@
 
 import { ImageWithFallback } from "@/components/common/image-with-fallback";
 import { buildRichInnerHtml } from "@/lib/utils";
-import { useEffect, useState } from "react";
+import { extractFlexiBannerBlocks, extractImageUrlsFromFlexi } from "@/lib/flexi-banner";
+import { useEffect, useMemo, useState } from "react";
 import { GridBannerSkeleton } from "./streaming/GridBannerSkeleton";
 import { Card } from "./ui/card";
 
@@ -30,26 +31,19 @@ export default function GridAd({ flexiBanner, error }: GridAdProps) {
   useEffect(() => {
     if (!mounted) return;
 
-    // Extract <img src=""> URLs from flexiBanner HTML
-    const extractImageUrls = (html: string): string[] => {
-      try {
-        const doc = new DOMParser().parseFromString(html, "text/html");
-        return Array.from(doc.querySelectorAll("img"))
-          .map((img) => img.src)
-          .filter(Boolean);
-      } catch {
-        return [];
-      }
-    };
+    const flexiBlocks = extractFlexiBannerBlocks(flexiBanner);
 
-    // Static images we always preload
     const staticImageUrls = [
       "https://dve7rykno93gs.cloudfront.net/pieoq/1572277987.webp",
       "https://dve7rykno93gs.cloudfront.net/pieoq/1649141906.webp",
     ];
 
-    const flexiBannerImageUrls = extractImageUrls(flexiBanner);
-    const allImageUrls = [...staticImageUrls, ...flexiBannerImageUrls];
+    const flexiBannerImageUrls = flexiBlocks.flatMap((block) =>
+      extractImageUrlsFromFlexi(block)
+    );
+    const allImageUrls = Array.from(
+      new Set([...staticImageUrls, ...flexiBannerImageUrls])
+    );
 
     let loadedCount = 0;
     const totalImages = allImageUrls.length;
@@ -57,22 +51,31 @@ export default function GridAd({ flexiBanner, error }: GridAdProps) {
     const markLoaded = (url: string) => {
       loadedCount++;
       setLoadedMap((prev) => ({ ...prev, [url]: true }));
-      if (loadedCount >= totalImages) {
+      if (totalImages === 0 || loadedCount >= totalImages) {
         setTimeout(() => setImagesLoaded(true), 100); // smooth transition
       }
     };
 
     // Preload images
-    allImageUrls.forEach((url) => {
-      const img = new window.Image();
-      img.onload = () => markLoaded(url);
-      img.onerror = () => markLoaded(url);
-      img.src = url;
-    });
+    if (totalImages === 0) {
+      setImagesLoaded(true);
+    } else {
+      allImageUrls.forEach((url) => {
+        const img = new window.Image();
+        img.onload = () => markLoaded(url);
+        img.onerror = () => markLoaded(url);
+        img.src = url;
+      });
+    }
 
     // Fallback: if images still not loaded after 3s, show content
     const fallbackTimer = setTimeout(() => setImagesLoaded(true), 3000);
     return () => clearTimeout(fallbackTimer);
+  }, [mounted, flexiBanner]);
+
+  const flexiBlocks = useMemo(() => {
+    if (!mounted) return [];
+    return extractFlexiBannerBlocks(flexiBanner);
   }, [mounted, flexiBanner]);
 
   // Blur placeholder for Next.js <Image>
@@ -157,10 +160,19 @@ export default function GridAd({ flexiBanner, error }: GridAdProps) {
         </Card>
 
         {/* Flexi banner slot */}
-        <Card
-          className="h-full overflow-hidden rounded-lg sm:col-span-3 sm:col-start-4 sm:row-span-4 sm:row-start-1"
-          dangerouslySetInnerHTML={buildRichInnerHtml(flexiBanner)}
-        />
+        {flexiBlocks.length > 0 && (
+          <Card className="h-full overflow-hidden rounded-lg sm:col-span-3 sm:col-start-4 sm:row-span-4 sm:row-start-1">
+            <div className="flex h-full flex-col divide-y divide-orange-200">
+              {flexiBlocks.map((block, index) => (
+                <article
+                  key={`flexi-block-${index}`}
+                  className="flex-1"
+                  dangerouslySetInnerHTML={buildRichInnerHtml(block)}
+                />
+              ))}
+            </div>
+          </Card>
+        )}
       </div>
     </section>
   );

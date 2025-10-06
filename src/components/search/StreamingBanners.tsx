@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { RectangleBannerSkeleton } from "./BannerSkeleton";
 import RealEstateAd from "./ad";
 import { sanitizeRichHtmlToInnerHtml } from "@/lib/dom-sanitizer";
+import { extractFlexiBannerBlocks } from "@/lib/flexi-banner";
 
 // Streaming Rectangle Banners Component
 async function StreamingRectangleBanners() {
@@ -30,13 +31,22 @@ async function StreamingFlexiBanner() {
     return null;
   }
 
+  const blocks = extractFlexiBannerBlocks(flexiBanner);
+
+  if (blocks.length === 0) {
+    return null;
+  }
+
   return (
-    <div
-      className="mb-8 overflow-hidden rounded-lg border border-orange-300 shadow-sm"
-      role="banner"
-      aria-label="Flexi banner showcasing featured projects"
-      dangerouslySetInnerHTML={sanitizeRichHtmlToInnerHtml(flexiBanner)}
-    />
+    <div className="mb-8 space-y-6" role="group" aria-label="Featured advertisements">
+      {blocks.map((block, index) => (
+        <div
+          key={`flexi-block-${index}`}
+          className="overflow-hidden rounded-lg border border-orange-300 shadow-sm"
+          dangerouslySetInnerHTML={sanitizeRichHtmlToInnerHtml(block)}
+        />
+      ))}
+    </div>
   );
 }
 
