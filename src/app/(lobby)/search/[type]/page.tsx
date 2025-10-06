@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { Breadcrumbs } from "@/components/layout/bread-crumbs";
 import { ResultsPopup } from "@/components/results-popup";
 import { HeroBannerSkeleton } from "@/components/search/BannerSkeleton";
@@ -16,6 +17,8 @@ import { loadMoreProperties, searchProperties } from "@/lib/meqasa";
 import { ANY_SENTINEL } from "@/lib/search/constants";
 import type { Metadata } from "next";
 import { SearchResultsWrapper } from "./SearchResultsWrapper";
+
+export const dynamic = "force-dynamic";
 
 interface SearchPageProps {
   params: Promise<{ type: string }>;
@@ -442,7 +445,9 @@ export default async function SearchPage({
             <div className="mt-8 grid w-full grid-cols-1 gap-8 md:px-0 lg:grid-cols-[minmax(0,736px)_1fr]">
               <div>
                 {/* Streaming Flexi Banner - non-critical, loads progressively */}
-                <StreamingFlexiBannerWrapper />
+                <Suspense fallback={null}>
+                  <StreamingFlexiBannerWrapper />
+                </Suspense>
 
                 {/* Main search results - critical content loads immediately */}
                 <SearchResultsWrapper
@@ -457,7 +462,9 @@ export default async function SearchPage({
               </div>
 
               {/* Streaming Sidebar Banners - non-critical, loads progressively */}
-              <StreamingSidebarBanners />
+              <Suspense fallback={null}>
+                <StreamingSidebarBanners />
+              </Suspense>
             </div>
           </div>
         </Shell>

@@ -158,8 +158,6 @@ export function SearchResults({
       setPrefetchedSearch(null);
       isPrefetching.current = false;
 
-      // Reset the initial data processing flag for the new search
-      hasProcessedInitialData.current = false;
     }
   }, [
     mounted,
@@ -182,9 +180,6 @@ export function SearchResults({
     useState<MeqasaSearchResponse | null>(null);
   const isPrefetching = useRef(false);
 
-  // Flag to prevent re-fetching initial server data
-  const hasProcessedInitialData = useRef(false);
-
   // Store searchId in sessionStorage whenever it changes (for backward compatibility)
   useEffect(() => {
     if (searchId && typeof window !== "undefined") {
@@ -201,7 +196,6 @@ export function SearchResults({
 
   // Handle all search parameter changes
   useEffect(() => {
-    // Only run on client side after component is mounted
     if (!mounted) return;
 
     if (skipNextFetch.current) {
@@ -209,47 +203,10 @@ export function SearchResults({
       return;
     }
 
-    const urlPage = parseInt(searchParams.get("w") ?? "1");
+    const urlPage = parseInt(searchParams.get("w") ?? "1", 10);
     const urlSearchId = searchParams.get("y")
-      ? parseInt(searchParams.get("y")!)
+      ? parseInt(searchParams.get("y")!, 10)
       : null;
-
-    // Skip initial server data on first mount
-    if (
-      !hasProcessedInitialData.current &&
-      urlPage === initialPage &&
-      (urlSearchId === initialSearchId || urlSearchId === null)
-    ) {
-      hasProcessedInitialData.current = true;
-      const urlTotal = searchParams.get("rtotal");
-      if (
-        onSearchIdUpdate &&
-        initialSearchId !== null &&
-        urlTotal !== baseTotalRef.current.toString()
-      ) {
-        skipNextFetch.current = true;
-        onSearchIdUpdate(initialSearchId, initialPage, baseTotalRef.current);
-        return;
-      }
-      if (
-        urlSearchId === null &&
-        onSearchIdUpdate &&
-        initialSearchId !== null
-      ) {
-        skipNextFetch.current = true;
-        onSearchIdUpdate(initialSearchId, initialPage, baseTotalRef.current);
-      }
-      return;
-    }
-
-    // Skip if we already have the correct data (avoid unnecessary refetch)
-    if (
-      urlPage === currentPage &&
-      urlSearchId === searchId &&
-      searchId !== null
-    ) {
-      return;
-    }
 
     const fetchResults = async () => {
       setIsLoading(true);
@@ -262,17 +219,16 @@ export function SearchResults({
         if (isShortLetSearch()) {
           (searchParamsObj as Record<string, string>).ftype = ANY_SENTINEL;
         }
-        const locality = searchParamsObj.q;
-        const pageParam = urlPage;
-        const currentSearchId = urlSearchId ?? searchId;
 
+        const locality = searchParamsObj.q;
         if (!locality) {
           console.error("Missing required parameter: locality");
           return;
         }
 
-        // If we have a searchId and page param, fetch that specific page
-        const isPaginationFetch = currentSearchId && pageParam > 1;
+        const pageParam = urlPage;
+        const effectiveSearchId = urlSearchId ?? searchId ?? null;
+        const isPaginationFetch = Boolean(effectiveSearchId && pageParam > 1);
 
         if (isPaginationFetch) {
           const response = await fetch("/api/properties", {
@@ -281,14 +237,13 @@ export function SearchResults({
             body: JSON.stringify({
               type: "loadMore",
               params: {
-                y: currentSearchId,
+                y: effectiveSearchId,
                 w: pageParam,
                 ...searchParamsObj,
                 contract: type,
                 locality,
                 propertyType: searchParamsObj.type ?? "",
                 app: "vercel",
-                // Add short-let specific parameters if this is a short-let search
                 ...(isShortLetSearch() && {
                   frentperiod: "shortrent",
                   ftype: ANY_SENTINEL,
@@ -298,25 +253,24 @@ export function SearchResults({
                 }),
               },
             }),
+            cache: "no-store",
+            next: { revalidate: 0 },
           });
 
           if (!response.ok) throw new Error("Failed to fetch page");
           const data = (await response.json()) as MeqasaSearchResponse;
           setSearchResults(data.results);
-          // Keep total results stable during pagination
           setTotalResults(baseTotalRef.current);
           setSearch({
             ...data,
             resultcount: baseTotalRef.current,
-            searchid: searchId ?? data.searchid,
+            searchid: effectiveSearchId ?? data.searchid,
           });
+          setSearchId(effectiveSearchId ?? data.searchid ?? null);
           setCurrentPage(pageParam);
-          setIsLoading(false);
-          // Note: URL is already updated by handlePageChange, no need to update again
           return;
         }
 
-        // Initial search - only if search parameters actually changed (not just page)
         delete (searchParamsObj as Record<string, string>).w;
         delete (searchParamsObj as Record<string, string>).rtotal;
         if (isShortLetSearch()) {
@@ -334,7 +288,6 @@ export function SearchResults({
               locality,
               propertyType: searchParamsObj.type ?? "",
               app: "vercel",
-              // Add short-let specific parameters if this is a short-let search
               ...(isShortLetSearch() && {
                 frentperiod: "shortrent",
                 ftype: ANY_SENTINEL,
@@ -344,37 +297,43 @@ export function SearchResults({
               }),
             },
           }),
+          cache: "no-store",
+          next: { revalidate: 0 },
         });
 
         if (!response.ok) throw new Error("Failed to fetch properties");
         const data = (await response.json()) as MeqasaSearchResponse;
         setSearchResults(data.results);
+
         const normalizedCount = Number(data.resultcount) || 0;
         const signatureChanged = lastSignatureRef.current !== searchSignature;
+        const resultCountChanged = baseTotalRef.current !== normalizedCount;
 
-        if (signatureChanged || baseTotalRef.current === 0) {
+        if (signatureChanged || resultCountChanged) {
           baseTotalRef.current = normalizedCount;
           lastSignatureRef.current = searchSignature;
         }
 
         setTotalResults(baseTotalRef.current);
 
+        const nextSearchId = data.searchid ?? effectiveSearchId ?? null;
         setSearch({
           ...data,
           resultcount: baseTotalRef.current,
-          searchid: searchId ?? data.searchid,
+          searchid: nextSearchId ?? 0,
         });
+        setSearchId(nextSearchId);
+        setCurrentPage(pageParam);
 
-        if (signatureChanged || searchId === null) {
-          const nextSearchId = data.searchid;
-          setSearchId(nextSearchId);
-          setCurrentPage(pageParam);
-          if (onSearchIdUpdate) {
-            skipNextFetch.current = true;
-            onSearchIdUpdate(nextSearchId, pageParam, baseTotalRef.current);
-          }
-        } else {
-          setCurrentPage(pageParam);
+        const totalFromUrl = searchParams.get("rtotal");
+        const needsUrlSync =
+          nextSearchId !== urlSearchId ||
+          (totalFromUrl !== undefined &&
+            totalFromUrl !== baseTotalRef.current.toString());
+
+        if (nextSearchId !== null && onSearchIdUpdate && needsUrlSync) {
+          skipNextFetch.current = true;
+          onSearchIdUpdate(nextSearchId, pageParam, baseTotalRef.current);
         }
       } catch (error) {
         console.error("Error fetching properties:", error);
@@ -383,10 +342,7 @@ export function SearchResults({
       }
     };
 
-    // Only fetch if there are search parameters and it's not just initial load with correct data
-    if (searchParams.toString()) {
-      void fetchResults();
-    }
+    void fetchResults();
   }, [
     mounted,
     searchParams.get("q"),
@@ -396,8 +352,9 @@ export function SearchResults({
     searchParams.get("fmin"),
     searchParams.get("fmax"),
     searchParams.get("w"),
-    searchParams.get("frentperiod"), // Add short-let rent period
-    searchParams.get("fhowshort"), // Add short-let duration
+    searchParams.get("frentperiod"),
+    searchParams.get("fhowshort"),
+    searchSignature,
     type,
   ]);
 
@@ -437,10 +394,10 @@ export function SearchResults({
       // console.log("🚀 Starting prefetch for page", currentPage + 1);
       isPrefetching.current = true;
       const nextPage = currentPage + 1;
-        const searchParamsObj = searchParams
-          ? Object.fromEntries(searchParams.entries())
-          : {};
-        delete (searchParamsObj as Record<string, string>).page;
+      const searchParamsObj = searchParams
+        ? Object.fromEntries(searchParams.entries())
+        : {};
+      delete (searchParamsObj as Record<string, string>).page;
 
       fetch("/api/properties", {
         method: "POST",
@@ -455,7 +412,6 @@ export function SearchResults({
             locality: searchParamsObj.q,
             propertyType: searchParamsObj.type ?? "",
             app: "vercel",
-            // Add short-let specific parameters if this is a short-let search
             ...(isShortLetSearch() && {
               frentperiod: "shortrent",
               ftype: ANY_SENTINEL,
@@ -465,6 +421,8 @@ export function SearchResults({
             }),
           },
         }),
+        cache: "no-store",
+        next: { revalidate: 0 },
       })
         .then((res) => res.json())
         .then((data: MeqasaSearchResponse) => {
@@ -520,6 +478,7 @@ export function SearchResults({
       setPrefetchedSearch(null);
 
       // Update URL via callback
+      skipNextFetch.current = true;
       onSearchIdUpdate?.(searchId, pageNumber, baseTotalRef.current);
 
       return; // Exit early - no need for useEffect to handle this
@@ -539,6 +498,7 @@ export function SearchResults({
     const nextPage = currentPage + 1;
 
     // Update URL via callback
+    skipNextFetch.current = true;
     onSearchIdUpdate?.(searchId, nextPage, baseTotalRef.current);
     setIsLoading(true);
     try {
@@ -573,6 +533,8 @@ export function SearchResults({
             }),
           },
         }),
+        cache: "no-store",
+        next: { revalidate: 0 },
       });
       if (!response.ok) throw new Error("Failed to fetch page");
       const data = (await response.json()) as MeqasaSearchResponse;

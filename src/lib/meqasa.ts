@@ -54,6 +54,8 @@ export async function searchProperties(
         ...params,
       },
     }),
+    cache: "no-store",
+    next: { revalidate: 0 },
   });
 
   if (!response.ok) {
@@ -127,6 +129,8 @@ export async function loadMoreProperties(
         ...params,
       },
     }),
+    cache: "no-store",
+    next: { revalidate: 0 },
   });
 
   if (!response.ok) {
