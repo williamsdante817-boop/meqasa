@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -24,26 +24,101 @@ export function HomepagePopup() {
   const [isLoading, setIsLoading] = useState(true);
   const linkRef = useRef<HTMLAnchorElement>(null);
 
+  const storageKey = "homepage-popup";
+  const sessionKey = `${storageKey}-session`;
+  const cooldownMs = useMemo(() => {
+    const envValue = process.env.NEXT_PUBLIC_HOMEPAGE_POPUP_COOLDOWN_MS;
+    const parsed = envValue ? Number(envValue) : NaN;
+    const fallback = 1000 * 60 * 60 * 24; // 24 hours
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+  }, []);
+
+  const recordImpression = useCallback(
+    (popupId: string) => {
+      try {
+        const payload = JSON.stringify({ id: popupId, seenAt: Date.now() });
+        localStorage.setItem(storageKey, payload);
+      } catch (error) {
+        logError("Failed to persist homepage popup impression", error, {
+          component: "HomepagePopup",
+        });
+      }
+
+      try {
+        sessionStorage.setItem(sessionKey, "true");
+      } catch (error) {
+        logError(
+          "Failed to persist homepage popup session flag",
+          error,
+          {
+            component: "HomepagePopup",
+          }
+        );
+      }
+    },
+    [sessionKey, storageKey]
+  );
+
   useEffect(() => {
+    let cancelled = false;
+
+    const hasSessionImpression = () => {
+      try {
+        return sessionStorage.getItem(sessionKey) === "true";
+      } catch {
+        return false;
+      }
+    };
+
+    const getStoredImpression = (): { id: string; seenAt: number } | null => {
+      try {
+        const raw = localStorage.getItem(storageKey);
+        if (!raw) return null;
+        const parsed = JSON.parse(raw) as { id?: string; seenAt?: number };
+        if (parsed && typeof parsed.id === "string" && typeof parsed.seenAt === "number") {
+          return { id: parsed.id, seenAt: parsed.seenAt };
+        }
+      } catch {
+        // Ignore malformed storage
+      }
+      return null;
+    };
+
     const fetchPopup = async () => {
       try {
-        // Check if user has already seen the popup
-        const hasSeenPopup = localStorage.getItem("homepage-popup-seen");
-        if (hasSeenPopup) {
-          setIsLoading(false);
-          return;
-        }
-
-        const response = await fetch("/api/popup/homepage");
+        const response = await fetch("/api/popup/homepage", {
+          cache: "no-store",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
 
         if (response.ok) {
           const data = (await response.json()) as PopupDataWithUrls;
 
+          if (cancelled) return;
+
           if (data?.imageUrl && data?.linkUrl) {
-            setPopupData(data);
+            const popupId = data.id ?? `${data.imageUrl}|${data.linkUrl}`;
+            if (!popupId) {
+              return;
+            }
+
+            const sessionSeen = hasSessionImpression();
+            const lastImpression = getStoredImpression();
+            const now = Date.now();
+            const withinCooldown =
+              lastImpression &&
+              lastImpression.id === popupId &&
+              now - lastImpression.seenAt < cooldownMs;
+
+            if (sessionSeen || withinCooldown) {
+              return;
+            }
+
+            recordImpression(popupId);
+            setPopupData({ ...data, id: popupId });
             setIsOpen(true);
-            // Mark popup as seen
-            localStorage.setItem("homepage-popup-seen", "true");
           }
         }
       } catch (error) {
@@ -51,14 +126,21 @@ export function HomepagePopup() {
           component: "HomepagePopup",
         });
       } finally {
-        setIsLoading(false);
+        if (!cancelled) {
+          setIsLoading(false);
+        }
       }
     };
 
-    // Add a small delay to ensure the page is fully loaded
-    const timer = setTimeout(() => void fetchPopup(), 1000);
-    return () => clearTimeout(timer);
-  }, []);
+    const timer = setTimeout(() => {
+      void fetchPopup();
+    }, 1000);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [cooldownMs, recordImpression, sessionKey, storageKey]);
 
   // Focus management when dialog opens
   useEffect(() => {

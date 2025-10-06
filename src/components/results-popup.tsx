@@ -17,7 +17,7 @@ import type { PopupDataWithUrls } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 interface ResultsPopupProps {
   type: string;
@@ -29,44 +29,121 @@ export function ResultsPopup({ type }: ResultsPopupProps) {
   const [isLoading, setIsLoading] = useState(true);
   const searchParams = useSearchParams();
 
+  const contract = searchParams.get("contract") ?? "sale";
+
+  const { storageKey, sessionKey } = useMemo(() => {
+    const baseKey = `results-popup-${type}-${contract}`;
+    return {
+      storageKey: baseKey,
+      sessionKey: `${baseKey}-session`,
+    };
+  }, [type, contract]);
+
+  const cooldownMs = useMemo(() => {
+    const envValue = process.env.NEXT_PUBLIC_RESULTS_POPUP_COOLDOWN_MS;
+    const parsed = envValue ? Number(envValue) : NaN;
+    const fallback = 1000 * 60 * 60 * 48; // 48 hours
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+  }, []);
+
+  const recordImpression = useCallback(
+    (popupId: string) => {
+      try {
+        const payload = JSON.stringify({ id: popupId, seenAt: Date.now() });
+        localStorage.setItem(storageKey, payload);
+      } catch (error) {
+        console.warn("Failed to persist popup impression", error);
+      }
+
+      try {
+        sessionStorage.setItem(sessionKey, "true");
+      } catch (error) {
+        console.warn("Failed to persist session popup impression", error);
+      }
+    },
+    [storageKey, sessionKey]
+  );
+
   useEffect(() => {
+    let cancelled = false;
+
+    const shouldSkipForSession = () => {
+      try {
+        return sessionStorage.getItem(sessionKey) === "true";
+      } catch {
+        return false;
+      }
+    };
+
+    const getStoredImpression = (): { id: string; seenAt: number } | null => {
+      try {
+        const raw = localStorage.getItem(storageKey);
+        if (!raw) return null;
+        const parsed = JSON.parse(raw) as { id?: string; seenAt?: number };
+        if (parsed && typeof parsed.id === "string" && typeof parsed.seenAt === "number") {
+          return { id: parsed.id, seenAt: parsed.seenAt };
+        }
+      } catch {
+        // ignore malformed storage
+      }
+      return null;
+    };
+
     const fetchPopup = async () => {
       try {
-        // Check if user has already seen the popup for this specific search
-        const contract = searchParams.get("contract") ?? "sale"; // Default to sale if not specified
-        const popupKey = `results-popup-seen-${type}-${contract}`;
-        const hasSeenPopup = localStorage.getItem(popupKey);
-
-        if (hasSeenPopup) {
-          setIsLoading(false);
-          return;
-        }
-
         const response = await fetch(
-          `/api/popup/results?type=${type}&contract=${contract}`
+          `/api/popup/results?type=${type}&contract=${contract}`,
+          { cache: "no-store" }
         );
 
         if (response.ok) {
           const data = (await response.json()) as PopupDataWithUrls;
 
+          if (cancelled) return;
+
           if (data?.imageUrl && data?.linkUrl) {
-            setPopupData(data);
+            const popupId = data.id ?? `${data.imageUrl}|${data.linkUrl}`;
+
+            if (!popupId) {
+              return;
+            }
+
+            const lastImpression = getStoredImpression();
+            const now = Date.now();
+            const sessionSeen = shouldSkipForSession();
+            const withinCooldown =
+              lastImpression &&
+              lastImpression.id === popupId &&
+              now - lastImpression.seenAt < cooldownMs;
+
+            if (sessionSeen || withinCooldown) {
+              return;
+            }
+
+            recordImpression(popupId);
+            setPopupData({ ...data, id: popupId });
             setIsOpen(true);
-            // Mark popup as seen for this specific search
-            localStorage.setItem(popupKey, "true");
           }
         }
       } catch (error) {
         console.error("Failed to fetch popup data:", error);
       } finally {
-        setIsLoading(false);
+        if (!cancelled) {
+          setIsLoading(false);
+        }
       }
     };
 
     // Add a small delay to ensure the page is fully loaded
-    const timer = setTimeout(() => void fetchPopup(), 1000);
-    return () => clearTimeout(timer);
-  }, [type, searchParams]);
+    const timer = setTimeout(() => {
+      void fetchPopup();
+    }, 1000);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [type, contract, storageKey, sessionKey, cooldownMs, recordImpression]);
 
   if (isLoading || !popupData) {
     return null;

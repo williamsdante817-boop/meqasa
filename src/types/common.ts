@@ -15,6 +15,8 @@ export interface PopupData {
 export interface PopupDataWithUrls extends PopupData {
   imageUrl: string; // Full URL with cloudfront prefix
   linkUrl: string; // Full URL with meqasa.com prefix
+  id?: string;
+  updatedAt?: string;
 }
 
 export interface NavItem {
