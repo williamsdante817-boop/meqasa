@@ -1,11 +1,24 @@
 // Re-export all domain-specific types
+export * from "./blog";
 export * from "./common";
+export * from "./developer";
+export * from "./location";
+export * from "./meqasa";
 export * from "./property";
 export * from "./property-standardized";
-export * from "./developer";
-export * from "./agent";
 export * from "./search";
-export * from "./meqasa";
-export * from "./location";
-export * from "./agent-listings";
-export * from "./blog";
+
+// Export agent types with specific naming to avoid conflicts
+export type {
+  AgentDetails,
+  AgentListing as AgentListingFromAgent,
+  AgentsResponse,
+  BrokerObject,
+  BrokerSocials,
+} from "./agent";
+
+export type {
+  AgentListing,
+  AgentListingsRequest,
+  AgentListingsResponse,
+} from "./agent-listings";

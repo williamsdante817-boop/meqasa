@@ -118,6 +118,8 @@ export function AgentHeader({ agent, logoUrl }: AgentHeaderProps) {
                       className="h-full w-full object-contain"
                       fallbackAlt={`${agent.name} logo`}
                       quality={95}
+                      imageType="agent-logo"
+                      imageSize="medium"
                     />
                   ) : (
                     <div className="flex h-full w-full items-center justify-center bg-gray-200 text-xs font-medium text-gray-500">

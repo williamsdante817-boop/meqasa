@@ -6,7 +6,7 @@ import ContactCard from "@/components/common/contact-card";
 import { Breadcrumbs } from "@/components/layout/bread-crumbs";
 import { siteConfig } from "@/config/site";
 import Shell from "@/layouts/shell";
-import { getAgentDetails } from "@/lib/get-agent-details";
+import { agentDataFetchers } from "@/lib/api/agent-fetchers";
 import type { Metadata } from "next";
 import { AgentHeader } from "../_components/agent-header";
 import { AgentListings } from "../_components/agent-listings";
@@ -34,7 +34,10 @@ export async function generateMetadata({
     }
 
     const agentName = decodeURIComponent(agentNameParam);
-    const agent = await getAgentDetails(agentIdFromQuery, agentName);
+    const agent = await agentDataFetchers.getAgentDetails(
+      agentIdFromQuery,
+      agentName
+    );
 
     if (!agent) {
       return {
@@ -137,7 +140,10 @@ export default async function AgentDetailsPage({
   }
 
   const agentName = decodeURIComponent(agentNameParam);
-  const agent = await getAgentDetails(agentIdFromQuery, agentName);
+  const agent = await agentDataFetchers.getAgentDetails(
+    agentIdFromQuery,
+    agentName
+  );
   const CDN_PREFIX = "https://dve7rykno93gs.cloudfront.net";
 
   // Handle different logo path formats
@@ -182,7 +188,7 @@ export default async function AgentDetailsPage({
       name: `${agent.name} Property Listings`,
       description: `Properties listed by ${agent.name}`,
       itemListElement:
-        agent.listings?.map((listing, _index) => ({
+        agent.listings?.map((listing: any, _index: number) => ({
           "@type": "Offer",
           itemOffered: {
             "@type": "RealEstateListing",

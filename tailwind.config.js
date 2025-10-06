@@ -40,7 +40,14 @@ export default {
         "elegant-sm": "0 10px 30px -5px rgba(0, 0, 0, 0.105)",
       },
       keyframes: {
-        marquee: { to: { transform: "translateX(-50%)" } },
+        marquee: {
+          "0%": { transform: "translateX(0%)" },
+          "100%": { transform: "translateX(-50%)" },
+        },
+        "marquee-reverse": {
+          "0%": { transform: "translateX(-50%)" },
+          "100%": { transform: "translateX(0%)" },
+        },
         scroll: { to: { transform: "translateX(-50%)" } },
         "accordion-down": {
           from: { height: "0" },
@@ -56,6 +63,9 @@ export default {
         },
       },
       animation: {
+        "marquee-persistent": "marquee var(--duration, 30s) linear infinite",
+        "marquee-reverse":
+          "marquee-reverse var(--duration, 30s) linear infinite",
         marquee: "marquee var(--duration, 50s) linear infinite",
         scroll:
           "scroll var(--animation-duration, 60s) var(--animation-direction, forwards) linear infinite",

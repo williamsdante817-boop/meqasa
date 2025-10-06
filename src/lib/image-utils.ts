@@ -1,233 +1,224 @@
-// Enhanced image utilities for production-ready image handling
-// Extends the existing image-preload.ts with additional optimizations
+import {
+  getCdnUrls,
+  getFallbackImage,
+  getImagePatterns,
+  getSizeParams,
+} from "@/config/images";
 
-export interface ImageOptions {
-  width?: number;
-  height?: number;
-  quality?: number;
-  format?: "webp" | "jpeg" | "png";
-  priority?: boolean;
+export type ImageType =
+  | "property"
+  | "agent-logo"
+  | "developer-logo"
+  | "project-photo"
+  | "project-logo"
+  | "banner"
+  | "ad"
+  | "temp"
+  | "generic";
+
+export type ImageSize = "thumbnail" | "medium" | "large" | "original";
+
+export interface ImageUrlOptions {
+  preferSecondary?: boolean;
+  enableFallback?: boolean;
+  customFallback?: string;
+  disableOptimization?: boolean;
 }
 
-export interface ImageDimensions {
-  width: number;
-  height: number;
-  aspectRatio: number;
+const urlCache = new Map<string, string>();
+
+function normalizeCdn(cdn: string): string {
+  return cdn.replace(/\/+$|$/, "");
 }
 
-// Environment-aware CDN URL
-export const getCDNBaseUrl = (): string => {
-  return (
-    process.env.NEXT_PUBLIC_CDN_URL ?? "https://dve7rykno93gs.cloudfront.net"
+function mergePatternWithPath(
+  pattern: string,
+  rawPath: string
+): string | null {
+  const patternSegments = pattern.split("/").filter(Boolean);
+  const pathSegments = rawPath.split("/").filter(Boolean);
+
+  const matchesPattern = patternSegments.every(
+    (segment, index) => pathSegments[index] === segment
   );
-};
 
-// Enhanced image URL generation with optimization support
-export const getOptimizedImageUrl = (imagePath: string | undefined): string => {
-  if (!imagePath) return "";
-
-  const baseUrl = getCDNBaseUrl();
-
-  // If the URL already contains cloudfront domain, return optimized version
-  if (imagePath.includes("dve7rykno93gs.cloudfront.net")) {
-    return imagePath;
+  if (!matchesPattern && pathSegments.length > 1) {
+    return null;
   }
 
-  // Handle different image path formats
-  let imageSrc: string;
+  const finalSegments = matchesPattern
+    ? pathSegments
+    : [...patternSegments, ...pathSegments];
 
-  if (imagePath.startsWith("/temp/temp/") || /^\d+$/.test(imagePath)) {
-    const id = imagePath.split("/").pop();
-    imageSrc = `${baseUrl}/temp/temp/${id}`;
-  } else {
-    imageSrc = `${baseUrl}/uploads/imgs/${imagePath}`;
-  }
-
-  // For Next.js optimization, we could add query parameters
-  // but for now, return the direct CDN URL as the CDN likely handles optimization
-  return imageSrc;
-};
-
-// Get responsive image sizes for different breakpoints
-export const getResponsiveImageSizes = (
-  containerType: "main" | "thumbnail" | "grid" = "main"
-): string => {
-  switch (containerType) {
-    case "main":
-      return "(min-width: 1024px) 66vw, 100vw";
-    case "thumbnail":
-      return "80px";
-    case "grid":
-      return "(min-width: 1024px) 33vw, 100vw";
-    default:
-      return "100vw";
-  }
-};
-
-// Calculate optimal image dimensions based on container
-export const getOptimalImageDimensions = (
-  containerType: "main" | "thumbnail" | "grid" = "main",
-  customWidth?: number,
-  customHeight?: number
-): { width: number; height: number } => {
-  if (customWidth && customHeight) {
-    return { width: customWidth, height: customHeight };
-  }
-
-  switch (containerType) {
-    case "main":
-      return { width: 900, height: 600 };
-    case "thumbnail":
-      return { width: 80, height: 60 };
-    case "grid":
-      return { width: 450, height: 300 };
-    default:
-      return { width: 800, height: 600 };
-  }
-};
-
-// Validate image URL format
-export const isValidImagePath = (imagePath: string | undefined): boolean => {
-  if (!imagePath || typeof imagePath !== "string") return false;
-
-  // Check for valid image extensions or numeric IDs
-  const validExtensions = /\.(jpg|jpeg|png|webp|gif)$/i;
-  const isNumericId = /^\d+$/.test(imagePath);
-  const isTempPath = imagePath.startsWith("/temp/temp/");
-  const hasValidExtension = validExtensions.test(imagePath);
-
-  return isNumericId || isTempPath || hasValidExtension;
-};
-
-// Filter and validate image array
-export const sanitizeImageArray = (
-  images: (string | undefined | null)[]
-): string[] => {
-  return images
-    .filter((img): img is string => Boolean(img))
-    .filter(isValidImagePath)
-    .slice(0, 20); // Limit to prevent performance issues
-};
-
-// Generate srcset for responsive images
-export const generateSrcSet = (
-  imagePath: string,
-  widths: number[] = [400, 800, 1200, 1600]
-): string => {
-  return widths
-    .map((width) => {
-      const url = getOptimizedImageUrl(imagePath);
-      return `${url} ${width}w`;
-    })
-    .join(", ");
-};
-
-// Memory-efficient image preloader with abort control
-class ImagePreloader {
-  private static instance: ImagePreloader;
-  private preloadCache = new Set<string>();
-  private activeRequests = new Map<string, AbortController>();
-
-  static getInstance(): ImagePreloader {
-    if (!ImagePreloader.instance) {
-      ImagePreloader.instance = new ImagePreloader();
-    }
-    return ImagePreloader.instance;
-  }
-
-  async preloadImage(
-    url: string,
-    options: { priority?: boolean } = {}
-  ): Promise<void> {
-    if (!url || this.preloadCache.has(url)) {
-      return Promise.resolve();
-    }
-
-    // Cancel existing request if any
-    if (this.activeRequests.has(url)) {
-      this.activeRequests.get(url)?.abort();
-    }
-
-    const controller = new AbortController();
-    this.activeRequests.set(url, controller);
-
-    try {
-      if (typeof window === "undefined") {
-        return Promise.resolve();
-      }
-
-      const img = new Image();
-      img.decoding = "async";
-      img.loading = options.priority ? "eager" : "lazy";
-
-      await new Promise<void>((resolve) => {
-        img.onload = () => {
-          this.preloadCache.add(url);
-          this.activeRequests.delete(url);
-          resolve();
-        };
-
-        img.onerror = () => {
-          this.activeRequests.delete(url);
-          // Don't cache errors, but don't reject either
-          resolve();
-        };
-
-        controller.signal.addEventListener("abort", () => {
-          this.activeRequests.delete(url);
-          resolve(); // Resolve on abort, don't reject
-        });
-
-        img.src = url;
-      });
-    } catch (error) {
-      this.activeRequests.delete(url);
-      // Silently handle errors to prevent breaking the UI
-      console.warn("Image preload failed:", url, error);
-    }
-  }
-
-  async preloadImages(
-    urls: string[],
-    options: { priority?: boolean[]; batchSize?: number } = {}
-  ): Promise<void> {
-    const { priority = [], batchSize = 4 } = options;
-
-    // Process in batches to avoid overwhelming the browser
-    for (let i = 0; i < urls.length; i += batchSize) {
-      const batch = urls.slice(i, i + batchSize);
-      const batchPromises = batch.map((url, index) =>
-        this.preloadImage(url, { priority: priority[i + index] ?? false })
-      );
-
-      await Promise.allSettled(batchPromises);
-    }
-  }
-
-  isPreloaded(url: string): boolean {
-    return this.preloadCache.has(url);
-  }
-
-  clearCache(): void {
-    this.preloadCache.clear();
-    // Abort all active requests
-    this.activeRequests.forEach((controller) => controller.abort());
-    this.activeRequests.clear();
-  }
+  return finalSegments.join("/");
 }
 
-export const imagePreloader = ImagePreloader.getInstance();
+/**
+ * Determine the appropriate image type based on the image path
+ */
+export function getImageTypeFromPath(imagePath: string): ImageType {
+  if (!imagePath) return "generic";
 
-// Helper functions that use the singleton
-export const preloadImageOptimized = (
-  url: string,
-  options?: { priority?: boolean }
-) => imagePreloader.preloadImage(url, options);
+  // Handle specific path patterns first (most specific)
+  if (imagePath.includes("/fascimos/somics/")) return "agent-logo";
+  if (imagePath.includes("/uploads/developers/")) return "developer-logo";
+  if (imagePath.includes("/uploads/projects/")) return "project-photo";
+  if (imagePath.includes("/pieoq/")) return "banner";
+  if (imagePath.includes("/uploads/ads/")) return "ad";
+  if (imagePath.includes("/temp/")) return "temp";
 
-export const preloadImagesOptimized = (
-  urls: string[],
-  options?: { priority?: boolean[]; batchSize?: number }
-) => imagePreloader.preloadImages(urls, options);
+  // Handle temp images - temp image patterns (8+ digits + single letter)
+  // Temp images are typically like: "43921301a", "22731700a" (8+ digits + single letter)
+  if (/^\d{8,}[a-z]$/i.test(imagePath)) return "temp";
 
-export const isImagePreloadedOptimized = (url: string) =>
-  imagePreloader.isPreloaded(url);
+  // Default to property for most cases
+  return "property";
+}
+
+/**
+ * Build a resilient image URL with CDN fallback and optimization
+ */
+export function buildResilientImageUrl(
+  imagePath: string | undefined | null,
+  imageType: ImageType = "generic",
+  size: ImageSize = "original",
+  options: ImageUrlOptions = {}
+): string {
+  const {
+    preferSecondary = false,
+    enableFallback = true,
+    customFallback,
+    disableOptimization = false,
+  } = options;
+
+  const trimmedPath = imagePath?.trim() ?? "";
+  const cacheKey = JSON.stringify({
+    imageType,
+    size,
+    path: trimmedPath,
+    preferSecondary,
+    disableOptimization,
+    enableFallback,
+    customFallback: customFallback ?? "",
+  });
+  if (urlCache.has(cacheKey)) return urlCache.get(cacheKey)!;
+
+  const resolveFallback = (defaultValue = "") => {
+    if (!enableFallback) {
+      urlCache.set(cacheKey, defaultValue);
+      return defaultValue;
+    }
+
+    const fallback =
+      customFallback ||
+      getFallbackImage(imageType) ||
+      getFallbackImage("generic") ||
+      "/placeholder-image.png";
+    urlCache.set(cacheKey, fallback);
+    return fallback;
+  };
+
+  if (!trimmedPath) {
+    return resolveFallback("");
+  }
+
+  const clean = trimmedPath;
+  const cdns = getCdnUrls(preferSecondary);
+
+  // Temp / Local images - use CDN directly
+  const isTempId = /^\d{8,}[a-z]$/i.test(clean);
+  if (clean.startsWith("/temp") || clean.startsWith("temp/") || isTempId) {
+    const cdn = cdns[0] || "https://dve7rykno93gs.cloudfront.net";
+    let tempKey = clean.replace(/^\/+/, "");
+
+    if (!isTempId) {
+      while (tempKey.toLowerCase().startsWith("temp/")) {
+        tempKey = tempKey.slice(5);
+      }
+    }
+
+    const full = `${cdn}/temp/temp/${tempKey}`;
+    urlCache.set(cacheKey, full);
+    return full;
+  }
+
+  // Fully qualified URL - return as-is
+  if (clean.startsWith("http")) {
+    urlCache.set(cacheKey, clean);
+    return clean;
+  }
+
+  // Local paths (starting with /) - return as-is for Next.js to handle
+  if (clean.startsWith("/")) {
+    urlCache.set(cacheKey, clean);
+    return clean;
+  }
+
+  // Build via CDN patterns
+  for (const cdn of cdns) {
+    const patterns = getImagePatterns(imageType);
+    for (const pattern of patterns) {
+      const normalizedCdn = normalizeCdn(cdn);
+      const candidatePath = mergePatternWithPath(pattern, clean);
+      if (!candidatePath) continue;
+      const candidate = `${normalizedCdn}/${candidatePath}`;
+      if (candidate.startsWith("http")) {
+        const final = disableOptimization
+          ? candidate
+          : `${candidate}?${getSizeParams(size)}`;
+        urlCache.set(cacheKey, final);
+        return final;
+      }
+    }
+  }
+
+  // Fallback
+  return resolveFallback(clean);
+}
+
+// ----------------------
+// Specialized Builders
+// ----------------------
+
+export function buildAgentLogoUrl(
+  imbroker: string | undefined | null,
+  options?: ImageUrlOptions
+): string {
+  return buildResilientImageUrl(imbroker, "agent-logo", "original", options);
+}
+
+export function buildPropertyImageUrl(
+  imagePath: string | undefined | null,
+  size: ImageSize = "original",
+  options?: ImageUrlOptions
+): string {
+  return buildResilientImageUrl(imagePath, "property", size, options);
+}
+
+export function buildDeveloperLogoUrl(
+  logoPath: string | undefined | null,
+  size: ImageSize = "original",
+  options?: ImageUrlOptions
+): string {
+  return buildResilientImageUrl(logoPath, "developer-logo", size, options);
+}
+
+export function buildProjectImageUrl(
+  imagePath: string | undefined | null,
+  size: ImageSize = "original",
+  options?: ImageUrlOptions
+): string {
+  return buildResilientImageUrl(imagePath, "project-photo", size, options);
+}
+
+export function buildBannerImageUrl(
+  bannerPath: string | undefined | null,
+  size: ImageSize = "original",
+  options?: ImageUrlOptions
+): string {
+  return buildResilientImageUrl(bannerPath, "banner", size, options);
+}
+
+export function buildTempImageUrl(tempPath: string | undefined | null): string {
+  return buildResilientImageUrl(tempPath, "temp");
+}

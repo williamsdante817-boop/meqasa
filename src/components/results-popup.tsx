@@ -1,12 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -17,6 +14,10 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import type { PopupDataWithUrls } from "@/types";
+import Image from "next/image";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 interface ResultsPopupProps {
   type: string;
@@ -96,6 +97,9 @@ export function ResultsPopup({ type }: ResultsPopupProps) {
                     <DialogTitle className="sr-only absolute right-0 bottom-0 left-0 bg-black/70 p-4 text-sm text-white">
                       {popupData.title}
                     </DialogTitle>
+                    <DialogDescription className="sr-only">
+                      Click to visit {popupData.title}. Opens in a new window.
+                    </DialogDescription>
                   </Link>
                 </TooltipTrigger>
                 <TooltipContent className="z-[150]">

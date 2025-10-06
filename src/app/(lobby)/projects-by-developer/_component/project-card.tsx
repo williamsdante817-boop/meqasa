@@ -31,6 +31,8 @@ export function ProjectCard({
               placeholder="blur"
               blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/duYy7cAAAAASUVORK5CYII="
               fallbackAlt="Project image not available"
+              imageType="project-photo"
+              imageSize="large"
             />
 
             {/* Status Badge */}

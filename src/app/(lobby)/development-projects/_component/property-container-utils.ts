@@ -5,6 +5,7 @@
 
 import type { Listing } from "@/components/property/cards/property-card";
 import { sanitizeRichHtmlToInnerHtml } from "@/lib/dom-sanitizer";
+import { buildTempImageUrl } from "@/lib/image-utils";
 import type { DeveloperProject, Unit } from "@/types";
 import { useMemo } from "react";
 
@@ -141,7 +142,7 @@ export function mapProjectUnits(units: Unit[]): Listing[] {
   return units.map(
     (unit): Listing => ({
       ...unit,
-      image: unit.coverphoto,
+      image: buildTempImageUrl(unit.coverphoto),
       detailreq: `/developer-unit/${unit.unitid}`,
       listingid: String(unit.unitid),
       streetaddress: unit.address,

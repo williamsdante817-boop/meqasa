@@ -1,23 +1,29 @@
 "use client";
 
-import Image from "next/image";
-import React, { useEffect, useRef, useState } from "react";
-import { cn } from "@/lib/utils";
-import Link from "next/link";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { buildAgentLogoUrl } from "@/lib/image-utils";
+import { cn } from "@/lib/utils";
+import Link from "next/link";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { ImageWithFallback } from "./common/image-with-fallback";
 import { Card } from "./ui/card";
 
-// item type
 type Item = {
   imbroker: string;
   first: string;
   name: string;
   name2: string;
+};
+
+const SPEEDS: Record<"fast" | "normal" | "slow", string> = {
+  fast: "30s",
+  normal: "60s",
+  slow: "70s",
 };
 
 /**
@@ -34,7 +40,6 @@ type Item = {
 
 export const InfiniteMovingCards = ({
   items,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   direction = "left",
   speed = "fast",
   pauseOnHover = true,
@@ -50,16 +55,17 @@ export const InfiniteMovingCards = ({
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [isPaused, setIsPaused] = useState(false);
 
-  // Set animation duration - only when speed changes, not on every render
+  // Duplicate items only when items array changes
+  const doubledItems = useMemo(() => [...items, ...items], [items]);
+
+  // Apply animation duration via CSS var
   useEffect(() => {
     if (scrollerRef.current) {
-      const duration =
-        speed === "fast" ? "30s" : speed === "normal" ? "60s" : "70s";
-      scrollerRef.current.style.setProperty("--duration", duration);
+      scrollerRef.current.style.setProperty("--duration", SPEEDS[speed]);
     }
   }, [speed]);
 
-  // Handle pause/resume
+  // Pause/resume animation based on state
   useEffect(() => {
     if (scrollerRef.current) {
       scrollerRef.current.style.animationPlayState = isPaused
@@ -68,28 +74,14 @@ export const InfiniteMovingCards = ({
     }
   }, [isPaused]);
 
-  const handleMouseEnter = () => {
-    if (pauseOnHover) {
-      setIsPaused(true);
-    }
-  };
-
-  const handleMouseLeave = () => {
-    if (pauseOnHover) {
-      setIsPaused(false);
-    }
-  };
+  const handleMouseEnter = () => pauseOnHover && setIsPaused(true);
+  const handleMouseLeave = () => pauseOnHover && setIsPaused(false);
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
-    // Pause/resume carousel with spacebar
     if (event.code === "Space") {
       event.preventDefault();
-      setIsPaused(!isPaused);
+      setIsPaused((prev) => !prev);
     }
-  };
-
-  const handleCardClick = (_item: Item) => {
-    // The Link should handle navigation automatically
   };
 
   if (!items || items.length === 0) {
@@ -99,41 +91,45 @@ export const InfiniteMovingCards = ({
   return (
     <div
       ref={containerRef}
-      className={cn("relative w-full overflow-hidden", className)}
+      className={cn("relative mb-8 w-full overflow-hidden", className)}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onKeyDown={handleKeyDown}
       tabIndex={0}
       role="region"
+      aria-roledescription="carousel"
       aria-label="Partner company logos carousel. Press space to pause or resume."
-      aria-live="polite"
+      aria-live="off"
       aria-atomic="false"
-      style={{
-        minHeight: "200px",
-        zIndex: 10, // Ensure it's above other elements
-      }}
+      style={{ minHeight: "100%", zIndex: 10 }}
     >
-      {/* Scrolling container */}
+      {/* Visible Pause/Play control for accessibility */}
+      <button
+        onClick={() => setIsPaused((prev) => !prev)}
+        className="sr-only absolute top-2 right-2 z-20 rounded bg-white px-2 py-1 text-xs shadow focus:ring focus:outline-none"
+        aria-pressed={isPaused}
+      >
+        {isPaused ? "Play" : "Pause"}
+      </button>
+
+      {/* Scrolling row */}
       <div
         ref={scrollerRef}
-        className="animate-marquee-persistent flex gap-4 py-8"
+        className={cn(
+          "animate-marquee-persistent flex gap-4",
+          direction === "right" && "animate-marquee-reverse"
+        )}
         role="list"
         aria-label={`${items.length} partner companies`}
-        style={{
-          width: "max-content",
-          minWidth: "100%",
-        }}
+        style={{ width: "max-content", minWidth: "100%" }}
       >
-        {/* Duplicate items for seamless loop */}
-        {[...items, ...items].map((item, index) => {
-          const imageUrl = item.imbroker
-            ? `https://dve7rykno93gs.cloudfront.net/fascimos/somics/${item.imbroker}`
-            : "/default-image.jpg";
+        {doubledItems.map((item, index) => {
+          const imageUrl = buildAgentLogoUrl(item.imbroker);
 
           return (
             <Card
               key={`${item.first}-${index}`}
-              className="h-[120px] w-[120px] flex-shrink-0 overflow-hidden rounded-lg"
+              className="h-[120px] w-[120px] flex-shrink-0 overflow-hidden rounded-lg focus:ring focus:outline-none"
               role="listitem"
             >
               <TooltipProvider>
@@ -141,17 +137,19 @@ export const InfiniteMovingCards = ({
                   <TooltipTrigger asChild>
                     <Link
                       href={`/agents/${item.name}?g=${item.first}`}
-                      className="block h-full w-full p-4 transition-colors hover:bg-gray-50"
+                      className="block h-full w-full p-4 transition-colors hover:bg-gray-50 focus:ring focus:outline-none"
                       aria-label={`View details for ${item.name}`}
-                      onClick={() => {
-                        handleCardClick(item);
-                      }}
                     >
                       <div className="flex h-full w-full items-center justify-center">
-                        <OptimizedAgentLogo
+                        <ImageWithFallback
                           src={imageUrl}
                           alt={item.name}
-                          fallbackSrc="/default-image.jpg"
+                          fallbackSrc="/placeholder-image.png"
+                          width={100}
+                          height={50}
+                          sizes="120px"
+                          quality={85}
+                          className="h-full w-full object-contain"
                         />
                       </div>
                     </Link>
@@ -165,91 +163,6 @@ export const InfiniteMovingCards = ({
           );
         })}
       </div>
-    </div>
-  );
-};
-
-// Optimized Agent Logo Component
-interface OptimizedAgentLogoProps {
-  src: string;
-  alt: string;
-  fallbackSrc: string;
-}
-
-const OptimizedAgentLogo: React.FC<OptimizedAgentLogoProps> = ({
-  src,
-  alt,
-  fallbackSrc,
-}) => {
-  // Use src as initial state and only update when it actually changes
-  const [isLoading, setIsLoading] = useState(true);
-  const [hasError, setHasError] = useState(false);
-  const [currentSrc, setCurrentSrc] = useState(src);
-  const prevSrcRef = useRef(src);
-
-  const handleLoad = () => {
-    setIsLoading(false);
-    setHasError(false);
-  };
-
-  const handleError = () => {
-    if (currentSrc !== fallbackSrc) {
-      setCurrentSrc(fallbackSrc);
-      setHasError(false);
-      setIsLoading(true);
-    } else {
-      setHasError(true);
-      setIsLoading(false);
-    }
-  };
-
-  // Only reset state when src prop actually changes (not on every re-render)
-  React.useEffect(() => {
-    if (prevSrcRef.current !== src) {
-      setCurrentSrc(src);
-      setIsLoading(true);
-      setHasError(false);
-      prevSrcRef.current = src;
-    }
-  }, [src]);
-
-  return (
-    <div className="relative h-full w-full">
-      {/* Loading skeleton */}
-      {isLoading && (
-        <div className="absolute inset-0 animate-pulse rounded-md bg-gray-100" />
-      )}
-
-      {/* Error state */}
-      {hasError && (
-        <div className="absolute inset-0 flex items-center justify-center rounded-md bg-gray-100">
-          <div className="text-center text-xs text-gray-400">
-            <div className="mx-auto mb-1 flex h-8 w-8 items-center justify-center rounded-md bg-gray-200">
-              <span className="text-gray-400">?</span>
-            </div>
-            <span>Logo unavailable</span>
-          </div>
-        </div>
-      )}
-
-      {/* Optimized image */}
-      <Image
-        src={currentSrc}
-        alt={alt}
-        width={100}
-        height={50}
-        className={cn(
-          "h-full w-full object-contain transition-opacity duration-300",
-          isLoading ? "opacity-0" : "opacity-100"
-        )}
-        onLoad={handleLoad}
-        onError={handleError}
-        priority={false}
-        sizes="120px"
-        quality={85}
-        placeholder="blur"
-        blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxAAPwCdABmX/9k="
-      />
     </div>
   );
 };

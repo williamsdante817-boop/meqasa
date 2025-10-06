@@ -129,7 +129,7 @@ function PropertyContainerContent({
                     title="Explore More"
                     description=""
                     href="/listings"
-                    className="hidden px-0 pt-14 md:block md:pt-20"
+                    className="px-0 pt-14 md:pt-20"
                     btnHidden
                   >
                     <PropertyShowcase images={images} />

@@ -54,7 +54,7 @@ import MobilePageHeader from "./mobile-page-header";
 interface LobbyProps {
   // Static data (resolved immediately)
   staticData: StaticData;
-  // Hot promises for streaming data (skateshop pattern)
+  // Hot promises for streaming data
   featuredProjectsPromise: Promise<FeaturedProject[]>;
   featuredListingsPromise: Promise<FeaturedListingsResponse>;
   latestListingsPromise: Promise<LatestListingsResponse>;

@@ -2,6 +2,7 @@
 
 import { Badge } from "@/components/ui/badge";
 import { ImageWithFallback } from "@/components/common/image-with-fallback";
+import { buildPropertyImageUrl } from "@/lib/image-utils";
 import Link from "next/link";
 import { useState, useCallback } from "react";
 
@@ -42,10 +43,8 @@ export default function DeveloperUnitCard({
 }: DeveloperUnitCardProps) {
   const [imageLoading, setImageLoading] = useState(true);
 
-  // Use the exact same pattern as the existing unit card
-  const imageUrl = unit.coverphoto
-    ? `https://meqasa.com/uploads/imgs/${unit.coverphoto}`
-    : unit.image || "";
+  // Use image optimization function
+  const imageUrl = buildPropertyImageUrl(unit.coverphoto || unit.image, "large");
 
   // Get display values
   const displayContract = unit.terms === "rent" ? "For Rent" : "For Sale";
@@ -118,6 +117,8 @@ export default function DeveloperUnitCard({
               quality={75}
               onLoad={handleImageLoad}
               onError={handleImageError}
+              imageType="property"
+              imageSize="large"
             />
 
             {/* Contract Badge */}

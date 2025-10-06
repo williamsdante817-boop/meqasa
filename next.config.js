@@ -26,7 +26,16 @@ const config = {
       },
       {
         protocol: "https",
+        hostname: "staging.meqasa.com",
+      },
+      {
+        protocol: "https",
         hostname: "dve7rykno93gs.cloudfront.net",
+      },
+      {
+        protocol: "http",
+        hostname: "localhost",
+        port: "3000",
       },
       {
         protocol: "https",
@@ -83,11 +92,38 @@ const config = {
       {
         pathname: "/mobile-ad.png",
       },
+      {
+        pathname: "/east-legon-poster.jpg",
+      },
+      {
+        pathname: "/airport-poster.jpg",
+      },
+      {
+        pathname: "/Osu-poster.jpg",
+      },
+      {
+        pathname: "/dzorwulu-poster.jpg",
+      },
+      {
+        pathname: "/fallback.png",
+      },
+      {
+        pathname: "/temp/**",
+      },
+      {
+        pathname: "/uploads/**",
+      },
+      {
+        pathname: "/fascimos/**",
+      },
+      {
+        pathname: "/pieoq/**",
+      },
     ],
     formats: ["image/webp", "image/avif"],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    minimumCacheTTL: 3600, // 1 hour cache
+    minimumCacheTTL: 86400, // 24 hour cache
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     qualities: [75, 85, 90, 95],

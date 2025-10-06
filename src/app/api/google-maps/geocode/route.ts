@@ -23,7 +23,12 @@ export async function GET(request: NextRequest) {
   try {
     console.log(`🌍 Server-side geocoding for: "${address}"`);
 
-    const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${apiKey}&region=gh`;
+    // Make address more specific by appending Ghana if not already present
+    const enhancedAddress = address.toLowerCase().includes("ghana")
+      ? address
+      : `${address}, Ghana`;
+
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(enhancedAddress)}&key=${apiKey}&region=gh`;
 
     const response = await fetch(url);
 
@@ -33,6 +38,7 @@ export async function GET(request: NextRequest) {
 
     const data = await response.json();
     console.log(`📝 Geocoding response status: ${data.status}`);
+    console.log(`🔍 Enhanced address used: "${enhancedAddress}"`);
 
     if (data.status === "OK" && data.results && data.results.length > 0) {
       const result = data.results[0];
@@ -54,10 +60,12 @@ export async function GET(request: NextRequest) {
       console.log(
         `❌ Geocoding failed: ${data.status} - ${data.error_message || "No results"}`
       );
+      console.log(`🔍 Full response:`, JSON.stringify(data, null, 2));
       return NextResponse.json(
         {
           error: `Geocoding failed: ${data.status}`,
           details: data.error_message,
+          enhanced_address: enhancedAddress,
         },
         { status: 400 }
       );

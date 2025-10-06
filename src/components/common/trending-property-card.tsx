@@ -58,16 +58,16 @@ export default function TrendingPropertyCard({
 
   // Determine the count label based on property type and owner type
   const getCountLabel = (): string => {
-    if (propertyType === "developer-unit") {
-      return "views";
-    }
+    // if (propertyType === "developer-unit") {
+    //   return "views";
+    // }
 
-    // For listings, determine if it's views or listings count
-    if (ownerType === "Agent") {
-      return "listings"; // Agent listings count
-    } else if (ownerType === "Owner") {
-      return "views"; // Owner property views
-    }
+    // // For listings, determine if it's views or listings count
+    // if (ownerType === "Agent") {
+    //   return "listings"; // Agent listings count
+    // } else if (ownerType === "Owner") {
+    //   return "views"; // Owner property views
+    // }
 
     return "views"; // Default
   };

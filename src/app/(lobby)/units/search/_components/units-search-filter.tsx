@@ -1,11 +1,9 @@
 "use client";
 
-import type React from "react";
-import { useState, useEffect, useCallback } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { AlertCircle, Search } from "lucide-react";
+import { ActiveFilterChips } from "@/components/search/ActiveFilterChips";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { SearchInputWithSuggestions } from "@/components/ui/search-input-with-suggestions";
 import {
   Select,
   SelectContent,
@@ -14,8 +12,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { SearchInputWithSuggestions } from "@/components/ui/search-input-with-suggestions";
-import { ActiveFilterChips } from "@/components/search/ActiveFilterChips";
+import { AlertCircle, Search } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import type React from "react";
+import { useCallback, useEffect, useState } from "react";
 
 interface UnitsSearchFilterProps {
   resultCount?: number;
@@ -198,7 +198,7 @@ export function UnitsSearchFilter({}: UnitsSearchFilterProps) {
       searchParams.set("baths", String(bathsNum));
 
       // Navigate to search page
-      router.push(`/units/search?${searchParams.toString()}`);
+      router.replace(`/units/search?${searchParams.toString()}`);
     } catch {
       setError(
         "An error occurred while processing your search. Please try again."

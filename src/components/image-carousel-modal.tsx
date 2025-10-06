@@ -133,100 +133,138 @@ export function ImageCarouselModal({
     const container = thumbnailStripRef.current;
     if (!container) return;
 
-    const timeoutId = setTimeout(() => {
-      const activeThumb = container.querySelector<HTMLElement>(
-        `[data-thumb-index='${currentIndex}']`
+    let rafId: number | null = null;
+
+    const centerCurrentThumbnail = () => {
+      const thumbnailEl = container.querySelector<HTMLElement>(
+        `[data-thumb-index="${currentIndex}"]`
       );
-      if (!activeThumb) return;
+      if (!thumbnailEl) return;
 
-      const containerRect = container.getBoundingClientRect();
-      const thumbRect = activeThumb.getBoundingClientRect();
+      const containerWidth = container.clientWidth;
+      const thumbnailWidth = thumbnailEl.offsetWidth;
+      const thumbnailOffset = thumbnailEl.offsetLeft;
+      const scrollPosition =
+        thumbnailOffset - containerWidth / 2 + thumbnailWidth / 2;
 
-      const thumbCenterInContent =
-        thumbRect.left -
-        containerRect.left +
-        container.scrollLeft +
-        thumbRect.width / 2;
+      const clampedScroll = Math.max(
+        0,
+        Math.min(scrollPosition, container.scrollWidth - containerWidth)
+      );
 
-      let targetScrollLeft = thumbCenterInContent - container.clientWidth / 2;
+      container.scrollTo({
+        left: clampedScroll,
+        behavior: "smooth",
+      });
+    };
 
-      // Clamp within scrollable range
-      const maxScrollLeft = container.scrollWidth - container.clientWidth;
-      if (targetScrollLeft < 0) targetScrollLeft = 0;
-      if (targetScrollLeft > maxScrollLeft) targetScrollLeft = maxScrollLeft;
+    const requestScroll = () => {
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(centerCurrentThumbnail);
+    };
 
-      container.scrollTo({ left: targetScrollLeft, behavior: "smooth" });
-    }, 100);
+    requestScroll();
 
-    return () => clearTimeout(timeoutId);
-  }, [currentIndex, isOpen]);
+    return () => {
+      if (rafId) cancelAnimationFrame(rafId);
+    };
+  }, [currentIndex]);
 
-  // Memoized navigation handlers to prevent unnecessary re-renders
-  const handlePrevious = useCallback(() => {
-    const nextIndex =
-      currentIndex === 0 ? validImages.length - 1 : currentIndex - 1;
-    setCurrentIndex(nextIndex);
-    setIsLoading(!isImagePreloaded(imageUrls[nextIndex]));
-  }, [currentIndex, validImages.length, imageUrls]);
-
-  const handleNext = useCallback(() => {
-    const nextIndex =
-      currentIndex === validImages.length - 1 ? 0 : currentIndex + 1;
-    setCurrentIndex(nextIndex);
-    setIsLoading(!isImagePreloaded(imageUrls[nextIndex]));
-  }, [currentIndex, validImages.length, imageUrls]);
-
-  const handleThumbnailClick = useCallback(
-    (index: number) => {
-      setCurrentIndex(index);
-      setIsLoading(!isImagePreloaded(imageUrls[index]));
+  // Keyboard navigation support
+  const handleKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLDivElement>) => {
+      switch (event.key) {
+        case "ArrowRight":
+          event.preventDefault();
+          handleNext();
+          break;
+        case "ArrowLeft":
+          event.preventDefault();
+          handlePrevious();
+          break;
+        case "Escape":
+          handleClose();
+          break;
+      }
     },
-    [imageUrls]
+    []
   );
 
-  // Touch event handlers for mobile swipe
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    if (e.targetTouches[0]) {
-      setTouchStart({
-        x: e.targetTouches[0].clientX,
-        y: e.targetTouches[0].clientY,
-      });
+  // Helper to get image URL with fallback when errors occur
+  const getImageUrlWithFallback = useCallback(
+    (imagePath: string | undefined) => {
+      if (!imagePath) return "";
+      const url = getImageUrl(imagePath);
+      return url || "/fallback.png";
+    },
+    [getImageUrl]
+  );
+
+  // Navigation handlers
+  const handlePrevious = useCallback(() => {
+    setCurrentIndex((prev) =>
+      prev === 0 ? validImages.length - 1 : prev - 1
+    );
+  }, [validImages.length]);
+
+  const handleNext = useCallback(() => {
+    setCurrentIndex((prev) => (prev + 1) % validImages.length);
+  }, [validImages.length]);
+
+  const handleThumbnailClick = useCallback((index: number) => {
+    if (index < 0 || index >= validImages.length) return;
+    setCurrentIndex(index);
+  }, [validImages.length]);
+
+  const handleClose = useCallback(() => {
+    setIsAnimating(true);
+    const timer = setTimeout(() => {
+      onClose();
+      setIsAnimating(false);
+    }, 200);
+    return () => clearTimeout(timer);
+  }, [onClose]);
+
+  // Swipe gesture handlers for touch devices
+  const handleTouchStart = useCallback((event: React.TouchEvent<HTMLDivElement>) => {
+    const touch = event.targetTouches[0];
+    if (touch) {
+      setTouchStart({ x: touch.clientX, y: touch.clientY });
     }
   }, []);
 
-  const handleTouchMove = useCallback((e: React.TouchEvent) => {
-    if (e.targetTouches[0]) {
-      setTouchEnd({
-        x: e.targetTouches[0].clientX,
-        y: e.targetTouches[0].clientY,
-      });
+  const handleTouchMove = useCallback((event: React.TouchEvent<HTMLDivElement>) => {
+    const touch = event.targetTouches[0];
+    if (touch) {
+      setTouchEnd({ x: touch.clientX, y: touch.clientY });
     }
   }, []);
 
   const handleTouchEnd = useCallback(() => {
     if (!touchStart || !touchEnd) return;
 
-    const distanceX = touchStart.x - touchEnd.x;
-    const distanceY = touchStart.y - touchEnd.y;
-    const isHorizontalSwipe = Math.abs(distanceX) > Math.abs(distanceY);
+    const deltaX = touchStart.x - touchEnd.x;
+    const deltaY = touchStart.y - touchEnd.y;
 
-    if (isHorizontalSwipe && Math.abs(distanceX) > SWIPE_THRESHOLD) {
-      if (distanceX > 0) {
-        // Swiped left - go to next
-        handleNext();
-      } else {
-        // Swiped right - go to previous
-        handlePrevious();
-      }
+    // Only consider horizontal swipes
+    if (Math.abs(deltaY) > Math.abs(deltaX)) {
+      setTouchStart(null);
+      setTouchEnd(null);
+      return;
     }
 
-    // Reset touch states
+    if (deltaX > SWIPE_THRESHOLD) {
+      handleNext();
+    } else if (deltaX < -SWIPE_THRESHOLD) {
+      handlePrevious();
+    }
+
     setTouchStart(null);
     setTouchEnd(null);
   }, [touchStart, touchEnd, handleNext, handlePrevious]);
 
   // Enhanced keyboard navigation with proper event handling
-  const handleKeyDown = useCallback(
+  const handleKeyDownContainer = useCallback(
     (e: React.KeyboardEvent) => {
       switch (e.key) {
         case "ArrowLeft":
@@ -239,42 +277,29 @@ export function ImageCarouselModal({
           break;
         case "Escape":
           e.preventDefault();
-          onClose();
+          handleClose();
           break;
         case "Home":
           e.preventDefault();
           setCurrentIndex(0);
-          setIsLoading(!isImagePreloaded(imageUrls[0]));
           break;
         case "End":
           e.preventDefault();
           setCurrentIndex(validImages.length - 1);
-          setIsLoading(!isImagePreloaded(imageUrls[validImages.length - 1]));
           break;
       }
     },
-    [handlePrevious, handleNext, onClose, validImages.length, imageUrls]
+    [handlePrevious, handleNext, handleClose, validImages.length]
   );
-
-  const getImageUrlWithFallback = useCallback(
-    (imagePath: string | undefined) => {
-      if (!imagePath) return "";
-      return getImageUrl(imagePath);
-    },
-    [getImageUrl]
-  );
-
-  // Keep convenience helper for rendering paths that may be empty
-
-  // Handle image loading completion
-  const handleImageLoad = useCallback(() => {
-    setIsLoading(false);
-  }, []);
 
   // Handle image loading errors
   const handleImageError = useCallback((index: number) => {
-    setIsLoading(false);
     setImgErrors((prev) => ({ ...prev, [index]: true }));
+  }, []);
+
+  // Handle image load completion
+  const handleImageLoad = useCallback(() => {
+    setIsLoading(false);
   }, []);
 
   // Always keep a small buffer of preloaded neighbors as the user navigates
@@ -290,7 +315,42 @@ export function ImageCarouselModal({
 
   // Early return if no valid images
   if (validImages.length === 0) {
-    return null;
+    return (
+      <Dialog
+        open={isOpen}
+        onOpenChange={(open) => {
+          if (!open) handleClose();
+        }}
+      >
+        <DialogContent
+          className={cn(
+            "fixed inset-0 top-0 left-0 m-0 flex h-screen max-h-none w-screen max-w-none translate-x-0 translate-y-0 flex-col !rounded-none border-none bg-black p-0",
+            "transition-all duration-300 ease-out",
+            isAnimating
+              ? "scale-95 opacity-0 backdrop-blur-none"
+              : "scale-100 opacity-100 backdrop-blur-sm"
+          )}
+          role="dialog"
+          aria-modal="true"
+          hideCloseButton
+        >
+          <h2 className="sr-only">Image gallery - No images available</h2>
+          <div className="relative flex h-full w-full flex-col items-center justify-center gap-3 px-4 md:px-6">
+            <div className="text-center text-white">
+              <h2 className="mb-2 text-xl font-semibold">
+                No Images Available
+              </h2>
+              <p className="text-gray-300">
+                This property doesn&apos;t have any images to display.
+              </p>
+            </div>
+            <Button variant="outline" className="mt-4" onClick={handleClose}>
+              Close
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    );
   }
 
   const currentImage = validImages[currentIndex];
@@ -300,58 +360,39 @@ export function ImageCarouselModal({
     <Dialog
       open={isOpen}
       onOpenChange={(open) => {
-        if (!open) onClose();
+        if (!open) handleClose();
       }}
     >
       <DialogContent
         className={cn(
           "fixed inset-0 top-0 left-0 m-0 flex h-screen max-h-none w-screen max-w-none translate-x-0 translate-y-0 flex-col !rounded-none border-none bg-black p-0",
           "transition-all duration-300 ease-out",
-          isAnimating ? "opacity-0" : "opacity-100"
+          isAnimating
+            ? "scale-95 opacity-0 backdrop-blur-none"
+            : "scale-100 opacity-100 backdrop-blur-sm"
         )}
-        onKeyDown={handleKeyDown}
         role="dialog"
         aria-modal="true"
-        aria-label="Image gallery"
         hideCloseButton
       >
-        <div className="relative flex h-full w-full flex-col items-center justify-center gap-3 px-4 md:px-6">
-          {/* Photo count at top left */}
-          <div
-            className={cn(
-              "absolute top-4 left-4 z-50 rounded-lg bg-black/60 px-3 py-2 text-sm font-medium text-white",
-              "transition-all duration-300 ease-out",
-              isAnimating
-                ? "translate-y-2 opacity-0"
-                : "translate-y-0 opacity-100"
-            )}
-          >
-            {currentIndex + 1} / {validImages.length}
-          </div>
-
+        <div className="relative flex h-full w-full flex-col items-center justify-center gap-4 px-4 pb-6 pt-10 md:gap-6 md:px-6">
           {/* Close button */}
           <Button
             variant="outline"
             size="icon"
-            className={cn(
-              "absolute top-6 right-6 z-50 h-11 w-11 cursor-pointer rounded-full bg-white/90 text-gray-700 shadow-lg backdrop-blur-sm hover:scale-105 hover:bg-white hover:shadow-xl active:scale-95",
-              "transition-all duration-300 ease-out",
-              isAnimating
-                ? "translate-y-2 opacity-0"
-                : "translate-y-0 opacity-100"
-            )}
-            onClick={onClose}
+            className="focus-visible:ring-primary absolute right-4 top-4 z-50 h-10 w-10 rounded-full bg-white/90 text-gray-700 shadow-lg backdrop-blur-sm hover:bg-white focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+            onClick={handleClose}
             aria-label="Close image gallery"
           >
             <X className="h-5 w-5" />
           </Button>
 
-          {/* Previous button - hidden on mobile */}
+          {/* Previous button - visible on all devices but smaller on mobile */}
           <Button
             variant="outline"
             size="icon"
             className={cn(
-              "focus-visible:ring-primary absolute top-1/2 left-6 z-50 hidden h-11 w-11 -translate-y-1/2 cursor-pointer rounded-full bg-white/90 text-gray-700 shadow-lg backdrop-blur-sm hover:scale-105 hover:bg-white hover:shadow-xl focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100 md:flex",
+              "focus-visible:ring-primary absolute top-1/2 left-3 z-50 h-8 w-8 -translate-y-1/2 cursor-pointer rounded-full bg-white/90 text-gray-700 shadow-lg backdrop-blur-sm hover:scale-105 hover:bg-white hover:shadow-xl focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100 md:left-6 md:h-11 md:w-11",
               "transition-all duration-300 ease-out",
               isAnimating
                 ? "translate-x-2 opacity-0"
@@ -361,7 +402,7 @@ export function ImageCarouselModal({
             aria-label="Previous image"
             disabled={validImages.length <= 1}
           >
-            <ChevronLeft className="h-4 w-4" />
+            <ChevronLeft className="h-3 w-3 md:h-4 md:w-4" />
           </Button>
 
           {/* Main Image with touch events for mobile swipe */}
@@ -370,7 +411,9 @@ export function ImageCarouselModal({
             className={cn(
               "relative flex touch-pan-y items-center justify-center overflow-hidden rounded-lg bg-gray-900",
               "transition-all duration-300 ease-out",
-              isAnimating ? "scale-95 opacity-0" : "scale-100 opacity-100"
+              isAnimating
+                ? "scale-95 opacity-0"
+                : "scale-100 opacity-100"
             )}
             style={{ width: "min(800px, 100%)", aspectRatio: "800 / 530" }}
             tabIndex={0}

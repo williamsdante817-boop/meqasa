@@ -16,8 +16,9 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import type { AgentListing } from "@/lib/get-agent-details";
+import { buildPropertyImageUrl, buildAgentLogoUrl } from "@/lib/image-utils";
 import { buildInnerHtml, cn } from "@/lib/utils";
+import type { AgentListing } from "@/types/agent";
 
 export function AgentPropertyCard({ listing }: { listing: AgentListing }) {
   const [imgError, setImgError] = React.useState(false);
@@ -43,19 +44,9 @@ export function AgentPropertyCard({ listing }: { listing: AgentListing }) {
     : "";
   const detailsLink = cleanPath ? `/listings${cleanPath}` : "#";
 
-  // Handle image URL with CDN prefix if needed
-  const imageUrl = listing.image?.startsWith("http")
-    ? listing.image
-    : listing.image
-      ? `https://dve7rykno93gs.cloudfront.net${listing.image}`
-      : "/placeholder-image.png";
-
-  // Handle avatar image URL with proper prefixing
-  const avatarImageUrl = listing.owner?.image
-    ? listing.owner.image.startsWith("http")
-      ? listing.owner.image
-      : `https://dve7rykno93gs.cloudfront.net/fascimos/somics/${listing.owner.image}`
-    : "";
+  // Use image optimization functions
+  const imageUrl = buildPropertyImageUrl(listing.image, "large");
+  const avatarImageUrl = buildAgentLogoUrl(listing.owner?.image);
 
   // Safe price rendering using the same pattern as property-card
   const priceDisplay = listing.pricepart1 ? (
@@ -91,6 +82,8 @@ export function AgentPropertyCard({ listing }: { listing: AgentListing }) {
                   setImgError(true);
                   setIsLoading(false);
                 }}
+                imageType="property"
+                imageSize="large"
               />
               {isLoading && !imgError && (
                 <div className="absolute inset-0 animate-pulse rounded-lg bg-gray-100" />

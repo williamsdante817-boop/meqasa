@@ -1,14 +1,14 @@
-import Shell from "@/layouts/shell";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Card } from "@/components/ui/card";
-import { ChevronDown, ListFilterPlus, SearchIcon } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
 import {
   PageHeader,
   PageHeaderDescription,
   PageHeaderHeading,
 } from "@/components/layout/page-header";
 import { FeaturedProjectsSkeleton } from "@/components/streaming/LoadingSkeletons";
+import { Card } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
+import Shell from "@/layouts/shell";
+import { ChevronDown, ListFilterPlus, SearchIcon } from "lucide-react";
 
 export function LobbySkeleton() {
   return (
@@ -26,10 +26,10 @@ export function LobbySkeleton() {
           withPadding
         >
           <PageHeaderHeading className="animate-pulse text-white" as="h1">
-            <Skeleton className="h-8 w-64 bg-white/20" />
+            <span className="block h-8 w-64 rounded bg-white/20" />
           </PageHeaderHeading>
           <PageHeaderDescription className="max-w-[46.875rem] animate-pulse">
-            <Skeleton className="mt-2 h-4 w-80 bg-white/20" />
+            <span className="mt-2 block h-4 w-80 rounded bg-white/20" />
           </PageHeaderDescription>
           {/* Mobile Search Trigger Skeleton */}
           <div className="mx-auto mt-4 w-[80%]">
@@ -45,7 +45,7 @@ export function LobbySkeleton() {
           >
             <div className="mx-auto my-0 w-4/5 lg:max-w-[460px]">
               <div className="text-b-accent mb-4 grid h-[44px] w-full grid-cols-4 overflow-hidden rounded-xl bg-white p-1.5">
-                <div className="text-brand-accent flex h-full items-center justify-center rounded-md bg-rose-500 text-center text-base font-bold text-white">
+                <div className="flex h-full items-center justify-center rounded-md bg-rose-500 text-center text-base font-bold text-white">
                   Rent
                 </div>
                 <div className="text-brand-accent flex h-full cursor-default items-center justify-center text-center text-base font-bold hover:bg-gray-100">

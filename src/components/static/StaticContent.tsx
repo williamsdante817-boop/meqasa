@@ -1,13 +1,11 @@
+import AppPromotion from "@/components/app-promotion";
+import LocationCard from "@/components/common/location-card";
+import { AgentLogosErrorBoundary } from "@/components/error-boundaries/agent-logos-error-boundary";
 import { InfiniteMovingCards } from "@/components/infinite-moving-card";
 import ContentSection from "@/components/layout/content-section";
-import BlogCard from "@/components/common/blog-card";
-import MarketNewsCard from "@/components/market-news-card";
-import LocationCard from "@/components/common/location-card";
 import SeoText from "@/components/seo-text";
-import AppPromotion from "@/components/app-promotion";
-import Shell from "@/layouts/shell";
 import { AgentLogosSkeleton } from "@/components/skeletons/agent-logos-skeleton";
-import { AgentLogosErrorBoundary } from "@/components/error-boundaries/agent-logos-error-boundary";
+import Shell from "@/layouts/shell";
 import type { StaticData } from "@/lib/static-data";
 
 interface StaticContentProps {
@@ -15,9 +13,6 @@ interface StaticContentProps {
 }
 
 export function StaticAgentLogos({ staticData }: StaticContentProps) {
-  // More robust check - only show skeleton if we truly have no data
-  // During React Query background refetches, we want to keep showing existing data
-  // This prevents the "stuck in loading mode" issue when React Query refetches
   if (!staticData?.agentLogos || staticData.agentLogos.length === 0) {
     return <AgentLogosSkeleton />;
   }
@@ -32,54 +27,10 @@ export function StaticAgentLogos({ staticData }: StaticContentProps) {
         <InfiniteMovingCards
           items={staticData.agentLogos}
           direction="left"
-          speed="normal"
+          speed="slow"
         />
       </div>
     </AgentLogosErrorBoundary>
-  );
-}
-
-export function StaticBlogSection({ staticData }: StaticContentProps) {
-  return (
-    <ContentSection
-      title="Property Guides & Insights"
-      description="Read our blog"
-      href="/blog"
-      className="flex-[2] px-4 pt-14 md:px-0 md:pt-20 lg:pt-24"
-      border
-    >
-      {staticData.blogData.map((blog, index) => (
-        <BlogCard
-          datePosted={blog.datePosted}
-          description={blog.description}
-          href={blog.href}
-          poster={blog.poster}
-          title={blog.title}
-          key={index}
-        />
-      ))}
-    </ContentSection>
-  );
-}
-
-export function StaticMarketNews({ staticData }: StaticContentProps) {
-  return (
-    <aside className="mt-28 hidden flex-1 md:block" aria-label="Market News">
-      <h2 className="text-brand-accent mb-6 text-2xl leading-tight font-bold tracking-tighter lg:text-3xl">
-        Market News
-      </h2>
-      <div role="list">
-        {staticData.blogData.slice(0, 3).map((blog, index) => (
-          <div key={index} role="listitem">
-            <MarketNewsCard
-              title={blog.title}
-              displayDate="Jan 23, 2023"
-              index={index}
-            />
-          </div>
-        ))}
-      </div>
-    </aside>
   );
 }
 

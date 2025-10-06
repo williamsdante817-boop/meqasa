@@ -1,8 +1,8 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { UnitsSearchResults } from "./units-search-results";
 import type { DeveloperUnit } from "./types";
+import { UnitsSearchResults } from "./units-search-results";
 
 interface UnitsSearchWrapperProps {
   initialResults: DeveloperUnit[];
@@ -33,7 +33,7 @@ export function UnitsSearchWrapper({
       updatedSearchParams.set("terms", "sale");
     }
 
-    router.push(`/units/search?${updatedSearchParams.toString()}`, {
+    router.replace(`/units/search?${updatedSearchParams.toString()}`, {
       scroll: false,
     });
   };

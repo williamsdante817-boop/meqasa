@@ -11,7 +11,10 @@ import MortgageCalculator from "@/components/mortgage-calculator";
 import PropertyFavoritesBanner from "@/components/property-favorite-banner";
 import PropertyDetailsTable from "@/components/property/details/property-details";
 import PropertyInsight from "@/components/property/details/property-insight";
-import PropertyPlan from "@/components/property/details/property-plan";
+// import PropertyPlan from "@/components/property/details/property-plan";
+import PropertyContextCard from "@/components/common/property-context-card";
+import PropertyFeatures from "@/components/common/property-features";
+import TrendingPropertyCard from "@/components/common/trending-property-card";
 import PropertyShowcase from "@/components/property/details/property-showcase";
 import PropertyListings from "@/components/property/listings/property-listings";
 import SafetyTipsCard from "@/components/safety-tip";
@@ -22,12 +25,9 @@ import {
   hasCompressedData,
 } from "@/lib/compressed-data-utils";
 import { getUnitDetails } from "@/lib/get-unit-details";
-import { buildInnerHtml, cn, formatNumber, slugify } from "@/lib/utils";
 import { logInfo } from "@/lib/logger";
+import { buildInnerHtml, cn, formatNumber, slugify } from "@/lib/utils";
 import ProjectVideo from "../../development-projects/_component/project-video";
-import TrendingPropertyCard from "@/components/common/trending-property-card";
-import PropertyContextCard from "@/components/common/property-context-card";
-import PropertyFeatures from "@/components/common/property-features";
 export default async function DeveloperUnitPage({
   params,
   searchParams,
@@ -356,8 +356,8 @@ export default async function DeveloperUnitPage({
 
             <SafetyTipsCard />
 
-            {/* Only show property plan if it exists in the data */}
-            {unitDetails.unit.floorplan && (
+            {/* Property plan section - currently not available in unit data */}
+            {/* {unitDetails.unit.floorplan && (
               <ContentSection
                 title="Property Plan"
                 description=""
@@ -370,7 +370,7 @@ export default async function DeveloperUnitPage({
                   planTitle={`Floor plan for ${unitDetails.unit.title || unitDetails.unit.unittypename}`}
                 />
               </ContentSection>
-            )}
+            )} */}
 
             <PropertyInsight
               location={unitDetails.unit.city ?? unitDetails.unit.address ?? ""}

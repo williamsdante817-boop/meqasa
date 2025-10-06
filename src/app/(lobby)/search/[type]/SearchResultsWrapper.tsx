@@ -1,9 +1,9 @@
 "use client";
 
+import { ANY_SENTINEL } from "@/lib/search/constants";
+import type { MeqasaListing, MeqasaSearchResponse } from "@/types/meqasa";
 import { useRouter, useSearchParams } from "next/navigation";
 import { SearchResults } from "./search-results";
-import type { MeqasaListing, MeqasaSearchResponse } from "@/types/meqasa";
-import { ANY_SENTINEL } from "@/lib/search/constants";
 
 interface SearchResultsWrapperProps {
   type: string;
@@ -52,7 +52,7 @@ export function SearchResultsWrapper({
       newSearchParams.set("rtotal", total.toString());
     }
 
-    router.push(`?${newSearchParams.toString()}`, { scroll: false });
+    router.replace(`?${newSearchParams.toString()}`, { scroll: false });
   };
 
   return (

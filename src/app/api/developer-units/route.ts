@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { buildTempImageUrl } from "@/lib/image-utils";
 
 interface DeveloperUnitParams {
   terms?: "sale" | "rent" | "preselling";
@@ -131,46 +132,60 @@ export async function POST(request: NextRequest) {
     // Debug: Log first unit to see what fields are available
     if (units.length > 0) {
       const firstUnit = units[0];
-      console.log("🔍 First unit raw data:", {
-        unitid: firstUnit.unitid,
-        title: firstUnit.title,
-        coverphoto: firstUnit.coverphoto,
-        photos: firstUnit.photos,
-        images: firstUnit.images,
-        photo: firstUnit.photo,
-        gallery: firstUnit.gallery,
-        keys: Object.keys(firstUnit),
-      });
+      if (firstUnit) {
+        console.log("🔍 First unit raw data:", {
+          unitid: firstUnit.unitid,
+          title: firstUnit.title,
+          coverphoto: firstUnit.coverphoto,
+          photos: firstUnit.photos,
+          images: firstUnit.images,
+          photo: firstUnit.photo,
+          gallery: firstUnit.gallery,
+          keys: Object.keys(firstUnit),
+        });
+      }
 
       // Debug date fields specifically
-      console.log("📅 Date fields debug:", {
-        unitid: firstUnit.unitid,
-        timestamp: firstUnit.timestamp,
-        dateadded: firstUnit.dateadded,
-        updated_at: firstUnit.updated_at,
-        timestampType: typeof firstUnit.timestamp,
-        dateaddedType: typeof firstUnit.dateadded,
-        updated_atType: typeof firstUnit.updated_at,
-      });
+      if (firstUnit) {
+        console.log("📅 Date fields debug:", {
+          unitid: firstUnit.unitid,
+          timestamp: firstUnit.timestamp,
+          dateadded: firstUnit.dateadded,
+          updated_at: firstUnit.updated_at,
+          timestampType: typeof firstUnit.timestamp,
+          dateaddedType: typeof firstUnit.dateadded,
+          updated_atType: typeof firstUnit.updated_at,
+        });
+      }
     }
 
     // Transform the data to a consistent format
     const transformedData = units.map((unit) => {
-      const unitIdString = unit.unitid != null ? String(unit.unitid) : Math.random().toString();
+      const unitIdString =
+        unit.unitid != null ? String(unit.unitid) : Math.random().toString();
       const bedsValue = Number(unit.beds ?? 0) || 0;
       const bathsValue = Number(unit.baths ?? 0) || 0;
-      const propertyType = (unit.unittypename ?? unit.unittype ?? "Apartment").toString();
+      const propertyType = (
+        unit.unittypename ??
+        unit.unittype ??
+        "Apartment"
+      ).toString();
       const terms = (unit.terms ?? "sale").toString();
-      const locationSource = unit.address ?? unit.city ?? unit.location ?? "Ghana";
-      const locationText = typeof locationSource === "string" ? locationSource : String(locationSource);
-      const coverPhoto = typeof unit.coverphoto === "string" ? unit.coverphoto : undefined;
-      const fallbackImage = "https://dve7rykno93gs.cloudfront.net/pieoq/1572277987";
-      const imageUrl = coverPhoto
-        ? `https://dve7rykno93gs.cloudfront.net/temp/${coverPhoto}`
-        : fallbackImage;
+      const locationSource =
+        unit.address ?? unit.city ?? unit.location ?? "Ghana";
+      const locationText =
+        typeof locationSource === "string"
+          ? locationSource
+          : String(locationSource);
+      const coverPhoto =
+        typeof unit.coverphoto === "string" ? unit.coverphoto : undefined;
+      const fallbackImage =
+        "https://dve7rykno93gs.cloudfront.net/pieoq/1572277987";
+      const imageUrl = buildTempImageUrl(coverPhoto) || fallbackImage;
 
       const priceValue = unit.price != null ? String(unit.price) : "";
-      const sellingPriceValue = unit.sellingprice != null ? String(unit.sellingprice) : undefined;
+      const sellingPriceValue =
+        unit.sellingprice != null ? String(unit.sellingprice) : undefined;
 
       return {
         id: unitIdString,
@@ -179,8 +194,10 @@ export async function POST(request: NextRequest) {
           typeof unit.title === "string" && unit.title.trim() !== ""
             ? unit.title
             : (() => {
-                const bedroomText = bedsValue === 1 ? "1 Bedroom" : `${bedsValue} Bedroom`;
-                const transactionText = terms === "rent" ? "For Rent" : "For Sale";
+                const bedroomText =
+                  bedsValue === 1 ? "1 Bedroom" : `${bedsValue} Bedroom`;
+                const transactionText =
+                  terms === "rent" ? "For Rent" : "For Sale";
                 return `${bedroomText} ${propertyType} ${transactionText} in ${locationText}`;
               })(),
         price: priceValue,
@@ -202,7 +219,8 @@ export async function POST(request: NextRequest) {
             : typeof unit.name === "string"
               ? unit.name
               : "Developer",
-        companyname: typeof unit.companyname === "string" ? unit.companyname : undefined,
+        companyname:
+          typeof unit.companyname === "string" ? unit.companyname : undefined,
         name: typeof unit.name === "string" ? unit.name : undefined,
         area:
           unit.floorarea != null && unit.floorarea !== ""
@@ -217,15 +235,22 @@ export async function POST(request: NextRequest) {
         sellingprice: sellingPriceValue,
         sellingpricecsign: unit.sellingpricecsign,
         rentpricepermonth:
-          unit.rentpricepermonth != null ? String(unit.rentpricepermonth) : undefined,
+          unit.rentpricepermonth != null
+            ? String(unit.rentpricepermonth)
+            : undefined,
         rentpricecsignpermonth: unit.rentpricecsignpermonth,
         rentpriceperweek:
-          unit.rentpriceperweek != null ? String(unit.rentpriceperweek) : undefined,
+          unit.rentpriceperweek != null
+            ? String(unit.rentpriceperweek)
+            : undefined,
         rentpricecsignperweek: unit.rentpricecsignperweek,
         rentpriceperday:
-          unit.rentpriceperday != null ? String(unit.rentpriceperday) : undefined,
+          unit.rentpriceperday != null
+            ? String(unit.rentpriceperday)
+            : undefined,
         rentpricecsignperday: unit.rentpricecsignperday,
-        description: typeof unit.description === "string" ? unit.description : undefined,
+        description:
+          typeof unit.description === "string" ? unit.description : undefined,
         featured: Boolean(unit.featured),
         developerlogo:
           typeof unit.developerlogo === "string"

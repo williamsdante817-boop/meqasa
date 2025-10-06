@@ -3,6 +3,7 @@ import { ImageWithFallback } from "@/components/common/image-with-fallback";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { buildProjectImageUrl, buildDeveloperLogoUrl } from "@/lib/image-utils";
 import { cn } from "@/lib/utils";
 import type { FeaturedProject } from "@/types";
 import Link from "next/link";
@@ -41,14 +42,13 @@ export default function FeaturedPropertyCard({
     .join("-")
     .toLowerCase()}-${projectid}`;
 
-  // Fallback for photo and logo URLs with proper error handling
-  const photoUrl = photo
-    ? `https://dve7rykno93gs.cloudfront.net/uploads/imgs/${photo}`
-    : "/default-image.jpg";
-
-  const logoUrl = logo
-    ? `https://dve7rykno93gs.cloudfront.net/uploads/imgs/${logo}`
-    : "/default-logo.jpg";
+  // Generate URLs using image optimization functions
+  const photoUrl = buildProjectImageUrl(photo, "large", {
+    disableOptimization: true,
+  });
+  const logoUrl = buildDeveloperLogoUrl(logo, "medium", {
+    disableOptimization: true,
+  });
 
   return (
     <Card
@@ -76,6 +76,7 @@ export default function FeaturedPropertyCard({
               sizes="(min-width: 1280px) 45vw, (min-width: 1024px) 45vw, (min-width: 768px) 48vw, (min-width: 640px) 60vw, 90vw"
               quality={90}
               priority={priority}
+              unoptimized
               className={cn(
                 "object-cover transition-all duration-500 group-hover:scale-105",
                 imageLoaded ? "opacity-100" : "opacity-0"
@@ -84,6 +85,8 @@ export default function FeaturedPropertyCard({
               blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/duYy7cAAAAASUVORK5CYII="
               fallbackAlt="Property image not available"
               onLoad={() => setImageLoaded(true)}
+              imageType="project-photo"
+              imageSize="large"
             />
             <div
               className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-slate-900/60 transition-all duration-300 group-hover:to-slate-900/70"
@@ -130,12 +133,15 @@ export default function FeaturedPropertyCard({
                   alt={`${projectname} logo`}
                   width={50}
                   height={50}
+                  unoptimized
                   className={cn(
                     "h-full w-full object-contain transition-opacity duration-300",
                     logoLoaded ? "opacity-100" : "opacity-0"
                   )}
                   fallbackAlt={`${projectname} logo not available`}
                   onLoad={() => setLogoLoaded(true)}
+                  imageType="developer-logo"
+                  imageSize="medium"
                 />
               </div>
             </div>

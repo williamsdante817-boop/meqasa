@@ -1,11 +1,12 @@
 "use client";
 
 import { Card } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { buildRichInnerHtml } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
-import { buildRichInnerHtml } from "@/lib/utils";
 
 export default function HeaderAdClient() {
   const pathname = usePathname();
@@ -14,11 +15,13 @@ export default function HeaderAdClient() {
   const [leaderboardBanner, setLeaderboardBanner] = React.useState<string[]>(
     []
   );
+  const [isLoading, setIsLoading] = React.useState(true);
 
   console.log("leaderboardBanner", leaderboardBanner);
 
   React.useEffect(() => {
     const fetchBanner = async () => {
+      setIsLoading(true);
       try {
         const endpoint = isSearchRoute
           ? "/api/banner/search"
@@ -28,6 +31,8 @@ export default function HeaderAdClient() {
         setLeaderboardBanner(data);
       } catch {
         setLeaderboardBanner([]);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -55,18 +60,27 @@ export default function HeaderAdClient() {
             priority
           />
         </Link>
-        {leaderboardBanner && leaderboardBanner.length > 0 && (
-          <Card
-            className="overflow-hidden rounded-sm p-0 shadow-none"
-            role="complementary"
-            aria-label="Advertisement"
-          >
-            <div
-              dangerouslySetInnerHTML={buildRichInnerHtml(
-                String(leaderboardBanner)
-              )}
-            ></div>
-          </Card>
+        {isLoading ? (
+          <Skeleton
+            className="h-[90px] w-[728px] rounded-sm"
+            variant="shimmer"
+            aria-label="Loading advertisement banner"
+          />
+        ) : (
+          leaderboardBanner &&
+          leaderboardBanner.length > 0 && (
+            <Card
+              className="overflow-hidden rounded-sm p-0 shadow-none"
+              role="complementary"
+              aria-label="Advertisement"
+            >
+              <div
+                dangerouslySetInnerHTML={buildRichInnerHtml(
+                  String(leaderboardBanner)
+                )}
+              ></div>
+            </Card>
+          )
         )}
       </div>
     </div>

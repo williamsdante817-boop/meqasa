@@ -194,6 +194,8 @@ export default function FeaturedDevelopments() {
                   blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/duYy7cAAAAASUVORK5CYII="
                   fallbackAlt={`${project.projectname} - Image not available`}
                   onLoad={() => handleImageLoad(project.projectid)}
+                  imageType="project-photo"
+                  imageSize="large"
                 />
 
                 {/* Gradient overlay */}

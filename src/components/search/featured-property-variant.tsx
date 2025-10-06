@@ -1,13 +1,13 @@
 "use client";
 
 import { Dot } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
+import { ImageWithFallback } from "@/components/common/image-with-fallback";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { PlaceholderImage } from "@/components/common/placeholder-image";
+import { buildDeveloperLogoUrl, buildProjectImageUrl } from "@/lib/image-utils";
 import { shimmer, toBase64 } from "@/lib/utils";
 import type { MeqasaEmptyProject, MeqasaProject } from "@/types/meqasa";
 
@@ -26,7 +26,6 @@ export function FeaturedPropertyVariantCard({
   project,
 }: FeaturedPropertyVariantCardProps) {
   const [imgError, setImgError] = useState(false);
-  const [logoError, setLogoError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   // If project is empty, render nothing
@@ -44,11 +43,13 @@ export function FeaturedPropertyVariantCard({
     city = "Unknown City",
   } = project;
 
-  // Generate URLs with proper fallbacks
-  const mainImage = photo ? `https://meqasa.com/uploads/imgs/${photo}` : "";
-  const logoImage = logo
-    ? `https://dve7rykno93gs.cloudfront.net/uploads/imgs/${logo}`
-    : "";
+  // Generate URLs with proper fallbacks using image optimization
+  const mainImage = buildProjectImageUrl(photo, "large", {
+    disableOptimization: true,
+  });
+  const logoImage = buildDeveloperLogoUrl(logo, "medium", {
+    disableOptimization: true,
+  });
   const projectLink = `/development-projects/${projectid}`;
 
   // Generate proper alt text
@@ -69,28 +70,25 @@ export function FeaturedPropertyVariantCard({
         aria-hidden="true"
       />
       <CardContent className="p-0">
-        {!imgError && mainImage ? (
-          <Image
-            className="h-[321px] rounded-lg object-cover"
-            width={1028}
-            height={321}
-            src={mainImage}
-            alt={mainImageAlt}
-            placeholder="blur"
-            blurDataURL={`data:image/svg+xml;base64,${toBase64(
-              shimmer(728, 321)
-            )}`}
-            sizes="728px"
-            onError={() => setImgError(true)}
-            onLoad={() => setIsLoading(false)}
-            priority
-          />
-        ) : (
-          <PlaceholderImage
-            className="h-[321px] rounded-lg"
-            aria-label="Project image placeholder"
-          />
-        )}
+        <ImageWithFallback
+          className="h-[321px] rounded-lg object-cover"
+          width={1028}
+          height={321}
+          src={mainImage}
+          alt={mainImageAlt}
+          unoptimized
+          placeholder="blur"
+          blurDataURL={`data:image/svg+xml;base64,${toBase64(
+            shimmer(728, 321)
+          )}`}
+          sizes="728px"
+          onError={() => setImgError(true)}
+          onLoad={() => setIsLoading(false)}
+          priority
+          imageType="project-photo"
+          imageSize="large"
+          fallbackAlt="Project image not available"
+        />
 
         {isLoading && !imgError && (
           <div
@@ -138,16 +136,18 @@ export function FeaturedPropertyVariantCard({
                 </Button>
               </div>
               <div className="flex items-end">
-                {logoImage && !logoError ? (
-                  <Image
-                    src={logoImage}
-                    alt={logoAlt}
-                    width={100}
-                    height={100}
-                    className="h-14 w-14 rounded-md md:h-auto md:w-auto"
-                    onError={() => setLogoError(true)}
-                  />
-                ) : null}
+                <ImageWithFallback
+                  src={logoImage}
+                  alt={logoAlt}
+                  width={100}
+                  height={100}
+                  unoptimized
+                  className="h-14 w-14 rounded-md md:h-auto md:w-auto"
+                  onError={undefined}
+                  imageType="developer-logo"
+                  imageSize="medium"
+                  fallbackAlt="Developer logo not available"
+                />
               </div>
             </div>
           </div>

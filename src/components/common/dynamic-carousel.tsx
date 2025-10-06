@@ -1,7 +1,9 @@
 "use client";
 
-import React, { useEffect, useState, useCallback } from "react";
-import { cn } from "@/lib/utils";
+import { AddFavoriteButton } from "@/components/add-favorite-button";
+import { ImageWithFallback } from "@/components/common/image-with-fallback";
+import { ImageCarouselModal } from "@/components/image-carousel-modal";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Carousel,
@@ -11,10 +13,8 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { Badge } from "@/components/ui/badge";
-import { ImageCarouselModal } from "@/components/image-carousel-modal";
-import { AddFavoriteButton } from "@/components/add-favorite-button";
-import { ImageWithFallback } from "@/components/common/image-with-fallback";
+import { cn } from "@/lib/utils";
+import React, { useCallback, useEffect, useState } from "react";
 
 interface CarouselProps {
   isDeveloper?: boolean;
@@ -266,13 +266,13 @@ export function DynamicCarousel({
         )}
       </div>
 
-      <ImageCarouselModal
-        images={images}
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        initialIndex={selectedImageIndex}
-        getImageUrl={(img) => getImageUrl(img, cloudfrontDomain)}
-      />
+  <ImageCarouselModal
+    images={images}
+    isOpen={isModalOpen}
+    onClose={() => setIsModalOpen(false)}
+    initialIndex={selectedImageIndex}
+    getImageUrl={(img) => getImageUrl(img, cloudfrontDomain)}
+  />
     </>
   );
 }

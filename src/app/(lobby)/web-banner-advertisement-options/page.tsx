@@ -2,15 +2,7 @@ import FeaturedPropertiesAsideWrapper from "@/components/about/featured-properti
 import { StructuredData } from "@/components/structured-data";
 import { siteConfig } from "@/config/site";
 import Shell from "@/layouts/shell";
-import {
-  ArrowLeft,
-  BarChart3,
-  Mail,
-  Monitor,
-  Smartphone,
-  Target,
-  TrendingUp,
-} from "lucide-react";
+import { ArrowLeft, Mail, Monitor, Smartphone, TrendingUp } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -148,23 +140,23 @@ export default function WebBannerAdvertisementPage() {
     },
   ];
 
-  const benefits = [
-    {
-      title: "Maximum Visibility",
-      description: "Reach thousands of property seekers across Ghana",
-      icon: Target,
-    },
-    {
-      title: "Targeted Audience",
-      description: "Connect with people actively looking for properties",
-      icon: BarChart3,
-    },
-    {
-      title: "Professional Context",
-      description: "Your ads appear alongside trusted real estate content",
-      icon: TrendingUp,
-    },
-  ];
+  // const benefits = [
+  //   {
+  //     title: "Maximum Visibility",
+  //     description: "Reach thousands of property seekers across Ghana",
+  //     icon: Target,
+  //   },
+  //   {
+  //     title: "Targeted Audience",
+  //     description: "Connect with people actively looking for properties",
+  //     icon: BarChart3,
+  //   },
+  //   {
+  //     title: "Professional Context",
+  //     description: "Your ads appear alongside trusted real estate content",
+  //     icon: TrendingUp,
+  //   },
+  // ];
 
   return (
     <>

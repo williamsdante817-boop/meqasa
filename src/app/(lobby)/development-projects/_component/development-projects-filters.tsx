@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,9 +11,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { X, Search, Filter } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Filter, Search, X } from "lucide-react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useCallback, useState } from "react";
 
 interface DevelopmentProjectsFiltersProps {
   searchParams: Record<string, string | string[] | undefined>;
@@ -54,7 +54,7 @@ export default function DevelopmentProjectsFilters({
         }
       });
 
-      router.push(`${pathname}?${params.toString()}`);
+      router.replace(`${pathname}?${params.toString()}`);
     },
     [currentSearchParams, pathname, router]
   );
@@ -62,7 +62,7 @@ export default function DevelopmentProjectsFilters({
   // Clear all filters
   const clearAllFilters = () => {
     setSearchQuery("");
-    router.push(pathname);
+    router.replace(pathname);
   };
 
   // Handle search input

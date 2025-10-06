@@ -1,22 +1,22 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { AgentPropertyCard } from "./agent-property-card";
-import { AgentListingsSkeleton } from "./agent-listings-skeleton";
-import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
 import {
   Pagination,
   PaginationContent,
+  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-  PaginationEllipsis,
 } from "@/components/ui/pagination";
+import { useAgentListings } from "@/hooks/use-agent-listings";
 import type { AgentListing } from "@/types/agent-listings";
-import { useAgentListingsPagination } from "@/hooks/queries";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { AgentListingsSkeleton } from "./agent-listings-skeleton";
+import { AgentPropertyCard } from "./agent-property-card";
 
 // Constants
 const ITEMS_PER_PAGE = 16;
@@ -66,28 +66,21 @@ export function AgentListings({
   const listingsTopRef = useRef<HTMLDivElement>(null);
   const paginationClickedRef = useRef(false); // Track if pagination button was clicked
 
-  // Use React Query for pagination (page 2+)
+  // Use custom hook for pagination (page 2+)
   const {
     data: paginationData,
-    isLoading: isPaginationQueryLoading,
+    loading: isPaginationQueryLoading,
     error: paginationError,
-    isFetching: isPaginationFetching,
-  } = useAgentListingsPagination(
-    agentId,
-    agentName,
-    currentPage,
-    ITEMS_PER_PAGE
-  );
+    totalPages: paginationTotalPages,
+  } = useAgentListings(agentId, agentName, currentPage, ITEMS_PER_PAGE);
 
   // Determine what data to show - no useEffect needed!
-  const listings =
-    currentPage === 1 ? initialListings : (paginationData?.listings ?? []);
+  const listings = currentPage === 1 ? initialListings : (paginationData ?? []);
   const totalPages =
     currentPage === 1
       ? Math.ceil(totalCount / ITEMS_PER_PAGE)
-      : (paginationData?.totalPages ?? 0);
-  const isLoading =
-    currentPage > 1 ? isPaginationQueryLoading || isPaginationFetching : false;
+      : (paginationTotalPages ?? 0);
+  const isLoading = currentPage > 1 ? isPaginationQueryLoading : false;
   const error = currentPage > 1 ? paginationError : null;
 
   // Calculate pagination range for display
@@ -132,7 +125,7 @@ export function AgentListings({
       // Update URL with new page parameter
       const url = new URL(window.location.href);
       url.searchParams.set("page", pageNumber.toString());
-      router.push(url.pathname + url.search, { scroll: false });
+      router.replace(url.pathname + url.search, { scroll: false });
     } finally {
       setIsPaginationLoading(false);
     }
@@ -148,7 +141,7 @@ export function AgentListings({
       {error && (
         <Alert className="mb-6 border-red-200 bg-red-50">
           <AlertDescription className="text-red-800">
-            {error instanceof Error ? error.message : String(error)}. Please try
+            {typeof error === "string" ? error : String(error)}. Please try
             again.
           </AlertDescription>
         </Alert>

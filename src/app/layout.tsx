@@ -1,13 +1,12 @@
 import "@/styles/globals.css";
 
-import { cn } from "@/lib/utils";
-import { type Metadata, type Viewport } from "next";
-import { fontSans } from "@/lib/fonts";
 import { Toaster } from "@/components/ui/toast";
-import { SpeedInsights } from "@vercel/speed-insights/next";
-import { Analytics } from "@vercel/analytics/react";
-import { QueryProvider } from "@/components/providers/query-provider";
 import { WebVitals } from "@/components/web-vitals";
+import { fontSans } from "@/lib/fonts";
+import { cn } from "@/lib/utils";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { type Metadata, type Viewport } from "next";
 
 export const metadata: Metadata = {
   title: "Meqasa ",
@@ -37,7 +36,7 @@ export default function RootLayout({
         )}
         suppressHydrationWarning
       >
-        <QueryProvider>{children}</QueryProvider>
+        {children}
         <Toaster />
         <WebVitals />
         <SpeedInsights />

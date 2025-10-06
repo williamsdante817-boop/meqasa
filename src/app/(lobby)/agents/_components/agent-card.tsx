@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
+import { buildAgentLogoUrl } from "@/lib/image-utils";
 import { formatNumber } from "@/lib/utils";
 
 interface BrokerSocials {
@@ -60,9 +61,7 @@ export function AgentCard({
 
   const agentName = name;
   const listingsCount = formatNumber(listings);
-  const logoSrc = logo
-    ? `${process.env.NEXT_PUBLIC_CDN_URL ?? "https://dve7rykno93gs.cloudfront.net/fascimos/somics"}/${logo}`
-    : "";
+  const logoSrc = buildAgentLogoUrl(logo);
   const fallbackImage = "/placeholder-image.png";
 
   const handleContactAgent = () => setIsOpen(true);
@@ -150,6 +149,8 @@ export function AgentCard({
                   onLoad={handleLogoLoad}
                   onError={handleLogoError}
                   quality={95}
+                  imageType="agent-logo"
+                  imageSize="medium"
                 />
               </div>
             </div>

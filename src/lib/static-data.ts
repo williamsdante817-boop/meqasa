@@ -1,11 +1,11 @@
 import { blog } from "@/assets/data/blog";
 import { location } from "@/assets/data/location";
-import { getCachedBanner, setCachedBanner, CACHE_KEYS } from "./banner-cache";
-import type { getAgentLogos } from "@/lib/get-agents-logos";
+import { agentDataFetchers } from "./api/agent-fetchers";
+import { CACHE_KEYS, getCachedBanner, setCachedBanner } from "./banner-cache";
 
 // Static data types
 export interface StaticData {
-  agentLogos: Awaited<ReturnType<typeof getAgentLogos>>;
+  agentLogos: Awaited<ReturnType<typeof agentDataFetchers.getAgentLogos>>;
   blogData: typeof blog;
   locationData: typeof location;
   seoText: string; // We'll define this
@@ -25,15 +25,16 @@ export async function getCachedAgentLogos() {
 
   // Check cache first
   const cached =
-    await getCachedBanner<Awaited<ReturnType<typeof getAgentLogos>>>(cacheKey);
+    await getCachedBanner<
+      Awaited<ReturnType<typeof agentDataFetchers.getAgentLogos>>
+    >(cacheKey);
   if (cached) {
     return cached;
   }
 
   try {
-    // Import and call the actual function
-    const { getAgentLogos } = await import("./get-agents-logos");
-    const data = await getAgentLogos();
+    // Use new agent data fetcher
+    const data = await agentDataFetchers.getAgentLogos();
 
     // Cache the result
     setCachedBanner(cacheKey, data, STATIC_CACHE_CONFIG.agentLogos.ttl);
@@ -41,7 +42,7 @@ export async function getCachedAgentLogos() {
     return data;
   } catch (error) {
     console.error("Failed to fetch agent logos:", error);
-    return null;
+    return [];
   }
 }
 

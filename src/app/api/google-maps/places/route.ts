@@ -48,6 +48,7 @@ type GooglePlace = {
   place_id?: string;
   name: string;
   types?: string[];
+  rating?: number;
 };
 
 function filterRelevantPlaces(

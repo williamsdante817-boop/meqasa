@@ -1,14 +1,14 @@
-import { getAllAgents } from "@/lib/get-all-agents";
+import { agentDataFetchers } from "@/lib/api/agent-fetchers";
 
-import Shell from "@/layouts/shell";
 import { Breadcrumbs } from "@/components/layout/bread-crumbs";
-import AgentSearch from "./_components/agent-search";
-import { AgentsFAQ } from "./_components/agent-faqs";
-import { AgentsList } from "./_components/agents-list";
-import type { Metadata } from "next";
-import { siteConfig } from "@/config/site";
-import { logInfo, logError } from "@/lib/logger";
 import { StructuredData } from "@/components/structured-data";
+import { siteConfig } from "@/config/site";
+import Shell from "@/layouts/shell";
+import { logError, logInfo } from "@/lib/logger";
+import type { Metadata } from "next";
+import { AgentsFAQ } from "./_components/agent-faqs";
+import AgentSearch from "./_components/agent-search";
+import { AgentsList } from "./_components/agents-list";
 
 // Generate metadata for SEO
 export async function generateMetadata(): Promise<Metadata> {
@@ -77,7 +77,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function AgentsPage() {
   try {
-    const { list } = await getAllAgents();
+    const { list } = await agentDataFetchers.getAllAgents();
     const agents = list ?? [];
 
     logInfo("Agents data loaded successfully", {

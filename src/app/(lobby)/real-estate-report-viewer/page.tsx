@@ -1,69 +1,70 @@
+"use client";
+
 import { StructuredData } from "@/components/structured-data";
 import { siteConfig } from "@/config/site";
 import Shell from "@/layouts/shell";
-import type { Metadata } from "next";
 import Link from "next/link";
 
-// Generate metadata for SEO
-export const metadata: Metadata = {
-  title: "Real Estate Report Viewer | Meqasa Real Estate Report 2020",
-  description:
-    "Interactive viewer for the Meqasa Real Estate Report 2020. Browse through comprehensive market analysis, trends, and insights about Ghana's real estate market during COVID-19.",
-  keywords: [
-    "real estate report viewer",
-    "Meqasa report 2020",
-    "interactive report viewer",
-    "Ghana real estate analysis",
-    "flipbook report",
-    "real estate market trends",
-    "COVID-19 real estate impact",
-    "property market insights",
-  ],
-  authors: [{ name: "MeQasa" }],
-  creator: "MeQasa",
-  publisher: "MeQasa",
-  metadataBase: new URL(siteConfig.url),
-  alternates: {
-    canonical: "/real-estate-report-viewer",
-  },
-  openGraph: {
-    type: "website",
-    locale: "en_US",
-    url: "/real-estate-report-viewer",
-    siteName: siteConfig.name,
-    title: "Real Estate Report Viewer | Meqasa Real Estate Report 2020",
-    description:
-      "Interactive viewer for the Meqasa Real Estate Report 2020. Browse through comprehensive market analysis and insights.",
-    images: [
-      {
-        url: `${siteConfig.url}/real-estate-report.jpg`,
-        width: 1200,
-        height: 630,
-        alt: "Meqasa Real Estate Report 2020 - Interactive Viewer",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    site: "@meqasa",
-    creator: "@meqasa",
-    title: "Real Estate Report Viewer | Meqasa Real Estate Report 2020",
-    description:
-      "Interactive viewer for the Meqasa Real Estate Report 2020. Browse through comprehensive market analysis and insights.",
-    images: [`${siteConfig.url}/real-estate-report.jpg`],
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-    },
-  },
-};
+// Note: Metadata is handled by parent layout since this is a client component
+// export const metadata: Metadata = {
+//   title: "Real Estate Report Viewer | Meqasa Real Estate Report 2020",
+//   description:
+//     "Interactive viewer for the Meqasa Real Estate Report 2020. Browse through comprehensive market analysis, trends, and insights about Ghana's real estate market during COVID-19.",
+//   keywords: [
+//     "real estate report viewer",
+//     "Meqasa report 2020",
+//     "interactive report viewer",
+//     "Ghana real estate analysis",
+//     "flipbook report",
+//     "real estate market trends",
+//     "COVID-19 real estate impact",
+//     "property market insights",
+//   ],
+//   authors: [{ name: "MeQasa" }],
+//   creator: "MeQasa",
+//   publisher: "MeQasa",
+//   metadataBase: new URL(siteConfig.url),
+//   alternates: {
+//     canonical: "/real-estate-report-viewer",
+//   },
+//   openGraph: {
+//     type: "website",
+//     locale: "en_US",
+//     url: "/real-estate-report-viewer",
+//     siteName: siteConfig.name,
+//     title: "Real Estate Report Viewer | Meqasa Real Estate Report 2020",
+//     description:
+//       "Interactive viewer for the Meqasa Real Estate Report 2020. Browse through comprehensive market analysis and insights.",
+//     images: [
+//       {
+//         url: `${siteConfig.url}/real-estate-report.jpg`,
+//         width: 1200,
+//         height: 630,
+//         alt: "Meqasa Real Estate Report 2020 - Interactive Viewer",
+//       },
+//     ],
+//   },
+//   twitter: {
+//     card: "summary_large_image",
+//     site: "@meqasa",
+//     creator: "@meqasa",
+//     title: "Real Estate Report Viewer | Meqasa Real Estate Report 2020",
+//     description:
+//       "Interactive viewer for the Meqasa Real Estate Report 2020. Browse through comprehensive market analysis and insights.",
+//     images: [`${siteConfig.url}/real-estate-report.jpg`],
+//   },
+//   robots: {
+//     index: true,
+//     follow: true,
+//     googleBot: {
+//       index: true,
+//       follow: true,
+//       "max-video-preview": -1,
+//       "max-image-preview": "large",
+//       "max-snippet": -1,
+//     },
+//   },
+// };
 
 export default function RealEstateReportViewer() {
   const structuredData = {
