@@ -4,6 +4,10 @@ import type {
   MeqasaSearchResponse,
 } from "@/types/meqasa";
 
+interface RequestOptions {
+  baseUrl?: string;
+}
+
 /**
  * Search for properties using the Meqasa API
  * @param contract - "rent" or "sale"
@@ -14,32 +18,36 @@ import type {
 export async function searchProperties(
   contract: string,
   locality: string,
-  params: MeqasaSearchParams
+  params: MeqasaSearchParams,
+  options: RequestOptions = {}
 ): Promise<MeqasaSearchResponse> {
   const isServer = typeof window === "undefined";
 
   // For server-side rendering, we need absolute URLs
   // For client-side, relative URLs work fine
   const resolveBaseUrl = (): string => {
-    if (isServer) {
-      if (process.env.NODE_ENV === "development") {
-        return "http://localhost:3000";
-      }
-      // Production: Use Vercel URL or fallback to configured site URL
-      if (process.env.VERCEL_URL) {
-        return `https://${process.env.VERCEL_URL}`;
-      }
-      if (process.env.NEXT_PUBLIC_SITE_URL) {
-        return process.env.NEXT_PUBLIC_SITE_URL;
-      }
-      // Final fallback for production
-      return "https://meqasa.com";
+    if (!isServer) return "";
+    if (options.baseUrl) return options.baseUrl;
+
+    if (process.env.NODE_ENV === "development") {
+      return process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
     }
-    // Client-side always uses relative URLs
-    return "";
+
+    const envBase =
+      process.env.NEXT_PUBLIC_SITE_URL ??
+      (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined) ??
+      process.env.SITE_URL;
+
+    if (envBase) return envBase;
+
+    console.warn(
+      "searchProperties: Falling back to https://meqasa.com. Configure NEXT_PUBLIC_SITE_URL for accurate API routing."
+    );
+    return "https://meqasa.com";
   };
 
-  const apiUrl = `${resolveBaseUrl()}/api/properties`;
+  const baseUrl = resolveBaseUrl();
+  const apiUrl = baseUrl ? `${baseUrl.replace(/\/$/, "")}/api/properties` : "/api/properties";
 
   const response = await fetch(apiUrl, {
     method: "POST",
@@ -70,6 +78,7 @@ export async function searchProperties(
       environment: process.env.NODE_ENV,
       vercelUrl: process.env.VERCEL_URL,
       siteUrl: process.env.NEXT_PUBLIC_SITE_URL,
+      baseUrlOverride: options.baseUrl,
       status: response.status,
       statusText: response.statusText,
     });
@@ -89,32 +98,36 @@ export async function searchProperties(
 export async function loadMoreProperties(
   contract: string,
   locality: string,
-  params: MeqasaLoadMoreParams
+  params: MeqasaLoadMoreParams,
+  options: RequestOptions = {}
 ): Promise<MeqasaSearchResponse> {
   const isServer = typeof window === "undefined";
 
   // For server-side rendering, we need absolute URLs
   // For client-side, relative URLs work fine
   const resolveBaseUrl = (): string => {
-    if (isServer) {
-      if (process.env.NODE_ENV === "development") {
-        return "http://localhost:3000";
-      }
-      // Production: Use Vercel URL or fallback to configured site URL
-      if (process.env.VERCEL_URL) {
-        return `https://${process.env.VERCEL_URL}`;
-      }
-      if (process.env.NEXT_PUBLIC_SITE_URL) {
-        return process.env.NEXT_PUBLIC_SITE_URL;
-      }
-      // Final fallback for production
-      return "https://meqasa.com";
+    if (!isServer) return "";
+    if (options.baseUrl) return options.baseUrl;
+
+    if (process.env.NODE_ENV === "development") {
+      return process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
     }
-    // Client-side always uses relative URLs
-    return "";
+
+    const envBase =
+      process.env.NEXT_PUBLIC_SITE_URL ??
+      (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined) ??
+      process.env.SITE_URL;
+
+    if (envBase) return envBase;
+
+    console.warn(
+      "loadMoreProperties: Falling back to https://meqasa.com. Configure NEXT_PUBLIC_SITE_URL for accurate API routing."
+    );
+    return "https://meqasa.com";
   };
 
-  const apiUrl = `${resolveBaseUrl()}/api/properties`;
+  const baseUrl = resolveBaseUrl();
+  const apiUrl = baseUrl ? `${baseUrl.replace(/\/$/, "")}/api/properties` : "/api/properties";
 
   const response = await fetch(apiUrl, {
     method: "POST",
@@ -145,6 +158,7 @@ export async function loadMoreProperties(
       environment: process.env.NODE_ENV,
       vercelUrl: process.env.VERCEL_URL,
       siteUrl: process.env.NEXT_PUBLIC_SITE_URL,
+      baseUrlOverride: options.baseUrl,
       status: response.status,
       statusText: response.statusText,
       params,

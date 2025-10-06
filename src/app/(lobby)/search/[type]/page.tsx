@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { headers } from "next/headers";
 import { Breadcrumbs } from "@/components/layout/bread-crumbs";
 import { ResultsPopup } from "@/components/results-popup";
 import { HeroBannerSkeleton } from "@/components/search/BannerSkeleton";
@@ -116,6 +117,17 @@ export default async function SearchPage({
   params,
   searchParams,
 }: SearchPageProps) {
+  const headersList = await headers();
+  const forwardedProto = headersList.get("x-forwarded-proto");
+  const forwardedHost = headersList.get("x-forwarded-host");
+  const hostHeader = forwardedHost ?? headersList.get("host") ?? undefined;
+  const fallbackBase =
+    process.env.NEXT_PUBLIC_SITE_URL ??
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined);
+  const apiBaseUrl = hostHeader && forwardedProto
+    ? `${forwardedProto}://${hostHeader}`
+    : fallbackBase ?? "http://localhost:3000";
+
   const { type } = await params;
   const resolvedSearchParams = await searchParams;
   const location = resolvedSearchParams.q ?? "Ghana";
@@ -151,7 +163,7 @@ export default async function SearchPage({
           const loadMoreResult = await loadMoreProperties(type, location, {
             y: urlSearchId,
             w: currentPage,
-          });
+          }, { baseUrl: apiBaseUrl });
           if (
             canonicalResultTotal !== null &&
             !Number.isNaN(canonicalResultTotal)
@@ -177,7 +189,7 @@ export default async function SearchPage({
           const searchResult = await searchProperties(type, location, {
             ...sanitizedSearchParams,
             app: "vercel",
-          });
+          }, { baseUrl: apiBaseUrl });
           if (
             canonicalResultTotal !== null &&
             !Number.isNaN(canonicalResultTotal)
