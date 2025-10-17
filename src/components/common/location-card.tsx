@@ -52,12 +52,12 @@ export default function LocationCard({
       </div>
 
       <div className="mt-4">
-        <h3 className="line-clamp-2 font-medium text-gray-900 capitalize transition-colors duration-200 group-hover:text-blue-600 lg:text-lg">
+        <h3 className="text-brand-accent line-clamp-2 font-medium capitalize lg:text-lg">
           {location}
         </h3>
         {description && (
           <p
-            className="mt-1 line-clamp-2 text-sm text-gray-600"
+            className="text-brand-muted mt-1 line-clamp-2 text-sm"
             aria-label={`Description for ${location}`}
           >
             {description}

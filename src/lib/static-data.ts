@@ -20,6 +20,8 @@ const STATIC_CACHE_CONFIG = {
 };
 
 // Get cached agent logos
+const FAILED_FETCH_TTL = 60 * 1000; // retry after 1 minute when fetch fails
+
 export async function getCachedAgentLogos() {
   const cacheKey = CACHE_KEYS.AGENT_LOGOS;
 
@@ -32,18 +34,18 @@ export async function getCachedAgentLogos() {
     return cached;
   }
 
-  try {
-    // Use new agent data fetcher
-    const data = await agentDataFetchers.getAgentLogos();
+  // Use new agent data fetcher
+  const data = await agentDataFetchers.getAgentLogos();
 
-    // Cache the result
+  if (data && data.length > 0) {
     setCachedBanner(cacheKey, data, STATIC_CACHE_CONFIG.agentLogos.ttl);
-
     return data;
-  } catch (error) {
-    console.error("Failed to fetch agent logos:", error);
-    return [];
   }
+
+  // Cache a short-lived marker to avoid hammering the endpoint during outages
+  setCachedBanner(cacheKey, [], FAILED_FETCH_TTL);
+
+  return [];
 }
 
 // Get cached blog data (currently static, but could be dynamic in future)

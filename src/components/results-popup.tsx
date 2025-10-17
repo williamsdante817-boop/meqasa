@@ -18,6 +18,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { logError } from "@/lib/logger";
+import { usePopupAccessibility } from "@/hooks/use-popup-accessibility";
 
 interface ResultsPopupProps {
   type: string;
@@ -46,19 +48,27 @@ export function ResultsPopup({ type }: ResultsPopupProps) {
     return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
   }, []);
 
+  const { linkRef, descriptionId } = usePopupAccessibility({ isOpen });
+
   const recordImpression = useCallback(
     (popupId: string) => {
       try {
         const payload = JSON.stringify({ id: popupId, seenAt: Date.now() });
         localStorage.setItem(storageKey, payload);
       } catch (error) {
-        console.warn("Failed to persist popup impression", error);
+        logError("Failed to persist results popup impression", error, {
+          component: "ResultsPopup",
+          storageKey,
+        });
       }
 
       try {
         sessionStorage.setItem(sessionKey, "true");
       } catch (error) {
-        console.warn("Failed to persist session popup impression", error);
+        logError("Failed to persist results popup session flag", error, {
+          component: "ResultsPopup",
+          sessionKey,
+        });
       }
     },
     [storageKey, sessionKey]
@@ -126,7 +136,11 @@ export function ResultsPopup({ type }: ResultsPopupProps) {
           }
         }
       } catch (error) {
-        console.error("Failed to fetch popup data:", error);
+        logError("Failed to fetch results popup data", error, {
+          component: "ResultsPopup",
+          type,
+          contract,
+        });
       } finally {
         if (!cancelled) {
           setIsLoading(false);
@@ -158,10 +172,12 @@ export function ResultsPopup({ type }: ResultsPopupProps) {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Link
+                    ref={linkRef}
                     href={popupData.linkUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block cursor-pointer"
+                    className="block cursor-pointer rounded-lg outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:shadow-lg"
+                    aria-describedby={descriptionId}
                   >
                     <Image
                       src={popupData.imageUrl}
@@ -174,7 +190,7 @@ export function ResultsPopup({ type }: ResultsPopupProps) {
                     <DialogTitle className="sr-only absolute right-0 bottom-0 left-0 bg-black/70 p-4 text-sm text-white">
                       {popupData.title}
                     </DialogTitle>
-                    <DialogDescription className="sr-only">
+                    <DialogDescription id={descriptionId} className="sr-only">
                       Click to visit {popupData.title}. Opens in a new window.
                     </DialogDescription>
                   </Link>

@@ -3,6 +3,12 @@ import type { Icons } from "@/components/icons";
 export interface AdLink {
   src: string;
   href: string;
+  alt?: string;
+  /**
+   * Optional aria-label or descriptive text returned by the API.
+   * When provided we pass this through to improve accessibility.
+   */
+  ariaLabel?: string;
 }
 
 export interface PopupData {

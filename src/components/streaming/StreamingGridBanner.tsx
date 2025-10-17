@@ -1,4 +1,5 @@
 import GridAd from "@/components/grid-ad";
+import { ErrorStateCard } from "@/components/common/error-state-card";
 import Shell from "@/layouts/shell";
 import type { getFlexiBanner } from "@/lib/get-flexi-banner";
 import { logError } from "@/lib/logger";
@@ -17,7 +18,16 @@ export async function StreamingGridBanner({
       logError("Grid banner data is null or undefined", undefined, {
         component: "StreamingGridBanner",
       });
-      return null;
+      return (
+        <Shell>
+          <ErrorStateCard
+            variant="info"
+            className="my-6"
+            title="Promoted content is currently unavailable"
+            description="Sponsored highlights will return shortly."
+          />
+        </Shell>
+      );
     }
 
     return (
@@ -29,7 +39,15 @@ export async function StreamingGridBanner({
     logError("Failed to load grid banner", error, {
       component: "StreamingGridBanner",
     });
-    // Let the error boundary handle the error by re-throwing
-    throw error;
+    return (
+      <Shell>
+        <ErrorStateCard
+          variant="error"
+          className="my-6"
+          title="Unable to load promoted content"
+          description="Please refresh the page or try again later."
+        />
+      </Shell>
+    );
   }
 }

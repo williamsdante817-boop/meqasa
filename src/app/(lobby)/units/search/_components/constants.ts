@@ -111,7 +111,8 @@ export const URL_CONFIG = {
   /** API endpoint for developer units */
   API_ENDPOINT: "/api/developer-units",
   /** Developer unit detail URL pattern */
-  UNIT_DETAIL_URL_PATTERN: "/developer-unit/{bedrooms}-bedroom-{type}-for-{terms}-in-{city}-unit-{id}",
+  UNIT_DETAIL_URL_PATTERN:
+    "/developer-unit/{bedrooms}-bedroom-{type}-for-{terms}-in-{city}-unit-{id}",
 } as const;
 
 // Error Messages
@@ -119,11 +120,14 @@ export const ERROR_MESSAGES = {
   /** Generic API error message */
   API_ERROR: "Failed to load units. Please try again.",
   /** Network error message */
-  NETWORK_ERROR: "Network error occurred. Please check your connection and try again.",
+  NETWORK_ERROR:
+    "Network error occurred. Please check your connection and try again.",
   /** No results found message */
-  NO_RESULTS: "We couldn't find any developer units matching your search criteria. Try adjusting your filters or check back later for new listings.",
+  NO_RESULTS:
+    "We couldn't find any developer units matching your search criteria. Try adjusting your filters or check back later for new listings.",
   /** Search filter error */
-  FILTER_ERROR: "An error occurred while processing your search. Please try again.",
+  FILTER_ERROR:
+    "An error occurred while processing your search. Please try again.",
 } as const;
 
 // Validation Rules
@@ -161,7 +165,8 @@ export const ANALYTICS_CONFIG = {
 } as const;
 
 // Type helpers for constants
-export type ContractTerms = typeof FILTER_OPTIONS.TERMS[number]["value"];
-export type UnitTypes = typeof FILTER_OPTIONS.UNIT_TYPES[number]["value"];
-export type BedroomOptions = typeof FILTER_OPTIONS.BEDROOMS[number]["value"];
-export type BathroomOptions = typeof FILTER_OPTIONS.BATHROOMS[number]["value"];
+export type ContractTerms = (typeof FILTER_OPTIONS.TERMS)[number]["value"];
+export type UnitTypes = (typeof FILTER_OPTIONS.UNIT_TYPES)[number]["value"];
+export type BedroomOptions = (typeof FILTER_OPTIONS.BEDROOMS)[number]["value"];
+export type BathroomOptions =
+  (typeof FILTER_OPTIONS.BATHROOMS)[number]["value"];

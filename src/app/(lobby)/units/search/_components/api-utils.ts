@@ -1,11 +1,18 @@
+import { API_CONFIG } from "./constants";
 import type { ApiSearchParams, DeveloperUnit, SearchParams } from "./types";
+
+export interface UnitsSearchResponse {
+  units: DeveloperUnit[];
+  hasMore: boolean;
+}
 
 // API utilities for units search
 export function mapSearchParamsToApi(
   searchParams: SearchParams
 ): ApiSearchParams {
   const apiParams: ApiSearchParams = {
-    app: "vercel",
+    app: API_CONFIG.APP_ID,
+    offset: 0,
   };
 
   // Map search params to API params
@@ -62,13 +69,23 @@ export function mapSearchParamsToApi(
     }
   }
 
+  if (searchParams.page) {
+    const pageParam = Array.isArray(searchParams.page)
+      ? searchParams.page[0]
+      : searchParams.page;
+    const parsedPage = parseInt(pageParam ?? "", 10);
+    if (!isNaN(parsedPage) && parsedPage > 0) {
+      apiParams.offset = parsedPage - 1;
+    }
+  }
+
   return apiParams;
 }
 
 // Server-side function to fetch initial search results
 export async function fetchUnitsSearchResults(
   searchParams: SearchParams
-): Promise<DeveloperUnit[]> {
+): Promise<UnitsSearchResponse> {
   try {
     const apiParams = mapSearchParamsToApi(searchParams);
 
@@ -103,9 +120,16 @@ export async function fetchUnitsSearchResults(
       data: units,
     });
 
-    return Array.isArray(units) ? units as DeveloperUnit[] : [];
+    if (!Array.isArray(units)) {
+      return { units: [], hasMore: false };
+    }
+
+    return {
+      units: units as DeveloperUnit[],
+      hasMore: units.length > 0,
+    };
   } catch {
-    return [];
+    return { units: [], hasMore: false };
   }
 }
 
@@ -116,6 +140,7 @@ export async function fetchMoreUnits(
 ): Promise<{ units: DeveloperUnit[]; hasMore: boolean }> {
   try {
     const apiParams = mapSearchParamsToApi(searchParams);
+    apiParams.offset = Math.max(0, page - 1);
 
     const response = await fetch("/api/developer-units", {
       method: "POST",
@@ -124,8 +149,6 @@ export async function fetchMoreUnits(
       },
       body: JSON.stringify({
         ...apiParams,
-        page,
-        limit: 12, // Standard page size
       }),
     });
 
@@ -138,7 +161,7 @@ export async function fetchMoreUnits(
 
     return {
       units,
-      hasMore: units.length === 12, // If we got full page, there might be more
+      hasMore: units.length > 0, // Optimistic: hide only after empty response
     };
   } catch {
     return { units: [], hasMore: false };

@@ -1,4 +1,5 @@
 import { siteConfig } from "@/config/site";
+/* eslint-disable react/no-unescaped-entities */
 import Shell from "@/layouts/shell";
 import type { Metadata } from "next";
 

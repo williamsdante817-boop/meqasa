@@ -1,8 +1,48 @@
 import { Suspense } from "react";
+import type { ReactNode } from "react";
 import { RectangleBannerSkeleton } from "./BannerSkeleton";
 import RealEstateAd from "./ad";
+import { ErrorStateCard } from "@/components/common/error-state-card";
 import { sanitizeRichHtmlToInnerHtml } from "@/lib/dom-sanitizer";
 import { extractFlexiBannerBlocks } from "@/lib/flexi-banner";
+import { logError } from "@/lib/logger";
+
+const SIDEBAR_AD_HEADING_ID = "search-sidebar-sponsored";
+
+function deriveAdvertiserLabel(href: string): string {
+  try {
+    const url = new URL(href);
+    return url.hostname.replace(/^www\./, "");
+  } catch {
+    return "featured advertiser";
+  }
+}
+
+function SidebarAdSection({
+  children,
+}: {
+  children: ReactNode;
+}) {
+  return (
+    <aside
+      aria-labelledby={SIDEBAR_AD_HEADING_ID}
+      className="grid w-full grid-cols-1 items-start gap-8"
+    >
+      <h2 id={SIDEBAR_AD_HEADING_ID} className="sr-only">
+        Sponsored listings
+      </h2>
+      {children}
+    </aside>
+  );
+}
+
+function SidebarAdsFallback() {
+  return (
+    <SidebarAdSection>
+      <RectangleBannerSkeleton />
+    </SidebarAdSection>
+  );
+}
 
 // Streaming Rectangle Banners Component
 async function StreamingRectangleBanners() {
@@ -10,50 +50,91 @@ async function StreamingRectangleBanners() {
   const rectangleBanners = await getRectangleBanners();
 
   if (!rectangleBanners || rectangleBanners.length === 0) {
-    return <RectangleBannerSkeleton />;
+    return (
+      <SidebarAdSection>
+        <div className="rounded-lg border border-dashed border-gray-200 bg-gray-50 p-6 text-center text-sm text-gray-500">
+          Sponsored content will appear here soon.
+        </div>
+      </SidebarAdSection>
+    );
   }
 
   return (
-    <aside className="grid w-full grid-cols-1 items-center gap-8">
-      {rectangleBanners.map((banner, idx) => (
-        <RealEstateAd key={idx} src={banner.src} href={banner.href} />
-      ))}
-    </aside>
+    <SidebarAdSection>
+      {rectangleBanners.map((banner, idx) => {
+        const advertiserLabel = deriveAdvertiserLabel(banner.href);
+        return (
+          <RealEstateAd
+            key={`${banner.href}-${idx}`}
+            src={banner.src}
+            href={banner.href}
+            alt={`Sponsored highlight from ${advertiserLabel}`}
+            title={advertiserLabel}
+            badge="Sponsored"
+          />
+        );
+      })}
+    </SidebarAdSection>
   );
 }
 
 // Streaming Flexi Banner Component
 async function StreamingFlexiBanner() {
   const { getFlexiBanner } = await import("@/lib/banners");
-  const flexiBanner = await getFlexiBanner();
 
-  if (!flexiBanner) {
-    return null;
-  }
-
-  const blocks = extractFlexiBannerBlocks(flexiBanner);
-
-  if (blocks.length === 0) {
-    return null;
-  }
-
-  return (
-    <div className="mb-8 space-y-6" role="group" aria-label="Featured advertisements">
-      {blocks.map((block, index) => (
-        <div
-          key={`flexi-block-${index}`}
-          className="overflow-hidden rounded-lg border border-orange-300 shadow-sm"
-          dangerouslySetInnerHTML={sanitizeRichHtmlToInnerHtml(block)}
-        />
-      ))}
-    </div>
+  const renderUnavailable = (variant: "info" | "error" = "info") => (
+    <ErrorStateCard
+      variant={variant}
+      className="mb-8"
+      title={
+        variant === "error"
+          ? "Unable to load promotional highlights"
+          : "Promotional highlights are unavailable"
+      }
+      description={
+        variant === "error"
+          ? "Please refresh the page or try again later."
+          : "Our partners will update this space shortly."
+      }
+    />
   );
+
+  try {
+    const flexiBanner = await getFlexiBanner();
+
+    if (!flexiBanner) {
+      return renderUnavailable("info");
+    }
+
+    const blocks = extractFlexiBannerBlocks(flexiBanner);
+
+    if (blocks.length === 0) {
+      return renderUnavailable("info");
+    }
+
+    return (
+      <div className="mb-8 space-y-6" role="group" aria-label="Featured advertisements">
+        {blocks.map((block, index) => (
+          <div
+            key={`flexi-block-${index}`}
+            className="overflow-hidden rounded-lg border border-orange-300 shadow-sm"
+            dangerouslySetInnerHTML={sanitizeRichHtmlToInnerHtml(block)}
+          />
+        ))}
+      </div>
+    );
+  } catch (error) {
+    logError("Failed to load flexi banner", error, {
+      component: "StreamingFlexiBanner",
+    });
+    return renderUnavailable("error");
+  }
 }
 
 export function StreamingSidebarBanners() {
   return (
     <div className="hidden lg:block">
-      <Suspense fallback={<RectangleBannerSkeleton />}>
+      <Suspense fallback={<SidebarAdsFallback />}>
         <StreamingRectangleBanners />
       </Suspense>
     </div>

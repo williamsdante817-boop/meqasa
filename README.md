@@ -54,6 +54,14 @@ A modern real estate web application for discovering, listing, and exploring pro
 
 ---
 
+## Scroll Behavior
+
+- Client navigation relies on the default Next.js router scroll reset, so avoid reintroducing manual `window.scrollTo` calls.
+- If a feature needs to preserve scroll (e.g., live search filters), set `scroll: false` explicitly and scope it to that interaction.
+- New layouts should keep the main document as the scroll container; custom scrollable wrappers must manage their own resets if required.
+
+---
+
 ## License
 
 This project is for demonstration and educational purposes.

@@ -26,6 +26,7 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { AlertCard } from "@/components/common/alert-card";
+import { useResilientFetch } from "@/hooks/use-resilient-fetch";
 
 interface ContactCardProps {
   name: string;
@@ -180,9 +181,20 @@ export default function ContactCard({
   const [emailNameError, setEmailNameError] = useState("");
   const [emailPhoneError, setEmailPhoneError] = useState("");
   const [alertsChecked, setAlertsChecked] = useState(true);
-  const [emailLoading, setEmailLoading] = useState(false);
   const [bannerError, setBannerError] = useState("");
   const [emailBannerError, setEmailBannerError] = useState("");
+  const [submitInit, setSubmitInit] = useState<RequestInit>(() => ({
+    method: "POST",
+  }));
+  const submitRequestIdRef = useRef(0);
+  const [activeSubmitId, setActiveSubmitId] = useState<number | null>(null);
+  const { data: submitData, loading: submitLoading, error: submitError, refetch: submitRefetch } =
+    useResilientFetch<{ mess?: string }>({
+      input: "/api/contact/send-message",
+      init: submitInit,
+      enabled: false,
+    });
+  const lastSubmitDataRef = useRef<{ mess?: string } | null>(null);
   const maskedNumber = "+233 xx xxx xxxx";
 
   // reducer-managed: modalOpen, activeModal, formSubmitted, userName, userPhone,
@@ -227,6 +239,64 @@ export default function ContactCard({
 
     hydratedKeyRef.current = contextKey;
   }, [contextKey, entityId, setPhoneNumbers]);
+
+  useEffect(() => {
+    if (activeSubmitId === null) {
+      return;
+    }
+
+    const run = async () => {
+      await submitRefetch();
+    };
+
+    void run();
+  }, [activeSubmitId, submitRefetch, submitInit]);
+
+  useEffect(() => {
+    if (activeSubmitId === null) {
+      return;
+    }
+
+    if (submitLoading || !submitData) {
+      return;
+    }
+
+    if (submitData === lastSubmitDataRef.current) {
+      return;
+    }
+
+    lastSubmitDataRef.current = submitData;
+
+    if (submitData.mess === "sent") {
+      setEmailFormSubmitted(true);
+      setEmailBannerError("");
+      setMessageError("");
+    } else {
+      setEmailBannerError("Failed to send message. Please try again.");
+      setMessageError("Failed to send message. Please try again.");
+    }
+
+    setActiveSubmitId(null);
+  }, [
+    activeSubmitId,
+    submitData,
+    submitLoading,
+    setEmailFormSubmitted,
+    setEmailBannerError,
+    setMessageError,
+  ]);
+
+  useEffect(() => {
+    if (activeSubmitId === null || !submitError) {
+      return;
+    }
+
+    console.error("Error sending message:", submitError);
+    setEmailBannerError("Failed to send message. Please try again.");
+    setMessageError("Failed to send message. Please try again.");
+    lastSubmitDataRef.current = null;
+    setActiveSubmitId(null);
+  }, [activeSubmitId, submitError]);
 
   // Function to handle button clicks for viewing number
   const handleViewNumberClick = () => {
@@ -443,39 +513,30 @@ export default function ContactCard({
       valid = false;
     }
     if (valid && entityId) {
-      setEmailLoading(true);
-      try {
-        const formData = new FormData();
-        formData.append("rfifrom", userEmail);
-        formData.append("rfimessage", userMessage);
-        formData.append("rfifromph", state.userPhone);
-        formData.append("nurfiname", state.userName);
-        formData.append("rfilid", entityId);
-        formData.append("rfisrc", "3");
-        formData.append("reqid", "-1");
-        formData.append("app", "vercel");
-
-        setEmailBannerError("");
-        const response = await fetch("/api/contact/send-message", {
-          method: "POST",
-          body: formData,
-        });
-
-        const data = (await response.json()) as { mess?: string };
-
-        if (data.mess === "sent") {
-          setEmailFormSubmitted(true);
-        } else {
-          setEmailBannerError("Failed to send message. Please try again.");
-          setMessageError("Failed to send message. Please try again.");
-        }
-      } catch (error) {
-        console.error("Error sending message:", error);
-        setEmailBannerError("Failed to send message. Please try again.");
-        setMessageError("Failed to send message. Please try again.");
-      } finally {
-        setEmailLoading(false);
+      if (submitLoading || activeSubmitId !== null) {
+        return;
       }
+
+      const formData = new FormData();
+      formData.append("rfifrom", userEmail);
+      formData.append("rfimessage", userMessage);
+      formData.append("rfifromph", state.userPhone);
+      formData.append("nurfiname", state.userName);
+      formData.append("rfilid", entityId);
+      formData.append("rfisrc", "3");
+      formData.append("reqid", "-1");
+      formData.append("app", "vercel");
+
+      setEmailFormSubmitted(false);
+      setEmailBannerError("");
+
+      setSubmitInit({
+        method: "POST",
+        body: formData,
+      });
+      lastSubmitDataRef.current = null;
+      submitRequestIdRef.current += 1;
+      setActiveSubmitId(submitRequestIdRef.current);
     }
   };
 
@@ -956,9 +1017,9 @@ export default function ContactCard({
                       <Button
                         type="submit"
                         className="mt-2 h-12 w-full bg-[#232335] text-lg font-bold text-white"
-                        disabled={emailLoading}
+                        disabled={submitLoading}
                       >
-                        {emailLoading ? "Sending..." : "Send"}
+                        {submitLoading ? "Sending..." : "Send"}
                       </Button>
                     </form>
                   ) : (

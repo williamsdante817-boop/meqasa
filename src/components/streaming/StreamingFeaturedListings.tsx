@@ -1,7 +1,9 @@
-import { FeaturedListingsSection } from "@/components/property/listings/featured-listings-section";
-import { AlertCard } from "@/components/common/alert-card";
-import type { FeaturedListingsResponse } from "@/lib/get-featured-listings";
+import { ErrorStateCard } from "@/components/common/error-state-card";
+import ContentSection from "@/components/layout/content-section";
 import type { Listing as CardListing } from "@/components/property/cards/property-card";
+import { FeaturedListingsSection } from "@/components/property/listings/featured-listings-section";
+import type { FeaturedListingsResponse } from "@/lib/get-featured-listings";
+import { logError } from "@/lib/logger";
 import { formatNumberToCedis } from "@/lib/utils";
 
 interface StreamingFeaturedListingsProps {
@@ -11,16 +13,37 @@ interface StreamingFeaturedListingsProps {
 export async function StreamingFeaturedListings({
   featuredListingsPromise,
 }: StreamingFeaturedListingsProps) {
+  const sectionClassName =
+    "w-full pt-14 md:pt-20 lg:pt-24 [&_h2]:px-4 md:[&_h2]:px-0 [&_p]:px-4 md:[&_p]:px-0";
+  const defaultHref = "/search/rent?q=ghana&w=1";
+
+  const renderMessage = (
+    title: string,
+    description: string,
+    variant: "info" | "error" = "info"
+  ) => (
+    <ContentSection
+      title="Featured Listings"
+      description="View all featured property listings available."
+      href={defaultHref}
+      className={sectionClassName}
+    >
+      <ErrorStateCard
+        variant={variant === "error" ? "error" : "info"}
+        title={title}
+        description={description}
+      />
+    </ContentSection>
+  );
+
   try {
     const featuredListings = await featuredListingsPromise;
 
     if (!featuredListings) {
-      return (
-        <AlertCard
-          title="No featured listings available at the moment."
-          description="Please check back soon."
-          className="my-8"
-        />
+      return renderMessage(
+        "No featured listings available",
+        "There are no featured properties to show right now. Please check back later.",
+        "info"
       );
     }
 
@@ -54,20 +77,31 @@ export async function StreamingFeaturedListings({
       };
     };
 
+    const rentListings = (featuredListings?.rentals ?? []).map(toCardListing);
+    const saleListings = (featuredListings?.selling ?? []).map(toCardListing);
+
+    if (rentListings.length === 0 && saleListings.length === 0) {
+      return renderMessage(
+        "No featured listings available",
+        "There are no featured properties to show right now. Please check back later.",
+        "info"
+      );
+    }
+
     return (
       <FeaturedListingsSection
-        rentListings={(featuredListings?.rentals ?? []).map(toCardListing)}
-        saleListings={(featuredListings?.selling ?? []).map(toCardListing)}
+        rentListings={rentListings}
+        saleListings={saleListings}
       />
     );
-  } catch {
-    return (
-      <AlertCard
-        variant="destructive"
-        title="Unable to render featured listings"
-        description="Please try again later."
-        className="my-8"
-      />
+  } catch (error) {
+    logError("Failed to render featured listings", error, {
+      component: "StreamingFeaturedListings",
+    });
+    return renderMessage(
+      "Unable to load featured listings",
+      "Something went wrong while fetching featured properties. Please try again later.",
+      "error"
     );
   }
 }

@@ -8,7 +8,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { cn, formatNumber } from "@/lib/utils";
 import { ArrowRight, Building2, MapPin, Star } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useResilientFetch } from "@/hooks/use-resilient-fetch";
 
 interface FeaturedDevelopment {
   projectid: number;
@@ -32,49 +33,39 @@ export default function FeaturedDevelopments() {
   const [featuredProjects, setFeaturedProjects] = useState<
     FeaturedDevelopment[]
   >([]);
-  const [loading, setLoading] = useState(true);
   const [imageLoaded, setImageLoaded] = useState<Record<string, boolean>>({});
 
-  // API call function
-  const fetchFeaturedProjects = async (): Promise<FeaturedDevelopment[]> => {
-    try {
-      const response = await fetch("/api/development-projects", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({}),
-      });
+  const requestInit = useMemo<RequestInit>(
+    () => ({
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({}),
+    }),
+    []
+  );
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch projects");
-      }
-
-      const data: { projects?: FeaturedDevelopment[] } = await response.json();
-      // Filter for featured projects and limit to 2
-      return (data.projects || [])
-        .filter((project: FeaturedDevelopment) => project.isFeatured)
-        .slice(0, 2);
-    } catch (error) {
-      console.error("Error fetching featured development projects:", error);
-      return [] as FeaturedDevelopment[];
-    }
-  };
+  const { data, loading, error } = useResilientFetch<{ projects?: FeaturedDevelopment[] }>({
+    input: "/api/development-projects",
+    init: requestInit,
+  });
 
   useEffect(() => {
-    const loadFeaturedProjects = async () => {
-      setLoading(true);
-      try {
-        const projects = await fetchFeaturedProjects();
-        setFeaturedProjects(projects);
-      } catch (error) {
-        console.error("Error loading featured projects:", error);
-        setFeaturedProjects([]);
-      } finally {
-        setLoading(false);
-      }
-    };
+    if (!error) {
+      return;
+    }
+    console.error("Error fetching featured development projects:", error);
+  }, [error]);
 
-    void loadFeaturedProjects();
-  }, []);
+  useEffect(() => {
+    if (!data) {
+      return;
+    }
+
+    const projects = (data.projects ?? [])
+      .filter((project) => project.isFeatured)
+      .slice(0, 2);
+    setFeaturedProjects(projects);
+  }, [data]);
 
   const handleImageLoad = (projectId: number) => {
     setImageLoaded((prev) => ({ ...prev, [projectId]: true }));

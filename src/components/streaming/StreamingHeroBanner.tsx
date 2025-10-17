@@ -1,6 +1,9 @@
-import { HeroBanner } from "@/components/search/HeroBanner";
-import { HeroBannerSkeleton } from "./LoadingSkeletons";
+import {
+  HeroBanner,
+  HeroBannerFallback,
+} from "@/components/search/HeroBanner";
 import { logError } from "@/lib/logger";
+import { normalizeHeroBanner } from "@/lib/hero-banner";
 import type { AdLink } from "@/types";
 
 interface StreamingHeroBannerProps {
@@ -13,25 +16,29 @@ export async function StreamingHeroBanner({
   try {
     const heroBanner = await heroBannerPromise;
 
-    if (!heroBanner) {
-      return <HeroBannerSkeleton />;
+    const normalizedHeroBanner = normalizeHeroBanner(heroBanner);
+
+    if (!normalizedHeroBanner) {
+      logError("Hero banner payload missing required fields", undefined, {
+        component: "StreamingHeroBanner",
+        payload: heroBanner,
+      });
+      return <HeroBannerFallback />;
     }
 
     return (
       <HeroBanner
-        src={
-          heroBanner.src
-            ? `https://dve7rykno93gs.cloudfront.net${heroBanner.src}`
-            : ""
-        }
-        href={heroBanner.href || ""}
-        alt="Hero banner showcasing featured properties"
+        src={normalizedHeroBanner.src}
+        href={normalizedHeroBanner.href}
+        alt={normalizedHeroBanner.alt}
+        ariaLabel={normalizedHeroBanner.ariaLabel}
+        priority
       />
     );
   } catch (error) {
     logError("Failed to load hero banner", error, {
       component: "StreamingHeroBanner",
     });
-    return <HeroBannerSkeleton />;
+    return <HeroBannerFallback />;
   }
 }

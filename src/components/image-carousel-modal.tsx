@@ -170,26 +170,6 @@ export function ImageCarouselModal({
     };
   }, [currentIndex]);
 
-  // Keyboard navigation support
-  const handleKeyDown = useCallback(
-    (event: React.KeyboardEvent<HTMLDivElement>) => {
-      switch (event.key) {
-        case "ArrowRight":
-          event.preventDefault();
-          handleNext();
-          break;
-        case "ArrowLeft":
-          event.preventDefault();
-          handlePrevious();
-          break;
-        case "Escape":
-          handleClose();
-          break;
-      }
-    },
-    []
-  );
-
   // Helper to get image URL with fallback when errors occur
   const getImageUrlWithFallback = useCallback(
     (imagePath: string | undefined) => {
@@ -262,35 +242,6 @@ export function ImageCarouselModal({
     setTouchStart(null);
     setTouchEnd(null);
   }, [touchStart, touchEnd, handleNext, handlePrevious]);
-
-  // Enhanced keyboard navigation with proper event handling
-  const handleKeyDownContainer = useCallback(
-    (e: React.KeyboardEvent) => {
-      switch (e.key) {
-        case "ArrowLeft":
-          e.preventDefault();
-          handlePrevious();
-          break;
-        case "ArrowRight":
-          e.preventDefault();
-          handleNext();
-          break;
-        case "Escape":
-          e.preventDefault();
-          handleClose();
-          break;
-        case "Home":
-          e.preventDefault();
-          setCurrentIndex(0);
-          break;
-        case "End":
-          e.preventDefault();
-          setCurrentIndex(validImages.length - 1);
-          break;
-      }
-    },
-    [handlePrevious, handleNext, handleClose, validImages.length]
-  );
 
   // Handle image loading errors
   const handleImageError = useCallback((index: number) => {

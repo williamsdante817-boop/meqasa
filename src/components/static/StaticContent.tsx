@@ -1,12 +1,12 @@
 import AppPromotion from "@/components/app-promotion";
+import { ErrorStateCard } from "@/components/common/error-state-card";
 import LocationCard from "@/components/common/location-card";
-import { AgentLogosErrorBoundary } from "@/components/error-boundaries/agent-logos-error-boundary";
-import { InfiniteMovingCards } from "@/components/infinite-moving-card";
 import ContentSection from "@/components/layout/content-section";
 import SeoText from "@/components/seo-text";
-import { AgentLogosSkeleton } from "@/components/skeletons/agent-logos-skeleton";
 import Shell from "@/layouts/shell";
 import type { StaticData } from "@/lib/static-data";
+import { AgentLogosErrorBoundary } from "@/components/error-boundaries/agent-logos-error-boundary";
+import { InfiniteMovingCards } from "@/components/infinite-moving-card";
 
 interface StaticContentProps {
   staticData: StaticData;
@@ -14,7 +14,22 @@ interface StaticContentProps {
 
 export function StaticAgentLogos({ staticData }: StaticContentProps) {
   if (!staticData?.agentLogos || staticData.agentLogos.length === 0) {
-    return <AgentLogosSkeleton />;
+    return (
+      <Shell>
+        <div
+          className="mt-[125px] hidden lg:flex"
+          role="status"
+          aria-live="polite"
+        >
+          <ErrorStateCard
+            variant="info"
+            title="Partner logos are loading"
+            description="We’re updating our partner highlights. Please check back shortly."
+            className="w-full"
+          />
+        </div>
+      </Shell>
+    );
   }
 
   return (

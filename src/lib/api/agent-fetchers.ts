@@ -43,15 +43,19 @@ interface AgentsResponse {
 /**
  * Get agent logos for homepage display
  */
-export async function getAgentLogos(): Promise<BrokerDetail[]> {
+export async function getAgentLogos(): Promise<BrokerDetail[] | null> {
   try {
     const response = await meqasaApiClient.postForm<BrokerDetail[]>("/hp-9", {
       app: "vercel",
     });
-    return response ?? [];
+    if (!response || response.length === 0) {
+      throw new Error("Agent logos response empty");
+    }
+
+    return response;
   } catch (error) {
     console.error("Failed to fetch agent logos:", error);
-    return [];
+    return null;
   }
 }
 

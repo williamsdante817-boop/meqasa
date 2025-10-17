@@ -14,6 +14,7 @@ import type { CountryCode } from "libphonenumber-js";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { generateContextKey, useContactState } from "@/hooks/use-contact-state";
+import { useContactMessage } from "@/hooks/use-contact-message";
 import { viewNumber } from "@/lib/contact-api";
 import { getStoredNumbers, setStoredNumbers } from "@/lib/contact-cache";
 
@@ -149,6 +150,7 @@ export function DeveloperContactCard({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
   const [lastSubmissionTime, setLastSubmissionTime] = useState(0);
+  const { sendMessage, error: sendMessageError } = useContactMessage();
 
   // Generate context key for this developer
   const contextKey = generateContextKey("project", developerId);
@@ -275,21 +277,15 @@ export function DeveloperContactCard({
         formData.append("reqid", "-1");
         formData.append("app", "vercel");
 
-        const response = await fetch("/api/contact/send-message", {
-          method: "POST",
-          body: formData,
-        });
+        const response = await sendMessage(formData);
 
-        const data = (await response.json()) as { mess?: string };
-
-        if (data.mess === "sent") {
-          // Email sent successfully
+        if (response?.mess === "sent") {
           setEmailSent(true);
           setIsLoading(false);
           return; // Don't proceed to get phone numbers for email submissions
-        } else {
-          throw new Error("Failed to send email");
         }
+
+        throw new Error("Failed to send email");
       }
 
       // Call the viewNumber API to get agent contact information
@@ -343,6 +339,10 @@ export function DeveloperContactCard({
         } else {
           errorMessage = "Failed to get phone number. Please try again.";
         }
+      }
+
+      if (activeTab === "email" && sendMessageError) {
+        errorMessage = sendMessageError.message || errorMessage;
       }
 
       setBannerError(errorMessage);
@@ -454,14 +454,9 @@ export function DeveloperContactCard({
       formData.append("reqid", "-1");
       formData.append("app", "vercel");
 
-      const response = await fetch("/api/contact/send-message", {
-        method: "POST",
-        body: formData,
-      });
+      const data = await sendMessage(formData);
 
-      const data = (await response.json()) as { mess?: string };
-
-      if (data.mess === "sent") {
+      if (data?.mess === "sent") {
         // Email sent successfully
         setEmailSent(true);
         // Reset the message field
@@ -471,7 +466,7 @@ export function DeveloperContactCard({
       }
     } catch (error) {
       console.error("Error sending email:", error);
-      setBannerError("Failed to send email. Please try again.");
+      setBannerError(sendMessageError?.message ?? "Failed to send email. Please try again.");
     } finally {
       setIsLoading(false);
     }

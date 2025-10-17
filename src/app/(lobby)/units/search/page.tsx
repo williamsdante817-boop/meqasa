@@ -6,6 +6,7 @@ import { StreamingFlexiBannerWrapper } from "@/components/search/StreamingBanner
 // Optimized imports for better tree-shaking and bundle size
 import { UnitsSearchFilter } from "./_components/units-search-filter";
 import { UnitsSearchWrapper } from "./_components/units-search-wrapper";
+import { ResultCountProvider, UnitsSearchSubtitle } from "./_components";
 import {
   generateSearchMetadata,
   generatePageTitle,
@@ -37,7 +38,8 @@ export default async function UnitsSearchPage({
   const resolvedSearchParams = await searchParams;
 
   // Fetch initial search results server-side
-  const initialSearchData = await fetchUnitsSearchResults(resolvedSearchParams);
+  const { units: initialSearchData, hasMore } =
+    await fetchUnitsSearchResults(resolvedSearchParams);
 
   // Extract search parameters for easier use
   const address = Array.isArray(resolvedSearchParams.address)
@@ -74,60 +76,66 @@ export default async function UnitsSearchPage({
         address={address}
       />
       <div>
-        {/* Search Filter - sticky */}
-        <div className="sticky top-[56px] z-50 bg-white">
-          <UnitsSearchFilter resultCount={initialSearchData.length} />
-        </div>
+        <ResultCountProvider initialCount={initialSearchData.length}>
+          {/* Search Filter - sticky */}
+          <div className="sticky top-[56px] z-50 bg-white">
+            <UnitsSearchFilter />
+          </div>
 
-        <Shell className="py-8 md:py-12">
-          <div className="w-full">
-            <Breadcrumbs className="mb-8 capitalize" segments={segments} />
-            <header className="mb-16">
-              <div>
-                <h1 className="text-brand-accent mb-4 text-lg leading-6 font-bold capitalize md:text-xl">
-                  {pageTitle}
-                </h1>
-                <p className="text-brand-muted text-sm">{pageSubtitle}</p>
-              </div>
-            </header>
-            <div className="mb-8 rounded-lg border border-blue-200 bg-gradient-to-r from-blue-50 to-green-50 p-4 md:hidden">
-              <ReferenceSearch
-                showLabel={true}
-                size="default"
-                className="max-w-md"
-                enableUnifiedSearch={true}
-                placeholder="Search by unit reference ( e.g.4001 )"
-              />
-            </div>
-
-            <div className="mt-8 grid w-full grid-cols-1 gap-8 md:px-0 lg:grid-cols-[minmax(0,736px)_1fr]">
-              <div className="mb-8">
-                {/* Streaming Flexi Banner - non-critical, loads progressively */}
-                <StreamingFlexiBannerWrapper />
-
-                {/* Main search results - critical content loads immediately */}
-                <UnitsSearchWrapper
-                  initialResults={initialSearchData}
-                  searchParams={resolvedSearchParams}
+          <Shell className="py-8 md:py-12">
+            <div className="w-full">
+              <Breadcrumbs className="mb-8 capitalize" segments={segments} />
+              <header className="mb-16">
+                <div>
+                  <h1 className="text-brand-accent mb-4 text-lg leading-6 font-bold capitalize md:text-xl">
+                    {pageTitle}
+                  </h1>
+                  <UnitsSearchSubtitle
+                    initialSubtitle={pageSubtitle}
+                    searchParams={resolvedSearchParams}
+                  />
+                </div>
+              </header>
+              <div className="mb-8 rounded-lg border border-blue-200 bg-gradient-to-r from-blue-50 to-green-50 p-4 md:hidden">
+                <ReferenceSearch
+                  showLabel={true}
+                  size="default"
+                  className="max-w-md"
+                  enableUnifiedSearch={true}
+                  placeholder="Search by unit reference ( e.g.4001 )"
                 />
               </div>
 
-              {/* Developer Units Reference Search Component */}
-              <div>
-                <div className="hidden rounded-lg border border-blue-200 bg-gradient-to-r from-blue-50 to-green-50 p-4 md:block">
-                  <ReferenceSearch
-                    showLabel={true}
-                    size="default"
-                    className="max-w-md"
-                    enableUnifiedSearch={true}
-                    placeholder="Search by unit reference ( e.g.4001 )"
+              <div className="mt-8 grid w-full grid-cols-1 gap-8 md:px-0 lg:grid-cols-[minmax(0,736px)_1fr]">
+                <div className="mb-8">
+                  {/* Streaming Flexi Banner - non-critical, loads progressively */}
+                  <StreamingFlexiBannerWrapper />
+
+                  {/* Main search results - critical content loads immediately */}
+                  <UnitsSearchWrapper
+                    initialResults={initialSearchData}
+                    searchParams={resolvedSearchParams}
+                    initialHasMore={hasMore}
                   />
                 </div>
-                <SidebarLinks links={DEFAULT_LOCATION_LINKS} />
+
+                {/* Developer Units Reference Search Component */}
+                <div>
+                  <div className="hidden rounded-lg border border-blue-200 bg-gradient-to-r from-blue-50 to-green-50 p-4 md:block">
+                    <ReferenceSearch
+                      showLabel={true}
+                      size="default"
+                      className="max-w-md"
+                      enableUnifiedSearch={true}
+                      placeholder="Search by unit reference ( e.g.4001 )"
+                    />
+                  </div>
+                  <SidebarLinks links={DEFAULT_LOCATION_LINKS} />
+                </div>
               </div>
             </div>
-          </div>
-        </Shell>
+          </Shell>
+        </ResultCountProvider>
       </div>
     </>
   );

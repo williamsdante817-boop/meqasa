@@ -1,187 +1,256 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useSearchParams } from "next/navigation";
+import { AlertTriangle, Home } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { UnitsResultCard } from "./units-result-card";
 import { UnitsSearchSkeleton } from "./units-search-skeleton";
-import { Home, AlertTriangle } from "lucide-react";
-
-interface DeveloperUnit {
-  id: string;
-  unitid?: number;
-  title: string;
-  price: string;
-  location: string;
-  address?: string;
-  city?: string;
-  bedrooms: number;
-  beds?: number;
-  bathrooms: number;
-  baths?: number;
-  unittype: string;
-  unittypename?: string;
-  terms: string;
-  image?: string;
-  coverphoto?: string;
-  developer?: string;
-  companyname?: string;
-  name?: string;
-  area?: string;
-  floorarea?: number;
-  featured?: boolean;
-  description?: string;
-  [key: string]: any;
-}
+import { API_CONFIG, SEARCH_CONFIG } from "./constants";
+import type { DeveloperUnit } from "./types";
+import { useResultCount } from "./result-count-context";
 
 interface UnitsSearchResultsProps {
   initialUnits: DeveloperUnit[];
   searchParams: Record<string, string | string[] | undefined>;
-  onSearchUpdate?: (params: Record<string, string>) => void; // Optional prop for compatibility
+  onSearchUpdate?: (params: Record<string, string>) => void;
+  initialHasMore?: boolean;
 }
+
+type FetchMode = "reset" | "append";
+
+const getInitialOffset = (
+  params: Record<string, string | string[] | undefined>
+): number => {
+  const raw = params.page;
+  const value = Array.isArray(raw) ? raw[0] : raw;
+  const parsed = value ? Number.parseInt(value, 10) : NaN;
+  if (!Number.isFinite(parsed) || parsed <= 1) {
+    return 0;
+  }
+  return parsed - 1;
+};
+
+const buildUnitKey = (
+  unit: DeveloperUnit,
+  fallback: string | number
+): string => {
+  if (unit.unitid != null) {
+    return String(unit.unitid);
+  }
+  if (unit.id != null) {
+    return String(unit.id);
+  }
+  return `fallback-${fallback}`;
+};
 
 export function UnitsSearchResults({
   initialUnits,
   searchParams: initialSearchParams,
   onSearchUpdate: _onSearchUpdate,
+  initialHasMore = true,
 }: UnitsSearchResultsProps) {
+  void _onSearchUpdate;
+
   const searchParams = useSearchParams();
-  const [mounted, setMounted] = useState(false);
+
   const [units, setUnits] = useState<DeveloperUnit[]>(initialUnits);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [hasMore, setHasMore] = useState(true);
+  const [hasMore, setHasMore] = useState(
+    initialHasMore && initialUnits.length > 0
+  );
+  const [mounted, setMounted] = useState(false);
 
-  const fetchUnits = useCallback(
-    async (reset = false) => {
-      try {
-        setLoading(true);
-        setError(null);
+  const currentOffsetRef = useRef<number>(getInitialOffset(initialSearchParams));
+  const seenUnitKeysRef = useRef<Set<string>>(
+    new Set(
+      initialUnits.map((unit, index) => buildUnitKey(unit, `initial-${index}`))
+    )
+  );
+  const { setCount } = useResultCount();
 
-        // Build API parameters from current search params
-        const apiParams: Record<string, string | number> = {
-          app: "vercel",
-        };
+  const buildApiQuery = useCallback(
+    (offset: number) => {
+      const query = new URLSearchParams();
+      query.set("app", API_CONFIG.APP_ID);
+      query.set("offset", String(offset));
 
-        // Map search params to API params
-        const terms = searchParams.get("terms") || "sale";
-        apiParams.terms = terms;
+      const terms = searchParams.get("terms") || SEARCH_CONFIG.DEFAULT_TERMS;
+      query.set("terms", terms);
 
-        const unittype = searchParams.get("unittype");
-        if (unittype && unittype !== "all") {
-          apiParams.unittype = unittype;
-        }
-
-        const address = searchParams.get("address");
-        if (address) {
-          apiParams.address = address;
-        }
-
-        const maxprice = searchParams.get("maxprice");
-        if (maxprice) {
-          const price = parseInt(maxprice);
-          if (!isNaN(price) && price > 0) {
-            apiParams.maxprice = price;
-          }
-        }
-
-        const beds = searchParams.get("beds");
-        if (beds && beds !== "0") {
-          const bedsNum = parseInt(beds);
-          if (!isNaN(bedsNum) && bedsNum > 0) {
-            apiParams.beds = bedsNum;
-          }
-        }
-
-        const baths = searchParams.get("baths");
-        if (baths && baths !== "0") {
-          const bathsNum = parseInt(baths);
-          if (!isNaN(bathsNum) && bathsNum > 0) {
-            apiParams.baths = bathsNum;
-          }
-        }
-
-        const response = await fetch("/api/developer-units", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(apiParams),
-        });
-
-        if (!response.ok) {
-          throw new Error(
-            `API error: ${response.status} ${response.statusText}`
-          );
-        }
-
-        const fetchedUnits = (await response.json()) as DeveloperUnit[];
-
-        if (reset) {
-          setUnits(fetchedUnits);
-        } else {
-          setUnits((prev) => [...prev, ...fetchedUnits]);
-        }
-
-        // For now, disable load more since the API doesn't support pagination
-        setHasMore(false);
-      } catch {
-        setError("Failed to load units. Please try again.");
-        if (reset) {
-          setUnits([]);
-        }
-      } finally {
-        setLoading(false);
+      const unittype = searchParams.get("unittype");
+      if (unittype && unittype !== "all") {
+        query.set("unittype", unittype);
       }
+
+      const address = searchParams.get("address");
+      if (address) {
+        query.set("address", address);
+      }
+
+      const maxprice = searchParams.get("maxprice");
+      if (maxprice) {
+        const parsed = Number.parseInt(maxprice, 10);
+        if (!Number.isNaN(parsed) && parsed > 0) {
+          query.set("maxprice", String(parsed));
+        }
+      }
+
+      const beds = searchParams.get("beds");
+      if (beds && beds !== "0") {
+        const parsed = Number.parseInt(beds, 10);
+        if (!Number.isNaN(parsed) && parsed > 0) {
+          query.set("beds", String(parsed));
+        }
+      }
+
+      const baths = searchParams.get("baths");
+      if (baths && baths !== "0") {
+        const parsed = Number.parseInt(baths, 10);
+        if (!Number.isNaN(parsed) && parsed > 0) {
+          query.set("baths", String(parsed));
+        }
+      }
+
+      return query;
     },
     [searchParams]
   );
 
-  // Ensure component is mounted before running client-side effects
+  const applyFetchResult = useCallback(
+    (fetchedUnits: DeveloperUnit[], mode: FetchMode, offset: number) => {
+      if (mode === "reset") {
+        const nextSeen = new Set<string>();
+        fetchedUnits.forEach((unit, index) => {
+          nextSeen.add(buildUnitKey(unit, `reset-${offset}-${index}`));
+        });
+        seenUnitKeysRef.current = nextSeen;
+        currentOffsetRef.current = offset;
+        setUnits(fetchedUnits);
+        setHasMore(fetchedUnits.length > 0);
+        return;
+      }
+
+      const seenKeys = seenUnitKeysRef.current;
+      const uniqueUnits: DeveloperUnit[] = [];
+
+      fetchedUnits.forEach((unit, index) => {
+        const key = buildUnitKey(unit, `append-${offset}-${index}`);
+        if (seenKeys.has(key)) {
+          return;
+        }
+        seenKeys.add(key);
+        uniqueUnits.push(unit);
+      });
+
+      if (uniqueUnits.length > 0) {
+        currentOffsetRef.current = offset;
+        setUnits((prev) => [...prev, ...uniqueUnits]);
+      } else {
+        setHasMore(false);
+      }
+
+      if (uniqueUnits.length === 0 || fetchedUnits.length === 0) {
+        setHasMore(false);
+      }
+    },
+    []
+  );
+
+  const fetchUnits = useCallback(
+    async (offset: number, mode: FetchMode) => {
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        const params = buildApiQuery(offset);
+        const response = await fetch(
+          `/api/developer-units?${params.toString()}`,
+          {
+            method: "GET",
+            headers: { Accept: "application/json" },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(`API error: ${response.status}`);
+        }
+
+        const payload = await response.json();
+        const fetchedUnits = Array.isArray(payload)
+          ? (payload as DeveloperUnit[])
+          : [];
+
+        applyFetchResult(fetchedUnits, mode, offset);
+      } catch (err) {
+        console.error(err);
+        setError("Failed to load units. Please try again.");
+        if (mode === "reset") {
+          setUnits([]);
+          setHasMore(false);
+          seenUnitKeysRef.current = new Set();
+          currentOffsetRef.current = 0;
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [applyFetchResult, buildApiQuery]
+  );
+
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Sync component state with new initial data when it changes
   useEffect(() => {
-    setUnits(initialUnits);
-    setError(null);
-  }, [initialUnits]);
+    if (!mounted) {
+      return;
+    }
 
-  // Track when search parameters change (simplified and more reliable)
-  useEffect(() => {
-    // Only run on client side after component is mounted
-    if (!mounted) return;
-
-    // Build current search params string (preserve all params including empty ones)
     const currentParams = searchParams.toString();
-
-    // Build initial search params string for comparison
     const initialParams = new URLSearchParams(
       Object.entries(initialSearchParams).reduce(
         (acc, [key, value]) => {
           const stringValue = Array.isArray(value) ? value[0] : value;
-          acc[key] = stringValue || ""; // Include empty values
+          acc[key] = stringValue || "";
           return acc;
         },
         {} as Record<string, string>
       )
     ).toString();
 
-    // Only fetch if search params have actually changed
     if (currentParams !== initialParams) {
-      void fetchUnits(true);
-    } else {
+      seenUnitKeysRef.current = new Set();
+      currentOffsetRef.current = 0;
+      void fetchUnits(0, "reset");
     }
-  }, [mounted, searchParams, initialSearchParams, fetchUnits]);
+  }, [fetchUnits, initialSearchParams, mounted, searchParams]);
 
-  const handleLoadMore = () => {
-    if (!loading && hasMore) {
-      void fetchUnits(false);
+  useEffect(() => {
+    setUnits(initialUnits);
+    setError(null);
+    setHasMore(initialHasMore && initialUnits.length > 0);
+    currentOffsetRef.current = getInitialOffset(initialSearchParams);
+    seenUnitKeysRef.current = new Set(
+      initialUnits.map((unit, index) => buildUnitKey(unit, `initial-${index}`))
+    );
+  }, [initialHasMore, initialSearchParams, initialUnits]);
+
+  useEffect(() => {
+    setCount(units.length);
+  }, [setCount, units.length]);
+
+  const handleLoadMore = useCallback(() => {
+    if (isLoading || !hasMore) {
+      return;
     }
-  };
+    const nextOffset = currentOffsetRef.current + 1;
+    void fetchUnits(nextOffset, "append");
+  }, [fetchUnits, hasMore, isLoading]);
 
-  if (loading && units.length === 0) {
+  if (isLoading && units.length === 0) {
     return <UnitsSearchSkeleton />;
   }
 
@@ -196,7 +265,7 @@ export function UnitsSearchResults({
             Error Loading Units
           </h3>
           <p className="text-brand-muted mx-auto max-w-md">{error}</p>
-          <Button onClick={() => void fetchUnits(true)}>Try Again</Button>
+          <Button onClick={() => void fetchUnits(0, "reset")}>Try Again</Button>
         </div>
       </div>
     );
@@ -227,27 +296,25 @@ export function UnitsSearchResults({
 
   return (
     <div className="space-y-8">
-      {/* Results Grid */}
       <div className="grid grid-cols-1 gap-6 md:gap-8">
         {units.map((unit, index) => (
           <UnitsResultCard
-            key={`${unit.unitid || unit.id}-${index}`}
+            key={buildUnitKey(unit, `render-${index}`)}
             unit={unit}
-            priority={index < 8} // Prioritize first 8 images for LCP
+            priority={index < SEARCH_CONFIG.PRIORITY_IMAGES_COUNT}
           />
         ))}
       </div>
 
-      {/* Load More Section */}
       {hasMore && (
         <div className="mt-12 mb-8 text-center">
           <Button
             onClick={handleLoadMore}
-            disabled={loading}
+            disabled={isLoading}
             size="lg"
             className="min-w-[160px]"
           >
-            {loading ? (
+            {isLoading ? (
               <>
                 <div className="mr-2 h-4 w-4 animate-spin rounded-full border-b-2 border-white"></div>
                 Loading...

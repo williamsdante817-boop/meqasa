@@ -1,6 +1,7 @@
 import { BlogSectionStatic } from "@/components/blog/BlogSectionStatic";
-import { AlertCard } from "@/components/common/alert-card";
+import { ErrorStateCard } from "@/components/common/error-state-card";
 import type { BlogResponse } from "@/types/blog";
+import ContentSection from "../layout/content-section";
 
 interface StreamingBlogProps {
   blogDataPromise: Promise<BlogResponse>;
@@ -12,11 +13,20 @@ export async function StreamingBlog({ blogDataPromise }: StreamingBlogProps) {
 
     if (!blogData || (!blogData.featured?.length && !blogData.market?.length)) {
       return (
-        <AlertCard
-          title="Blog content is currently unavailable."
-          description="Please check back later for the latest property insights."
-          className="my-8"
-        />
+        <ContentSection
+          title="Property Guides & Insights"
+          description="Read our blog"
+          href="/blog"
+          className="flex-[2] pt-14 md:pt-20 lg:pt-24"
+          border
+        >
+          <ErrorStateCard
+            variant="info"
+            title="Blog content is currently unavailable."
+            description="Please check back later for the latest property insights."
+            className="my-8"
+          />
+        </ContentSection>
       );
     }
 
@@ -24,11 +34,20 @@ export async function StreamingBlog({ blogDataPromise }: StreamingBlogProps) {
   } catch {
     // Return empty state on error
     return (
-      <AlertCard
-        title="Unable to load blog content."
-        description="Please refresh the page or try again later."
-        className="my-8"
-      />
+      <ContentSection
+        title="Property Guides & Insights"
+        description="Read our blog"
+        href="/blog"
+        className="flex-[2] pt-14 md:pt-20 lg:pt-24"
+        border
+      >
+        <ErrorStateCard
+          variant="error"
+          title="Unable to load blog content."
+          description="Please refresh the page or try again later."
+          className="my-8"
+        />
+      </ContentSection>
     );
   }
 }

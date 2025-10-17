@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import { buildTempImageUrl } from "@/lib/image-utils";
 
 interface DeveloperUnitParams {
@@ -9,6 +10,9 @@ interface DeveloperUnitParams {
   beds?: number;
   baths?: number;
   app?: string;
+  offset?: number;
+  page?: number;
+  limit?: number;
 }
 
 interface RawDeveloperUnit {
@@ -54,20 +58,30 @@ interface RawDeveloperUnit {
   [key: string]: unknown;
 }
 
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-    const params: DeveloperUnitParams = body;
+const DEFAULT_APP_ID = "vercel";
 
+type SearchPayload = Record<string, string | number | undefined | null>;
+
+async function executeSearch(params: SearchPayload) {
+  try {
     // Build query parameters to match live MeQasa site exactly
     const searchParams = new URLSearchParams();
 
     // Include all parameters (app is already included in params from client)
     Object.entries(params).forEach(([key, value]) => {
-      if (value != null) {
-        searchParams.set(key, String(value));
+      if (value == null) {
+        return;
       }
+      const stringValue = String(value).trim();
+      if (stringValue === "") {
+        return;
+      }
+      searchParams.set(key, stringValue);
     });
+
+    if (!searchParams.has("app")) {
+      searchParams.set("app", DEFAULT_APP_ID);
+    }
 
     const apiUrl = `https://meqasa.com/new-development-units?${searchParams.toString()}`;
     console.log("🏠 Fetching developer units from:", apiUrl);
@@ -305,13 +319,13 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET() {
-  // Handle GET requests by calling POST with empty params
-  return POST(
-    new NextRequest("http://localhost/api/developer-units", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({}),
-    })
-  );
+export async function POST(request: NextRequest) {
+  const body = await request.json();
+  const params: DeveloperUnitParams = body;
+  return executeSearch(params);
+}
+
+export async function GET(request: NextRequest) {
+  const queryParams = Object.fromEntries(request.nextUrl.searchParams.entries());
+  return executeSearch(queryParams);
 }

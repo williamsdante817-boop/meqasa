@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import FeaturedPropertiesAsideWrapper from "@/components/about/featured-properties-aside-wrapper";
 import { StructuredData } from "@/components/structured-data";
 import { siteConfig } from "@/config/site";

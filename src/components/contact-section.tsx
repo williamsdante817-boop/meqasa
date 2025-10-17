@@ -11,6 +11,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { generateContextKey, useContactState } from "@/hooks/use-contact-state";
+import { useContactMessage } from "@/hooks/use-contact-message";
 import { parsePhoneNumber, isValidPhoneNumber } from "libphonenumber-js";
 import type { CountryCode } from "libphonenumber-js";
 import { Mail, MessageSquare, User } from "lucide-react";
@@ -181,6 +182,7 @@ export default function ContactSection({
   const [emailPhoneError, setEmailPhoneError] = useState("");
   const [alertsChecked, setAlertsChecked] = useState(true);
   const [emailLoading, setEmailLoading] = useState(false);
+  const { sendMessage, error: sendMessageError } = useContactMessage();
   const maskedNumber = "+233 xx xxx xxxx";
   const [imageError, setImageError] = useState(false);
 
@@ -445,21 +447,20 @@ export default function ContactSection({
         formData.append("reqid", "-1");
         formData.append("app", "vercel");
 
-        const response = await fetch("/api/contact/send-message", {
-          method: "POST",
-          body: formData,
-        });
+        const data = await sendMessage(formData);
 
-        const data = (await response.json()) as { mess?: string };
-
-        if (data.mess === "sent") {
+        if (data?.mess === "sent") {
           setEmailFormSubmitted(true);
         } else {
-          setMessageError("Failed to send message. Please try again.");
+          setMessageError(
+            sendMessageError?.message ?? "Failed to send message. Please try again."
+          );
         }
       } catch (error) {
         console.error("Error sending message:", error);
-        setMessageError("Failed to send message. Please try again.");
+        setMessageError(
+          sendMessageError?.message ?? "Failed to send message. Please try again."
+        );
       } finally {
         setEmailLoading(false);
       }

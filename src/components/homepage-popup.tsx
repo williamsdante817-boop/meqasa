@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -17,12 +17,14 @@ import {
 } from "@/components/ui/tooltip";
 import { logError } from "@/lib/logger";
 import type { PopupDataWithUrls } from "@/types";
+import { usePopupAccessibility } from "@/hooks/use-popup-accessibility";
+import { useResilientFetch } from "@/hooks/use-resilient-fetch";
 
 export function HomepagePopup() {
   const [popupData, setPopupData] = useState<PopupDataWithUrls | null>(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const linkRef = useRef<HTMLAnchorElement>(null);
+  const [shouldFetch, setShouldFetch] = useState(false);
+  const hasFetchedRef = useRef(false);
 
   const storageKey = "homepage-popup";
   const sessionKey = `${storageKey}-session`;
@@ -32,6 +34,8 @@ export function HomepagePopup() {
     const fallback = 1000 * 60 * 60 * 24; // 24 hours
     return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
   }, []);
+
+  const { linkRef, descriptionId } = usePopupAccessibility({ isOpen });
 
   const recordImpression = useCallback(
     (popupId: string) => {
@@ -47,111 +51,120 @@ export function HomepagePopup() {
       try {
         sessionStorage.setItem(sessionKey, "true");
       } catch (error) {
-        logError(
-          "Failed to persist homepage popup session flag",
-          error,
-          {
-            component: "HomepagePopup",
-          }
-        );
+        logError("Failed to persist homepage popup session flag", error, {
+          component: "HomepagePopup",
+        });
       }
     },
     [sessionKey, storageKey]
   );
 
+  const hasSessionImpression = useCallback(() => {
+    try {
+      return sessionStorage.getItem(sessionKey) === "true";
+    } catch {
+      return false;
+    }
+  }, [sessionKey]);
+
+  const getStoredImpression = useCallback((): { id: string; seenAt: number } | null => {
+    try {
+      const raw = localStorage.getItem(storageKey);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw) as { id?: string; seenAt?: number };
+      if (parsed && typeof parsed.id === "string" && typeof parsed.seenAt === "number") {
+        return { id: parsed.id, seenAt: parsed.seenAt };
+      }
+    } catch {
+      // Ignore malformed storage
+    }
+    return null;
+  }, [storageKey]);
+
+  const popupRequestInit = useMemo<RequestInit>(
+    () => ({
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }),
+    []
+  );
+
+  const { data, error, loading } = useResilientFetch<PopupDataWithUrls>({
+    input: "/api/popup/homepage",
+    init: popupRequestInit,
+    enabled: shouldFetch,
+  });
+
   useEffect(() => {
-    let cancelled = false;
-
-    const hasSessionImpression = () => {
-      try {
-        return sessionStorage.getItem(sessionKey) === "true";
-      } catch {
-        return false;
+    const timer = window.setTimeout(() => {
+      if (hasFetchedRef.current || hasSessionImpression()) {
+        return;
       }
-    };
-
-    const getStoredImpression = (): { id: string; seenAt: number } | null => {
-      try {
-        const raw = localStorage.getItem(storageKey);
-        if (!raw) return null;
-        const parsed = JSON.parse(raw) as { id?: string; seenAt?: number };
-        if (parsed && typeof parsed.id === "string" && typeof parsed.seenAt === "number") {
-          return { id: parsed.id, seenAt: parsed.seenAt };
-        }
-      } catch {
-        // Ignore malformed storage
-      }
-      return null;
-    };
-
-    const fetchPopup = async () => {
-      try {
-        const response = await fetch("/api/popup/homepage", {
-          cache: "no-store",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-
-        if (response.ok) {
-          const data = (await response.json()) as PopupDataWithUrls;
-
-          if (cancelled) return;
-
-          if (data?.imageUrl && data?.linkUrl) {
-            const popupId = data.id ?? `${data.imageUrl}|${data.linkUrl}`;
-            if (!popupId) {
-              return;
-            }
-
-            const sessionSeen = hasSessionImpression();
-            const lastImpression = getStoredImpression();
-            const now = Date.now();
-            const withinCooldown =
-              lastImpression &&
-              lastImpression.id === popupId &&
-              now - lastImpression.seenAt < cooldownMs;
-
-            if (sessionSeen || withinCooldown) {
-              return;
-            }
-
-            recordImpression(popupId);
-            setPopupData({ ...data, id: popupId });
-            setIsOpen(true);
-          }
-        }
-      } catch (error) {
-        logError("Failed to fetch popup data", error, {
-          component: "HomepagePopup",
-        });
-      } finally {
-        if (!cancelled) {
-          setIsLoading(false);
-        }
-      }
-    };
-
-    const timer = setTimeout(() => {
-      void fetchPopup();
+      setShouldFetch(true);
     }, 1000);
 
     return () => {
-      cancelled = true;
-      clearTimeout(timer);
+      window.clearTimeout(timer);
     };
-  }, [cooldownMs, recordImpression, sessionKey, storageKey]);
+  }, [hasSessionImpression]);
 
-  // Focus management when dialog opens
   useEffect(() => {
-    if (isOpen && linkRef.current) {
-      // Focus the link when dialog opens for keyboard accessibility
-      const focusTimeout = setTimeout(() => {
-        linkRef.current?.focus();
-      }, 100);
-      return () => clearTimeout(focusTimeout);
+    if (!error) {
+      return;
     }
-  }, [isOpen]);
+
+    logError("Failed to fetch popup data", error, {
+      component: "HomepagePopup",
+    });
+    setShouldFetch(false);
+    hasFetchedRef.current = true;
+  }, [error]);
+
+  useEffect(() => {
+    if (!data || hasFetchedRef.current) {
+      return;
+    }
+
+    hasFetchedRef.current = true;
+    setShouldFetch(false);
+
+    if (!data.imageUrl || !data.linkUrl) {
+      return;
+    }
+
+    const popupId = data.id ?? `${data.imageUrl}|${data.linkUrl}`;
+    if (!popupId) {
+      return;
+    }
+
+    if (hasSessionImpression()) {
+      return;
+    }
+
+    const lastImpression = getStoredImpression();
+    const now = Date.now();
+    const withinCooldown =
+      lastImpression &&
+      lastImpression.id === popupId &&
+      now - lastImpression.seenAt < cooldownMs;
+
+    if (withinCooldown) {
+      return;
+    }
+
+    recordImpression(popupId);
+    setPopupData({ ...data, id: popupId });
+    setIsOpen(true);
+  }, [
+    cooldownMs,
+    data,
+    getStoredImpression,
+    hasSessionImpression,
+    recordImpression,
+  ]);
+
+  const isLoading = shouldFetch && loading;
 
   if (isLoading || !popupData) {
     return null;
@@ -170,8 +183,8 @@ export function HomepagePopup() {
                     href={popupData.linkUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block cursor-pointer rounded-lg focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
-                    aria-describedby="popup-description"
+                    className="block cursor-pointer rounded-lg outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:shadow-lg"
+                    aria-describedby={descriptionId}
                   >
                     <Image
                       src={popupData.imageUrl}
@@ -184,13 +197,13 @@ export function HomepagePopup() {
                     <DialogTitle className="sr-only absolute right-0 bottom-0 left-0 bg-black/70 p-4 text-sm text-white">
                       {popupData.title}
                     </DialogTitle>
-                    <div id="popup-description" className="sr-only">
+                    <div id={descriptionId} className="sr-only">
                       Click to visit {popupData.title}. Opens in a new window.
                     </div>
                   </Link>
                 </TooltipTrigger>
-                <TooltipContent className="z-[150]">
-                  <p>{popupData.alt}</p>
+                <TooltipContent side="bottom">
+                  <p>Opens in a new window</p>
                 </TooltipContent>
               </Tooltip>
             </div>

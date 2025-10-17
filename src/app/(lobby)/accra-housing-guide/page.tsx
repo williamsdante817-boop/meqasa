@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import { StructuredData } from "@/components/structured-data";
 import { siteConfig } from "@/config/site";
 import Shell from "@/layouts/shell";

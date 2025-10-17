@@ -2,8 +2,7 @@ import { Suspense } from "react";
 import { headers } from "next/headers";
 import { Breadcrumbs } from "@/components/layout/bread-crumbs";
 import { ResultsPopup } from "@/components/results-popup";
-import { HeroBannerSkeleton } from "@/components/search/BannerSkeleton";
-import { HeroBanner } from "@/components/search/HeroBanner";
+import { HeroBanner, HeroBannerFallback } from "@/components/search/HeroBanner";
 import PropertyTypeLinks from "@/components/search/PropertyTypeLinks";
 import { ReferenceSearch } from "@/components/search/ReferenceSearch";
 import { ResultSearchFilter } from "@/components/search/results-search-filter";
@@ -14,6 +13,8 @@ import {
 import { siteConfig } from "@/config/site";
 import Shell from "@/layouts/shell";
 import { getResultsHeroBanner } from "@/lib/banners";
+import { normalizeHeroBanner } from "@/lib/hero-banner";
+import { logError } from "@/lib/logger";
 import { loadMoreProperties, searchProperties } from "@/lib/meqasa";
 import { ANY_SENTINEL } from "@/lib/search/constants";
 import type { Metadata } from "next";
@@ -401,6 +402,15 @@ export default async function SearchPage({
       })) ?? [],
   };
 
+  const normalizedHeroBanner = normalizeHeroBanner(heroBanner);
+
+  if (heroBanner && !normalizedHeroBanner) {
+    logError("Results hero banner payload missing required fields", undefined, {
+      component: "SearchPage",
+      payload: heroBanner,
+    });
+  }
+
   return (
     <>
       {/* Structured Data for SEO */}
@@ -410,14 +420,15 @@ export default async function SearchPage({
       />
       <div>
         {/* Hero Banner - loaded on server, immediately available */}
-        {heroBanner ? (
+        {normalizedHeroBanner ? (
           <HeroBanner
-            src={heroBanner.src}
-            href={heroBanner.href}
-            alt="Hero banner showcasing featured properties"
+            src={normalizedHeroBanner.src}
+            href={normalizedHeroBanner.href}
+            alt={normalizedHeroBanner.alt}
+            ariaLabel={normalizedHeroBanner.ariaLabel}
           />
         ) : (
-          <HeroBannerSkeleton />
+          <HeroBannerFallback />
         )}
 
         <div className="sticky top-[56px] z-50 bg-white">

@@ -3,7 +3,8 @@
 import { Button } from "@/components/ui/button";
 import { logError } from "@/lib/logger";
 import { Loader2 } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useResilientFetch } from "@/hooks/use-resilient-fetch";
 import DevelopmentProjectCard from "./development-project-card";
 
 interface DevelopmentProject {
@@ -32,33 +33,24 @@ export default function DevelopmentProjectsGrid({
   searchParams,
 }: DevelopmentProjectsGridProps) {
   const [projects, setProjects] = useState<DevelopmentProject[]>([]);
-  const [loading, setLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
 
-  // API call function
-  const fetchProjects = async (): Promise<DevelopmentProject[]> => {
-    try {
-      const response = await fetch("/api/development-projects", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({}),
-      });
+  const requestInit = useMemo<RequestInit>(
+    () => ({
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({}),
+    }),
+    []
+  );
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch projects");
-      }
-
-      const data: { projects?: DevelopmentProject[] } = await response.json();
-      return data.projects ?? [];
-    } catch (error) {
-      logError("Failed to fetch development projects", error, {
-        component: "DevelopmentProjectsGrid",
-        action: "fetchProjects",
-      });
-      return [] as DevelopmentProject[];
-    }
-  };
+  const { data, loading, error } = useResilientFetch<{
+    projects?: DevelopmentProject[];
+  }>({
+    input: "/api/development-projects",
+    init: requestInit,
+  });
 
   // Filter projects based on search params
   const getFilteredProjects = useCallback(
@@ -103,29 +95,27 @@ export default function DevelopmentProjectsGrid({
     [searchParams]
   );
 
-  // Load initial projects
   useEffect(() => {
-    const loadProjects = async () => {
-      setLoading(true);
-      try {
-        const allProjects = await fetchProjects();
-        const filteredProjects = getFilteredProjects(allProjects);
-        setProjects(filteredProjects);
-        setHasMore(false); // For now, we load all projects at once
-      } catch (error) {
-        logError("Failed to load projects", error, {
-          component: "DevelopmentProjectsGrid",
-          action: "loadProjects",
-          searchParams,
-        });
-        setProjects([]);
-      } finally {
-        setLoading(false);
-      }
-    };
+    if (!error) {
+      return;
+    }
+    logError("Failed to fetch development projects", error, {
+      component: "DevelopmentProjectsGrid",
+      action: "fetchProjects",
+    });
+    setProjects([]);
+    setHasMore(false);
+  }, [error]);
 
-    void loadProjects();
-  }, [searchParams, getFilteredProjects]);
+  useEffect(() => {
+    if (!data) {
+      return;
+    }
+
+    const filteredProjects = getFilteredProjects(data.projects ?? []);
+    setProjects(filteredProjects);
+    setHasMore(false);
+  }, [data, getFilteredProjects]);
 
   // Load more projects
   const loadMore = async () => {

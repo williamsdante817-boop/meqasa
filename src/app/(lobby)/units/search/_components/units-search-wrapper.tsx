@@ -7,11 +7,13 @@ import { UnitsSearchResults } from "./units-search-results";
 interface UnitsSearchWrapperProps {
   initialResults: DeveloperUnit[];
   searchParams: Record<string, string | string[] | undefined>;
+  initialHasMore?: boolean;
 }
 
 export function UnitsSearchWrapper({
   initialResults,
   searchParams,
+  initialHasMore = true,
 }: UnitsSearchWrapperProps) {
   const router = useRouter();
   const urlSearchParams = useSearchParams();
@@ -43,6 +45,7 @@ export function UnitsSearchWrapper({
       initialUnits={initialResults}
       searchParams={searchParams}
       onSearchUpdate={handleSearchUpdate}
+      initialHasMore={initialHasMore}
     />
   );
 }

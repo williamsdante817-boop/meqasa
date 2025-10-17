@@ -8,6 +8,11 @@ export { UnitsSearchWrapper } from "./units-search-wrapper";
 export { UnitsSearchResults } from "./units-search-results";
 export { UnitsSearchFilter } from "./units-search-filter";
 export { UnitsResultCard } from "./units-result-card";
+export {
+  ResultCountProvider,
+  useResultCount,
+} from "./result-count-context";
+export { UnitsSearchSubtitle } from "./units-search-subtitle";
 
 // UI components
 export { UnitsSearchSkeleton } from "./units-search-skeleton";
@@ -23,6 +28,7 @@ export {
   fetchUnitsSearchResults,
   fetchMoreUnits,
   mapSearchParamsToApi,
+  type UnitsSearchResponse,
 } from "./api-utils";
 
 // New utility functions for maintainability

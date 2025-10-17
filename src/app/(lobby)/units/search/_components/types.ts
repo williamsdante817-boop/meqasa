@@ -85,8 +85,7 @@ export interface ApiSearchParams {
   maxprice?: number;
   beds?: number;
   baths?: number;
-  page?: number;
-  limit?: number;
+  offset?: number;
 }
 
 /**
