@@ -8,17 +8,17 @@ import { ResultsCard } from "@/components/search/results-card";
 import SearchResultsSkeleton from "@/components/search/SearchResultsSkeleton";
 import { Button } from "@/components/ui/button";
 import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
+    Pagination,
+    PaginationContent,
+    PaginationEllipsis,
+    PaginationItem,
+    PaginationLink,
+    PaginationNext,
+    PaginationPrevious,
 } from "@/components/ui/pagination";
-import type { MeqasaListing, MeqasaSearchResponse } from "@/types/meqasa";
-import { isShortLetQuery } from "@/lib/search/short-let";
 import { ANY_SENTINEL } from "@/lib/search/constants";
+import { isShortLetQuery } from "@/lib/search/short-let";
+import type { MeqasaListing, MeqasaSearchResponse } from "@/types/meqasa";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -69,6 +69,7 @@ export function SearchResults({
   const [searchResults, setSearchResults] =
     useState<MeqasaListing[]>(initialResults);
   const [totalResults, setTotalResults] = useState(initialTotal);
+  const [currentPage, setCurrentPage] = useState(initialPage);
   // Use the complete initial search data from server with fallbacks
   const defaultSearchState: MeqasaSearchResponse = {
     topads: [],
@@ -93,11 +94,11 @@ export function SearchResults({
   const [search, setSearch] =
     useState<MeqasaSearchResponse>(initialSearchState);
   const [searchId, setSearchId] = useState<number | null>(initialSearchId);
-  const [currentPage, setCurrentPage] = useState(initialPage);
   const [isLoading, setIsLoading] = useState(false);
   const skipNextFetch = useRef(false);
   const baseTotalRef = useRef<number>(initialTotal);
   const lastSignatureRef = useRef<string | null>(null);
+  const latestRequestRef = useRef(0);
 
   const searchSignature = useMemo(() => {
     const entries = Array.from(searchParams.entries()).filter(
@@ -151,13 +152,6 @@ export function SearchResults({
       setSearchId(initialSearchId);
       setCurrentPage(initialPage);
       lastSignatureRef.current = searchSignature;
-
-      // Clear prefetched data since it's for the old search
-      setPrefetchedNextPage(null);
-      setPrefetchedTotal(null);
-      setPrefetchedSearch(null);
-      isPrefetching.current = false;
-
     }
   }, [
     mounted,
@@ -170,16 +164,6 @@ export function SearchResults({
     initialPage,
     searchSignature,
   ]); // Only depend on stable primitive values
-
-  // Prefetch next page
-  const [prefetchedNextPage, setPrefetchedNextPage] = useState<
-    MeqasaListing[] | null
-  >(null);
-  const [prefetchedTotal, setPrefetchedTotal] = useState<number | null>(null);
-  const [prefetchedSearch, setPrefetchedSearch] =
-    useState<MeqasaSearchResponse | null>(null);
-  const isPrefetching = useRef(false);
-  const latestRequestRef = useRef(0);
 
   // Store searchId in sessionStorage whenever it changes (for backward compatibility)
   useEffect(() => {
@@ -194,6 +178,27 @@ export function SearchResults({
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   }, [isLoading]);
+
+  // Sync component state with URL parameters - URL is the source of truth
+  // This ensures that when URL changes (direct navigation, back/forward, etc.),
+  // the component state updates to match
+  useEffect(() => {
+    if (!mounted) return;
+
+    const urlPage = parseInt(searchParams.get("w") ?? "1", 10);
+    const urlSearchId = searchParams.get("y") ? parseInt(searchParams.get("y")!, 10) : null;
+
+    // Sync page number from URL if it differs from current state
+    if (urlPage !== currentPage && urlPage > 0) {
+      setCurrentPage(urlPage);
+    }
+
+    // Sync search ID from URL if it differs from current state
+    if (urlSearchId !== null && urlSearchId !== searchId) {
+      setSearchId(urlSearchId);
+    }
+  }, [mounted, searchParams.get("w"), searchParams.get("y"), currentPage, searchId]);
+
 
   // Handle all search parameter changes
   useEffect(() => {
@@ -266,6 +271,13 @@ export function SearchResults({
           const data = (await response.json()) as MeqasaSearchResponse;
           if (latestRequestRef.current !== requestId) {
             return;
+          }
+          // Debug page 3 fetch
+          if (pageParam === 3) {
+            console.log("📄 Fetched page 3 via main effect:", {
+              firstId: data.results[0]?.listingid,
+              count: data.results.length,
+            });
           }
           setSearchResults(data.results);
           setTotalResults(baseTotalRef.current);
@@ -366,140 +378,19 @@ export function SearchResults({
     searchParams.get("fmin"),
     searchParams.get("fmax"),
     searchParams.get("w"),
+    searchParams.get("y"), // Critical: ensures refetch when searchId changes during pagination
     searchParams.get("frentperiod"),
     searchParams.get("fhowshort"),
     searchSignature,
     type,
   ]);
 
-  // Prefetch next page
-  useEffect(() => {
-    // Only run on client side after component is mounted
-    if (!mounted) return;
-
-    // Clear prefetched data when searchId changes (new search)
-    if (searchId !== initialSearchId) {
-      setPrefetchedNextPage(null);
-      setPrefetchedTotal(null);
-      setPrefetchedSearch(null);
-      isPrefetching.current = false;
-    }
-
-    // Add prefetch debug logging
-    // console.log("🔍 Prefetch check:", {
-    //   isLoading,
-    //   searchId,
-    //   currentPage,
-    //   totalResults,
-    //   maxPages: Math.ceil(totalResults / 20),
-    //   isPrefetching: isPrefetching.current,
-    //   hasPrefetchedData: !!prefetchedNextPage,
-    // });
-
-    if (
-      !isLoading &&
-      searchId && // Ensure we have a valid searchId
-      searchId > 0 && // Ensure valid searchId
-      currentPage > 0 && // Ensure valid page
-      totalResults > 0 && // Ensure we have results
-      currentPage < Math.ceil(totalResults / 20) &&
-      !isPrefetching.current
-    ) {
-      // console.log("🚀 Starting prefetch for page", currentPage + 1);
-      isPrefetching.current = true;
-      const nextPage = currentPage + 1;
-      const searchParamsObj = searchParams
-        ? Object.fromEntries(searchParams.entries())
-        : {};
-      delete (searchParamsObj as Record<string, string>).page;
-
-      fetch("/api/properties", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          type: "loadMore",
-          params: {
-            y: searchId,
-            w: nextPage,
-            ...searchParamsObj,
-            contract: type,
-            locality: searchParamsObj.q,
-            propertyType: searchParamsObj.type ?? "",
-            app: "vercel",
-            ...(isShortLetSearch() && {
-              frentperiod: "shortrent",
-              ftype: ANY_SENTINEL,
-              ...(searchParamsObj.fhowshort && {
-                fhowshort: searchParamsObj.fhowshort,
-              }),
-            }),
-          },
-        }),
-        cache: "no-store",
-        next: { revalidate: 0 },
-      })
-        .then((res) => res.json())
-        .then((data: MeqasaSearchResponse) => {
-          // console.log("✅ Prefetch success:", {
-          //   searchId: data.searchid,
-          //   expectedSearchId: searchId,
-          //   resultsCount: data.results.length,
-          // });
-          // Only set prefetched data if searchId hasn't changed
-          if (data.searchid == searchId) {
-            setPrefetchedNextPage(data.results);
-            setPrefetchedTotal(baseTotalRef.current);
-            setPrefetchedSearch({
-              ...data,
-              resultcount: baseTotalRef.current,
-              searchid: searchId ?? data.searchid,
-            });
-            // console.log("✅ Prefetched data set for page", currentPage + 1);
-          } else {
-            // console.log("❌ Prefetch searchId mismatch, discarding data");
-          }
-          isPrefetching.current = false;
-        })
-        .catch((error) => {
-          console.error("❌ Prefetch failed:", error);
-          isPrefetching.current = false;
-        });
-    }
-  }, [mounted, isLoading, currentPage, totalResults, searchId, type]);
-
   // When user clicks pagination, provide immediate feedback and update URL
   const handlePageChange = async (pageNumber: number) => {
     window.scrollTo({ top: 0, behavior: "smooth" });
     if (!mounted || !searchId || pageNumber === currentPage) return;
 
-    // Check if we have prefetched data for instant navigation
-    if (
-      prefetchedNextPage &&
-      pageNumber === currentPage + 1 &&
-      prefetchedSearch &&
-      prefetchedSearch.searchid == searchId
-    ) {
-      // console.log("⚡ Using prefetched data for page", pageNumber);
-      // Instant navigation with prefetched data
-      setSearchResults(prefetchedNextPage);
-      setTotalResults(prefetchedTotal!);
-      setSearch(prefetchedSearch);
-      setCurrentPage(pageNumber);
-
-      // Clear prefetched data
-      setPrefetchedNextPage(null);
-      setPrefetchedTotal(null);
-      setPrefetchedSearch(null);
-
-      // Update URL via callback
-      skipNextFetch.current = true;
-      onSearchIdUpdate?.(searchId, pageNumber, baseTotalRef.current);
-      setIsLoading(false);
-
-      return; // Exit early - no need for useEffect to handle this
-    }
-
-    // Provide immediate visual feedback for non-prefetched pages
+    // Provide immediate visual feedback
     setIsLoading(true);
 
     // Update URL via callback
