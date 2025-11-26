@@ -1,11 +1,11 @@
-import { Suspense } from "react";
-import { headers } from "next/headers";
+
 import { Breadcrumbs } from "@/components/layout/bread-crumbs";
 import { ResultsPopup } from "@/components/results-popup";
 import { HeroBanner, HeroBannerFallback } from "@/components/search/HeroBanner";
 import PropertyTypeLinks from "@/components/search/PropertyTypeLinks";
 import { ReferenceSearch } from "@/components/search/ReferenceSearch";
 import { ResultSearchFilter } from "@/components/search/results-search-filter";
+import { SearchError } from "@/components/search/SearchError";
 import {
   StreamingFlexiBannerWrapper,
   StreamingSidebarBanners,
@@ -18,100 +18,64 @@ import { logError } from "@/lib/logger";
 import { loadMoreProperties, searchProperties } from "@/lib/meqasa";
 import { ANY_SENTINEL } from "@/lib/search/constants";
 import type { Metadata } from "next";
-import { SearchResultsWrapper } from "./SearchResultsWrapper";
+import { headers } from "next/headers";
+import { Suspense } from "react";
+import { SearchResults } from "./search-results";
 
 export const dynamic = "force-dynamic";
 
 interface SearchPageProps {
-  params: Promise<{ type: string }>;
-  searchParams: Promise<Record<string, string>>;
+  params: Promise<{
+    type: string;
+  }>;
+  searchParams: Promise<{
+    q?: string;
+    ftype?: string;
+    fbeds?: string;
+    fbaths?: string;
+    fmin?: string;
+    fmax?: string;
+    fminarea?: string;
+    fmaxarea?: string;
+    frentperiod?: string;
+    fsort?: string;
+    fisfurnished?: string;
+    ffsbo?: string;
+    w?: string;
+    y?: string;
+    rtotal?: string;
+    fhowshort?: string;
+  }>;
 }
 
-// Generate metadata for SEO
+// Generate metadata for the search page
 export async function generateMetadata({
   params,
   searchParams,
 }: SearchPageProps): Promise<Metadata> {
   const { type } = await params;
-  const resolvedSearchParams = await searchParams;
-  const location = resolvedSearchParams.q ?? "Ghana";
-  const isShortLet =
-    resolvedSearchParams.frentperiod === "shortrent" ||
-    resolvedSearchParams.fhowshort !== undefined;
-  const headingParams: Record<string, string> = {
-    ...resolvedSearchParams,
-  };
-  if (isShortLet) {
-    headingParams.frentperiod = "shortrent";
-    headingParams.ftype = ANY_SENTINEL;
-  }
+  const { q } = await searchParams;
 
-  const typeDisplay = type.charAt(0).toUpperCase() + type.slice(1);
-  const locationDisplay = location.charAt(0).toUpperCase() + location.slice(1);
-
-  const title = `Properties for ${typeDisplay} in ${locationDisplay} | MeQasa`;
-  const description = `Find properties for ${type} in ${location}. Browse houses, apartments, offices, and land available for ${type} on MeQasa - Ghana's trusted real estate platform.`;
-
-  const keywords = [
-    `properties for ${type}`,
-    `${type} properties ${location}`,
-    `real estate ${location}`,
-    `${type} houses ${location}`,
-    `${type} apartments ${location}`,
-    `${type} office spaces ${location}`,
-    `${type} land ${location}`,
-    "MeQasa",
-    "Ghana real estate",
-    `${location} properties`,
-  ];
+  const title = q
+    ? `Property for ${type === "rent" ? "Rent" : "Sale"} in ${q} | ${siteConfig.name}`
+    : `Property for ${type === "rent" ? "Rent" : "Sale"} | ${siteConfig.name}`;
 
   return {
     title,
-    description,
-    keywords,
-    authors: [{ name: "MeQasa" }],
-    creator: "MeQasa",
-    publisher: "MeQasa",
-    metadataBase: new URL(siteConfig.url),
-    alternates: {
-      canonical: `/search/${type}?q=${encodeURIComponent(location)}`,
-    },
-    openGraph: {
-      type: "website",
-      locale: "en_US",
-      url: `/search/${type}?q=${encodeURIComponent(location)}`,
-      siteName: siteConfig.name,
-      title,
-      description,
-      images: [
-        {
-          url: `${siteConfig.url}/og-search-${type}.jpg`,
-          width: 1200,
-          height: 630,
-          alt: `Properties for ${typeDisplay} in ${locationDisplay}`,
-        },
-      ],
-    },
-    twitter: {
-      card: "summary_large_image",
-      site: "@meqasa",
-      creator: "@meqasa",
-      title,
-      description,
-      images: [`${siteConfig.url}/og-search-${type}.jpg`],
-    },
-    robots: {
-      index: true,
-      follow: true,
-      googleBot: {
-        index: true,
-        follow: true,
-        "max-video-preview": -1,
-        "max-image-preview": "large",
-        "max-snippet": -1,
-      },
-    },
+    description: `Find the best property for ${type === "rent" ? "rent" : "sale"} in Ghana. Search for apartments, houses, office space and land.`,
   };
+}
+
+// Helper to fetch popup data
+async function getResultsPopup(_params: { type: string; contract: string }) {
+  try {
+    // This would be a real API call in production
+    // For now we return mock data or null if no popup should show
+    return null;
+  } catch (error) {
+    console.error("Error fetching popup data:", error);
+    return null;
+  }
 }
 
 export default async function SearchPage({
@@ -119,9 +83,13 @@ export default async function SearchPage({
   searchParams,
 }: SearchPageProps) {
   const headersList = await headers();
+  const hostHeader = headersList.get("host");
   const forwardedProto = headersList.get("x-forwarded-proto");
-  const forwardedHost = headersList.get("x-forwarded-host");
-  const hostHeader = forwardedHost ?? headersList.get("host") ?? undefined;
+
+  // Determine the base URL for API calls
+  // In production (Vercel), we want to use the internal network if possible,
+  // or the public URL. For client-side, we use relative URLs.
+  // For server-side data fetching, we need a full URL.
   const fallbackBase =
     process.env.NEXT_PUBLIC_SITE_URL ??
     (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined);
@@ -131,35 +99,24 @@ export default async function SearchPage({
 
   const { type } = await params;
   const resolvedSearchParams = await searchParams;
-  const location = resolvedSearchParams.q ?? "Ghana";
-  const isShortLet =
-    resolvedSearchParams.frentperiod === "shortrent" ||
-    resolvedSearchParams.fhowshort !== undefined;
+  const location = resolvedSearchParams.q || "Ghana";
 
-  const headingParams: Record<string, string> = {
-    ...resolvedSearchParams,
-  };
-  if (isShortLet) {
-    headingParams.frentperiod = "shortrent";
-    headingParams.ftype = ANY_SENTINEL;
-  }
-
-  // Load critical data on server: hero banner and search results
-  const [heroBanner, searchData] = await Promise.all([
+  // Fetch search results and popup data in parallel
+  const [heroBanner, searchData, popupData] = await Promise.all([
     getResultsHeroBanner().catch(() => null),
     (async () => {
-      const currentPage = parseInt(resolvedSearchParams.w ?? "1");
-      const urlSearchId = resolvedSearchParams.y
-        ? parseInt(resolvedSearchParams.y)
-        : null;
-
-      const canonicalResultTotalRaw = resolvedSearchParams.rtotal;
-      const canonicalResultTotal =
-        canonicalResultTotalRaw !== undefined
-          ? Number(canonicalResultTotalRaw)
+      try {
+        const currentPage = parseInt(resolvedSearchParams.w ?? "1");
+        const urlSearchId = resolvedSearchParams.y
+          ? parseInt(resolvedSearchParams.y)
+          : undefined;
+        const canonicalResultTotal = resolvedSearchParams.rtotal
+          ? parseInt(resolvedSearchParams.rtotal)
           : null;
 
-      try {
+        // If we have a search ID and page > 1, try to load more first
+        // This preserves the search context (random seed) from the first page
+        // (which can happen with distributed databases)
         if (currentPage > 1 && urlSearchId) {
           const loadMoreResult = await loadMoreProperties(type, location, {
             y: urlSearchId,
@@ -169,21 +126,59 @@ export default async function SearchPage({
             canonicalResultTotal !== null &&
             !Number.isNaN(canonicalResultTotal)
           ) {
-            return {
-              ...loadMoreResult,
-              resultcount: canonicalResultTotal,
-            };
+            // Override the total count from the URL if valid, to keep pagination consistent
+            // even if the API reports a slightly different count on subsequent pages
+            loadMoreResult.resultcount = canonicalResultTotal;
           }
           return loadMoreResult;
         } else {
-          const sanitizedSearchParams = { ...resolvedSearchParams };
-          delete sanitizedSearchParams.w;
-          delete sanitizedSearchParams.page;
-          delete sanitizedSearchParams.rtotal;
+          // New search or first page
+          // Sanitize search params to remove undefined/empty values
+          const sanitizedSearchParams: any = {};
+          if (resolvedSearchParams.ftype)
+            sanitizedSearchParams.ftype = resolvedSearchParams.ftype;
+          if (resolvedSearchParams.fbeds)
+            sanitizedSearchParams.fbeds = parseInt(
+              resolvedSearchParams.fbeds
+            );
+          if (resolvedSearchParams.fbaths)
+            sanitizedSearchParams.fbaths = parseInt(
+              resolvedSearchParams.fbaths
+            );
+          if (resolvedSearchParams.fmin)
+            sanitizedSearchParams.fmin = parseInt(resolvedSearchParams.fmin);
+          if (resolvedSearchParams.fmax)
+            sanitizedSearchParams.fmax = parseInt(resolvedSearchParams.fmax);
+          if (resolvedSearchParams.fminarea)
+            sanitizedSearchParams.fminarea = parseInt(
+              resolvedSearchParams.fminarea
+            );
+          if (resolvedSearchParams.fmaxarea)
+            sanitizedSearchParams.fmaxarea = parseInt(
+              resolvedSearchParams.fmaxarea
+            );
+          if (resolvedSearchParams.frentperiod)
+            sanitizedSearchParams.frentperiod =
+              resolvedSearchParams.frentperiod;
+          if (resolvedSearchParams.fsort)
+            sanitizedSearchParams.fsort = resolvedSearchParams.fsort;
+          if (resolvedSearchParams.fisfurnished)
+            sanitizedSearchParams.fisfurnished =
+              resolvedSearchParams.fisfurnished;
+          if (resolvedSearchParams.ffsbo)
+            sanitizedSearchParams.ffsbo = resolvedSearchParams.ffsbo;
+          if (resolvedSearchParams.fhowshort)
+            sanitizedSearchParams.fhowshort = resolvedSearchParams.fhowshort;
+
+          // Special handling for short-let searches
           if (
-            sanitizedSearchParams.frentperiod === "shortrent" ||
-            sanitizedSearchParams.fhowshort !== undefined
+            resolvedSearchParams.frentperiod === "shortrent" ||
+            resolvedSearchParams.fhowshort
           ) {
+            // Ensure ftype is set to ANY_SENTINEL for short-let if not specified or "all"
+            // The API expects "- Any -" for property type in short-let searches usually
+            // unless specific type is supported.
+            // Based on legacy logic: $ftype = "- Any -";
             sanitizedSearchParams.ftype = ANY_SENTINEL;
             sanitizedSearchParams.frentperiod = "shortrent";
           }
@@ -195,10 +190,7 @@ export default async function SearchPage({
             canonicalResultTotal !== null &&
             !Number.isNaN(canonicalResultTotal)
           ) {
-            return {
-              ...searchResult,
-              resultcount: canonicalResultTotal,
-            };
+            searchResult.resultcount = canonicalResultTotal;
           }
           return searchResult;
         }
@@ -214,26 +206,43 @@ export default async function SearchPage({
           project2: { empty: true },
           bottomads: [],
           searchdesc: "",
+          hasError: true, // Flag to indicate error
         };
       }
     })(),
+    getResultsPopup({ type, contract: type === "rent" ? "rent" : "sale" }).catch(() => null),
   ]);
+
+  // Check for error state
+  if (searchData.hasError) {
+    return (
+      <Shell className="mt-12 flex max-w-[1250px] flex-col items-center gap-8 md:px-0">
+        <SearchError />
+      </Shell>
+    );
+  }
 
   const canonicalResultTotalFromUrlRaw = resolvedSearchParams.rtotal;
   const canonicalResultTotalFromUrl =
     canonicalResultTotalFromUrlRaw !== undefined
-      ? Number(canonicalResultTotalFromUrlRaw)
+      ? parseInt(canonicalResultTotalFromUrlRaw)
       : null;
-  const normalizedResultCount = Number(searchData.resultcount) || 0;
-  const initialTotal =
-    canonicalResultTotalFromUrl !== null &&
-    !Number.isNaN(canonicalResultTotalFromUrl)
-      ? canonicalResultTotalFromUrl
-      : normalizedResultCount;
+
+  // Hydrate the initial data for the client
+  // We pass this to the client component so it can initialize its state
   const hydratedSearchData = {
     ...searchData,
-    resultcount: initialTotal,
+    resultcount:
+      canonicalResultTotalFromUrl !== null &&
+      !Number.isNaN(canonicalResultTotalFromUrl)
+        ? canonicalResultTotalFromUrl
+        : searchData.resultcount,
   };
+
+  const initialTotal = hydratedSearchData.resultcount;
+  const isShortLet =
+    resolvedSearchParams.frentperiod === "shortrent" ||
+    !!resolvedSearchParams.fhowshort;
 
   const segments = [
     { title: "Home", href: "/", key: "home" },
@@ -410,6 +419,15 @@ export default async function SearchPage({
       payload: heroBanner,
     });
   }
+  
+  // Prepare params for heading generation
+  const headingParams: Record<string, string> = {
+    ...resolvedSearchParams,
+  };
+  if (isShortLet) {
+    headingParams.frentperiod = "shortrent";
+    headingParams.ftype = ANY_SENTINEL;
+  }
 
   return (
     <>
@@ -432,10 +450,14 @@ export default async function SearchPage({
         )}
 
         <div className="sticky top-[56px] z-50 bg-white">
-          <ResultSearchFilter />
+          <Suspense fallback={<div className="h-16 w-full bg-white" />}>
+            <ResultSearchFilter />
+          </Suspense>
         </div>
         <Shell className="mt-12 flex max-w-[1250px] gap-8 md:px-0">
-          <PropertyTypeLinks />
+          <Suspense fallback={<div className="hidden w-44 lg:block xl:w-60" />}>
+            <PropertyTypeLinks />
+          </Suspense>
           <div className="w-full">
             <Breadcrumbs className="capitalize" segments={segments} />
             <header className="space-y-6">
@@ -473,15 +495,22 @@ export default async function SearchPage({
                 </Suspense>
 
                 {/* Main search results - critical content loads immediately */}
-                <SearchResultsWrapper
-                  type={type}
-                  location={location}
-                  initialResults={hydratedSearchData.results}
-                  initialTotal={initialTotal}
-                  initialSearchId={hydratedSearchData.searchid ?? 0}
-                  initialPage={parseInt(resolvedSearchParams.w ?? "1")}
-                  initialSearchData={hydratedSearchData}
-                />
+                <Suspense fallback={<div>Loading results...</div>}>
+                  <SearchResults
+                    results={hydratedSearchData.results}
+                    totalResults={initialTotal}
+                    currentPage={parseInt(resolvedSearchParams.w ?? "1")}
+                    searchId={hydratedSearchData.searchid ?? 0}
+                    type={type}
+                    searchData={hydratedSearchData}
+                    searchParams={Object.fromEntries(
+                      Object.entries(resolvedSearchParams).map(([k, v]) => [
+                        k,
+                        v ?? "",
+                      ])
+                    )}
+                  />
+                </Suspense>
               </div>
 
               {/* Streaming Sidebar Banners - non-critical, loads progressively */}
@@ -491,7 +520,11 @@ export default async function SearchPage({
             </div>
           </div>
         </Shell>
-        <ResultsPopup type={type} />
+        <ResultsPopup 
+          popupData={popupData} 
+          type={type} 
+          contract={type === "rent" ? "rent" : "sale"} 
+        />
       </div>
     </>
   );
