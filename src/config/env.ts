@@ -8,7 +8,10 @@ export const env = {
 export const getBaseUrl = (): string => {
   if (typeof window !== "undefined") return ""; // Browser should use relative path
   if (env.NEXT_PUBLIC_SITE_URL) return env.NEXT_PUBLIC_SITE_URL;
-  if (env.VERCEL_URL) return `https://${env.VERCEL_URL}`;
+  if (env.VERCEL_URL) {
+    // Vercel automatically provides VERCEL_URL without protocol
+    return `https://${env.VERCEL_URL}`;
+  }
   if (env.SITE_URL) return env.SITE_URL;
   return "http://localhost:3000";
 };

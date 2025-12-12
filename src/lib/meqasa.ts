@@ -34,6 +34,16 @@ export async function searchProperties(
 
   const baseUrl = resolveBaseUrl();
   const apiUrl = baseUrl ? `${baseUrl.replace(/\/$/, "")}/api/properties` : "/api/properties";
+  
+  // Log URL resolution for debugging in production
+  if (isServer && process.env.NODE_ENV === "production") {
+    console.log("[searchProperties] Resolved API URL:", apiUrl, {
+      baseUrl,
+      hasOptionsBaseUrl: !!options.baseUrl,
+      NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
+      VERCEL_URL: process.env.VERCEL_URL,
+    });
+  }
 
   const response = await fetch(apiUrl, {
     method: "POST",
@@ -99,6 +109,16 @@ export async function loadMoreProperties(
 
   const baseUrl = resolveBaseUrl();
   const apiUrl = baseUrl ? `${baseUrl.replace(/\/$/, "")}/api/properties` : "/api/properties";
+  
+  // Log URL resolution for debugging in production
+  if (isServer && process.env.NODE_ENV === "production") {
+    console.log("[loadMoreProperties] Resolved API URL:", apiUrl, {
+      baseUrl,
+      hasOptionsBaseUrl: !!options.baseUrl,
+      NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
+      VERCEL_URL: process.env.VERCEL_URL,
+    });
+  }
 
   const response = await fetch(apiUrl, {
     method: "POST",
