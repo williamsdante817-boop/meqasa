@@ -1,45 +1,45 @@
 import { Breadcrumbs } from "@/components/layout/bread-crumbs";
 import Shell from "@/layouts/shell";
 
-import { AlertCard } from "@/components/common/alert-card";
 import { AddFavoriteButton } from "@/components/add-favorite-button";
 import Amenities from "@/components/amenities";
+import { AlertCard } from "@/components/common/alert-card";
 import ContactCard from "@/components/common/contact-card";
-import ContactSection from "@/components/contact-section";
-import ContentSection from "@/components/layout/content-section";
 import { DynamicCarousel } from "@/components/common/dynamic-carousel";
-import LeaseOptions from "@/components/lease-option";
-import MortgageCalculator from "@/components/mortgage-calculator";
-import PropertyDetailsTable from "@/components/property/details/property-details";
-import PropertyFavoritesBanner from "@/components/property-favorite-banner";
-import PropertyInsight from "@/components/property/details/property-insight";
-import PropertyListings from "@/components/property/listings/property-listings";
-import PropertyShowcase from "@/components/property/details/property-showcase";
-import SafetyTipsCard from "@/components/safety-tip";
-import TrendingPropertyCard from "@/components/common/trending-property-card";
 import PropertyContextCard from "@/components/common/property-context-card";
 import PropertyFeatures from "@/components/common/property-features";
+import TrendingPropertyCard from "@/components/common/trending-property-card";
+import ContactSection from "@/components/contact-section";
+import { ExpandableDescription } from "@/components/expandable-description";
+import ContentSection from "@/components/layout/content-section";
+import LeaseOptions from "@/components/lease-option";
+import MortgageCalculator from "@/components/mortgage-calculator";
+import PropertyFavoritesBanner from "@/components/property-favorite-banner";
+import PropertyDetailsTable from "@/components/property/details/property-details";
+import PropertyInsight from "@/components/property/details/property-insight";
+import PropertyShowcase from "@/components/property/details/property-showcase";
+import PropertyListings from "@/components/property/listings/property-listings";
+import SafetyTipsCard from "@/components/safety-tip";
+import { StructuredData } from "@/components/structured-data";
 import { Badge } from "@/components/ui/badge";
-import { getListingDetails } from "@/lib/get-listing-detail";
 import {
   extractPropertyData,
   hasCompressedData,
 } from "@/lib/compressed-data-utils";
-import { buildInnerHtml, cn } from "@/lib/utils";
 import { sanitizeHtml } from "@/lib/dom-sanitizer";
-import { ShieldCheck } from "lucide-react";
-import ProjectVideo from "../../development-projects/_component/project-video";
-import type { Metadata } from "next";
 import { createPropertyError } from "@/lib/error-handling";
-import { ExpandableDescription } from "@/components/expandable-description";
+import { getListingDetails } from "@/lib/get-listing-detail";
 import { logError, logInfo } from "@/lib/logger";
 import {
   generateListingDetailMetadata,
   generateListingDetailStructuredData,
-  generateWebsiteStructuredData,
   generateOrganizationStructuredData,
+  generateWebsiteStructuredData,
 } from "@/lib/seo";
-import { StructuredData } from "@/components/structured-data";
+import { buildInnerHtml, cn } from "@/lib/utils";
+import { ShieldCheck } from "lucide-react";
+import type { Metadata } from "next";
+import ProjectVideo from "../../development-projects/_component/project-video";
 
 // Constants for better maintainability
 const CONTRACT_TYPES = {

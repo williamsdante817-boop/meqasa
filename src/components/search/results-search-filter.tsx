@@ -1,11 +1,14 @@
 "use client";
 
 import type React from "react";
-import { useState, useEffect, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 
-import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
+import { MoreFiltersPopover } from "@/components/ui/more-filters-popover";
+import { PriceRangeSelect } from "@/components/ui/price-range-select";
+import { SearchInputWithSuggestions } from "@/components/ui/search-input-with-suggestions";
 import {
   Select,
   SelectContent,
@@ -14,15 +17,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { AlertCircle, Search } from "lucide-react";
-import { siteConfig } from "@/config/site";
 import { searchConfig } from "@/config/search";
-import { type FormState } from "@/types/search";
+import { siteConfig } from "@/config/site";
 import { isShortLetQuery } from "@/lib/search/short-let";
+import { type FormState } from "@/types/search";
+import { AlertCircle } from "lucide-react";
 import { ActiveFilterChips } from "./ActiveFilterChips";
-import { PriceRangeSelect } from "@/components/ui/price-range-select";
-import { MoreFiltersPopover } from "@/components/ui/more-filters-popover";
-import { SearchInputWithSuggestions } from "@/components/ui/search-input-with-suggestions";
 
 // Constants for better maintainability
 const DEFAULT_LOCATION = "ghana";
@@ -597,7 +597,15 @@ export function ResultSearchFilter() {
               <MoreFiltersPopover
                 formState={formState}
                 updateFormState={updateFormState}
-                contractType={formState.listingType === "rent" ? "rent" : "buy"}
+                contractType={
+                  formState.propertyType === "land"
+                    ? "land"
+                    : isShortLetSearch()
+                      ? "short-let"
+                      : formState.listingType === "rent"
+                        ? "rent"
+                        : "buy"
+                }
               />
             </div>
 
@@ -615,9 +623,7 @@ export function ResultSearchFilter() {
                 </div>
               ) : (
                 <div className="flex items-center gap-1 sm:gap-2">
-                  <Search className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <span className="hidden sm:inline">Update search</span>
-                  <span className="sm:hidden">Search</span>
+                  <span>Update search</span>
                 </div>
               )}
             </Button>

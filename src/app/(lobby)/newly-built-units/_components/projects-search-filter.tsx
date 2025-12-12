@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useCallback, useTransition } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { Search } from "lucide-react";
+import {
+  ActiveFilterChips,
+  type DeveloperUnitsFormState,
+} from "@/components/search/ActiveFilterChips";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -12,16 +13,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { TERMS_OPTIONS, UNIT_TYPES, BEDROOM_OPTIONS } from "./constants";
+import { Search } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useCallback, useState, useTransition } from "react";
+import { BEDROOM_OPTIONS, TERMS_OPTIONS, UNIT_TYPES } from "./constants";
 
 interface ProjectsSearchFilterProps {
   resultCount?: number;
 }
 
-export function ProjectsSearchFilter({
-  resultCount = 0,
-}: ProjectsSearchFilterProps) {
+export function ProjectsSearchFilter({}: ProjectsSearchFilterProps = {}) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [, startTransition] = useTransition();
@@ -74,35 +75,26 @@ export function ProjectsSearchFilter({
     });
   };
 
-  const getActiveFilters = () => {
-    const active = [];
-    if (localFilters.terms !== "sale")
-      active.push(`Terms: ${localFilters.terms}`);
-    if (localFilters.unittype !== "apartment")
-      active.push(`Type: ${localFilters.unittype}`);
-    if (localFilters.address)
-      active.push(`Location: "${localFilters.address}"`);
-    if (localFilters.maxprice)
-      active.push(
-        `Max Price: GH₵${Number(localFilters.maxprice).toLocaleString()}`
-      );
-    if (localFilters.beds && localFilters.beds !== "0")
-      active.push(`Beds: ${localFilters.beds}`);
-    return active;
+  const handleRemoveFilter = (filterKey: keyof DeveloperUnitsFormState) => {
+    const resetValues: Record<string, string> = {
+      terms: "sale",
+      unittype: "apartment",
+      address: "",
+      maxprice: "",
+      beds: "0",
+      baths: "0",
+    };
+    updateLocalFilter(filterKey, resetValues[filterKey] || "");
   };
 
-  const removeFilter = (filter: string) => {
-    if (filter.startsWith("Terms:")) {
-      updateLocalFilter("terms", "sale");
-    } else if (filter.startsWith("Type:")) {
-      updateLocalFilter("unittype", "apartment");
-    } else if (filter.startsWith("Location:")) {
-      updateLocalFilter("address", "");
-    } else if (filter.startsWith("Max Price:")) {
-      updateLocalFilter("maxprice", "");
-    } else if (filter.startsWith("Beds:")) {
-      updateLocalFilter("beds", "0");
-    }
+  const handleClearAllFilters = () => {
+    setLocalFilters({
+      terms: "sale",
+      unittype: "apartment",
+      address: "",
+      maxprice: "",
+      beds: "0",
+    });
   };
 
   return (
@@ -128,12 +120,12 @@ export function ProjectsSearchFilter({
           </Select>
 
           {/* Location Search Input */}
-          <div className="relative min-w-[120px] flex-1 sm:min-w-[200px]">
+          <div className="relative min-w-[180px] flex-1 sm:min-w-[280px]">
             <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform" />
             <Input
               value={localFilters.address}
               placeholder="Search location..."
-              className="h-10 pl-10 text-sm sm:h-12 sm:text-base"
+              className="!h-10 pl-10 !text-sm placeholder:!text-sm placeholder:text-gray-400 sm:!h-12 sm:!text-base sm:placeholder:!text-base"
               onChange={(e) => updateLocalFilter("address", e.target.value)}
             />
           </div>
@@ -162,7 +154,7 @@ export function ProjectsSearchFilter({
             value={localFilters.maxprice}
             placeholder="Max Price"
             type="number"
-            className="h-10 w-24 flex-shrink-0 text-sm sm:h-12 sm:w-32 sm:text-base"
+            className="!h-10 w-24 flex-shrink-0 !text-sm placeholder:!text-sm placeholder:text-gray-400 sm:!h-12 sm:w-32 sm:!text-base sm:placeholder:!text-base"
             onChange={(e) => updateLocalFilter("maxprice", e.target.value)}
           />
 
@@ -197,9 +189,7 @@ export function ProjectsSearchFilter({
               </div>
             ) : (
               <div className="flex items-center gap-1 sm:gap-2">
-                <Search className="h-3 w-3 sm:h-4 sm:w-4" />
-                <span className="hidden sm:inline">Search Units</span>
-                <span className="sm:hidden">Search</span>
+                <span>Search Units</span>
               </div>
             )}
           </Button>
@@ -207,36 +197,19 @@ export function ProjectsSearchFilter({
       </div>
 
       {/* Active Filters */}
-      {getActiveFilters().length > 0 && (
-        <div className="container mx-auto px-4 pb-4">
-          <div className="flex flex-wrap gap-2">
-            {getActiveFilters().map((filter, index) => (
-              <Badge
-                key={index}
-                variant="secondary"
-                className="hover:bg-destructive hover:text-destructive-foreground cursor-pointer"
-                onClick={() => removeFilter(filter)}
-              >
-                {filter} ×
-              </Badge>
-            ))}
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              onClick={clearFilters}
-              className="text-muted-foreground h-6 px-2 text-xs"
-            >
-              Clear all
-            </Button>
-          </div>
-          {resultCount > 0 && (
-            <div className="text-muted-foreground mt-2 text-sm">
-              {resultCount.toLocaleString()} developer units found
-            </div>
-          )}
-        </div>
-      )}
+      <ActiveFilterChips
+        mode="developer"
+        formState={{
+          terms: localFilters.terms,
+          unittype: localFilters.unittype,
+          address: localFilters.address,
+          maxprice: localFilters.maxprice,
+          beds: localFilters.beds,
+          baths: "0",
+        }}
+        onRemoveFilter={handleRemoveFilter}
+        onClearAllFilters={handleClearAllFilters}
+      />
     </div>
   );
 }

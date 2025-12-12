@@ -2,72 +2,47 @@
 
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ErrorStateCard } from "@/components/common/error-state-card";
 import { buildRichInnerHtml } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
-import { useResilientFetch } from "@/hooks/use-resilient-fetch";
-
-const bannerCache = new Map<string, string[]>();
-
-const arraysEqual = (a: string[] | null, b: string[] | null): boolean => {
-  if (a === b) return true;
-  if (!a || !b) return false;
-  if (a.length !== b.length) return false;
-  for (let i = 0; i < a.length; i += 1) {
-    if (a[i] !== b[i]) {
-      return false;
-    }
-  }
-  return true;
-};
+import { useEffect, useState } from "react";
 
 export default function HeaderAdClient() {
   const pathname = usePathname();
-  const isSearchRoute = pathname?.startsWith("/search") || false;
-
-  const endpoint = useMemo(
-    () => (isSearchRoute ? "/api/banner/search" : "/api/banner/default"),
-    [isSearchRoute]
-  );
-
-  const [cachedBanner, setCachedBanner] = useState<string[] | null>(() =>
-    bannerCache.get(endpoint) ?? null
-  );
+  const [bannerData, setBannerData] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    setCachedBanner(bannerCache.get(endpoint) ?? null);
-  }, [endpoint]);
+    async function fetchBanner() {
+      setIsLoading(true);
+      try {
+        // Determine which banner endpoint to use based on route
+        const isSearchPage = pathname?.includes("/search");
+        const endpoint = isSearchPage ? "/api/banner/search" : "/api/banner/default";
 
-  const {
-    data: bannerData,
-    loading: isLoading,
-    error,
-  } = useResilientFetch<string[]>({
-    input: endpoint,
-  });
+        const response = await fetch(endpoint);
+        const data = await response.json();
 
-  useEffect(() => {
-    if (!error) return;
-    console.error("Header leaderboard fetch failed", error);
-  }, [error]);
-
-  useEffect(() => {
-    if (!bannerData || bannerData.length === 0) {
-      return;
+        // Extract HTML from banner array
+        if (Array.isArray(data) && data.length > 0) {
+          const htmlArray = data.map((b: { html: string }) => b.html).filter(Boolean);
+          setBannerData(htmlArray);
+        } else {
+          setBannerData([]);
+        }
+      } catch (error) {
+        console.error("Failed to fetch leaderboard banner:", error);
+        setBannerData([]);
+      } finally {
+        setIsLoading(false);
+      }
     }
 
-    if (!arraysEqual(cachedBanner, bannerData)) {
-      bannerCache.set(endpoint, bannerData);
-      setCachedBanner(bannerData);
-    }
-  }, [bannerData, cachedBanner, endpoint]);
+    fetchBanner();
+  }, [pathname]);
 
-  const leaderboardBanner = cachedBanner ?? bannerData ?? [];
-  const hasError = Boolean(error);
-  const isBannerLoading = !cachedBanner && isLoading;
+  const hasBanner = bannerData.length > 0;
 
   return (
     <div
@@ -90,13 +65,9 @@ export default function HeaderAdClient() {
             priority
           />
         </Link>
-        {isBannerLoading ? (
-          <Skeleton
-            className="h-[90px] w-[728px] rounded-sm"
-            variant="shimmer"
-            aria-label="Loading advertisement banner"
-          />
-        ) : leaderboardBanner.length > 0 ? (
+        {isLoading ? (
+          <Skeleton className="h-[90px] w-[728px] rounded-sm" />
+        ) : hasBanner ? (
           <Card
             className="overflow-hidden rounded-sm p-0 shadow-none"
             role="complementary"
@@ -104,24 +75,14 @@ export default function HeaderAdClient() {
           >
             <div
               dangerouslySetInnerHTML={buildRichInnerHtml(
-                String(leaderboardBanner)
+                String(bannerData)
               )}
             />
           </Card>
-        ) : hasError ? (
-          <ErrorStateCard
-            variant="error"
-            title="Unable to load sponsored content"
-            description="Please refresh the page or try again later."
-            className="w-[728px]"
-          />
         ) : (
-          <ErrorStateCard
-            variant="info"
-            title="Sponsored content is currently unavailable"
-            description="Our partners will update this space shortly."
-            className="w-[728px]"
-          />
+          <div className="flex h-[90px] w-[728px] items-center justify-center rounded-sm border border-gray-200 bg-gray-50">
+            <p className="text-sm text-gray-500">Advertisement space</p>
+          </div>
         )}
       </div>
     </div>

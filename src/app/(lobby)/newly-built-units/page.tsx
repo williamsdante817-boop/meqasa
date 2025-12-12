@@ -123,7 +123,7 @@ export default async function AllUnitsPage({
 
       {/* Search Filters - Full width, sticky */}
       <div className="sticky top-[56px] z-50">
-        <ProjectsSearchFilter resultCount={150} />
+        <ProjectsSearchFilter />
       </div>
 
       <Shell className="py-8 md:py-12">
@@ -132,10 +132,10 @@ export default async function AllUnitsPage({
 
         {/* Introductory Content */}
         <header className="mb-16 text-left">
-          <h1 className="text-brand-accent mb-6 text-3xl leading-tight font-bold tracking-tight md:text-4xl lg:text-5xl">
+          <h1 className="text-brand-accent mb-4 text-2xl font-bold leading-tight tracking-tight lg:text-3xl">
             Newly Built Units in Ghana
           </h1>
-          <p className="text-brand-muted max-w-4xl text-lg leading-relaxed md:text-xl">
+          <p className="text-brand-muted max-w-4xl text-sm leading-normal sm:text-base sm:leading-7">
             Fresh Units For Sale & Rent In Ghana. Discover newly built
             residential and commercial units across prime locations from
             verified developers.

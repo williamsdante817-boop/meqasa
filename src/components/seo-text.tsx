@@ -23,17 +23,17 @@ export default function SeoText() {
           <p>
             Looking for{" "}
             <Link
-              href="/property-for-sale-in-accra"
+              href="/search/sale?page=1"
               className="text-brand-blue focus:ring-brand-blue font-medium no-underline hover:underline focus:ring-2 focus:ring-offset-2 focus:outline-none"
-              aria-label="View properties for sale in Accra"
+              aria-label="View properties for sale"
             >
               properties for sale
             </Link>{" "}
             or{" "}
             <Link
-              href="/property-for-rent-in-accra"
+              href="/search/rent?page=1"
               className="text-brand-blue focus:ring-brand-blue font-medium no-underline hover:underline focus:ring-2 focus:ring-offset-2 focus:outline-none"
-              aria-label="View properties for rent in Accra"
+              aria-label="View properties for rent"
             >
               properties for rent
             </Link>
@@ -42,7 +42,7 @@ export default function SeoText() {
           <p>
             From{" "}
             <Link
-              href="/house-for-sale-in-accra"
+              href="/search/sale?q=accra&ftype=house&page=1"
               className="text-brand-blue focus:ring-brand-blue font-medium no-underline hover:underline focus:ring-2 focus:ring-offset-2 focus:outline-none"
               aria-label="View houses for sale in Accra"
             >
@@ -50,7 +50,7 @@ export default function SeoText() {
             </Link>{" "}
             to{" "}
             <Link
-              href="/apartment-for-sale-in-east-legon"
+              href="/search/sale?q=east+legon&ftype=apartment&page=1"
               className="text-brand-blue focus:ring-brand-blue font-medium no-underline hover:underline focus:ring-2 focus:ring-offset-2 focus:outline-none"
               aria-label="View apartments for sale in East Legon"
             >

@@ -16,6 +16,7 @@ import { getResultsHeroBanner } from "@/lib/banners";
 import { normalizeHeroBanner } from "@/lib/hero-banner";
 import { logError } from "@/lib/logger";
 import { loadMoreProperties, searchProperties } from "@/lib/meqasa";
+import { getResultsPopup } from "@/lib/get-results-popup";
 import { ANY_SENTINEL } from "@/lib/search/constants";
 import type { Metadata } from "next";
 import { headers } from "next/headers";
@@ -66,18 +67,6 @@ export async function generateMetadata({
   };
 }
 
-// Helper to fetch popup data
-async function getResultsPopup(_params: { type: string; contract: string }) {
-  try {
-    // This would be a real API call in production
-    // For now we return mock data or null if no popup should show
-    return null;
-  } catch (error) {
-    console.error("Error fetching popup data:", error);
-    return null;
-  }
-}
-
 export default async function SearchPage({
   params,
   searchParams,
@@ -118,10 +107,48 @@ export default async function SearchPage({
         // This preserves the search context (random seed) from the first page
         // (which can happen with distributed databases)
         if (currentPage > 1 && urlSearchId) {
-          const loadMoreResult = await loadMoreProperties(type, location, {
+          // Extract all filter parameters from URL to maintain filter state across pagination
+          const loadMoreParams: any = {
             y: urlSearchId,
             w: currentPage,
-          }, { baseUrl: apiBaseUrl });
+          };
+
+          // Include all filter parameters to ensure consistent results across pages
+          if (resolvedSearchParams.ftype)
+            loadMoreParams.ftype = resolvedSearchParams.ftype;
+          if (resolvedSearchParams.fbeds)
+            loadMoreParams.fbeds = parseInt(resolvedSearchParams.fbeds);
+          if (resolvedSearchParams.fbaths)
+            loadMoreParams.fbaths = parseInt(resolvedSearchParams.fbaths);
+          if (resolvedSearchParams.fmin)
+            loadMoreParams.fmin = parseInt(resolvedSearchParams.fmin);
+          if (resolvedSearchParams.fmax)
+            loadMoreParams.fmax = parseInt(resolvedSearchParams.fmax);
+          if (resolvedSearchParams.fminarea)
+            loadMoreParams.fminarea = parseInt(resolvedSearchParams.fminarea);
+          if (resolvedSearchParams.fmaxarea)
+            loadMoreParams.fmaxarea = parseInt(resolvedSearchParams.fmaxarea);
+          if (resolvedSearchParams.frentperiod)
+            loadMoreParams.frentperiod = resolvedSearchParams.frentperiod;
+          if (resolvedSearchParams.fsort)
+            loadMoreParams.fsort = resolvedSearchParams.fsort;
+          if (resolvedSearchParams.fisfurnished)
+            loadMoreParams.fisfurnished = resolvedSearchParams.fisfurnished;
+          if (resolvedSearchParams.ffsbo)
+            loadMoreParams.ffsbo = resolvedSearchParams.ffsbo;
+          if (resolvedSearchParams.fhowshort)
+            loadMoreParams.fhowshort = resolvedSearchParams.fhowshort;
+
+          // Special handling for short-let searches
+          if (
+            resolvedSearchParams.frentperiod === "shortrent" ||
+            resolvedSearchParams.fhowshort
+          ) {
+            loadMoreParams.ftype = ANY_SENTINEL;
+            loadMoreParams.frentperiod = "shortrent";
+          }
+
+          const loadMoreResult = await loadMoreProperties(type, location, loadMoreParams, { baseUrl: apiBaseUrl });
           if (
             canonicalResultTotal !== null &&
             !Number.isNaN(canonicalResultTotal)
@@ -210,13 +237,16 @@ export default async function SearchPage({
         };
       }
     })(),
-    getResultsPopup({ type, contract: type === "rent" ? "rent" : "sale" }).catch(() => null),
+    getResultsPopup({
+      type: resolvedSearchParams.ftype || "house",
+      contract: type === "rent" ? "rent" : "sale"
+    }).catch(() => null),
   ]);
 
   // Check for error state
   if (searchData.hasError) {
     return (
-      <Shell className="mt-12 flex max-w-[1250px] flex-col items-center gap-8 md:px-0">
+      <Shell className="mt-12 flex min-h-[60vh] max-w-[1250px] flex-col items-center justify-center gap-8 py-16 md:px-0">
         <SearchError />
       </Shell>
     );

@@ -15,10 +15,10 @@ export function UnitsEmptyState({
     <div className="py-12 text-center">
       <div className="space-y-4">
         <Building2 className="mx-auto h-16 w-16 text-gray-300" />
-        <h3 className="text-brand-accent text-xl font-semibold">
+        <h3 className="text-brand-accent text-base font-semibold lg:text-lg">
           No units found
         </h3>
-        <p className="text-brand-muted mx-auto max-w-md">
+        <p className="text-brand-muted mx-auto max-w-md text-sm sm:text-base">
           We couldn&apos;t find any developer units matching your criteria. Try
           adjusting your filters or check back later for new listings.
         </p>

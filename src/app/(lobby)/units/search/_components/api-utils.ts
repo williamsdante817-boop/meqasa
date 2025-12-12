@@ -69,6 +69,17 @@ export function mapSearchParamsToApi(
     }
   }
 
+  if (searchParams.projectid) {
+    const projectId = parseInt(
+      Array.isArray(searchParams.projectid)
+        ? searchParams.projectid[0]
+        : searchParams.projectid
+    );
+    if (!isNaN(projectId) && projectId > 0) {
+      apiParams.projectid = projectId;
+    }
+  }
+
   if (searchParams.page) {
     const pageParam = Array.isArray(searchParams.page)
       ? searchParams.page[0]
@@ -111,7 +122,7 @@ export async function fetchUnitsSearchResults(
 
     if (!response.ok) {
       console.error(`Units search API error: ${response.status}`);
-      return [];
+      return { units: [], hasMore: false };
     }
 
     const units: unknown = await response.json();

@@ -71,7 +71,7 @@ export function FeaturedPropertyVariantCard({
       />
       <CardContent className="p-0">
         <ImageWithFallback
-          className="h-[321px] rounded-lg object-cover"
+          className="h-[230px] w-full rounded-lg object-cover md:h-[321px]"
           width={1028}
           height={321}
           src={mainImage}
@@ -115,7 +115,7 @@ export function FeaturedPropertyVariantCard({
                 </h2>
 
                 <div
-                  className="flex items-center gap-1 pt-2 text-sm text-[#E4E5EA] md:text-base"
+                  className="flex items-center gap-1 text-sm text-[#E4E5EA] md:text-base"
                   aria-label={`Location: ${location}, ${city}`}
                 >
                   <span>{location}</span>
@@ -125,7 +125,8 @@ export function FeaturedPropertyVariantCard({
 
                 <Button
                   asChild
-                  className="bg-brand-primary hover:bg-brand-primary mt-3 focus:ring-2 focus:ring-white focus:ring-offset-2"
+                  className="bg-brand-primary hover:bg-brand-primary mt-3 w-full focus:ring-2 focus:ring-white focus:ring-offset-2"
+                  variant="default"
                 >
                   <Link
                     href={projectLink}
@@ -135,14 +136,14 @@ export function FeaturedPropertyVariantCard({
                   </Link>
                 </Button>
               </div>
-              <div className="flex items-end">
+              <div className="flex items-end rounded-md bg-white p-2">
                 <ImageWithFallback
                   src={logoImage}
                   alt={logoAlt}
-                  width={100}
-                  height={100}
+                  width={80}
+                  height={80}
                   unoptimized
-                  className="h-14 w-14 rounded-md md:h-auto md:w-auto"
+                  className="h-20 w-20 rounded-md object-contain"
                   onError={undefined}
                   imageType="developer-logo"
                   imageSize="medium"

@@ -142,7 +142,7 @@ const getVariantStyles = (variant: "home" | "results" | "mobile") => {
             focused ? "text-brand-primary" : "text-brand-accent"
           ),
         input:
-          "h-10 sm:h-12 pl-8 sm:pl-10 bg-white shadow-none border-gray-200 text-brand-accent focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none hover:border-gray-300 transition-all duration-200 placeholder:text-gray-400 text-sm sm:text-base !h-10 sm:!h-12",
+          "!h-10 sm:!h-12 pl-8 sm:pl-10 bg-white shadow-none border-gray-200 text-brand-accent focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none hover:border-gray-300 hover:bg-gray-50 transition-all duration-200 placeholder:text-gray-400 !text-sm sm:!text-base",
         dropdown: "", // Portal will handle positioning
         dropdownContent: "",
       };

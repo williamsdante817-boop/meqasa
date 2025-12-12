@@ -94,7 +94,7 @@ export default function ContentSection({
             className="text-brand-blue hover:text-brand-blue focus-visible:ring-brand-blue hidden text-base font-semibold focus-visible:ring-2 focus-visible:ring-offset-2 lg:flex"
             asChild
           >
-            <Link href={href} aria-label={`${linkText} for ${title}`}>
+            <Link href={href} scroll={true} aria-label={`${linkText} for ${title}`}>
               {linkText}
             </Link>
           </Button>

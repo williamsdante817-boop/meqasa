@@ -18,33 +18,33 @@ const propertyCategories = [
     types: [
       {
         label: "Houses",
-        href: "/units/search?terms=sale&unittype=house&address=&maxprice=&beds=0&baths=0",
+        href: "/search/sale?q=ghana&ftype=house",
         icon: Building2,
-        count: "2.5K+",
       },
       {
         label: "Apartments",
-        href: "/units/search?terms=rent&unittype=apartment&address=&maxprice=&beds=0&baths=0",
+        href: "/search/rent?q=ghana&ftype=apartment",
         icon: Building,
-        count: "1.8K+",
       },
       {
         label: "Townhouses",
-        href: "/units/search?terms=sale&unittype=townhouse&address=&maxprice=&beds=0&baths=0",
+        href: "/search/sale?q=ghana&ftype=townhouse",
         icon: Building2,
-        count: "450+",
       },
       {
         label: "Studio Apartments",
-        href: "/units/search?terms=rent&unittype=studio%20apartment&address=&maxprice=&beds=0&baths=0",
+        href: "/search/rent?q=ghana&ftype=studio%20apartment",
         icon: Building,
-        count: "50+",
       },
       {
         label: "Villas",
-        href: "/units/search?terms=sale&unittype=villa&address=&maxprice=&beds=0&baths=0",
+        href: "/search/sale?q=ghana&ftype=villa",
         icon: Building2,
-        count: "180+",
+      },
+      {
+        label: "Guest Houses",
+        href: "/search/rent?q=ghana&ftype=guest%20house",
+        icon: Building2,
       },
     ],
   },
@@ -53,27 +53,23 @@ const propertyCategories = [
     types: [
       {
         label: "Office Space",
-        href: "/search/rent?ftype=office",
+        href: "/search/rent?q=ghana&ftype=office",
         icon: Briefcase,
-        count: "680+",
       },
       {
         label: "Shops",
-        href: "/search/rent?ftype=shop",
+        href: "/search/rent?q=ghana&ftype=shop",
         icon: Store,
-        count: "320+",
       },
       {
         label: "Warehouses",
-        href: "/search/rent?ftype=warehouse",
+        href: "/search/rent?q=ghana&ftype=warehouse",
         icon: Warehouse,
-        count: "95+",
       },
       {
-        label: "Commercial",
-        href: "/search/sale?ftype=commercial%20space",
+        label: "Commercial Space",
+        href: "/search/sale?q=ghana&ftype=commercial%20space",
         icon: Briefcase,
-        count: "150+",
       },
     ],
   },
@@ -82,27 +78,23 @@ const propertyCategories = [
     types: [
       {
         label: "Land",
-        href: "/search/sale?ftype=land",
+        href: "/search/sale?q=ghana&ftype=land",
         icon: MapPin,
-        count: "890+",
       },
       {
         label: "Retail",
-        href: "/search/rent?ftype=retail",
+        href: "/search/rent?q=ghana&ftype=retail",
         icon: Store,
-        count: "200+",
       },
       {
         label: "Beach Houses",
-        href: "/search/rent?ftype=beach%20house",
+        href: "/search/rent?q=ghana&ftype=beach%20house",
         icon: Building2,
-        count: "25+",
       },
       {
         label: "Hotels",
-        href: "/search/rent?ftype=hotel",
+        href: "/search/rent?q=ghana&ftype=hotel",
         icon: Building,
-        count: "15+",
       },
     ],
   },
@@ -116,28 +108,8 @@ export default function PropertyTypeLinks() {
   const isActive = (href: string) => {
     try {
       const url = new URL(href, "http://localhost");
-
-      // Handle new units search format
-      if (url.pathname.includes("/units/search")) {
-        const hrefUnitType = url.searchParams.get("unittype") ?? "";
-        const hrefTerms = url.searchParams.get("terms") ?? "";
-        const currentUnitType = searchParams?.get("unittype") ?? "";
-        const currentTerms = searchParams?.get("terms") ?? "";
-
-        return (
-          pathname.includes("/units/search") &&
-          hrefUnitType === currentUnitType &&
-          hrefTerms === currentTerms
-        );
-      }
-
-      // Handle old search format
       const hrefType = url.searchParams.get("ftype") ?? "";
-      return (
-        currentType === hrefType ||
-        (pathname.includes(href.split("?")[0] || "") &&
-          currentType === hrefType)
-      );
+      return currentType === hrefType;
     } catch {
       return false;
     }
@@ -191,16 +163,7 @@ export default function PropertyTypeLinks() {
                         </span>
                       </div>
 
-                      {/* Property Count */}
-                      <span
-                        className={`block flex h-full flex-shrink-0 items-center justify-center rounded-sm px-1.5 py-0.5 text-xs font-medium transition-colors duration-200 ${
-                          active
-                            ? "bg-white/20 text-white"
-                            : "bg-brand-primary/10 text-brand-primary group-hover:bg-brand-primary/20"
-                        }`}
-                      >
-                        {type.count}
-                      </span>
+
                     </Link>
                   </li>
                 );

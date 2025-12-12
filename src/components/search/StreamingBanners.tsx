@@ -82,34 +82,17 @@ async function StreamingRectangleBanners() {
 async function StreamingFlexiBanner() {
   const { getFlexiBanner } = await import("@/lib/banners");
 
-  const renderUnavailable = (variant: "info" | "error" = "info") => (
-    <ErrorStateCard
-      variant={variant}
-      className="mb-8"
-      title={
-        variant === "error"
-          ? "Unable to load promotional highlights"
-          : "Promotional highlights are unavailable"
-      }
-      description={
-        variant === "error"
-          ? "Please refresh the page or try again later."
-          : "Our partners will update this space shortly."
-      }
-    />
-  );
-
   try {
     const flexiBanner = await getFlexiBanner();
 
     if (!flexiBanner) {
-      return renderUnavailable("info");
+      return null;
     }
 
     const blocks = extractFlexiBannerBlocks(flexiBanner);
 
     if (blocks.length === 0) {
-      return renderUnavailable("info");
+      return null;
     }
 
     return (
@@ -127,7 +110,7 @@ async function StreamingFlexiBanner() {
     logError("Failed to load flexi banner", error, {
       component: "StreamingFlexiBanner",
     });
-    return renderUnavailable("error");
+    return null;
   }
 }
 

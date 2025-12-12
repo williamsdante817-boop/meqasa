@@ -153,7 +153,32 @@ export default async function DeveloperUnitPage({
   // Construct developer-aware hrefs similar to listings page
   const contract = unitDetails.unit.terms?.toLowerCase() ?? "";
   const location = unitDetails.unit.city?.toLowerCase() ?? "";
-  const type = unitDetails.unit.unittypename?.toLowerCase() ?? "";
+  
+  // Normalize property type to match search filter expectations
+  const normalizePropertyType = (typeName: string | undefined): string => {
+    if (!typeName) return "";
+    const normalized = typeName.toLowerCase().trim();
+    const typeMap: Record<string, string> = {
+      apartment: "apartment",
+      apartments: "apartment",
+      house: "house",
+      houses: "house",
+      townhouse: "townhouse",
+      townhouses: "townhouse",
+      villa: "villa",
+      villas: "villa",
+      office: "office",
+      offices: "office",
+      land: "land",
+      commercial: "commercial",
+      warehouse: "warehouse",
+      shop: "shop",
+      studio: "studio",
+    };
+    return typeMap[normalized] || normalized;
+  };
+  
+  const type = normalizePropertyType(unitDetails.unit.unittypename);
 
   const similarSearchParams = new URLSearchParams({
     q: location || "ghana",
@@ -188,7 +213,7 @@ export default async function DeveloperUnitPage({
               },
               {
                 title: `${unitDetails.unit.unittypename}`,
-                href: `/search/${contract}?q=ghana&ftype=${encodeURIComponent(type.toLowerCase())}`,
+                href: `/search/${contract}?q=ghana${type ? `&ftype=${encodeURIComponent(type)}` : ""}`,
               },
               {
                 title: `${unitDetails.unit.city}`,

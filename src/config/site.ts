@@ -226,6 +226,12 @@ export const siteConfig: SiteConfig = {
         "Browse properties for sale, including houses and apartments.",
       items: [],
     },
+    {
+      title: "Advertise with us",
+      href: "/advertising-options-with-meqasa",
+      description: "Discover advertising opportunities with MeQasa.",
+      items: [],
+    },
   ] satisfies MainNavItem[],
   footerNav: [
     {
@@ -577,6 +583,7 @@ export const siteConfig: SiteConfig = {
       { value: "office", label: "Office" },
       // Note: "land" removed - users should use the dedicated Land tab
       { value: "townhouse", label: "Townhouse" },
+      { value: "villa", label: "Villa" },
       { value: "commercial space", label: "Commercial Space" },
       { value: "warehouse", label: "Warehouse" },
       { value: "guest house", label: "Guest House" },

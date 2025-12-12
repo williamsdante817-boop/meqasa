@@ -1,10 +1,5 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState, type KeyboardEvent } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { AlertCircle, Loader2, Search } from "lucide-react";
-import { ActiveFilterChips, type DeveloperUnitsFormState } from "./ActiveFilterChips";
-import { useResultCount } from "./result-count-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SearchInputWithSuggestions } from "@/components/ui/search-input-with-suggestions";
@@ -16,6 +11,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { AlertCircle, Loader2 } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  type KeyboardEvent,
+} from "react";
+import {
+  ActiveFilterChips,
+  type DeveloperUnitsFormState,
+} from "./ActiveFilterChips";
 
 const DEFAULT_FORM_STATE: DeveloperUnitsFormState = {
   terms: "sale",
@@ -26,12 +34,14 @@ const DEFAULT_FORM_STATE: DeveloperUnitsFormState = {
   baths: "0",
 };
 
-const TERMS_OPTIONS: Array<{ value: DeveloperUnitsFormState["terms"]; label: string }> =
-  [
-    { value: "sale", label: "For Sale" },
-    { value: "rent", label: "For Rent" },
-    { value: "preselling", label: "Pre-selling" },
-  ];
+const TERMS_OPTIONS: Array<{
+  value: DeveloperUnitsFormState["terms"];
+  label: string;
+}> = [
+  { value: "sale", label: "For Sale" },
+  { value: "rent", label: "For Rent" },
+  { value: "preselling", label: "Pre-selling" },
+];
 
 const UNIT_TYPE_OPTIONS = [
   { value: "all", label: "All Types" },
@@ -105,7 +115,11 @@ const buildFormStateFromParams = (
   };
 };
 
-function SearchFilterErrorBoundary({ children }: { children: React.ReactNode }) {
+function SearchFilterErrorBoundary({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [hasError, setHasError] = useState(false);
 
   if (hasError) {
@@ -114,7 +128,8 @@ function SearchFilterErrorBoundary({ children }: { children: React.ReactNode }) 
         <div className="flex items-center">
           <AlertCircle className="mr-2 h-5 w-5 text-red-400" />
           <div className="text-sm text-red-700 sm:text-base">
-            Something went wrong with the search filters. Please refresh the page.
+            Something went wrong with the search filters. Please refresh the
+            page.
           </div>
         </div>
         <button
@@ -129,10 +144,7 @@ function SearchFilterErrorBoundary({ children }: { children: React.ReactNode }) 
   }
 
   return (
-    <div
-      onError={() => setHasError(true)}
-      role="presentation"
-    >
+    <div onError={() => setHasError(true)} role="presentation">
       {children}
     </div>
   );
@@ -141,7 +153,6 @@ function SearchFilterErrorBoundary({ children }: { children: React.ReactNode }) 
 export function UnitsSearchFilter() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { count } = useResultCount();
 
   const [formState, setFormState] = useState<DeveloperUnitsFormState>(() => ({
     ...DEFAULT_FORM_STATE,
@@ -272,15 +283,11 @@ export function UnitsSearchFilter() {
 
         <div className="overflow-x-auto">
           <div className="container mx-auto flex min-w-fit items-center gap-2 p-4">
-            <span className="text-brand-accent whitespace-nowrap text-sm font-medium">
-              {count === 1 ? "1 result" : `${count} results`}
-            </span>
-
             <Select
               value={formState.terms}
               onValueChange={(value) => updateFormState({ terms: value })}
             >
-              <SelectTrigger className="text-brand-accent !h-10 w-28 flex-shrink-0 cursor-pointer border-gray-200 bg-white text-sm shadow-none transition-all duration-200 hover:border-gray-300 hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 sm:!h-12 sm:w-32 sm:text-base">
+              <SelectTrigger className="text-brand-accent !h-10 w-28 flex-shrink-0 cursor-pointer border-gray-200 bg-white text-sm shadow-none transition-all duration-200 hover:border-gray-300 hover:bg-gray-50 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none sm:!h-12 sm:w-32 sm:text-base">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -305,17 +312,13 @@ export function UnitsSearchFilter() {
               placeholder="Location"
               className="text-sm sm:text-base"
               maxSuggestions={5}
-              inputProps={{
-                className:
-                  "text-brand-accent h-10 pl-8 shadow-none transition-all duration-200 placeholder:text-gray-400 hover:border-gray-300 hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 sm:h-12 sm:pl-10 sm:text-base border-gray-200 bg-white",
-              }}
             />
 
             <Select
               value={formState.unittype}
               onValueChange={(value) => updateFormState({ unittype: value })}
             >
-              <SelectTrigger className="text-brand-accent !h-10 w-32 flex-shrink-0 cursor-pointer border-gray-200 bg-white text-sm shadow-none transition-all duration-200 hover:border-gray-300 hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 sm:!h-12 sm:w-40 sm:text-base">
+              <SelectTrigger className="text-brand-accent !h-10 w-32 flex-shrink-0 cursor-pointer border-gray-200 bg-white text-sm shadow-none transition-all duration-200 hover:border-gray-300 hover:bg-gray-50 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none sm:!h-12 sm:w-40 sm:text-base">
                 <SelectValue placeholder="Type" />
               </SelectTrigger>
               <SelectContent>
@@ -337,7 +340,7 @@ export function UnitsSearchFilter() {
               value={formState.beds}
               onValueChange={(value) => updateFormState({ beds: value })}
             >
-              <SelectTrigger className="text-brand-accent !h-10 w-24 flex-shrink-0 cursor-pointer border-gray-200 bg-white text-sm shadow-none transition-all duration-200 hover:border-gray-300 hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 sm:!h-12 sm:w-32 sm:text-base">
+              <SelectTrigger className="text-brand-accent !h-10 w-24 flex-shrink-0 cursor-pointer border-gray-200 bg-white text-sm shadow-none transition-all duration-200 hover:border-gray-300 hover:bg-gray-50 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none sm:!h-12 sm:w-32 sm:text-base">
                 <SelectValue placeholder="Beds" />
               </SelectTrigger>
               <SelectContent>
@@ -359,7 +362,7 @@ export function UnitsSearchFilter() {
               value={formState.baths}
               onValueChange={(value) => updateFormState({ baths: value })}
             >
-              <SelectTrigger className="text-brand-accent !h-10 w-24 flex-shrink-0 cursor-pointer border-gray-200 bg-white text-sm shadow-none transition-all duration-200 hover:border-gray-300 hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 sm:!h-12 sm:w-32 sm:text-base">
+              <SelectTrigger className="text-brand-accent !h-10 w-24 flex-shrink-0 cursor-pointer border-gray-200 bg-white text-sm shadow-none transition-all duration-200 hover:border-gray-300 hover:bg-gray-50 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none sm:!h-12 sm:w-32 sm:text-base">
                 <SelectValue placeholder="Baths" />
               </SelectTrigger>
               <SelectContent>
@@ -382,7 +385,7 @@ export function UnitsSearchFilter() {
               placeholder="Max Price"
               inputMode="numeric"
               type="number"
-              className="text-brand-accent !h-10 w-28 flex-shrink-0 border-gray-200 bg-white text-sm shadow-none transition-all duration-200 placeholder:text-gray-400 hover:border-gray-300 hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 sm:!h-12 sm:w-40 sm:text-base"
+              className="text-brand-accent !h-10 w-28 flex-shrink-0 border-gray-200 bg-white !text-sm shadow-none transition-all duration-200 placeholder:!text-sm placeholder:text-gray-400 hover:border-gray-300 hover:bg-gray-50 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none sm:!h-12 sm:w-40 sm:!text-base sm:placeholder:!text-base"
               onChange={(event) => {
                 const nextValue = event.target.value.trim();
                 updateFormState({
@@ -405,9 +408,7 @@ export function UnitsSearchFilter() {
                 </span>
               ) : (
                 <span className="flex items-center gap-1 sm:gap-2">
-                  <Search className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <span className="hidden sm:inline">Search Units</span>
-                  <span className="sm:hidden">Search</span>
+                  <span>Search Units</span>
                 </span>
               )}
             </Button>

@@ -98,12 +98,12 @@ export default function FeaturedUnits() {
     <div className="space-y-6">
       {/* Section Header */}
       <div className="flex items-center justify-between">
-        <div className="space-y-2">
-          <h2 className="text-brand-accent flex items-center gap-2 text-2xl font-bold">
-            <Star className="h-6 w-6 fill-yellow-500 text-yellow-500" />
+        <div className="space-y-1">
+          <h2 className="text-brand-accent mb-1 flex items-center gap-2 text-2xl font-bold leading-tight tracking-tighter lg:text-3xl">
+            <Star className="h-5 w-5 fill-yellow-500 text-yellow-500 lg:h-6 lg:w-6" />
             Featured Units
           </h2>
-          <p className="text-brand-muted">
+          <p className="text-brand-muted text-sm leading-normal sm:text-base sm:leading-7">
             Handpicked premium properties from trusted developers and agents
           </p>
         </div>
@@ -125,10 +125,10 @@ export default function FeaturedUnits() {
 
       {/* Call to Action */}
       <div className="from-brand-primary/10 to-brand-primary-dark/10 rounded-lg bg-gradient-to-r py-6 text-center">
-        <h3 className="text-brand-accent mb-2 text-lg font-semibold">
+        <h3 className="text-brand-accent mb-2 text-base font-semibold lg:text-lg">
           Want to see your property featured?
         </h3>
-        <p className="text-brand-muted mb-4">
+        <p className="text-brand-muted mb-4 text-sm sm:text-base">
           Join thousands of successful property owners and agents
         </p>
         <Button asChild>

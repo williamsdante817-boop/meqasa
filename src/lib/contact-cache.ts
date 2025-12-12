@@ -49,8 +49,9 @@ export function getStoredNumbers(
     const age = Date.now() - entry.savedAt;
     if (age > ttlMs) {
       // expired; remove lazily
-      delete cache[contextKey];
-      safeWrite(cache);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [contextKey]: _removed, ...rest } = cache;
+      safeWrite(rest);
       return null;
     }
   }
@@ -70,22 +71,21 @@ export function setStoredNumbers(
 export function clearStoredNumbers(contextKey: string): void {
   const cache = safeRead();
   if (cache[contextKey]) {
-    delete cache[contextKey];
-    safeWrite(cache);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { [contextKey]: _removed, ...rest } = cache;
+    safeWrite(rest);
   }
 }
 
 export function clearAllExpired(ttlMs: number = DEFAULT_TTL_MS): void {
   const cache = safeRead();
-  let mutated = false;
   const now = Date.now();
-  for (const key of Object.keys(cache)) {
-    const entry = cache[key];
-    if (!entry) continue;
-    if (ttlMs > 0 && now - entry.savedAt > ttlMs) {
-      delete cache[key];
-      mutated = true;
-    }
+  const filtered = Object.fromEntries(
+    Object.entries(cache).filter(([_, entry]) => {
+      return entry && (ttlMs <= 0 || now - entry.savedAt <= ttlMs);
+    })
+  );
+  if (Object.keys(filtered).length !== Object.keys(cache).length) {
+    safeWrite(filtered);
   }
-  if (mutated) safeWrite(cache);
 }

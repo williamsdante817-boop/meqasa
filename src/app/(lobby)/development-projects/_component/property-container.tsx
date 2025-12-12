@@ -270,7 +270,7 @@ function PropertyContainerContent({
           <ContentSection
             title="Available Units"
             description=""
-            href="/listings"
+            href={`/units/search?terms=${projectData.project.projectstatus === "completed" ? "sale" : "rent"}&projectid=${projectData.project.projectid}`}
             className={cn(
               "px-0 py-14 md:block md:pt-20 lg:mx-auto lg:max-w-7xl [&_h2]:px-4 [&_p]:px-4"
             )}

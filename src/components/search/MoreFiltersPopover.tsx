@@ -2,17 +2,17 @@
 
 import { Checkbox } from "@/components/ui/checkbox";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
 } from "@/components/ui/popover";
 import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@/components/ui/select";
 import { searchConfig } from "@/config/search";
 import { type FormState } from "@/types/search";
@@ -115,11 +115,11 @@ export function MoreFiltersPopover({
           </Select>
         </div>
 
-        {/* Hide furnished and owner options for land */}
-        {contractType !== "land" && (
-          <div className="text-b-accent flex items-start justify-between pt-8 text-sm font-semibold">
-            <span>Only show...</span>
-            <div>
+        <div className="text-b-accent flex items-start justify-between pt-8 text-sm font-semibold">
+          <span>Only show...</span>
+          <div>
+            {/* Hide furnished for land */}
+            {contractType !== "land" && (
               <div className="mb-2 flex items-center space-x-2">
                 <Checkbox
                   id="furnished"
@@ -136,25 +136,25 @@ export function MoreFiltersPopover({
                   Furnished Properties
                 </label>
               </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="owner"
-                  checked={formState.owner}
-                  onCheckedChange={(checked) =>
-                    updateFormState({ owner: !!checked })
-                  }
-                  className="data-[state=checked]:bg-primary data-[state=checked]:border-0 data-[state=checked]:text-white"
-                />
-                <label
-                  htmlFor="owner"
-                  className="cursor-pointer peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  {getOwnerText()}
-                </label>
-              </div>
+            )}
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="owner"
+                checked={formState.owner}
+                onCheckedChange={(checked) =>
+                  updateFormState({ owner: !!checked })
+                }
+                className="data-[state=checked]:bg-primary data-[state=checked]:border-0 data-[state=checked]:text-white"
+              />
+              <label
+                htmlFor="owner"
+                className="cursor-pointer peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                {getOwnerText()}
+              </label>
             </div>
           </div>
-        )}
+        </div>
       </PopoverContent>
     </Popover>
   );

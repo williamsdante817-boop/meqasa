@@ -9,13 +9,36 @@ import { AlertCircle } from "lucide-react";
 const getYouTubeEmbedUrl = (url: string): string | undefined => {
   if (!url || typeof url !== "string") return undefined;
 
-  // Handle different YouTube URL formats
-  const regExp =
-    /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-  const match = regExp.exec(url);
+  try {
+    const urlObj = new URL(url);
+    const hostname = urlObj.hostname.toLowerCase();
+    
+    // Only allow HTTPS protocol
+    if (urlObj.protocol !== 'https:') {
+      return undefined;
+    }
+    
+    // Strict hostname validation - only allow exact YouTube domains
+    const allowedHosts = ['www.youtube.com', 'youtube.com', 'youtu.be', 'www.youtu.be'];
+    if (!allowedHosts.includes(hostname)) {
+      return undefined;
+    }
 
-  if (match?.[2]?.length === 11) {
-    return `https://www.youtube.com/embed/${match[2]}`;
+    let videoId: string | null = null;
+
+    // Extract video ID from different YouTube URL formats
+    if (hostname.includes('youtu.be')) {
+      videoId = urlObj.pathname.slice(1).split('/')[0] ?? null;
+    } else if (hostname.includes('youtube.com')) {
+      videoId = urlObj.searchParams.get('v') ?? urlObj.pathname.split('/').pop() ?? null;
+    }
+
+    // Validate video ID format (11 alphanumeric characters and hyphens/underscores)
+    if (videoId && /^[a-zA-Z0-9_-]{11}$/.test(videoId)) {
+      return `https://www.youtube.com/embed/${videoId}`;
+    }
+  } catch {
+    return undefined;
   }
 
   return undefined;
@@ -25,7 +48,8 @@ const getYouTubeEmbedUrl = (url: string): string | undefined => {
 const isValidYouTubeUrl = (url: string): boolean => {
   if (!url || typeof url !== "string") return false;
 
-  const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+/;
+  // Strict validation: only allow HTTPS YouTube URLs
+  const youtubeRegex = /^https:\/\/(www\.)?(youtube\.com|youtu\.be)\/.+$/;
   return youtubeRegex.test(url);
 };
 

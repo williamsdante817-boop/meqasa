@@ -56,6 +56,7 @@ export interface SearchParams {
   maxprice?: string;
   beds?: string;
   baths?: string;
+  projectid?: string;
   page?: string;
   sort?: string;
   /** Additional URL parameters */
@@ -85,6 +86,7 @@ export interface ApiSearchParams {
   maxprice?: number;
   beds?: number;
   baths?: number;
+  projectid?: number;
   offset?: number;
 }
 

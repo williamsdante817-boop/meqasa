@@ -69,6 +69,7 @@ export interface MeqasaSearchResponse {
   project2: MeqasaProject | MeqasaEmptyProject;
   bottomads: MeqasaListing[];
   searchdesc: string;
+  hasError?: boolean;
 }
 
 export type PropertyType =

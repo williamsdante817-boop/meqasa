@@ -84,7 +84,7 @@ function FooterCompanyLink() {
     { href: "/feedback", label: "Feedback" },
     { href: "/accra-housing-guide", label: "Housing guide" },
     { href: "/real-estate-report", label: "Real estate guide 2020" },
-    { href: "/ads", label: "Advertise with us" },
+    { href: "/advertising-options-with-meqasa", label: "Advertise with us" },
     { href: "/terms", label: "Terms of use" },
   ];
 

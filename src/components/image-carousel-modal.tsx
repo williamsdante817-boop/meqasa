@@ -405,12 +405,12 @@ export function ImageCarouselModal({
             )}
           </div>
 
-          {/* Next button - hidden on mobile */}
+          {/* Next button - visible on all devices but smaller on mobile */}
           <Button
             variant="outline"
             size="icon"
             className={cn(
-              "focus-visible:ring-primary absolute top-1/2 right-6 z-50 hidden h-11 w-11 -translate-y-1/2 cursor-pointer rounded-full bg-white/90 text-gray-700 shadow-lg backdrop-blur-sm hover:scale-105 hover:bg-white hover:shadow-xl focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100 md:flex",
+              "focus-visible:ring-primary absolute top-1/2 right-3 z-50 h-8 w-8 -translate-y-1/2 cursor-pointer rounded-full bg-white/90 text-gray-700 shadow-lg backdrop-blur-sm hover:scale-105 hover:bg-white hover:shadow-xl focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100 md:right-6 md:h-11 md:w-11",
               "transition-all duration-300 ease-out",
               isAnimating
                 ? "-translate-x-2 opacity-0"
@@ -420,7 +420,7 @@ export function ImageCarouselModal({
             aria-label="Next image"
             disabled={validImages.length <= 1}
           >
-            <ChevronRight className="h-4 w-4" />
+            <ChevronRight className="h-3 w-3 md:h-4 md:w-4" />
           </Button>
 
           {/* Thumbnail strip */}

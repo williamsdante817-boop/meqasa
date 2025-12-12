@@ -3,7 +3,7 @@ import Lobby from "@/app/(lobby)/_component/lobby";
 import type { FeaturedListingsResponse } from "@/lib/get-featured-listings";
 import type { LatestListingsResponse } from "@/lib/get-latest-listing";
 import type { StaticData } from "@/lib/static-data";
-import type { FeaturedProject, Unit, AdLink } from "@/types";
+import type { FeaturedProject, Unit, AdLink, PopupDataWithUrls } from "@/types";
 import type { BlogResponse } from "@/types/blog";
 
 interface ServerData {
@@ -15,6 +15,7 @@ interface ServerData {
   heroBanner: AdLink;
   flexiBanner: string;
   blogData: BlogResponse;
+  popupData: PopupDataWithUrls | null;
 }
 
 interface StreamingHomepageProps {
@@ -38,6 +39,7 @@ export function StreamingHomepage({ serverData }: StreamingHomepageProps) {
         heroBannerPromise={Promise.resolve(serverData.heroBanner)}
         flexiBannerPromise={Promise.resolve(serverData.flexiBanner)}
         blogDataPromise={Promise.resolve(serverData.blogData)}
+        popupData={serverData.popupData}
       />
     </main>
   );

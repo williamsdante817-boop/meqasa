@@ -68,8 +68,8 @@ export default function GridAd({ flexiBanner, error }: GridAdProps) {
       });
     }
 
-    // Fallback: if images still not loaded after 3s, show content
-    const fallbackTimer = setTimeout(() => setImagesLoaded(true), 3000);
+    // Fallback: if images still not loaded after 1.5s, show content
+    const fallbackTimer = setTimeout(() => setImagesLoaded(true), 1500);
     return () => clearTimeout(fallbackTimer);
   }, [mounted, flexiBanner]);
 

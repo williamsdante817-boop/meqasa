@@ -1,7 +1,6 @@
 "use client";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
 import {
   Pagination,
   PaginationContent,
@@ -159,9 +158,6 @@ export function AgentListings({
             <h2 className="text-brand-accent text-xl font-semibold">
               Listings By {agentName}
             </h2>
-            <Badge className="bg-brand-primary font-medium text-white">
-              {totalCount} total
-            </Badge>
           </div>
 
           <p className="text-brand-muted mb-6 text-sm">

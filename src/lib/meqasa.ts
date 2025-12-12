@@ -1,6 +1,7 @@
+import { getBaseUrl } from "@/config/env";
 import type {
-  MeqasaSearchParams,
   MeqasaLoadMoreParams,
+  MeqasaSearchParams,
   MeqasaSearchResponse,
 } from "@/types/meqasa";
 
@@ -28,22 +29,7 @@ export async function searchProperties(
   const resolveBaseUrl = (): string => {
     if (!isServer) return "";
     if (options.baseUrl) return options.baseUrl;
-
-    if (process.env.NODE_ENV === "development") {
-      return process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-    }
-
-    const envBase =
-      process.env.NEXT_PUBLIC_SITE_URL ??
-      (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined) ??
-      process.env.SITE_URL;
-
-    if (envBase) return envBase;
-
-    console.warn(
-      "searchProperties: Falling back to https://meqasa.com. Configure NEXT_PUBLIC_SITE_URL for accurate API routing."
-    );
-    return "https://meqasa.com";
+    return getBaseUrl();
   };
 
   const baseUrl = resolveBaseUrl();
@@ -108,22 +94,7 @@ export async function loadMoreProperties(
   const resolveBaseUrl = (): string => {
     if (!isServer) return "";
     if (options.baseUrl) return options.baseUrl;
-
-    if (process.env.NODE_ENV === "development") {
-      return process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-    }
-
-    const envBase =
-      process.env.NEXT_PUBLIC_SITE_URL ??
-      (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined) ??
-      process.env.SITE_URL;
-
-    if (envBase) return envBase;
-
-    console.warn(
-      "loadMoreProperties: Falling back to https://meqasa.com. Configure NEXT_PUBLIC_SITE_URL for accurate API routing."
-    );
-    return "https://meqasa.com";
+    return getBaseUrl();
   };
 
   const baseUrl = resolveBaseUrl();

@@ -6,10 +6,10 @@ import Shell from "@/layouts/shell";
 // Hero Banner Loading Skeleton
 export function HeroBannerSkeleton() {
   return (
-    <div className="relative" role="status" aria-label="Loading hero banner">
+    <div className="relative hidden h-[305px] max-h-[305px] overflow-hidden rounded-none border-b border-t-0 bg-transparent lg:block" role="status" aria-label="Loading hero banner">
       <Skeleton
         variant="shimmer"
-        className="hidden h-[305px] max-h-[305px] rounded-lg lg:block"
+        className="h-full w-full"
         aria-label="Loading banner image"
       />
       <span className="sr-only">Loading hero banner content...</span>
@@ -20,21 +20,31 @@ export function HeroBannerSkeleton() {
 // Grid Banner Loading Skeleton
 export function GridBannerSkeleton() {
   return (
-    <div role="status" aria-label="Loading grid banners">
-      <Shell className="hidden md:block">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <Skeleton
-              key={i}
-              variant="shimmer"
-              className="h-60 w-full rounded-lg"
-              aria-label={`Loading banner ${i + 1}`}
-            />
-          ))}
-        </div>
-        <span className="sr-only">Loading promotional banners...</span>
-      </Shell>
-    </div>
+    <section className="hidden lg:block" role="status" aria-label="Loading grid banners">
+      <div className="grid h-full grid-cols-1 gap-4 sm:grid-cols-6 sm:grid-rows-4">
+        {/* First banner skeleton - matches first Card (col-span-3, row-span-2) */}
+        <Skeleton
+          variant="shimmer"
+          className="h-60 w-full rounded-lg sm:col-span-3 sm:row-span-2"
+          aria-label="Loading banner 1"
+        />
+
+        {/* Second banner skeleton - matches second Card (col-span-3, row-span-2) */}
+        <Skeleton
+          variant="shimmer"
+          className="h-60 w-full rounded-lg sm:col-span-3 sm:row-span-2"
+          aria-label="Loading banner 2"
+        />
+
+        {/* Flexi banner skeleton - matches third Card (col-span-3, row-span-4, starting at col-4, row-1) */}
+        <Skeleton
+          variant="shimmer"
+          className="h-full w-full rounded-lg sm:col-span-3 sm:col-start-4 sm:row-span-4 sm:row-start-1"
+          aria-label="Loading promotional content"
+        />
+      </div>
+      <span className="sr-only">Loading promotional banners...</span>
+    </section>
   );
 }
 

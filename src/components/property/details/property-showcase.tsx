@@ -11,22 +11,27 @@ import { useEffect, useMemo, useState } from "react";
 const PLACEHOLDER_BLUR =
   "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIHZpZXdCb3g9IjAgMCAxMCAxMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjRjNGNEY2Ii8+Cjwvc3ZnPgo=";
 
+const CDN_BASE_URL = "https://dve7rykno93gs.cloudfront.net";
+
 // Generate image URL
 const getImageUrl = (imagePath: string) => {
   if (!imagePath) return "";
 
-  if (imagePath.includes("dve7rykno93gs.cloudfront.net")) {
+  // If it's already an absolute URL (http/https), return it as is
+  if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
     return imagePath;
   }
 
-  const baseUrl = "https://dve7rykno93gs.cloudfront.net";
-
+  // Handle temp paths and numeric IDs
   if (imagePath.startsWith("/temp/temp/") || /^\d+$/.test(imagePath)) {
     const id = imagePath.split("/").pop();
-    return `${baseUrl}/temp/temp/${id}`;
+    return `${CDN_BASE_URL}/temp/temp/${id}`;
   }
 
-  return `${baseUrl}/uploads/imgs/${imagePath}`;
+  // Clean up leading slash to avoid double slashes
+  const cleanPath = imagePath.startsWith("/") ? imagePath.slice(1) : imagePath;
+
+  return `${CDN_BASE_URL}/uploads/imgs/${cleanPath}`;
 };
 
 // Skeleton

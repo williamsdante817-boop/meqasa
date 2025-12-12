@@ -1,20 +1,6 @@
 import dynamic from "next/dynamic";
 import { StreamingErrorBoundary } from "@/components/streaming/StreamingErrorBoundary";
-
-// Dynamic imports for non-critical components (remove ssr: false for Server Components)
-const HomepagePopup = dynamic(
-  () =>
-    import("@/components/homepage-popup").then((mod) => ({
-      default: mod.HomepagePopup,
-    })),
-  {
-    loading: () => (
-      <div className="sr-only" role="status">
-        Loading popup...
-      </div>
-    ),
-  }
-);
+import { HomepagePopup } from "@/components/homepage-popup";
 
 import { SearchFilter } from "@/components/search";
 import {
@@ -47,7 +33,7 @@ const StreamingBlog = dynamic(
 import type { FeaturedListingsResponse } from "@/lib/get-featured-listings";
 import type { LatestListingsResponse } from "@/lib/get-latest-listing";
 import type { StaticData } from "@/lib/static-data";
-import type { FeaturedProject, AdLink } from "@/types";
+import type { FeaturedProject, AdLink, PopupDataWithUrls } from "@/types";
 import type { BlogResponse } from "@/types/blog";
 import MobilePageHeader from "./mobile-page-header";
 
@@ -61,6 +47,8 @@ interface LobbyProps {
   heroBannerPromise: Promise<AdLink>;
   flexiBannerPromise: Promise<string>;
   blogDataPromise: Promise<BlogResponse>;
+  // Popup data (fetched server-side)
+  popupData: PopupDataWithUrls | null;
 }
 
 async function LobbyContent({
@@ -71,6 +59,7 @@ async function LobbyContent({
   heroBannerPromise,
   flexiBannerPromise,
   blogDataPromise,
+  popupData,
 }: LobbyProps) {
   return (
     <main>
@@ -129,7 +118,7 @@ async function LobbyContent({
           </div>
         }
       >
-        <HomepagePopup />
+        <HomepagePopup popupData={popupData} />
       </StreamingErrorBoundary>
     </main>
   );
@@ -143,6 +132,7 @@ export default function Lobby({
   heroBannerPromise,
   flexiBannerPromise,
   blogDataPromise,
+  popupData,
 }: LobbyProps) {
   return (
     <>
@@ -154,6 +144,7 @@ export default function Lobby({
         heroBannerPromise={heroBannerPromise}
         flexiBannerPromise={flexiBannerPromise}
         blogDataPromise={blogDataPromise}
+        popupData={popupData}
       />
     </>
   );

@@ -45,10 +45,17 @@ export function MobileLoadMore({
       <Button
         onClick={handleLoadMore}
         disabled={isPending}
-        className="text-brand-accent rounded px-4 py-2 font-semibold"
+        className="text-brand-accent cursor-pointer rounded px-4 py-2 font-semibold disabled:cursor-not-allowed"
         variant="outline"
       >
-        {isPending ? "Loading..." : "Load More"}
+        {isPending ? (
+          <span className="flex items-center gap-2">
+            <div className="h-4 w-4 animate-spin rounded-full border-2 border-brand-primary border-t-transparent"></div>
+            Loading...
+          </span>
+        ) : (
+          "Load More"
+        )}
       </Button>
     </div>
   );

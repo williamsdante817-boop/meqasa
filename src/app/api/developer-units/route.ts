@@ -1,19 +1,5 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { buildTempImageUrl } from "@/lib/image-utils";
-
-interface DeveloperUnitParams {
-  terms?: "sale" | "rent" | "preselling";
-  unittype?: string;
-  address?: string;
-  maxprice?: number;
-  beds?: number;
-  baths?: number;
-  app?: string;
-  offset?: number;
-  page?: number;
-  limit?: number;
-}
 
 interface RawDeveloperUnit {
   unitid?: number | string;
@@ -191,11 +177,16 @@ async function executeSearch(params: SearchPayload) {
         typeof locationSource === "string"
           ? locationSource
           : String(locationSource);
+      // Build image URL matching live MeQasa pattern
       const coverPhoto =
         typeof unit.coverphoto === "string" ? unit.coverphoto : undefined;
       const fallbackImage =
         "https://dve7rykno93gs.cloudfront.net/pieoq/1572277987";
-      const imageUrl = buildTempImageUrl(coverPhoto) || fallbackImage;
+
+      // Construct image URL exactly like live site: uploads/imgs/{hash}?dim=256x190
+      const imageUrl = coverPhoto
+        ? `https://dve7rykno93gs.cloudfront.net/uploads/imgs/${coverPhoto}?dim=256x190`
+        : fallbackImage;
 
       const priceValue = unit.price != null ? String(unit.price) : "";
       const sellingPriceValue =
@@ -321,8 +312,7 @@ async function executeSearch(params: SearchPayload) {
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
-  const params: DeveloperUnitParams = body;
-  return executeSearch(params);
+  return executeSearch(body as SearchPayload);
 }
 
 export async function GET(request: NextRequest) {

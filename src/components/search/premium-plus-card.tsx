@@ -6,9 +6,10 @@ import Link from "next/link";
 import { useState } from "react";
 
 import { AddFavoriteButton } from "@/components/add-favorite-button";
+import { ImageWithFallback } from "@/components/common/image-with-fallback";
+import { DeveloperContactCard } from "@/components/developer/cards/developer-contact-card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { PremiumPlusBadge } from "@/components/ui/premium-badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Card,
@@ -16,16 +17,15 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
+import { PremiumPlusBadge } from "@/components/ui/premium-badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Skeleton } from "@/components/ui/skeleton";
 import { buildInnerHtml, cn } from "@/lib/utils";
-import { DeveloperContactCard } from "@/components/developer/cards/developer-contact-card";
-import { ImageWithFallback } from "@/components/common/image-with-fallback";
 
 // TypeScript interfaces for the data structure
 interface Owner {
@@ -107,7 +107,7 @@ export function PremiumPlusPropertyCard({
     .slice(0, 2);
 
   return (
-    <Card className="hover:border-brand-primary/30 relative h-full w-full overflow-hidden rounded-lg border border-gray-200 bg-white p-0">
+    <Card className="hover:border-brand-primary/30 relative h-full w-full gap-0 overflow-hidden rounded-lg border border-gray-200 bg-white p-0">
       <CardHeader className="p-0">
         <div className="relative min-h-[200px] w-full rounded-lg sm:min-h-[230px] md:min-h-[260px]">
           <Link
@@ -307,13 +307,12 @@ export function PremiumPlusPropertyCard({
           <Link
             href={detailsLink}
             className={cn(
-              buttonVariants({ variant: "default", size: "sm" }),
-              "bg-brand-primary hover:bg-brand-primary-dark w-24 font-semibold text-white transition-all duration-200 hover:shadow-md sm:w-32"
+              buttonVariants({ variant: "default", size: "default" }),
+              "bg-brand-primary hover:bg-brand-primary-dark w-24 rounded-sm font-semibold text-white transition-all duration-200 hover:shadow-md sm:w-32"
             )}
             aria-label={`View details for ${summary}`}
           >
-            <span className="hidden sm:inline">View details</span>
-            <span className="sm:hidden">Details</span>
+            <span>View details</span>
           </Link>
         </div>
       </CardFooter>

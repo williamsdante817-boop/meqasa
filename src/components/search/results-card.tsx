@@ -3,14 +3,14 @@
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Camera, Dot, Phone } from "lucide-react";
 import Link from "next/link";
-import React, { useState } from "react";
+import { useState } from "react";
 
 import { AddFavoriteButton } from "@/components/add-favorite-button";
 import { ImageWithFallback } from "@/components/common/image-with-fallback";
+import { DeveloperContactCard } from "@/components/developer/cards/developer-contact-card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { TopAdBadge } from "@/components/ui/premium-badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Card,
@@ -18,15 +18,15 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
+import { TopAdBadge } from "@/components/ui/premium-badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Skeleton } from "@/components/ui/skeleton";
 import { buildInnerHtml, cn } from "@/lib/utils";
-import { DeveloperContactCard } from "@/components/developer/cards/developer-contact-card";
 import type { MeqasaListing } from "@/types/meqasa";
 
 export function ResultsCard({ result }: { result: MeqasaListing }) {
@@ -269,12 +269,11 @@ export function ResultsCard({ result }: { result: MeqasaListing }) {
             <Link
               href={detailsLink}
               className={cn(
-                buttonVariants({ variant: "default", size: "sm" }),
-                "bg-brand-primary hover:bg-brand-primary-dark w-28 font-semibold text-white transition-all duration-200 hover:shadow-md active:scale-95 sm:w-32"
+                buttonVariants({ variant: "default", size: "default" }),
+                "bg-brand-primary hover:bg-brand-primary-dark w-28 rounded-md font-semibold text-white transition-all duration-200 hover:shadow-md active:scale-95 sm:w-32"
               )}
             >
-              <span className="hidden sm:inline">View details</span>
-              <span className="sm:hidden">Details</span>
+              <span>View details</span>
             </Link>
           </div>
         </CardFooter>

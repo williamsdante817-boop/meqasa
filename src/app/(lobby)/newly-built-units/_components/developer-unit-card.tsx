@@ -2,7 +2,6 @@
 
 import { Badge } from "@/components/ui/badge";
 import { ImageWithFallback } from "@/components/common/image-with-fallback";
-import { buildPropertyImageUrl } from "@/lib/image-utils";
 import Link from "next/link";
 import { useState, useCallback } from "react";
 
@@ -37,52 +36,67 @@ export interface DeveloperUnitCardProps {
   priority?: boolean;
 }
 
+const TRANSACTION_TYPE = {
+  RENT: "rent",
+  SALE: "sale",
+} as const;
+
+const DISPLAY_TEXT = {
+  FOR_RENT: "For Rent",
+  FOR_SALE: "For Sale",
+} as const;
+
+const DEFAULT_VALUES = {
+  LOCATION: "Ghana",
+  PROPERTY_TYPE: "Apartment",
+  BEDROOMS: 1,
+} as const;
+
+const SLUG_SEPARATOR = "-";
+
 export default function DeveloperUnitCard({
   unit,
   priority = false,
 }: DeveloperUnitCardProps) {
   const [imageLoading, setImageLoading] = useState(true);
 
-  // Use image optimization function
-  const imageUrl = buildPropertyImageUrl(unit.coverphoto || unit.image, "large");
+  const imageUrl = unit.image || "";
+  const isRental = unit.terms === TRANSACTION_TYPE.RENT;
+  const displayContract = isRental
+    ? DISPLAY_TEXT.FOR_RENT
+    : DISPLAY_TEXT.FOR_SALE;
 
-  // Get display values
-  const displayContract = unit.terms === "rent" ? "For Rent" : "For Sale";
+  const bedroomCount = unit.beds || unit.bedrooms || DEFAULT_VALUES.BEDROOMS;
+  const bedroomText =
+    bedroomCount === 1 ? "1 Bedroom" : `${bedroomCount} Bedroom`;
+  const propertyType =
+    unit.unittypename || unit.unittype || DEFAULT_VALUES.PROPERTY_TYPE;
+  const locationName = unit.city || unit.location || DEFAULT_VALUES.LOCATION;
 
-  // Construct title following live MeQasa pattern: "{bedrooms} Bedroom {property_type} For {transaction_type} in {location}"
-  const constructedTitle = (() => {
-    const bedrooms = unit.beds || unit.bedrooms || 1;
-    const bedroomText = bedrooms === 1 ? "1 Bedroom" : `${bedrooms} Bedroom`;
-    const propertyType = unit.unittypename || unit.unittype || "Apartment";
-    const transactionType = unit.terms === "rent" ? "For Rent" : "For Sale";
-    const location = unit.city || unit.location || "Ghana";
-
-    return `${bedroomText} ${propertyType} ${transactionType} in ${location}`;
-  })();
-
-  // Optimized alt text generation using constructed title
+  const constructedTitle = `${bedroomText} ${propertyType} ${displayContract} in ${locationName}`;
   const altText = `${constructedTitle} - ${displayContract}`.trim();
 
-  // Generate SEO-friendly link URL
-  const citySlug =
-    unit.city?.split(" ").join("-").toLowerCase() ||
-    unit.location?.split(" ").join("-").toLowerCase() ||
-    "ghana";
-  const typeSlug =
-    unit.unittypename?.toLowerCase().split(" ").join("-") ||
-    unit.unittype?.toLowerCase() ||
-    "apartment";
-  const contractSlug = unit.terms === "rent" ? "rent" : "sale";
-  const bedrooms = unit.beds || unit.bedrooms || 0;
+  const toSlug = (text: string) =>
+    text.split(" ").join(SLUG_SEPARATOR).toLowerCase();
 
-  const linkUrl = `/developer-unit/${bedrooms}-bedroom-${typeSlug}-for-${contractSlug}-in-${citySlug}-unit-${unit.unitid || unit.id}`;
+  const citySlug = unit.city
+    ? toSlug(unit.city)
+    : unit.location
+      ? toSlug(unit.location)
+      : DEFAULT_VALUES.LOCATION.toLowerCase();
+  const typeSlug = unit.unittypename
+    ? toSlug(unit.unittypename)
+    : unit.unittype?.toLowerCase() ||
+      DEFAULT_VALUES.PROPERTY_TYPE.toLowerCase();
+  const contractSlug = isRental ? TRANSACTION_TYPE.RENT : TRANSACTION_TYPE.SALE;
+  const unitIdentifier = unit.unitid || unit.id;
 
-  // Optimized image load handler
+  const linkUrl = `/developer-unit/${bedroomCount}-bedroom-${typeSlug}-for-${contractSlug}-in-${citySlug}-unit-${unitIdentifier}`;
+
   const handleImageLoad = useCallback(() => {
     setImageLoading(false);
   }, []);
 
-  // Error handler for image loading
   const handleImageError = useCallback(() => {
     setImageLoading(false);
   }, []);
@@ -99,7 +113,6 @@ export default function DeveloperUnitCard({
           <div className="relative aspect-[4/3] overflow-hidden">
             {imageLoading && (
               <div className="absolute inset-0 animate-pulse bg-gray-100">
-                {/* Badge placeholder to prevent layout shift during image load */}
                 <div className="absolute top-3 left-3 opacity-50">
                   <div className="h-6 w-16 animate-pulse rounded bg-gray-200 px-2.5 py-1" />
                 </div>
@@ -114,20 +127,15 @@ export default function DeveloperUnitCard({
               priority={priority}
               alt={altText}
               fallbackAlt={`${constructedTitle} property image`}
-              quality={75}
               onLoad={handleImageLoad}
               onError={handleImageError}
-              imageType="property"
-              imageSize="large"
+              unoptimized
             />
-
-            {/* Contract Badge */}
 
             <Badge className="bg-brand-accent absolute top-4 left-4 z-30 h-6 tracking-wide text-white uppercase shadow-sm">
               {displayContract}
             </Badge>
 
-            {/* Overlay gradient for better text readability */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
           </div>
 
@@ -135,7 +143,7 @@ export default function DeveloperUnitCard({
           <div className="p-4 md:p-5">
             <h3
               id={`unit-title-${unit.id}`}
-              className="text-brand-accent group-hover:text-brand-primary line-clamp-2 text-sm leading-snug font-semibold transition-colors duration-200"
+              className="text-brand-accent group-hover:text-brand-primary line-clamp-2 text-base font-semibold leading-snug transition-colors duration-200"
             >
               {constructedTitle}
             </h3>

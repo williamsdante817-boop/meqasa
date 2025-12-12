@@ -8,6 +8,7 @@ import { getLatestListings } from "@/lib/get-latest-listing";
 import { getFlexiBanner } from "@/lib/get-flexi-banner";
 import { getStaticData } from "@/lib/static-data";
 import { getBlogData } from "@/lib/get-blog-data";
+import { getHomepagePopup } from "@/lib/get-homepage-popup";
 import { LobbySkeleton } from "./_component/lobby-skeleton";
 import Lobby from "./_component/lobby";
 import type { Metadata } from "next";
@@ -44,6 +45,21 @@ export default async function HomePage() {
   const flexiBannerPromise = getFlexiBanner(); // Starts now
   const blogDataPromise = getBlogData(); // Starts now
 
+  // Fetch popup data server-side (non-blocking, fails gracefully)
+  let popupData = null;
+  try {
+    popupData = await getHomepagePopup();
+    console.log("✅ Homepage popup data fetched:", {
+      hasData: !!popupData,
+      imageUrl: popupData?.imageUrl,
+      linkUrl: popupData?.linkUrl,
+      id: popupData?.id,
+    });
+  } catch (error) {
+    console.error("❌ Failed to fetch homepage popup:", error);
+    // Continue without popup if fetch fails
+  }
+
   return (
     <>
       {/* Core Web Vitals Optimizations */}
@@ -64,6 +80,7 @@ export default async function HomePage() {
           heroBannerPromise={heroBannerPromise}
           flexiBannerPromise={flexiBannerPromise}
           blogDataPromise={blogDataPromise}
+          popupData={popupData}
         />
       </React.Suspense>
     </>

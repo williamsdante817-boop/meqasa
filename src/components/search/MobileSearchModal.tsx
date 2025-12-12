@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { type FormState } from "@/types/search";
 import { ChevronRight, Search, X } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { ActiveFilterChips } from "./ActiveFilterChips";
 import { MobileCommonFilters } from "./MobileCommonFilters";
@@ -274,31 +275,38 @@ export function MobileSearchModal({
           className="flex h-full flex-col"
         >
           <div className="sticky top-[69px] z-10 border-b border-gray-100 bg-white px-4 pt-2 pb-1">
-            <TabsList className="grid w-full grid-cols-4 rounded-lg bg-gray-100 p-1">
+            <TabsList className="grid w-full grid-cols-5 rounded-lg bg-gray-100 p-1">
               <TabsTrigger
                 value="rent"
-                className="data-[state=active]:text-brand-primary text-sm font-semibold data-[state=active]:bg-white data-[state=active]:shadow-sm"
+                className="data-[state=active]:text-brand-primary text-xs font-semibold data-[state=active]:bg-white data-[state=active]:shadow-sm sm:text-sm"
               >
                 Rent
               </TabsTrigger>
               <TabsTrigger
                 value="buy"
-                className="data-[state=active]:text-brand-primary text-sm font-semibold data-[state=active]:bg-white data-[state=active]:shadow-sm"
+                className="data-[state=active]:text-brand-primary text-xs font-semibold data-[state=active]:bg-white data-[state=active]:shadow-sm sm:text-sm"
               >
                 Buy
               </TabsTrigger>
               <TabsTrigger
                 value="land"
-                className="data-[state=active]:text-brand-primary text-sm font-semibold data-[state=active]:bg-white data-[state=active]:shadow-sm"
+                className="data-[state=active]:text-brand-primary text-xs font-semibold data-[state=active]:bg-white data-[state=active]:shadow-sm sm:text-sm"
               >
                 Land
               </TabsTrigger>
               <TabsTrigger
                 value="short-let"
-                className="data-[state=active]:text-brand-primary text-sm font-semibold data-[state=active]:bg-white data-[state=active]:shadow-sm"
+                className="data-[state=active]:text-brand-primary text-xs font-semibold data-[state=active]:bg-white data-[state=active]:shadow-sm sm:text-sm"
               >
                 Short Let
               </TabsTrigger>
+              <Link
+                href="/newly-built-units"
+                onClick={onClose}
+                className="hover:text-brand-primary text-brand-accent inline-flex items-center justify-center rounded-md px-2 py-1.5 text-xs font-semibold transition-colors hover:bg-white sm:text-sm"
+              >
+                All Units
+              </Link>
             </TabsList>
           </div>
 
