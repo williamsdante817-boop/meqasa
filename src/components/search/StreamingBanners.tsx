@@ -2,7 +2,6 @@ import { Suspense } from "react";
 import type { ReactNode } from "react";
 import { RectangleBannerSkeleton } from "./BannerSkeleton";
 import RealEstateAd from "./ad";
-import { ErrorStateCard } from "@/components/common/error-state-card";
 import { sanitizeRichHtmlToInnerHtml } from "@/lib/dom-sanitizer";
 import { extractFlexiBannerBlocks } from "@/lib/flexi-banner";
 import { logError } from "@/lib/logger";

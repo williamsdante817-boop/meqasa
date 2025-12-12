@@ -39,7 +39,7 @@ export default function HeaderAdClient() {
       }
     }
 
-    fetchBanner();
+    void fetchBanner();
   }, [pathname]);
 
   const hasBanner = bannerData.length > 0;

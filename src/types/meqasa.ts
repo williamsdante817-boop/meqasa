@@ -97,6 +97,8 @@ export interface MeqasaSearchParams {
   fbaths?: number | "- Any -";
   fmin?: number;
   fmax?: number;
+  fminarea?: number;
+  fmaxarea?: number;
   fisfurnished?: "1";
   ffsbo?: "1";
   frentperiod?: RentPeriod;

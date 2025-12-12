@@ -1,7 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import ContentSection from "@/components/layout/content-section";
-import Shell from "@/layouts/shell";
 
 // Hero Banner Loading Skeleton
 export function HeroBannerSkeleton() {

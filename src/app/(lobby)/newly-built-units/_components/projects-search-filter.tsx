@@ -69,11 +69,7 @@ export function ProjectsSearchFilter({}: ProjectsSearchFilterProps = {}) {
     setTimeout(() => setIsSearching(false), 100);
   };
 
-  const clearFilters = () => {
-    startTransition(() => {
-      router.push("/newly-built-units");
-    });
-  };
+
 
   const handleRemoveFilter = (filterKey: keyof DeveloperUnitsFormState) => {
     const resetValues: Record<string, string> = {

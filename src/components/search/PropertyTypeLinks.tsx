@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import {
   Building,
   Building2,
@@ -101,7 +101,6 @@ const propertyCategories = [
 ];
 
 export default function PropertyTypeLinks() {
-  const pathname = usePathname();
   const searchParams = useSearchParams();
   const currentType = searchParams?.get("ftype");
 
