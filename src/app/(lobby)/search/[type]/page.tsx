@@ -75,16 +75,9 @@ export default async function SearchPage({
   const hostHeader = headersList.get("host");
   const forwardedProto = headersList.get("x-forwarded-proto");
 
-  // Determine the base URL for API calls
-  // In production (Vercel), we want to use the internal network if possible,
-  // or the public URL. For client-side, we use relative URLs.
-  // For server-side data fetching, we need a full URL.
-  const fallbackBase =
-    process.env.NEXT_PUBLIC_SITE_URL ??
-    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined);
-  const apiBaseUrl = hostHeader && forwardedProto
-    ? `${forwardedProto}://${hostHeader}`
-    : fallbackBase ?? "http://localhost:3000";
+  const apiBaseUrl = process.env.NEXT_PUBLIC_SITE_URL ||
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null) ||
+    (hostHeader ? `${forwardedProto || 'https'}://${hostHeader}` : 'http://localhost:3000');
 
   const { type } = await params;
   const resolvedSearchParams = await searchParams;
