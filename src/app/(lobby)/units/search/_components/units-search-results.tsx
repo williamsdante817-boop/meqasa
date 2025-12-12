@@ -204,29 +204,26 @@ export function UnitsSearchResults({
     setMounted(true);
   }, []);
 
+  const prevSearchParamsRef = useRef<string>("");
+
   useEffect(() => {
     if (!mounted) {
       return;
     }
 
     const currentParams = searchParams.toString();
-    const initialParams = new URLSearchParams(
-      Object.entries(initialSearchParams).reduce(
-        (acc, [key, value]) => {
-          const stringValue = Array.isArray(value) ? value[0] : value;
-          acc[key] = stringValue || "";
-          return acc;
-        },
-        {} as Record<string, string>
-      )
-    ).toString();
-
-    if (currentParams !== initialParams) {
+    
+    // Only fetch if params actually changed from previous render
+    if (currentParams !== prevSearchParamsRef.current && prevSearchParamsRef.current !== "") {
+      prevSearchParamsRef.current = currentParams;
       seenUnitKeysRef.current = new Set();
       currentOffsetRef.current = 0;
       void fetchUnits(0, "reset");
+    } else if (prevSearchParamsRef.current === "") {
+      // Initialize on first mount
+      prevSearchParamsRef.current = currentParams;
     }
-  }, [fetchUnits, initialSearchParams, mounted, searchParams]);
+  }, [mounted, searchParams, fetchUnits]);
 
   useEffect(() => {
     setUnits(initialUnits);

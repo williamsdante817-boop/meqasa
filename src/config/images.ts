@@ -155,7 +155,21 @@ const productionConfig: ImageConfig = {
 export function getImageConfig(): ImageConfig {
   const nodeEnv = process.env.NODE_ENV;
   const vercelEnv = process.env.VERCEL_ENV;
+  const isClient = typeof window !== "undefined";
 
+  // Client-side: check hostname
+  if (isClient) {
+    const hostname = window.location.hostname;
+    if (hostname === "localhost" || hostname === "127.0.0.1") {
+      return developmentConfig;
+    }
+    if (hostname.includes("vercel.app")) {
+      return previewConfig;
+    }
+    return productionConfig;
+  }
+
+  // Server-side: use env vars
   if (nodeEnv === "development") return developmentConfig;
   if (vercelEnv === "preview") return previewConfig;
   return productionConfig;

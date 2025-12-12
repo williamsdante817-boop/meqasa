@@ -70,8 +70,20 @@ export function ImageWithFallback({
   }, [src]);
 
   const handleError = (event: React.SyntheticEvent<HTMLImageElement>) => {
-    setAttempts((c) => c + 1);
+    const currentAttempt = attempts + 1;
+    setAttempts(currentAttempt);
     setIsLoading(false);
+    
+    // Log error in development for debugging
+    if (process.env.NODE_ENV === "development") {
+      console.warn(`Image load failed (attempt ${currentAttempt}/${maxRetries}):`, {
+        src: effectiveSrc,
+        originalSrc: src,
+        imageType,
+        imageSize,
+      });
+    }
+    
     userOnError?.(event);
   };
 

@@ -163,11 +163,9 @@ export function buildResilientImageUrl(
       if (!candidatePath) continue;
       const candidate = `${normalizedCdn}/${candidatePath}`;
       if (candidate.startsWith("http")) {
-        const final = disableOptimization
-          ? candidate
-          : `${candidate}?${getSizeParams(size)}`;
-        urlCache.set(cacheKey, final);
-        return final;
+        // Don't add query params for CDN URLs - let Next.js Image handle optimization
+        urlCache.set(cacheKey, candidate);
+        return candidate;
       }
     }
   }

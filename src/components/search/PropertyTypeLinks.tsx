@@ -46,12 +46,6 @@ const propertyCategories = [
         href: "/search/rent?q=ghana&ftype=guest%20house",
         icon: Building2,
       },
-      {
-        label: "Studio Apartments",
-        href: "/search/rent?ftype=studio apartment",
-        icon: Building,
-        count: "50+",
-      },
     ],
   },
   {
@@ -140,12 +134,12 @@ export default function PropertyTypeLinks() {
 
             {/* Property Type Links */}
             <ul className="space-y-1" role="list">
-              {category.types.map((type) => {
+              {category.types.map((type, index) => {
                 const Icon = type.icon;
                 const active = isActive(type.href);
 
                 return (
-                  <li key={type.label}>
+                  <li key={`${category.title}-${type.label}-${index}`}>
                     <Link
                       href={type.href}
                       className={`group flex w-full items-center justify-between rounded-sm px-2.5 py-2 text-sm font-medium transition-all duration-200 hover:translate-x-0.5 ${
