@@ -19,8 +19,7 @@ interface AllUnitsPageProps {
 export async function generateMetadata({
   searchParams,
 }: AllUnitsPageProps): Promise<Metadata> {
-  const resolvedSearchParams = await searchParams;
-  const category = resolvedSearchParams.category;
+  const { category } = await searchParams;
 
   let title = "Newly Built Units - Fresh Properties in Ghana | MeQasa";
   let description =
@@ -99,7 +98,7 @@ export async function generateMetadata({
 export default async function AllUnitsPage({
   searchParams,
 }: AllUnitsPageProps) {
-  const resolvedSearchParams = await searchParams;
+  await searchParams;
 
   // Create hero banner promise for streaming (like home page)
   const heroBannerPromise = getHeroBanner();
