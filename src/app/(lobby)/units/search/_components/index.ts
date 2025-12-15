@@ -26,7 +26,6 @@ export {
 } from "./metadata-utils";
 export {
   fetchUnitsSearchResults,
-  fetchMoreUnits,
   mapSearchParamsToApi,
   type UnitsSearchResponse,
 } from "./api-utils";
