@@ -48,5 +48,4 @@ export const GRID_CONFIG = {
 // API configuration
 export const API_CONFIG = {
   APP_PARAM: "vercel",
-  ENDPOINT: "/api/developer-units",
 } as const;

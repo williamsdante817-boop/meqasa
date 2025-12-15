@@ -22,7 +22,6 @@ import type {
   MeqasaSearchParams,
 } from "@/types/meqasa";
 import type { PropertyType } from "@/config/property";
-import { searchProperties } from "@/lib/meqasa";
 
 const PROPERTY_TYPES: PropertyType[] = [
   "apartment",

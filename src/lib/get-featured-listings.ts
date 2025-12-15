@@ -1,5 +1,6 @@
 import type { ListingDetails } from "@/types";
 import { propertyDataFetchers } from "./api/data-fetchers";
+import { buildPropertyImageUrl } from "./image-utils";
 
 type Listing = Pick<
   ListingDetails,
@@ -43,9 +44,20 @@ export async function getFeaturedListings(): Promise<FeaturedListingsResponse> {
       properties: typeof standardizedResponse.rentals
     ): Listing[] => {
       return properties.map((property) => {
+        const imageUrl = buildPropertyImageUrl(property.coverImage, "original");
+        
+        // Log image URL construction for debugging in production
+        if (process.env.NODE_ENV === "production" && property.coverImage) {
+          console.log("[Featured Listings] Image URL:", {
+            original: property.coverImage,
+            built: imageUrl,
+            title: property.title,
+          });
+        }
+        
         return {
           detailreq: property.reference,
-          image: property.coverImage,
+          image: imageUrl,
           streetaddress: property.location,
           baths: property.bathrooms.toString(),
           beds: property.bedrooms.toString(),
