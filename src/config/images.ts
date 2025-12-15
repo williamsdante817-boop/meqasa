@@ -97,6 +97,7 @@ const developmentConfig: ImageConfig = {
   },
   patterns: {
     property: [
+      "/tn2/uploads/imgs/",
       "/tn5/uploads/imgs/",
       "/tn6/uploads/imgs/",
       "/uploads/imgs/",
@@ -109,12 +110,14 @@ const developmentConfig: ImageConfig = {
     ],
     "developer-logo": ["/uploads/imgs/", "/uploads/developers/"],
     "project-photo": [
+      "/tn2/uploads/imgs/",
       "/tn5/uploads/imgs/",
       "/tn6/uploads/imgs/",
       "/uploads/projects/",
       "/uploads/imgs/",
     ],
     "project-logo": [
+      "/tn2/uploads/imgs/",
       "/tn5/uploads/imgs/",
       "/tn6/uploads/imgs/",
       "/uploads/projects/",
@@ -122,7 +125,7 @@ const developmentConfig: ImageConfig = {
     ],
     banner: ["/uploads/banners/"],
     ad: ["/uploads/ads/"],
-    temp: ["/temp/temp/", "/temp/"],
+    temp: ["/temp/out/", "/temp/"],
     generic: ["/uploads/imgs/"],
   },
 };
@@ -136,6 +139,9 @@ const previewConfig: ImageConfig = {
     baseOrigin: "https://staging.meqasa.com",
   },
   enableWebP: true,
+  patterns: {
+    ...developmentConfig.patterns,
+  },
 };
 
 const productionConfig: ImageConfig = {
@@ -148,6 +154,9 @@ const productionConfig: ImageConfig = {
     isProduction: true,
     isPreview: false,
     baseOrigin: "https://meqasa.com",
+  },
+  patterns: {
+    ...developmentConfig.patterns,
   },
 };
 

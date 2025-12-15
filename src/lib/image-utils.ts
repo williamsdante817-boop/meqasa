@@ -140,7 +140,7 @@ export function buildResilientImageUrl(
       }
     }
 
-    const full = `${cdn}/temp/temp/${tempKey}`;
+    const full = `${cdn}/temp/out/${tempKey}`;
     return full;
   }
 
