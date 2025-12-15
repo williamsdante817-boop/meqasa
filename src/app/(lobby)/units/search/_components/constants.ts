@@ -108,8 +108,6 @@ export const IMAGE_CONFIG = {
 export const URL_CONFIG = {
   /** Base search URL */
   SEARCH_BASE_URL: "/units/search",
-  /** API endpoint for developer units */
-  API_ENDPOINT: "/api/developer-units",
   /** Developer unit detail URL pattern */
   UNIT_DETAIL_URL_PATTERN:
     "/developer-unit/{bedrooms}-bedroom-{type}-for-{terms}-in-{city}-unit-{id}",

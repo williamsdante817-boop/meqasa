@@ -3,12 +3,13 @@ import ContentSection from "@/components/layout/content-section";
 import Shell from "@/layouts/shell";
 import type { Metadata } from "next";
 import { siteConfig } from "@/config/site";
-import { ProjectsClient } from "./_components/projects-client";
 import { ProjectsSearchFilter } from "./_components/projects-search-filter";
 import { StreamingHeroBanner } from "@/components/streaming/StreamingHeroBanner";
 import { StreamingErrorBoundary } from "@/components/streaming/StreamingErrorBoundary";
 import { HeroBannerSkeleton } from "@/components/streaming/LoadingSkeletons";
 import { getHeroBanner } from "@/lib/get-hero-banner";
+import { fetchDeveloperUnitsServer } from "@/lib/developer-units-server";
+import { UnitsGrid } from "./_components/units-grid";
 
 interface AllUnitsPageProps {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -103,6 +104,13 @@ export default async function AllUnitsPage({
   // Create hero banner promise for streaming (like home page)
   const heroBannerPromise = getHeroBanner();
 
+  // Fetch units server-side
+  const [housesSale, apartmentsSale, apartmentsRent] = await Promise.all([
+    fetchDeveloperUnitsServer({ terms: "sale", unittype: "house", app: "vercel" }).then(units => units.slice(0, 3)),
+    fetchDeveloperUnitsServer({ terms: "sale", unittype: "apartment", app: "vercel" }).then(units => units.slice(0, 3)),
+    fetchDeveloperUnitsServer({ terms: "rent", unittype: "apartment", app: "vercel" }).then(units => units.slice(0, 3)),
+  ]);
+
   const segments = [
     { title: "Home", href: "/", key: "home" },
     {
@@ -152,14 +160,7 @@ export default async function AllUnitsPage({
             linkText="See All Houses"
             className="pt-4"
           >
-            <ProjectsClient
-              searchParams={{
-                ...resolvedSearchParams,
-                terms: "sale",
-                unittype: "house",
-              }}
-              sectionType="houses-sale"
-            />
+            <UnitsGrid units={housesSale} />
           </ContentSection>
 
           {/* Newly Built Apartments for Sale */}
@@ -170,14 +171,7 @@ export default async function AllUnitsPage({
             linkText="See All Apartments"
             className="pt-4"
           >
-            <ProjectsClient
-              searchParams={{
-                ...resolvedSearchParams,
-                terms: "sale",
-                unittype: "apartment",
-              }}
-              sectionType="apartments-sale"
-            />
+            <UnitsGrid units={apartmentsSale} />
           </ContentSection>
 
           {/* Newly Built Apartments for Rent */}
@@ -188,14 +182,7 @@ export default async function AllUnitsPage({
             linkText="See All Rentals"
             className="pt-4"
           >
-            <ProjectsClient
-              searchParams={{
-                ...resolvedSearchParams,
-                terms: "rent",
-                unittype: "apartment",
-              }}
-              sectionType="apartments-rent"
-            />
+            <UnitsGrid units={apartmentsRent} />
           </ContentSection>
         </div>
       </Shell>

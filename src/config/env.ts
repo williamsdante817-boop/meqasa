@@ -28,8 +28,4 @@ export const getBaseUrl = (): string => {
   return "http://localhost:3000";
 };
 
-export const getApiUrl = (): string => {
-  const baseUrl = getBaseUrl();
-  if (!baseUrl) return "/api/properties";
-  return `${baseUrl}/api/properties`;
-};
+
