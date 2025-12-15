@@ -24,7 +24,7 @@ export interface ImageUrlOptions {
   disableOptimization?: boolean;
 }
 
-const urlCache = new Map<string, string>();
+
 
 function normalizeCdn(cdn: string): string {
   return cdn.replace(/\/+$|$/, "");
@@ -80,28 +80,16 @@ export function getImageTypeFromPath(imagePath: string): ImageType {
 export function buildResilientImageUrl(
   imagePath: string | undefined | null,
   imageType: ImageType = "generic",
-  size: ImageSize = "original",
+  _size: ImageSize = "original",
   options: ImageUrlOptions = {}
 ): string {
   const {
     preferSecondary = false,
     enableFallback = true,
     customFallback,
-    disableOptimization = false,
   } = options;
 
   const trimmedPath = imagePath?.trim() ?? "";
-  // Disable cache for debugging in production
-  // const cacheKey = JSON.stringify({
-  //   imageType,
-  //   size,
-  //   path: trimmedPath,
-  //   preferSecondary,
-  //   disableOptimization,
-  //   enableFallback,
-  //   customFallback: customFallback ?? "",
-  // });
-  // if (urlCache.has(cacheKey)) return urlCache.get(cacheKey)!;
 
   const resolveFallback = (defaultValue = "") => {
     if (!enableFallback) {
@@ -129,7 +117,8 @@ export function buildResilientImageUrl(
     if (clean.includes("meqasa.com")) {
       const cdn = cdns[0] || "https://dve7rykno93gs.cloudfront.net";
       // Extract path after domain (handle double slashes)
-      const pathMatch = clean.match(/https?:\/\/[^/]+\/+(.+)$/);
+      const pathRegex = /https?:\/\/[^/]+\/+(.+)$/;
+      const pathMatch = pathRegex.exec(clean);
       if (pathMatch) {
         return `${cdn}/${pathMatch[1]}`;
       }
