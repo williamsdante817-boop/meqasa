@@ -21,7 +21,7 @@ export interface DeveloperUnit {
   baths?: number;
   unittype: string;
   unittypename?: string;
-  terms: "sale" | "rent" | "preselling";
+  terms: string;
   image?: string;
   coverphoto?: string;
   developer?: string;
@@ -37,9 +37,9 @@ export interface DeveloperUnit {
   timestamp?: string;
   dateadded?: string;
   updated_at?: string;
-  sellingprice?: number;
+  sellingprice?: string;
   sellingpricecsign?: string;
-  rentpricepermonth?: number;
+  rentpricepermonth?: string;
   rentpricecsignpermonth?: string;
   /** Additional properties from API response */
   [key: string]: any;

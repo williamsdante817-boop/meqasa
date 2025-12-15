@@ -1,3 +1,4 @@
+import { fetchDeveloperUnitsServer } from "@/lib/developer-units-server";
 import { API_CONFIG } from "./constants";
 import type { ApiSearchParams, DeveloperUnit, SearchParams } from "./types";
 
@@ -93,88 +94,30 @@ export function mapSearchParamsToApi(
   return apiParams;
 }
 
-// Server-side function to fetch initial search results
+/**
+ * Server-side function to fetch initial search results
+ * **SERVER COMPONENTS ONLY** - Calls Meqasa API directly
+ */
 export async function fetchUnitsSearchResults(
   searchParams: SearchParams
 ): Promise<UnitsSearchResponse> {
   try {
     const apiParams = mapSearchParamsToApi(searchParams);
 
-    // Use environment variable or fallback to localhost
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-    const apiUrl = `${baseUrl}/api/developer-units`;
+    console.log("[Server] Units search params:", apiParams);
 
-    console.log("Units search API call:", {
-      apiUrl,
-      apiParams,
-    });
+    const units = await fetchDeveloperUnitsServer(apiParams);
 
-    const response = await fetch(apiUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "User-Agent": "MeQasa-App/1.0",
-      },
-      body: JSON.stringify(apiParams),
-      // Cache for 5 minutes
-      next: { revalidate: 300 },
-    });
-
-    if (!response.ok) {
-      console.error(`Units search API error: ${response.status}`);
-      return { units: [], hasMore: false };
-    }
-
-    const units: unknown = await response.json();
-    console.log("Units search API response:", {
-      totalUnits: Array.isArray(units) ? units.length : 0,
-      data: units,
-    });
-
-    if (!Array.isArray(units)) {
-      return { units: [], hasMore: false };
-    }
-
-    return {
-      units: units as DeveloperUnit[],
-      hasMore: units.length > 0,
-    };
-  } catch {
-    return { units: [], hasMore: false };
-  }
-}
-
-// Client-side function for fetching more results
-export async function fetchMoreUnits(
-  searchParams: SearchParams,
-  page = 1
-): Promise<{ units: DeveloperUnit[]; hasMore: boolean }> {
-  try {
-    const apiParams = mapSearchParamsToApi(searchParams);
-    apiParams.offset = Math.max(0, page - 1);
-
-    const response = await fetch("/api/developer-units", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        ...apiParams,
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status} ${response.statusText}`);
-    }
-
-    const data = await response.json();
-    const units = Array.isArray(data) ? data : [];
+    console.log(`[Server] Units search returned ${units.length} units`);
 
     return {
       units,
-      hasMore: units.length > 0, // Optimistic: hide only after empty response
+      hasMore: units.length > 0,
     };
-  } catch {
+  } catch (error) {
+    console.error("[Server] Units search error:", error);
     return { units: [], hasMore: false };
   }
 }
+
+

@@ -2,7 +2,6 @@ import {
   getCdnUrls,
   getFallbackImage,
   getImagePatterns,
-  getSizeParams,
 } from "@/config/images";
 
 export type ImageType =
@@ -25,7 +24,7 @@ export interface ImageUrlOptions {
   disableOptimization?: boolean;
 }
 
-const urlCache = new Map<string, string>();
+
 
 function normalizeCdn(cdn: string): string {
   return cdn.replace(/\/+$|$/, "");
@@ -81,31 +80,19 @@ export function getImageTypeFromPath(imagePath: string): ImageType {
 export function buildResilientImageUrl(
   imagePath: string | undefined | null,
   imageType: ImageType = "generic",
-  size: ImageSize = "original",
+  _size: ImageSize = "original",
   options: ImageUrlOptions = {}
 ): string {
   const {
     preferSecondary = false,
     enableFallback = true,
     customFallback,
-    disableOptimization = false,
   } = options;
 
   const trimmedPath = imagePath?.trim() ?? "";
-  const cacheKey = JSON.stringify({
-    imageType,
-    size,
-    path: trimmedPath,
-    preferSecondary,
-    disableOptimization,
-    enableFallback,
-    customFallback: customFallback ?? "",
-  });
-  if (urlCache.has(cacheKey)) return urlCache.get(cacheKey)!;
 
   const resolveFallback = (defaultValue = "") => {
     if (!enableFallback) {
-      urlCache.set(cacheKey, defaultValue);
       return defaultValue;
     }
 
@@ -114,7 +101,6 @@ export function buildResilientImageUrl(
       getFallbackImage(imageType) ||
       getFallbackImage("generic") ||
       "/placeholder-image.png";
-    urlCache.set(cacheKey, fallback);
     return fallback;
   };
 
@@ -124,6 +110,23 @@ export function buildResilientImageUrl(
 
   const clean = trimmedPath;
   const cdns = getCdnUrls(preferSecondary);
+
+  // Handle full URLs from API - replace meqasa.com with CloudFront CDN
+  if (clean.startsWith("http")) {
+    // If URL is from meqasa.com, replace with CloudFront CDN
+    if (clean.includes("meqasa.com")) {
+      const cdn = cdns[0] || "https://dve7rykno93gs.cloudfront.net";
+      // Extract path after domain (handle double slashes)
+      const pathRegex = /https?:\/\/[^/]+\/+(.+)$/;
+      const pathMatch = pathRegex.exec(clean);
+      if (pathMatch) {
+        return `${cdn}/${pathMatch[1]}`;
+      }
+    }
+    
+    // For other full URLs (already using CDN), return as-is
+    return clean;
+  }
 
   // Temp / Local images - use CDN directly
   const isTempId = /^\d{8,}[a-z]$/i.test(clean);
@@ -138,19 +141,11 @@ export function buildResilientImageUrl(
     }
 
     const full = `${cdn}/temp/temp/${tempKey}`;
-    urlCache.set(cacheKey, full);
     return full;
-  }
-
-  // Fully qualified URL - return as-is
-  if (clean.startsWith("http")) {
-    urlCache.set(cacheKey, clean);
-    return clean;
   }
 
   // Local paths (starting with /) - return as-is for Next.js to handle
   if (clean.startsWith("/")) {
-    urlCache.set(cacheKey, clean);
     return clean;
   }
 
@@ -164,7 +159,6 @@ export function buildResilientImageUrl(
       const candidate = `${normalizedCdn}/${candidatePath}`;
       if (candidate.startsWith("http")) {
         // Don't add query params for CDN URLs - let Next.js Image handle optimization
-        urlCache.set(cacheKey, candidate);
         return candidate;
       }
     }
