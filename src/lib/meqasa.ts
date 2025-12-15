@@ -28,20 +28,20 @@ export async function searchProperties(
   // For client-side, relative URLs work fine
   const resolveBaseUrl = (): string => {
     if (!isServer) return "";
-    if (options.baseUrl) return options.baseUrl;
+    if (options.baseUrl) return options.baseUrl.replace(/\/$/, "");
     return getBaseUrl();
   };
 
   const baseUrl = resolveBaseUrl();
-  const apiUrl = baseUrl ? `${baseUrl.replace(/\/$/, "")}/api/properties` : "/api/properties";
+  const apiUrl = baseUrl ? `${baseUrl}/api/properties` : "/api/properties";
   
   // Log URL resolution for debugging in production
-  if (isServer && process.env.NODE_ENV === "production") {
-    console.log("[searchProperties] Resolved API URL:", apiUrl, {
-      baseUrl,
+  if (isServer) {
+    console.log("[searchProperties] API URL:", apiUrl, {
+      isServer,
+      hasBaseUrl: !!baseUrl,
       hasOptionsBaseUrl: !!options.baseUrl,
-      NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
-      VERCEL_URL: process.env.VERCEL_URL,
+      env: process.env.NODE_ENV,
     });
   }
 
@@ -103,20 +103,20 @@ export async function loadMoreProperties(
   // For client-side, relative URLs work fine
   const resolveBaseUrl = (): string => {
     if (!isServer) return "";
-    if (options.baseUrl) return options.baseUrl;
+    if (options.baseUrl) return options.baseUrl.replace(/\/$/, "");
     return getBaseUrl();
   };
 
   const baseUrl = resolveBaseUrl();
-  const apiUrl = baseUrl ? `${baseUrl.replace(/\/$/, "")}/api/properties` : "/api/properties";
+  const apiUrl = baseUrl ? `${baseUrl}/api/properties` : "/api/properties";
   
   // Log URL resolution for debugging in production
-  if (isServer && process.env.NODE_ENV === "production") {
-    console.log("[loadMoreProperties] Resolved API URL:", apiUrl, {
-      baseUrl,
+  if (isServer) {
+    console.log("[loadMoreProperties] API URL:", apiUrl, {
+      isServer,
+      hasBaseUrl: !!baseUrl,
       hasOptionsBaseUrl: !!options.baseUrl,
-      NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
-      VERCEL_URL: process.env.VERCEL_URL,
+      env: process.env.NODE_ENV,
     });
   }
 

@@ -73,11 +73,13 @@ export default async function SearchPage({
 }: SearchPageProps) {
   const headersList = await headers();
   const hostHeader = headersList.get("host");
-  const forwardedProto = headersList.get("x-forwarded-proto");
+  const forwardedProto = headersList.get("x-forwarded-proto") || "https";
 
-  const apiBaseUrl = process.env.NEXT_PUBLIC_SITE_URL ||
-    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null) ||
-    (hostHeader ? `${forwardedProto || 'https'}://${hostHeader}` : 'http://localhost:3000');
+  // Construct base URL with proper fallback chain for Vercel
+  const apiBaseUrl = 
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "") ||
+    (hostHeader ? `${forwardedProto}://${hostHeader}` : "http://localhost:3000");
 
   const { type } = await params;
   const resolvedSearchParams = await searchParams;
