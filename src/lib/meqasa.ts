@@ -10,7 +10,11 @@ interface RequestOptions {
 }
 
 /**
- * Search for properties using the Meqasa API
+ * Search for properties using the Meqasa API via internal API route
+ * 
+ * **CLIENT-SIDE ONLY** - Use this in Client Components
+ * For Server Components, use `searchPropertiesServer()` from `@/lib/meqasa-server`
+ * 
  * @param contract - "rent" or "sale"
  * @param locality - location string
  * @param params - search parameters
@@ -85,7 +89,11 @@ export async function searchProperties(
 }
 
 /**
- * Load more properties using searchId and page number
+ * Load more properties using searchId and page number via internal API route
+ * 
+ * **CLIENT-SIDE ONLY** - Use this in Client Components
+ * For Server Components, use `loadMorePropertiesServer()` from `@/lib/meqasa-server`
+ * 
  * @param contract - "rent" or "sale"
  * @param locality - location string
  * @param params - load more parameters (searchId and page number)
