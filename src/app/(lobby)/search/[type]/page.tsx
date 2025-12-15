@@ -15,7 +15,7 @@ import Shell from "@/layouts/shell";
 import { getResultsHeroBanner } from "@/lib/banners";
 import { normalizeHeroBanner } from "@/lib/hero-banner";
 import { logError } from "@/lib/logger";
-import { loadMoreProperties, searchProperties } from "@/lib/meqasa";
+import { loadMorePropertiesServer, searchPropertiesServer } from "@/lib/meqasa-server";
 import { getResultsPopup } from "@/lib/get-results-popup";
 import { ANY_SENTINEL } from "@/lib/search/constants";
 import type { Metadata } from "next";
@@ -71,16 +71,6 @@ export default async function SearchPage({
   params,
   searchParams,
 }: SearchPageProps) {
-  const headersList = await headers();
-  const hostHeader = headersList.get("host");
-  const forwardedProto = headersList.get("x-forwarded-proto") || "https";
-
-  // Construct base URL with proper fallback chain for Vercel
-  const apiBaseUrl = 
-    process.env.NEXT_PUBLIC_SITE_URL ||
-    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "") ||
-    (hostHeader ? `${forwardedProto}://${hostHeader}` : "http://localhost:3000");
-
   const { type } = await params;
   const resolvedSearchParams = await searchParams;
   const location = resolvedSearchParams.q || "Ghana";
@@ -143,7 +133,7 @@ export default async function SearchPage({
             loadMoreParams.frentperiod = "shortrent";
           }
 
-          const loadMoreResult = await loadMoreProperties(type, location, loadMoreParams, { baseUrl: apiBaseUrl });
+          const loadMoreResult = await loadMorePropertiesServer(type, location, loadMoreParams);
           if (
             canonicalResultTotal !== null &&
             !Number.isNaN(canonicalResultTotal)
@@ -204,10 +194,10 @@ export default async function SearchPage({
             sanitizedSearchParams.ftype = ANY_SENTINEL;
             sanitizedSearchParams.frentperiod = "shortrent";
           }
-          const searchResult = await searchProperties(type, location, {
+          const searchResult = await searchPropertiesServer(type, location, {
             ...sanitizedSearchParams,
             app: "vercel",
-          }, { baseUrl: apiBaseUrl });
+          });
           if (
             canonicalResultTotal !== null &&
             !Number.isNaN(canonicalResultTotal)
