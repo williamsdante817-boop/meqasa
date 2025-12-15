@@ -19,7 +19,6 @@ import { loadMorePropertiesServer, searchPropertiesServer } from "@/lib/meqasa-s
 import { getResultsPopup } from "@/lib/get-results-popup";
 import { ANY_SENTINEL } from "@/lib/search/constants";
 import type { Metadata } from "next";
-import { headers } from "next/headers";
 import { Suspense } from "react";
 import { SearchResults } from "./search-results";
 

@@ -83,7 +83,7 @@ export interface DeveloperUnit {
   developeremail?: string;
   timestamp?: string;
   dateadded?: string;
-  [key: string]: unknown;
+  [key: string]: any;
 }
 
 const DEFAULT_APP_ID = "vercel";
@@ -165,9 +165,15 @@ export async function fetchDeveloperUnitsServer(
       const priceValue = unit.price != null ? String(unit.price) : "";
       const sellingPriceValue = unit.sellingprice != null ? String(unit.sellingprice) : undefined;
 
+      const numericUnitId = typeof unit.unitid === "number" 
+        ? unit.unitid 
+        : typeof unit.unitid === "string" 
+          ? parseInt(unit.unitid, 10) 
+          : undefined;
+
       return {
         id: unitIdString,
-        unitid: typeof unit.unitid === "number" ? unit.unitid : undefined,
+        unitid: numericUnitId && !isNaN(numericUnitId) ? numericUnitId : undefined,
         title:
           typeof unit.title === "string" && unit.title.trim() !== ""
             ? unit.title
@@ -226,7 +232,6 @@ export async function fetchDeveloperUnitsServer(
               : undefined,
         timestamp: typeof unit.timestamp === "string" ? unit.timestamp : typeof unit.dateadded === "string" ? unit.dateadded : undefined,
         dateadded: typeof unit.dateadded === "string" ? unit.dateadded : undefined,
-        ...unit,
       };
     });
   } catch (error) {

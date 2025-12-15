@@ -2,7 +2,6 @@ import {
   getCdnUrls,
   getFallbackImage,
   getImagePatterns,
-  getSizeParams,
 } from "@/config/images";
 
 export type ImageType =
