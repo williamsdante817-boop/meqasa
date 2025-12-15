@@ -11,7 +11,7 @@ function RetryButton({ onRetry }: RetryButtonProps) {
   return (
     <button
       onClick={onRetry}
-      className="bg-brand-primary hover:bg-brand-primary/90 inline-flex shrink-0 items-center rounded-md px-4 py-2 whitespace-nowrap text-white transition-colors"
+      className="bg-brand-primary hover:bg-brand-primary/90 inline-flex w-full shrink-0 items-center justify-center rounded-md px-4 py-2 whitespace-nowrap text-white transition-colors sm:w-auto"
     >
       <svg
         className="mr-2 h-4 w-4"
@@ -41,7 +41,7 @@ export function PropertyErrorUI({
   onRetry,
 }: PropertyErrorUIProps) {
   return (
-    <div className="flex min-h-[60vh] items-center justify-center">
+    <div className="flex min-h-[60vh] items-center justify-center px-4">
       <div className="w-full max-w-md space-y-6 text-center">
         <div className="space-y-4">
           <div className="flex justify-center">
@@ -64,14 +64,14 @@ export function PropertyErrorUI({
           </div>
 
           <div className="space-y-2">
-            <h1 className="text-foreground text-2xl font-bold">
+            <h1 className="text-foreground text-xl font-bold md:text-2xl">
               {errorDetails.title}
             </h1>
-            <p className="text-muted-foreground">{errorDetails.description}</p>
+            <p className="text-muted-foreground text-sm md:text-base">{errorDetails.description}</p>
           </div>
         </div>
 
-        <div className="flex flex-row flex-nowrap justify-center gap-3">
+        <div className="flex flex-col gap-3 sm:flex-row sm:flex-nowrap sm:justify-center">
           {errorDetails.showRetry && onRetry && (
             <RetryButton onRetry={onRetry} />
           )}
@@ -79,7 +79,7 @@ export function PropertyErrorUI({
           {errorDetails.showBackToHome && (
             <Link
               href="/"
-              className="border-input bg-background hover:bg-accent hover:text-accent-foreground inline-flex shrink-0 items-center rounded-md border px-4 py-2 whitespace-nowrap transition-colors"
+              className="border-input bg-background hover:bg-accent hover:text-accent-foreground inline-flex w-full shrink-0 items-center justify-center rounded-md border px-4 py-2 whitespace-nowrap transition-colors sm:w-auto"
             >
               <svg
                 className="mr-2 h-4 w-4"
@@ -101,7 +101,7 @@ export function PropertyErrorUI({
           {errorDetails.showBrowseProperties && (
             <Link
               href="/search/rent?q=ghana&w=1"
-              className="border-input bg-background hover:bg-accent hover:text-accent-foreground inline-flex shrink-0 items-center rounded-md border px-4 py-2 whitespace-nowrap transition-colors"
+              className="border-input bg-background hover:bg-accent hover:text-accent-foreground inline-flex w-full shrink-0 items-center justify-center rounded-md border px-4 py-2 whitespace-nowrap transition-colors sm:w-auto"
             >
               <svg
                 className="mr-2 h-4 w-4"
