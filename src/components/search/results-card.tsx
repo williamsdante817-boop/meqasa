@@ -56,6 +56,8 @@ export function ResultsCard({ result }: { result: MeqasaListing }) {
     10
   );
 
+  console.log("Results image:", result.image);
+
   const agentImageUrl = result.owner.image?.startsWith("http")
     ? result.owner.image
     : result.owner.image
