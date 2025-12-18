@@ -27,6 +27,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { AlertCard } from "@/components/common/alert-card";
 import { useResilientFetch } from "@/hooks/use-resilient-fetch";
+import { sanitizeName, sanitizeEmail, sanitizeMessage, getNameError, getEmailError, getMessageError } from "@/lib/input-validation";
 
 interface ContactCardProps {
   name: string;
@@ -419,10 +420,11 @@ export default function ContactCard({
       });
       valid = false;
     }
-    if (!state.userName) {
+    const nameErr = getNameError(state.userName);
+    if (nameErr) {
       dispatch({
         type: "setErrors",
-        errors: { ...state.errors, name: "Name is required" },
+        errors: { ...state.errors, name: nameErr },
       });
       valid = false;
     }
@@ -491,8 +493,10 @@ export default function ContactCard({
     setEmailNameError("");
     setEmailPhoneError("");
     setMessageError("");
-    if (!userEmail || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(userEmail)) {
-      setEmailError("Valid email is required");
+    
+    const emailErr = getEmailError(userEmail);
+    if (emailErr) {
+      setEmailError(emailErr);
       valid = false;
     }
     const emailPhoneValid = state.userPhone
@@ -504,12 +508,15 @@ export default function ContactCard({
       setEmailPhoneError("Valid phone number is required");
       valid = false;
     }
-    if (!state.userName) {
-      setEmailNameError("Name is required");
+    const nameErr = getNameError(state.userName);
+    if (nameErr) {
+      setEmailNameError(nameErr);
       valid = false;
     }
-    if (!userMessage) {
-      setMessageError("Message is required");
+    
+    const messageErr = getMessageError(userMessage);
+    if (messageErr) {
+      setMessageError(messageErr);
       valid = false;
     }
     if (valid && entityId) {
@@ -753,13 +760,15 @@ export default function ContactCard({
                             placeholder="Your Name"
                             value={state.userName}
                             aria-invalid={Boolean(state.errors.name)}
-                            onChange={(e) =>
+                            onChange={(e) => {
+                              const sanitized = sanitizeName(e.target.value);
                               dispatch({
                                 type: "setField",
                                 field: "userName",
-                                value: e.target.value,
-                              })
-                            }
+                                value: sanitized,
+                              });
+                            }}
+                            maxLength={100}
                           />
                           {state.errors.name && (
                             <p className="text-xs text-red-500">
@@ -899,7 +908,8 @@ export default function ContactCard({
                           placeholder="Your email address"
                           value={userEmail}
                           aria-invalid={Boolean(emailError)}
-                          onChange={(e) => setUserEmail(e.target.value)}
+                          onChange={(e) => setUserEmail(sanitizeEmail(e.target.value))}
+                          maxLength={100}
                         />
                         {emailError && (
                           <p className="text-xs text-red-500">{emailError}</p>
@@ -968,13 +978,15 @@ export default function ContactCard({
                           placeholder="Your Name"
                           value={state.userName}
                           aria-invalid={Boolean(emailNameError)}
-                          onChange={(e) =>
+                          onChange={(e) => {
+                            const sanitized = sanitizeName(e.target.value);
                             dispatch({
                               type: "setField",
                               field: "userName",
-                              value: e.target.value,
-                            })
-                          }
+                              value: sanitized,
+                            });
+                          }}
+                          maxLength={100}
                         />
                         {emailNameError && (
                           <p className="text-xs text-red-500">
@@ -991,8 +1003,9 @@ export default function ContactCard({
                           placeholder="Your Message"
                           value={userMessage}
                           aria-invalid={Boolean(messageError)}
-                          onChange={(e) => setUserMessage(e.target.value)}
+                          onChange={(e) => setUserMessage(sanitizeMessage(e.target.value))}
                           rows={3}
+                          maxLength={1000}
                         />
                         {messageError && (
                           <p className="text-xs text-red-500">{messageError}</p>

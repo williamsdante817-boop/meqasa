@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { generateContextKey, useContactState } from "@/hooks/use-contact-state";
 import { useContactMessage } from "@/hooks/use-contact-message";
+import { sanitizeName, sanitizeEmail, sanitizeMessage, getNameError, getEmailError, getMessageError } from "@/lib/input-validation";
 import { parsePhoneNumber, isValidPhoneNumber } from "libphonenumber-js";
 import type { CountryCode } from "libphonenumber-js";
 import { Mail, MessageSquare, User } from "lucide-react";
@@ -344,10 +345,11 @@ export default function ContactSection({
       });
       valid = false;
     }
-    if (!state.userName) {
+    const nameErr = getNameError(state.userName);
+    if (nameErr) {
       dispatch({
         type: "setErrors",
-        errors: { ...state.errors, name: "Name is required" },
+        errors: { ...state.errors, name: nameErr },
       });
       valid = false;
     }
@@ -413,8 +415,9 @@ export default function ContactSection({
     setEmailNameError("");
     setEmailPhoneError("");
     setMessageError("");
-    if (!userEmail || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(userEmail)) {
-      setEmailError("Valid email is required");
+    const emailErr = getEmailError(userEmail);
+    if (emailErr) {
+      setEmailError(emailErr);
       valid = false;
     }
     const emailPhoneValid = state.userPhone
@@ -426,12 +429,15 @@ export default function ContactSection({
       setEmailPhoneError("Valid phone number is required");
       valid = false;
     }
-    if (!state.userName) {
-      setEmailNameError("Name is required");
+    const nameErr = getNameError(state.userName);
+    if (nameErr) {
+      setEmailNameError(nameErr);
       valid = false;
     }
-    if (!userMessage) {
-      setMessageError("Message is required");
+    
+    const messageErr = getMessageError(userMessage);
+    if (messageErr) {
+      setMessageError(messageErr);
       valid = false;
     }
     if (valid && entityId) {
@@ -543,241 +549,47 @@ export default function ContactSection({
       </div>
 
       <div className="flex w-full max-w-md gap-4 px-4">
-        {state.formSubmitted ? (
-          // User has saved contact info, show button without modal
-          <Button
-            className="bg-brand-badge-completed h-12 flex-1 gap-2 text-white hover:bg-green-700"
-            onClick={handleWhatsAppClick}
-            disabled={state.whatsAppLoading}
-          >
-            <MessageSquare className="h-5 w-5" />
-            {state.whatsAppLoading ? "Opening..." : "WhatsApp"}
-          </Button>
-        ) : (
-          // User needs to enter contact info, show modal
-          <Dialog
-            open={state.modalOpen}
-            onOpenChange={(open) =>
-              dispatch({ type: "setField", field: "modalOpen", value: open })
+        <Button
+          className="bg-brand-badge-completed h-12 flex-1 gap-2 text-white hover:bg-green-700"
+          onClick={() => {
+            if (state.formSubmitted) {
+              handleWhatsAppClick();
+            } else {
+              dispatch({
+                type: "setField",
+                field: "activeModal",
+                value: "whatsapp",
+              });
+              dispatch({
+                type: "setField",
+                field: "modalOpen",
+                value: true,
+              });
             }
-          >
-            <DialogTrigger asChild>
-              <Button
-                className="bg-brand-badge-completed h-12 flex-1 gap-2 text-white hover:bg-green-700"
-                onClick={() => {
-                  dispatch({
-                    type: "setField",
-                    field: "activeModal",
-                    value: "whatsapp",
-                  });
-                  dispatch({
-                    type: "setField",
-                    field: "modalOpen",
-                    value: true,
-                  });
-                }}
-              >
-                <MessageSquare className="h-5 w-5" />
-                WhatsApp
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Get Number</DialogTitle>
-                <DialogDescription>
-                  To view number, first enter your contact info (Do this once
-                  only). If you are unable to reach the owner/broker, then they
-                  can reach you.
-                </DialogDescription>
-              </DialogHeader>
-              {!state.formSubmitted ? (
-                <form onSubmit={handleFormSubmit} className="mt-2 space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="cs-phone-1">Your Phone Number</Label>
-                    <PhoneInput
-                      country={"gh"}
-                      value={state.userPhone}
-                      onChange={(phone: string, country: unknown) => {
-                        dispatch({
-                          type: "setField",
-                          field: "userPhone",
-                          value: phone,
-                        });
-                        let iso: CountryCode | undefined;
-                        if (
-                          country &&
-                          typeof country === "object" &&
-                          "countryCode" in country
-                        ) {
-                          const cc = (country as { countryCode?: string })
-                            .countryCode;
-                          if (cc) iso = cc.toUpperCase() as CountryCode;
-                        }
-                        dispatch({
-                          type: "setField",
-                          field: "userCountryIso",
-                          value: iso,
-                        });
-                        // Live validate phone number
-                        const possible = phone
-                          ? phone.startsWith("+")
-                            ? isValidPhoneNumber(phone)
-                            : isValidPhoneNumber(phone, iso)
-                          : false;
-                        dispatch({
-                          type: "setErrors",
-                          errors: {
-                            ...state.errors,
-                            phone: possible
-                              ? undefined
-                              : "Valid phone number is required",
-                          },
-                        });
-                      }}
-                      containerStyle={{ width: "100%" }}
-                      inputStyle={{ width: "100%" }}
-                      inputClass={`file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] ${state.errors.phone ? "aria-[invalid]:ring-destructive/20 aria-[invalid]:border-destructive" : ""}`}
-                      inputProps={{
-                        id: "cs-phone-1",
-                        name: "phone",
-                        required: true,
-                        autoFocus: true,
-                        "aria-invalid": Boolean(state.errors.phone),
-                      }}
-                    />
-                    {state.errors.phone && (
-                      <p className="text-xs text-red-500">
-                        {state.errors.phone}
-                      </p>
-                    )}
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="cs-name-1">Your Name</Label>
-                    <Input
-                      id="cs-name-1"
-                      type="text"
-                      name="name"
-                      required
-                      placeholder="Your Name"
-                      value={state.userName}
-                      aria-invalid={Boolean(state.errors.name)}
-                      onChange={(e) =>
-                        dispatch({
-                          type: "setField",
-                          field: "userName",
-                          value: e.target.value,
-                        })
-                      }
-                    />
-                    {state.errors.name && (
-                      <p className="text-xs text-red-500">
-                        {state.errors.name}
-                      </p>
-                    )}
-                  </div>
-                  <Button
-                    type="submit"
-                    className="mt-2 h-12 w-full bg-[#232335] text-lg font-bold text-white"
-                    disabled={
-                      state.activeModal === "whatsapp"
-                        ? state.whatsAppLoading
-                        : state.showNumberLoading
-                    }
-                  >
-                    {state.activeModal === "whatsapp"
-                      ? state.whatsAppLoading
-                        ? "Opening..."
-                        : "Get Number"
-                      : state.showNumberLoading
-                        ? "Getting Number..."
-                        : "Get Number"}
-                  </Button>
-                </form>
-              ) : !showNumber ? (
-                <div className="py-6 text-center">
-                  <div className="mb-2 text-lg font-semibold">
-                    Contact Info Saved
-                  </div>
-                  <div className="mb-4 text-sm text-gray-600">
-                    We&apos;ll use your saved contact info: {state.userName} (
-                    {state.userPhone})
-                  </div>
-                  <Button
-                    onClick={handleGetNumberWithSavedInfo}
-                    className="h-12 w-full bg-[#232335] text-lg font-bold text-white"
-                    disabled={state.showNumberLoading}
-                  >
-                    {state.showNumberLoading
-                      ? "Getting Number..."
-                      : "Get Number"}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      clearStoredContactInfo();
-                      dispatch({
-                        type: "setField",
-                        field: "formSubmitted",
-                        value: false,
-                      });
-                      dispatch({
-                        type: "setField",
-                        field: "userName",
-                        value: "",
-                      });
-                      dispatch({
-                        type: "setField",
-                        field: "userPhone",
-                        value: "",
-                      });
-                    }}
-                    className="mt-2 w-full text-sm"
-                  >
-                    Use Different Info
-                  </Button>
-                </div>
-              ) : (
-                <div className="py-6 text-center">
-                  <div className="mb-2 text-lg font-semibold">
-                    {phoneNumber
-                      ? toInternationalDisplay(
-                          phoneNumber,
-                          state.userCountryIso
-                        )
-                      : ""}
-                  </div>
-                  {whatsappNumber && (
-                    <div className="text-brand-muted mb-2 text-sm">
-                      WhatsApp:{" "}
-                      {toInternationalDisplay(
-                        whatsappNumber,
-                        state.userCountryIso
-                      )}
-                    </div>
-                  )}
-                  <div className="text-green-600">
-                    You can now contact the owner/broker.
-                  </div>
-                  <DialogClose asChild>
-                    <Button className="mt-4 w-full">Close</Button>
-                  </DialogClose>
-                </div>
-              )}
-            </DialogContent>
-          </Dialog>
-        )}
+          }}
+          disabled={state.whatsAppLoading}
+        >
+          <MessageSquare className="h-5 w-5" />
+          {state.whatsAppLoading ? "Opening..." : "WhatsApp"}
+        </Button>
 
-        <Dialog open={emailModalOpen} onOpenChange={setEmailModalOpen}>
-          <DialogTrigger asChild>
-            <Button
-              className="bg-brand-blue h-12 flex-1 gap-2 text-white hover:bg-blue-700"
-              onClick={() => setEmailModalOpen(true)}
-            >
-              <Mail className="h-5 w-5" />
-              Enquire now
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
+        <Button
+          className="bg-brand-blue h-12 flex-1 gap-2 text-white hover:bg-blue-700"
+          onClick={() => setEmailModalOpen(true)}
+        >
+          <Mail className="h-5 w-5" />
+          Enquire now
+        </Button>
+      </div>
+
+      <p className="text-brand-muted mt-4 max-w-md px-4 text-sm">
+        NB: First submit your contact info once. If you are unable to reach the
+        developer, then they can reach you.
+      </p>
+
+      {/* Email Modal */}
+      <Dialog open={emailModalOpen} onOpenChange={setEmailModalOpen}>
+        <DialogContent>
             <DialogHeader>
               <DialogTitle>Contact Agent</DialogTitle>
               <DialogDescription>
@@ -797,7 +609,8 @@ export default function ContactSection({
                     placeholder="Your email address"
                     value={userEmail}
                     aria-invalid={Boolean(emailError)}
-                    onChange={(e) => setUserEmail(e.target.value)}
+                    onChange={(e) => setUserEmail(sanitizeEmail(e.target.value))}
+                    maxLength={100}
                   />
                   {emailError && (
                     <p className="text-xs text-red-500">{emailError}</p>
@@ -870,9 +683,10 @@ export default function ContactSection({
                       dispatch({
                         type: "setField",
                         field: "userName",
-                        value: e.target.value,
+                        value: sanitizeName(e.target.value),
                       })
                     }
+                    maxLength={100}
                   />
                   {emailNameError && (
                     <p className="text-xs text-red-500">{emailNameError}</p>
@@ -887,8 +701,9 @@ export default function ContactSection({
                     placeholder="Your Message"
                     value={userMessage}
                     aria-invalid={Boolean(messageError)}
-                    onChange={(e) => setUserMessage(e.target.value)}
+                    onChange={(e) => setUserMessage(sanitizeMessage(e.target.value))}
                     rows={3}
+                    maxLength={1000}
                   />
                   {messageError && (
                     <p className="text-xs text-red-500">{messageError}</p>
@@ -931,11 +746,10 @@ export default function ContactSection({
                 </DialogClose>
               </div>
             )}
-          </DialogContent>
-        </Dialog>
-      </div>
+        </DialogContent>
+      </Dialog>
 
-      {/* Unified Phone/WhatsApp Modal */}
+      {/* Phone/WhatsApp Modal */}
       <Dialog
         open={state.modalOpen}
         onOpenChange={(open) =>
@@ -1024,9 +838,10 @@ export default function ContactSection({
                     dispatch({
                       type: "setField",
                       field: "userName",
-                      value: e.target.value,
+                      value: sanitizeName(e.target.value),
                     })
                   }
+                  maxLength={100}
                 />
                 {state.errors.name && (
                   <p className="text-xs text-red-500">{state.errors.name}</p>
@@ -1103,11 +918,6 @@ export default function ContactSection({
           ) : null}
         </DialogContent>
       </Dialog>
-
-      <p className="text-brand-muted mt-4 max-w-md px-4 text-sm">
-        NB: First submit your contact info once. If you are unable to reach the
-        developer, then they can reach you.
-      </p>
     </div>
   );
 }

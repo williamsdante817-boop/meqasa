@@ -1,8 +1,11 @@
 "use client";
 
 import { ImageWithFallback } from "@/components/common/image-with-fallback";
+import {
+  extractFlexiBannerBlocks,
+  extractImageUrlsFromFlexi,
+} from "@/lib/flexi-banner";
 import { buildRichInnerHtml } from "@/lib/utils";
-import { extractFlexiBannerBlocks, extractImageUrlsFromFlexi } from "@/lib/flexi-banner";
 import { useEffect, useMemo, useState } from "react";
 import { GridBannerSkeleton } from "./streaming/GridBannerSkeleton";
 import { Card } from "./ui/card";
@@ -34,8 +37,8 @@ export default function GridAd({ flexiBanner, error }: GridAdProps) {
     const flexiBlocks = extractFlexiBannerBlocks(flexiBanner);
 
     const staticImageUrls = [
-      "https://dve7rykno93gs.cloudfront.net/pieoq/1572277987.webp",
-      "https://dve7rykno93gs.cloudfront.net/pieoq/1649141906.webp",
+      "https://images.unsplash.com/photo-1448630360428-65456885c650?q=80&w=2334&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "https://images.unsplash.com/photo-1593696140826-c58b021acf8b?q=80&w=2340&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     ];
 
     const flexiBannerImageUrls = flexiBlocks.flatMap((block) =>
@@ -115,12 +118,12 @@ export default function GridAd({ flexiBanner, error }: GridAdProps) {
             className="relative block h-full"
           >
             <ImageWithFallback
-              src="https://dve7rykno93gs.cloudfront.net/pieoq/1572277987.webp"
+              src="https://images.unsplash.com/photo-1448630360428-65456885c650?q=80&w=2334&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
               alt="Belton Residences - Selling Fast"
               fill
               className={`object-cover transition-all duration-700 ${
                 loadedMap[
-                  "https://dve7rykno93gs.cloudfront.net/pieoq/1572277987.webp"
+                  "https://images.unsplash.com/photo-1448630360428-65456885c650?q=80&w=2334&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                 ]
                   ? "blur-0 opacity-100"
                   : "opacity-90 blur-sm"
@@ -141,12 +144,12 @@ export default function GridAd({ flexiBanner, error }: GridAdProps) {
             className="relative block h-full"
           >
             <ImageWithFallback
-              src="https://dve7rykno93gs.cloudfront.net/pieoq/1649141906.webp"
+              src="https://images.unsplash.com/photo-1593696140826-c58b021acf8b?q=80&w=2340&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
               alt="Belton Residences - Premium Properties"
               fill
               className={`object-cover transition-all duration-700 ${
                 loadedMap[
-                  "https://dve7rykno93gs.cloudfront.net/pieoq/1649141906.webp"
+                  "https://images.unsplash.com/photo-1593696140826-c58b021acf8b?q=80&w=2340&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                 ]
                   ? "blur-0 opacity-100"
                   : "opacity-90 blur-sm"

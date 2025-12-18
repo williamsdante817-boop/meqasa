@@ -2,6 +2,17 @@ import { CarouselPlugin } from "@/components/search/carousel-plugin";
 import { FeaturedPropertyVariantCard } from "@/components/search/featured-property-variant";
 import { PremiumPlusPropertyCard } from "@/components/search/premium-plus-card";
 import { ResultsCard } from "@/components/search/results-card";
+import {
+  Empty,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+  EmptyDescription,
+  EmptyContent,
+} from "@/components/ui/empty";
+import { Button } from "@/components/ui/button";
+import { Search } from "lucide-react";
+import Link from "next/link";
 import type { MeqasaListing, MeqasaSearchResponse } from "@/types/meqasa";
 import { ClientPagination } from "./client-pagination";
 import { MobileLoadMore } from "./mobile-load-more";
@@ -90,9 +101,23 @@ export function SearchResults({
 
       {/* No Results */}
       {results.length === 0 && (
-        <div className="py-12 text-center text-gray-500">
-          No properties found. Try adjusting your search criteria.
-        </div>
+        <Empty className="max-w-2xl mx-auto">
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <Search />
+            </EmptyMedia>
+            <EmptyTitle>No properties found</EmptyTitle>
+            <EmptyDescription>
+              We couldn&apos;t find any properties matching your search criteria.
+              Try adjusting your filters or search for a different location.
+            </EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
+            <Button asChild size="lg" variant="brand-primary" className="w-full sm:w-auto">
+              <Link href="/">Browse All Properties</Link>
+            </Button>
+          </EmptyContent>
+        </Empty>
       )}
     </div>
   );

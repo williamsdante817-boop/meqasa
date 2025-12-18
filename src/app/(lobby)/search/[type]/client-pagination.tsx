@@ -69,9 +69,17 @@ export function ClientPagination({
     <div className="my-8 hidden w-full justify-center overflow-x-auto md:flex">
       {isPending && (
         <div className="fixed top-1/2 left-1/2 z-50 -translate-x-1/2 -translate-y-1/2">
-          <div className="flex items-center gap-2 rounded-lg border border-rose-200 bg-white px-4 py-2.5 shadow-lg">
-            <div className="h-4 w-4 animate-spin rounded-full border-2 border-brand-primary border-t-transparent"></div>
-            <span className="text-sm font-medium text-gray-700">Loading results...</span>
+          <div className="flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-5 py-3.5 shadow-lg">
+            {[...Array(3)].map((_, i) => (
+              <div
+                key={i}
+                className="h-2 w-2 animate-bounce rounded-full bg-brand-primary"
+                style={{
+                  animationDelay: `${i * 0.15}s`,
+                  animationDuration: "0.6s",
+                }}
+              />
+            ))}
           </div>
         </div>
       )}

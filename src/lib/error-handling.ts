@@ -66,7 +66,13 @@ export function createPropertyError(
     );
   }
 
-  if (lowerMessage.includes("not found") || lowerMessage.includes("404")) {
+  if (
+    lowerMessage.includes("not found") ||
+    lowerMessage.includes("404") ||
+    lowerMessage.includes("not available") ||
+    lowerMessage.includes("listing not") ||
+    lowerMessage.includes("property not")
+  ) {
     return new PropertyError(
       PropertyErrorType.PROPERTY_NOT_FOUND,
       "Property listing not found",

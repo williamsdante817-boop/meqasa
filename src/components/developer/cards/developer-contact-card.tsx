@@ -17,6 +17,7 @@ import { generateContextKey, useContactState } from "@/hooks/use-contact-state";
 import { useContactMessage } from "@/hooks/use-contact-message";
 import { viewNumber } from "@/lib/contact-api";
 import { getStoredNumbers, setStoredNumbers } from "@/lib/contact-cache";
+import { sanitizeName, sanitizeEmail, sanitizeMessage, getNameError, getEmailError, getMessageError } from "@/lib/input-validation";
 
 interface DeveloperContactCardProps {
   developerName: string;
@@ -210,8 +211,9 @@ export function DeveloperContactCard({
   const validateForm = (): boolean => {
     const newErrors: Partial<ContactFormState> = {};
 
-    if (!contactForm.name.trim()) {
-      newErrors.name = "Name is required";
+    const nameErr = getNameError(contactForm.name);
+    if (nameErr) {
+      newErrors.name = nameErr;
     }
 
     if (!contactForm.phone.trim()) {
@@ -220,18 +222,16 @@ export function DeveloperContactCard({
       newErrors.phone = "Please enter a valid phone number";
     }
 
-    if (activeTab === "email" && !contactForm.email.trim()) {
-      newErrors.email = "Email is required";
-    } else if (
-      activeTab === "email" &&
-      contactForm.email &&
-      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactForm.email)
-    ) {
-      newErrors.email = "Please enter a valid email address";
-    }
-
-    if (activeTab === "email" && !contactForm.message.trim()) {
-      newErrors.message = "Message is required";
+    if (activeTab === "email") {
+      const emailErr = getEmailError(contactForm.email);
+      if (emailErr) {
+        newErrors.email = emailErr;
+      }
+      
+      const messageErr = getMessageError(contactForm.message);
+      if (messageErr) {
+        newErrors.message = messageErr;
+      }
     }
 
     setErrors(newErrors);
@@ -666,10 +666,11 @@ export function DeveloperContactCard({
                 <Textarea
                   id="success-email-message"
                   value={contactForm.message}
-                  onChange={(e) => handleInputChange("message", e.target.value)}
+                  onChange={(e) => handleInputChange("message", sanitizeMessage(e.target.value))}
                   placeholder="Enter your message to the agent"
                   rows={4}
                   className="w-full text-base sm:text-sm"
+                  maxLength={1000}
                 />
               </div>
 
@@ -834,10 +835,11 @@ export function DeveloperContactCard({
                 <Input
                   id="phone-name"
                   value={contactForm.name}
-                  onChange={(e) => handleInputChange("name", e.target.value)}
+                  onChange={(e) => handleInputChange("name", sanitizeName(e.target.value))}
                   placeholder="Enter your full name"
                   className={`${errors.name ? "border-red-500" : ""} h-10 text-base sm:h-10 sm:text-sm`}
                   disabled={formSubmitted}
+                  maxLength={100}
                 />
                 {errors.name && (
                   <p className="mt-1 text-sm text-red-500">{errors.name}</p>
@@ -942,10 +944,11 @@ export function DeveloperContactCard({
                 <Input
                   id="whatsapp-name"
                   value={contactForm.name}
-                  onChange={(e) => handleInputChange("name", e.target.value)}
+                  onChange={(e) => handleInputChange("name", sanitizeName(e.target.value))}
                   placeholder="Enter your full name"
                   className={`${errors.name ? "border-red-500" : ""} h-10 text-base sm:h-10 sm:text-sm`}
                   disabled={formSubmitted}
+                  maxLength={100}
                 />
                 {errors.name && (
                   <p className="mt-1 text-sm text-red-500">{errors.name}</p>
@@ -1076,11 +1079,12 @@ export function DeveloperContactCard({
                       id="email-name"
                       value={contactForm.name}
                       onChange={(e) =>
-                        handleInputChange("name", e.target.value)
+                        handleInputChange("name", sanitizeName(e.target.value))
                       }
                       placeholder="Enter your full name"
                       className={`${errors.name ? "border-red-500" : ""} h-10 text-base sm:h-10 sm:text-sm`}
                       disabled={formSubmitted}
+                      maxLength={100}
                     />
                     {errors.name && (
                       <p className="mt-1 text-sm text-red-500">{errors.name}</p>
@@ -1132,10 +1136,11 @@ export function DeveloperContactCard({
                       type="email"
                       value={contactForm.email}
                       onChange={(e) =>
-                        handleInputChange("email", e.target.value)
+                        handleInputChange("email", sanitizeEmail(e.target.value))
                       }
                       placeholder="Enter your email address"
                       className={`${errors.email ? "border-red-500" : ""} h-10 text-base sm:h-10 sm:text-sm`}
+                      maxLength={100}
                     />
                     {errors.email && (
                       <p className="mt-1 text-sm text-red-500">
@@ -1150,11 +1155,12 @@ export function DeveloperContactCard({
                       id="message"
                       value={contactForm.message}
                       onChange={(e) =>
-                        handleInputChange("message", e.target.value)
+                        handleInputChange("message", sanitizeMessage(e.target.value))
                       }
                       placeholder="Enter your message"
                       rows={4}
                       className={`${errors.message ? "border-red-500" : ""} text-base sm:text-sm`}
+                      maxLength={1000}
                     />
                     {errors.message && (
                       <p className="mt-1 text-sm text-red-500">

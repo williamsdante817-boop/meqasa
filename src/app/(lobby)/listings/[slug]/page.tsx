@@ -5,6 +5,16 @@ import { AddFavoriteButton } from "@/components/add-favorite-button";
 import Amenities from "@/components/amenities";
 import { AlertCard } from "@/components/common/alert-card";
 import ContactCard from "@/components/common/contact-card";
+import {
+  Empty,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+  EmptyDescription,
+  EmptyContent,
+} from "@/components/ui/empty";
+import { Button } from "@/components/ui/button";
+import { Home } from "lucide-react";
 import { DynamicCarousel } from "@/components/common/dynamic-carousel";
 import PropertyContextCard from "@/components/common/property-context-card";
 import PropertyFeatures from "@/components/common/property-features";
@@ -562,8 +572,23 @@ export default async function DetailsPage({
             />
           </ContentSection>
         ) : (
-          <Shell>
-            <AlertCard className="my-10" />
+          <Shell className="my-10">
+            <Empty>
+              <EmptyHeader>
+                <EmptyMedia variant="icon">
+                  <Home />
+                </EmptyMedia>
+                <EmptyTitle>No similar listings found</EmptyTitle>
+                <EmptyDescription>
+                  We couldn&apos;t find any similar properties at this time. Check back later or explore other listings.
+                </EmptyDescription>
+              </EmptyHeader>
+              <EmptyContent>
+                <Button asChild size="lg" variant="brand-primary" className="w-full sm:w-auto">
+                  <a href={similarSearchHref}>Browse {listingDetail.location} Properties</a>
+                </Button>
+              </EmptyContent>
+            </Empty>
           </Shell>
         )}
       </main>
