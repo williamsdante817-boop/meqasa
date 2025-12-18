@@ -10,6 +10,17 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import {
+  Empty,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+  EmptyDescription,
+  EmptyContent,
+} from "@/components/ui/empty";
+import { Button } from "@/components/ui/button";
+import { Users } from "lucide-react";
+import Link from "next/link";
 import { useAgentListings } from "@/hooks/use-agent-listings";
 import type { AgentListing } from "@/types/agent-listings";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -246,9 +257,23 @@ export function AgentListings({
       )}
 
       {listings.length === 0 && !isLoading && !error && (
-        <div className="py-12 text-center text-gray-500">
-          No properties found for this agent.
-        </div>
+        <Empty>
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <Users />
+            </EmptyMedia>
+            <EmptyTitle>No properties found</EmptyTitle>
+            <EmptyDescription>
+              This agent doesn&apos;t have any active listings at the moment.
+              Check back later or explore other agents.
+            </EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
+            <Button asChild size="lg" variant="brand-primary" className="w-full sm:w-auto">
+              <Link href="/agents">View All Agents</Link>
+            </Button>
+          </EmptyContent>
+        </Empty>
       )}
     </div>
   );

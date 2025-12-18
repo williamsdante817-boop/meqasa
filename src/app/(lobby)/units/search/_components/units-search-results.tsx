@@ -5,6 +5,14 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Home } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import {
+  Empty,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+  EmptyDescription,
+  EmptyContent,
+} from "@/components/ui/empty";
 import { UnitsResultCard } from "./units-result-card";
 import { SEARCH_CONFIG } from "./constants";
 import type { DeveloperUnit } from "./types";
@@ -68,24 +76,24 @@ export function UnitsSearchResults({
 
   if (initialUnits.length === 0) {
     return (
-      <div className="py-12 text-center">
-        <div className="space-y-4">
-          <div className="flex justify-center">
-            <Home className="h-16 w-16 text-gray-300" />
-          </div>
-          <h3 className="text-brand-accent text-xl font-semibold">
-            No units found
-          </h3>
-          <p className="text-brand-muted mx-auto max-w-md">
+      <Empty>
+        <EmptyHeader>
+          <EmptyMedia variant="icon">
+            <Home />
+          </EmptyMedia>
+          <EmptyTitle>No units found</EmptyTitle>
+          <EmptyDescription>
             We couldn&apos;t find any developer units matching your search
             criteria. Try adjusting your filters or check back later for new
             listings.
-          </p>
-          <Button onClick={() => (window.location.href = "/units/search")}>
+          </EmptyDescription>
+        </EmptyHeader>
+        <EmptyContent>
+          <Button onClick={() => (window.location.href = "/units/search")} size="lg" variant="brand-primary" className="w-full sm:w-auto">
             Reset Search
           </Button>
-        </div>
-      </div>
+        </EmptyContent>
+      </Empty>
     );
   }
 

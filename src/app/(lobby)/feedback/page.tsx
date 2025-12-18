@@ -180,7 +180,7 @@ export default function FeedbackPage() {
 
                 <Button
                   type="submit"
-                  className="bg-brand-accent hover:bg-brand-accent/90 focus-visible:ring-brand-accent w-full transition-all focus-visible:ring-2 focus-visible:ring-offset-2"
+                  className="bg-brand-primary hover:bg-brand-primary/90 focus-visible:ring-brand-primary w-full transition-all focus-visible:ring-2 focus-visible:ring-offset-2"
                 >
                   Send
                 </Button>

@@ -24,16 +24,11 @@ export interface ImageUrlOptions {
   disableOptimization?: boolean;
 }
 
-
-
 function normalizeCdn(cdn: string): string {
   return cdn.replace(/\/+$|$/, "");
 }
 
-function mergePatternWithPath(
-  pattern: string,
-  rawPath: string
-): string | null {
+function mergePatternWithPath(pattern: string, rawPath: string): string | null {
   const patternSegments = pattern.split("/").filter(Boolean);
   const pathSegments = rawPath.split("/").filter(Boolean);
 
@@ -113,7 +108,7 @@ export function buildResilientImageUrl(
 
   // Handle full URLs from API - replace meqasa.com with CloudFront CDN
   if (clean.startsWith("http")) {
-    // If URL is from meqasa.com, replace with CloudFront CDN
+    // If URL is from meqasa.com, replace with CloudFront
     if (clean.includes("meqasa.com")) {
       const cdn = cdns[0] || "https://dve7rykno93gs.cloudfront.net";
       // Extract path after domain (handle double slashes)
@@ -123,7 +118,7 @@ export function buildResilientImageUrl(
         return `${cdn}/${pathMatch[1]}`;
       }
     }
-    
+
     // For other full URLs (already using CDN), return as-is
     return clean;
   }
@@ -140,7 +135,7 @@ export function buildResilientImageUrl(
       }
     }
 
-    const full = `${cdn}/temp/temp/${tempKey}`;
+    const full = `${cdn}/temp/out/${tempKey}`;
     return full;
   }
 

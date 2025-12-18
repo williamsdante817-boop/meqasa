@@ -7,13 +7,20 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import {
+  Empty,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+  EmptyDescription,
+} from "@/components/ui/empty";
+import { Home } from "lucide-react";
 import { useMemo } from "react";
 import type { Listing } from "../cards/property-card";
 import PropertyCard from "../cards/property-card";
 import UnitCard from "../cards/unit-card";
 import type { ListingDetails } from "@/types";
 import type { SimilarUnit } from "@/lib/get-unit-details";
-import { AlertCard } from "@/components/common/alert-card";
 
 export default function PropertyListings({
   listings,
@@ -43,11 +50,17 @@ export default function PropertyListings({
 
   if (!listings || listings.length === 0) {
     return (
-      <AlertCard
-        title="No properties available at the moment"
-        description="Try adjusting your filters or check back later."
-        ariaLabel="No properties available"
-      />
+      <Empty className="border-0">
+        <EmptyHeader>
+          <EmptyMedia variant="icon">
+            <Home />
+          </EmptyMedia>
+          <EmptyTitle>No properties available</EmptyTitle>
+          <EmptyDescription>
+            Try adjusting your filters or check back later.
+          </EmptyDescription>
+        </EmptyHeader>
+      </Empty>
     );
   }
 

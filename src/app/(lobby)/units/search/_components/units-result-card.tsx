@@ -119,83 +119,54 @@ export function UnitsResultCard({
 
   const linkUrl = `/developer-unit/${bedrooms}-bedroom-${typeSlug}-for-${contractSlug}-in-${citySlug}-unit-${unit.unitid || unit.id}`;
 
-  // Use MeQasa's exact price display logic for consistency
   const formatPrice = (): { pricepart1: string; pricepart2?: string } => {
     const contractType = unit.terms === "rent" ? "rent" : "sale";
 
     if (contractType === "rent") {
-      // MeQasa's logic: USD properties use 'price' field, GHS properties use raw amount
       const currencySign = unit.rentpricecsignpermonth;
 
       if (currencySign === "$" && unit.price) {
-        // For USD properties: Use MeQasa's converted price field
         if (unit.price.includes("/month")) {
           const parts = unit.price.split("/month");
           const firstPart = parts.length > 0 && parts[0] ? parts[0].trim() : "";
-          return {
-            pricepart1: firstPart,
-            pricepart2: "/month",
-          };
+          return { pricepart1: firstPart, pricepart2: "/month" };
         } else if (unit.price.includes("/day")) {
           const parts = unit.price.split("/day");
           const firstPart = parts.length > 0 && parts[0] ? parts[0].trim() : "";
-          return {
-            pricepart1: firstPart,
-            pricepart2: "/day",
-          };
+          return { pricepart1: firstPart, pricepart2: "/day" };
         } else if (unit.price.includes("/week")) {
           const parts = unit.price.split("/week");
           const firstPart = parts.length > 0 && parts[0] ? parts[0].trim() : "";
-          return {
-            pricepart1: firstPart,
-            pricepart2: "/week",
-          };
+          return { pricepart1: firstPart, pricepart2: "/week" };
         }
         return { pricepart1: unit.price };
       } else if (currencySign === "¢" && unit.rentpricepermonth) {
-        // For GHS properties: Use original rent amount to avoid inflated calculations
         const rentDurationType = unit.rentdurationtype || "permonth";
+        const formatGHS = (amount: number) => 
+          new Intl.NumberFormat("en-GH", { style: "currency", currency: "GHS", minimumFractionDigits: 0 }).format(amount);
 
         if (rentDurationType === "perday" && unit.rentpriceperday) {
-          return {
-            pricepart1: `&#8373;${unit.rentpriceperday.toLocaleString()}`,
-            pricepart2: "/day",
-          };
+          return { pricepart1: formatGHS(unit.rentpriceperday), pricepart2: "/day" };
         } else if (rentDurationType === "perweek" && unit.rentpriceperweek) {
-          return {
-            pricepart1: `&#8373;${unit.rentpriceperweek.toLocaleString()}`,
-            pricepart2: "/week",
-          };
+          return { pricepart1: formatGHS(unit.rentpriceperweek), pricepart2: "/week" };
         } else {
-          return {
-            pricepart1: `&#8373;${unit.rentpricepermonth.toLocaleString()}`,
-            pricepart2: "/month",
-          };
+          return { pricepart1: formatGHS(unit.rentpricepermonth), pricepart2: "/month" };
         }
       }
 
-      // Fallback for rental properties
-      if (unit.price) {
-        return { pricepart1: unit.price };
-      }
+      if (unit.price) return { pricepart1: unit.price };
     } else {
-      // For sale properties: Check currency sign for same logic
       const currencySign = unit.sellingpricecsign;
 
       if (currencySign === "$" && unit.price) {
-        // USD sale properties: Use converted price
         return { pricepart1: unit.price };
       } else if (currencySign === "¢" && unit.sellingprice) {
-        // GHS sale properties: Use original selling price
-        return {
-          pricepart1: `&#8373;${unit.sellingprice.toLocaleString()}`,
+        return { 
+          pricepart1: new Intl.NumberFormat("en-GH", { style: "currency", currency: "GHS", minimumFractionDigits: 0 }).format(unit.sellingprice) 
         };
       }
 
-      // Fallback for sale properties
-      if (unit.price) {
-        return { pricepart1: unit.price };
-      }
+      if (unit.price) return { pricepart1: unit.price };
     }
 
     return { pricepart1: "Contact for Price" };

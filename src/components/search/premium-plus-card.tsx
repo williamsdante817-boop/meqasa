@@ -89,6 +89,9 @@ export function PremiumPlusPropertyCard({
   const ownerName = data.owner?.name || "Agent";
   const summary = data.summary || "Property Listing";
 
+  // Normalize image URLs - fix double slashes and remove query params
+  const normalizedImage = (data.image2 || data.image)?.replace(/([^:])(\/\/+)/g, '$1/').split('?')[0] || "/placeholder-image.png";
+
   // Parse numbers safely
   const listingId = Number(data.listingid) || 0;
   const bedroomCount = Number(data.bedroomcount) || 0;
@@ -128,7 +131,7 @@ export function PremiumPlusPropertyCard({
               "relative z-10 h-[200px] w-full rounded-t-lg object-cover transition-all duration-500 sm:h-[230px] md:h-[260px]",
               imageLoaded ? "opacity-100" : "opacity-0"
             )}
-            src={data.image2 || data.image || "/placeholder-image.png"}
+            src={normalizedImage}
             alt={summary}
             placeholder="blur"
             blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iMzAiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PC9zdmc+"

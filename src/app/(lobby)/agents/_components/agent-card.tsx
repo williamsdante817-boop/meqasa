@@ -158,8 +158,8 @@ export function AgentCard({
             {/* Agent Info Section */}
             <div className="min-w-0 flex-1">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                <div className="flex-1">
-                  <div className="mb-2 flex items-center gap-2">
+                <div className="min-w-0 flex-1">
+                  <div className="mb-2 flex items-center gap-2 overflow-hidden">
                     <Link
                       href={agentDetailUrl}
                       className="hover:text-brand-accent-darken transition-colors duration-200"
@@ -209,7 +209,7 @@ export function AgentCard({
                 </div>
 
                 {/* Contact Button - Separate from navigation */}
-                <div className="relative z-10">
+                <div className="relative z-10 flex-shrink-0">
                   <Button
                     onClick={handleContactAgent}
                     className="bg-brand-primary hover:bg-brand-primary-darken cursor-pointer rounded-md px-6 py-2 text-white transition-all"

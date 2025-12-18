@@ -251,14 +251,16 @@ export function debounce<T extends (...args: unknown[]) => void>(
 /**
  * Formats currency values consistently
  * @param amount - Amount to format
- * @param currency - Currency symbol
+ * @param currency - Currency code (GHS or USD)
  * @returns Formatted currency string
  */
-export function formatCurrency(amount: number, currency = "¢"): string {
-  if (currency === "¢") {
-    return `&#8373;${amount.toLocaleString()}`;
-  }
-  return `${currency}${amount.toLocaleString()}`;
+export function formatCurrency(amount: number, currency: "GHS" | "USD" = "GHS"): string {
+  return new Intl.NumberFormat("en-GH", {
+    style: "currency",
+    currency,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(amount);
 }
 
 /**
