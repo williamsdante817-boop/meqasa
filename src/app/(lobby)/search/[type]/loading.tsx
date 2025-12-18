@@ -1,5 +1,6 @@
 import { Breadcrumbs } from "@/components/layout/bread-crumbs";
 import PropertyTypeLinks from "@/components/search/PropertyTypeLinks";
+import { ReferenceSearch } from "@/components/search/ReferenceSearch";
 import SearchResultsSkeleton from "@/components/search/SearchResultsSkeleton";
 import { Skeleton } from "@/components/ui/skeleton";
 import Shell from "@/layouts/shell";
@@ -70,7 +71,14 @@ export default function Loading() {
 
             {/* Production Reference Search Component Skeleton */}
             <div className="rounded-lg border border-blue-200 bg-gradient-to-r from-blue-50 to-green-50 p-4">
-              <Skeleton className="h-10 w-full max-w-md" />
+              {/* <Skeleton className="h-10 w-full max-w-md" /> */}
+              <ReferenceSearch
+                showLabel={true}
+                size="default"
+                className="max-w-md"
+                enableUnifiedSearch={true}
+                placeholder="Search by reference (e.g. 086983)"
+              />
             </div>
           </header>
 
@@ -84,18 +92,6 @@ export default function Loading() {
 
               {/* Search Results Skeleton */}
               <SearchResultsSkeleton />
-            </div>
-
-            {/* Sidebar - matching actual StreamingSidebarBanners layout */}
-            <div className="hidden lg:block">
-              <aside className="grid w-full grid-cols-1 gap-8">
-                {/* Rectangle Ads Skeleton - matching actual banner dimensions */}
-                {Array.from({ length: 3 }).map((_, idx) => (
-                  <div key={idx} className="mx-auto w-full max-w-[300px]">
-                    <Skeleton className="h-96 w-full rounded-lg" />
-                  </div>
-                ))}
-              </aside>
             </div>
           </div>
         </div>

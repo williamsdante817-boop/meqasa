@@ -1,8 +1,17 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import {
+  Empty,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+  EmptyDescription,
+  EmptyContent,
+} from "@/components/ui/empty";
 import { logError } from "@/lib/logger";
-import { Loader2 } from "lucide-react";
+import { Loader2, Building2 } from "lucide-react";
+import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useResilientFetch } from "@/hooks/use-resilient-fetch";
 import DevelopmentProjectCard from "./development-project-card";
@@ -163,14 +172,23 @@ export default function DevelopmentProjectsGrid({
 
   if (projects.length === 0) {
     return (
-      <div className="py-12 text-center">
-        <h3 className="text-brand-accent mb-2 text-lg font-semibold">
-          No projects found
-        </h3>
-        <p className="text-brand-muted">
-          Try adjusting your filters to see more results.
-        </p>
-      </div>
+      <Empty>
+        <EmptyHeader>
+          <EmptyMedia variant="icon">
+            <Building2 />
+          </EmptyMedia>
+          <EmptyTitle>No projects found</EmptyTitle>
+          <EmptyDescription>
+            Try adjusting your filters to see more results or browse all
+            available properties.
+          </EmptyDescription>
+        </EmptyHeader>
+        <EmptyContent>
+          <Button asChild size="lg" variant="brand-primary" className="w-full sm:w-auto">
+            <Link href="/">Browse All Properties</Link>
+          </Button>
+        </EmptyContent>
+      </Empty>
     );
   }
 
