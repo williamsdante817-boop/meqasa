@@ -580,12 +580,20 @@ export default async function DetailsPage({
                 </EmptyMedia>
                 <EmptyTitle>No similar listings found</EmptyTitle>
                 <EmptyDescription>
-                  We couldn&apos;t find any similar properties at this time. Check back later or explore other listings.
+                  We couldn&apos;t find any similar properties at this time.
+                  Check back later or explore other listings.
                 </EmptyDescription>
               </EmptyHeader>
               <EmptyContent>
-                <Button asChild size="lg" variant="brand-primary" className="w-full sm:w-auto">
-                  <a href={similarSearchHref}>Browse {listingDetail.location} Properties</a>
+                <Button
+                  asChild
+                  size="lg"
+                  variant="brand-primary"
+                  className="w-full sm:w-auto"
+                >
+                  <a href={similarSearchHref}>
+                    Browse {listingDetail.location} Properties
+                  </a>
                 </Button>
               </EmptyContent>
             </Empty>
