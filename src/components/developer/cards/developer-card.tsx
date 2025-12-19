@@ -66,7 +66,7 @@ function DeveloperCardComponent({ developer, className }: DeveloperCardProps) {
   const logoSrc = developer.logo ? `${cdnUrl}/${developer.logo}` : "";
   const heroSrc = developer.hero ? `${cdnUrl}/${developer.hero}` : "";
 
-  const developerDetailUrl = `/projects-by-developer/${developer.companyname.toLowerCase().replace(/\s+/g, "-")}-${developer.developerid}`;
+  const developerDetailUrl = `/projects-by-developer/${(developer.companyname || 'developer').toLowerCase().replace(/\s+/g, "-")}-${developer.developerid}`;
 
   const handleContactDeveloper = (e: MouseEvent) => {
     e.preventDefault();
