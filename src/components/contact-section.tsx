@@ -8,7 +8,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { generateContextKey, useContactState } from "@/hooks/use-contact-state";
 import { useContactMessage } from "@/hooks/use-contact-message";

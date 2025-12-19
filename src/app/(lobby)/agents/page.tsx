@@ -102,9 +102,9 @@ export default async function AgentsPage() {
               position: index + 1,
               item: {
                 "@type": "RealEstateAgent",
-                name: agent.name ?? agent.company,
+                name: agent.name ?? agent.company ?? 'Unknown Agent',
                 description: `Professional real estate agent on MeQasa`,
-                url: `${siteConfig.url}/agents/${encodeURIComponent(agent.name)}`,
+                url: `${siteConfig.url}/agents/${encodeURIComponent((agent.name || agent.company || 'agent').toLowerCase())}`,
                 image: agent.logo
                   ? `${siteConfig.url}/uploads/imgs/${agent.logo}`
                   : undefined,

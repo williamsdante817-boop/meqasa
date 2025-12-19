@@ -114,7 +114,7 @@ export function AgentCard({
     },
   ].filter(({ url }) => url);
 
-  const agentDetailUrl = `/agents/${encodeURIComponent(name.toLowerCase())}?g=${id}`;
+  const agentDetailUrl = `/agents/${encodeURIComponent((name || 'agent').toLowerCase())}?g=${id}`;
 
   return (
     <>
