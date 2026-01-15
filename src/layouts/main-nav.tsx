@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import * as React from "react";
 import { useMemo } from "react";
 
@@ -14,8 +13,6 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
-import { Icons } from "@/components/icons";
-import { siteConfig } from "@/config/site";
 import type { MainNavItem } from "@/types";
 
 interface MainNavProps {
@@ -31,27 +28,14 @@ export function MainNav({ items }: MainNavProps) {
       role="navigation"
       aria-label="Main navigation"
     >
-      <Link
-        href="/"
-        className="hidden items-center space-x-2 lg:flex"
-        aria-label="Home"
-      >
-        <Icons.logo className="size-7 text-[#f93a5d]" aria-hidden="true" />
-        <span className="hidden text-xl font-bold lg:inline-block text-brand-accent">
-          {siteConfig.name}
-        </span>
-
-        <span className="sr-only">Home</span>
-      </Link>
-
       <NavigationMenu className="max-w-full justify-start">
-        <NavigationMenuList className="flex-wrap text-brand-accent">
+        <NavigationMenuList className="text-brand-accent flex-wrap">
           {memoizedItems?.map((item) => (
             <NavigationMenuItem key={item.title}>
               {item.items.length > 0 ? (
                 <>
                   <NavigationMenuTrigger
-                    className="text-base font-semibold hover:text-brand-accent data-[state=open]:text-brand-accent"
+                    className="hover:text-brand-accent data-[state=open]:text-brand-accent text-base font-semibold"
                     aria-expanded="false"
                   >
                     {item.title}
@@ -59,7 +43,7 @@ export function MainNav({ items }: MainNavProps) {
                   <NavigationMenuContent>
                     <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
                       <li className="col-span-2">
-                        <div className="mb-2 mt-2 text-sm font-semibold text-brand-accent">
+                        <div className="text-brand-accent mt-2 mb-2 text-sm font-semibold">
                           {item.description}
                         </div>
                       </li>
@@ -85,7 +69,7 @@ export function MainNav({ items }: MainNavProps) {
                     }
                     className={cn(
                       navigationMenuTriggerStyle(),
-                      "text-base font-semibold hover:text-brand-accent data-[state=open]:text-brand-accent"
+                      "hover:text-brand-accent data-[state=open]:text-brand-accent text-base font-semibold"
                     )}
                   >
                     {item.title}
@@ -113,16 +97,16 @@ const ListItem = React.forwardRef<
         <a
           ref={ref}
           className={cn(
-            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent text-brand-accent focus:bg-accent focus:text-accent-foreground",
+            "hover:bg-accent text-brand-accent focus:bg-accent focus:text-accent-foreground block cursor-pointer space-y-1 rounded-md p-3 leading-none no-underline transition-colors outline-none select-none",
             className
           )}
           {...props}
         >
-          <div className="text-sm text-inherit font-medium leading-none">
+          <div className="text-sm leading-none font-medium text-inherit">
             {title}
           </div>
           {description && (
-            <p className="line-clamp-2 mt-1 text-sm text-brand-muted">
+            <p className="text-brand-muted mt-1 line-clamp-2 text-sm">
               {description}
             </p>
           )}

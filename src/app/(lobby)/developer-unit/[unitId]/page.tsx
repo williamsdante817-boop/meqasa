@@ -1,6 +1,5 @@
 import { AddFavoriteButton } from "@/components/add-favorite-button";
 import Amenities from "@/components/amenities";
-import { AlertCard } from "@/components/common/alert-card";
 import ContactCard from "@/components/common/contact-card";
 import { DynamicCarousel } from "@/components/common/dynamic-carousel";
 import ContactSection from "@/components/contact-section";
@@ -10,14 +9,12 @@ import ContentSection from "@/components/layout/content-section";
 import MortgageCalculator from "@/components/mortgage-calculator";
 import PropertyFavoritesBanner from "@/components/property-favorite-banner";
 import PropertyDetailsTable from "@/components/property/details/property-details";
-import PropertyInsight from "@/components/property/details/property-insight";
-// import PropertyPlan from "@/components/property/details/property-plan";
+
 import PropertyContextCard from "@/components/common/property-context-card";
 import PropertyFeatures from "@/components/common/property-features";
 import TrendingPropertyCard from "@/components/common/trending-property-card";
 import PropertyShowcase from "@/components/property/details/property-showcase";
 import PropertyListings from "@/components/property/listings/property-listings";
-import SafetyTipsCard from "@/components/safety-tip";
 import { Badge } from "@/components/ui/badge";
 import Shell from "@/layouts/shell";
 import {
@@ -319,30 +316,35 @@ export default async function DeveloperUnitPage({
                 city: unitDetails.unit.city,
               }}
             />
-            <ContentSection
-              title="Description"
-              description=""
-              href="/developer-units"
-              className="pt-14 pb-10 md:pt-20 md:pb-0"
-              btnHidden
-            >
-              <ExpandableDescription
-                description={buildInnerHtml(unitDetails.unit.description)}
-                name={unitDetails.unit.companyname}
-                href={developerHref}
-              />
-            </ContentSection>
-            <ContentSection
-              title="Explore More"
-              description=""
-              href="/developer-units"
-              className="pt-14 md:pt-20"
-              btnHidden
-            >
-              <PropertyShowcase
-                images={unitDetails.photos.map((photo) => photo.photo)}
-              />
-            </ContentSection>
+            {unitDetails.unit.description &&
+              unitDetails.unit.description.trim() !== "" && (
+                <ContentSection
+                  title="Description"
+                  description=""
+                  href="/developer-units"
+                  className="pt-14 pb-10 md:pt-20 md:pb-0"
+                  btnHidden
+                >
+                  <ExpandableDescription
+                    description={buildInnerHtml(unitDetails.unit.description)}
+                    name={unitDetails.unit.companyname}
+                    href={developerHref}
+                  />
+                </ContentSection>
+              )}
+            {unitDetails.photos && unitDetails.photos.length > 0 && (
+              <ContentSection
+                title="Explore More"
+                description=""
+                href="/developer-units"
+                className="pt-14 md:pt-20"
+                btnHidden
+              >
+                <PropertyShowcase
+                  images={unitDetails.photos.map((photo) => photo.photo)}
+                />
+              </ContentSection>
+            )}
             <PropertyFavoritesBanner
               propertyId={Number(unitDetails.unit.unitid)}
               propertyType="listing"
@@ -363,7 +365,7 @@ export default async function DeveloperUnitPage({
               <PropertyDetailsTable details={propertyDetails} />
             </ContentSection>
 
-            {unitDetails.features?.length > 0 ? (
+            {unitDetails.features?.length > 0 && (
               <ContentSection
                 title="Amenities"
                 description=""
@@ -377,9 +379,7 @@ export default async function DeveloperUnitPage({
                   )}
                 />
               </ContentSection>
-            ) : null}
-
-            <SafetyTipsCard />
+            )}
 
             {/* Property plan section - currently not available in unit data */}
             {/* {unitDetails.unit.floorplan && (
@@ -396,15 +396,6 @@ export default async function DeveloperUnitPage({
                 />
               </ContentSection>
             )} */}
-
-            <PropertyInsight
-              location={unitDetails.unit.city ?? unitDetails.unit.address ?? ""}
-              bedroomType={
-                unitDetails.unit.beds
-                  ? `${unitDetails.unit.beds}-bedroom`
-                  : undefined
-              }
-            />
           </div>
           <aside className="hidden lg:block">
             <ContactCard
@@ -443,13 +434,13 @@ export default async function DeveloperUnitPage({
         pageType="project"
       />
 
-      {unitDetails.similarunits?.length > 0 ? (
+      {unitDetails.similarunits?.length > 0 && (
         <ContentSection
           title="Similar Units"
           description=""
           href={similarSearchHref}
           className={cn(
-            unitDetails.similarunits.length !== 0 ? "mb-6 px-0" : "px-4",
+            "mb-6 px-0",
             "pt-14 md:block md:pt-20 lg:mx-auto lg:max-w-7xl lg:pt-24 [&_h2]:px-4 [&_p]:px-4"
           )}
         >
@@ -458,10 +449,6 @@ export default async function DeveloperUnitPage({
             parentContract={unitDetails.unit.terms}
           />
         </ContentSection>
-      ) : (
-        <Shell>
-          <AlertCard className="my-10" />
-        </Shell>
       )}
     </main>
   );

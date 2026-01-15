@@ -4,6 +4,7 @@ import { ImageWithFallback } from "@/components/common/image-with-fallback";
 import {
   extractFlexiBannerBlocks,
   extractImageUrlsFromFlexi,
+  extractHrefFromFlexi,
 } from "@/lib/flexi-banner";
 import { buildRichInnerHtml } from "@/lib/utils";
 import { useEffect, useMemo, useState } from "react";
@@ -13,6 +14,7 @@ import { Card } from "./ui/card";
 interface GridAdProps {
   flexiBanner: string;
   error?: string;
+  adData?: Array<{ src: string; href: string }>;
 }
 
 /**
@@ -22,7 +24,7 @@ interface GridAdProps {
  * - Shows skeleton until images are ready (with 3s fallback).
  * - Uses blur-up + fallback images for resilience.
  */
-export default function GridAd({ flexiBanner, error }: GridAdProps) {
+export default function GridAd({ flexiBanner, error, adData }: GridAdProps) {
   const [mounted, setMounted] = useState(false);
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [loadedMap, setLoadedMap] = useState<Record<string, boolean>>({});
@@ -38,7 +40,6 @@ export default function GridAd({ flexiBanner, error }: GridAdProps) {
 
     const staticImageUrls = [
       "https://images.unsplash.com/photo-1448630360428-65456885c650?q=80&w=2334&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      "https://images.unsplash.com/photo-1593696140826-c58b021acf8b?q=80&w=2340&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     ];
 
     const flexiBannerImageUrls = flexiBlocks.flatMap((block) =>
@@ -81,6 +82,11 @@ export default function GridAd({ flexiBanner, error }: GridAdProps) {
     return extractFlexiBannerBlocks(flexiBanner);
   }, [mounted, flexiBanner]);
 
+  const flexiHref = useMemo(() => {
+    if (!mounted || flexiBlocks.length === 0) return null;
+    return extractHrefFromFlexi(flexiBlocks[0]);
+  }, [mounted, flexiBlocks]);
+
   // Blur placeholder for Next.js <Image>
   const blurDataURL =
     "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAQABgDASIAAhEBAxEB/8QAFwAAAwEAAAAAAAAAAAAAAAAAAAMGBP/EACAQAAEDBAICAwAAAAAAAAAAAAECAwQABREGEiExE1HB/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAL/xAAYEQEBAQEBAAAAAAAAAAAAAAAAARECEv/aAAwDAQACEQMRAD8A0kup7jLkSktFTqXW4VBwKS2qCWlOKGCUp3BsEjJOD6nVZ/q67kJhp1oYfBBVyCrwB4lfX0o1HqVPUC9TSLsGkKJU0pClJ1gDPJORz4z2BI6bTEMStqRIebTKUVv5S2ppOSCCdoJI+p8fY+oj7z/2Q==";
@@ -106,50 +112,24 @@ export default function GridAd({ flexiBanner, error }: GridAdProps) {
   return (
     <section className="hidden lg:block" aria-label="Featured items grid">
       <div
-        className="grid h-full grid-cols-1 gap-4 sm:grid-cols-6 sm:grid-rows-4"
+        className="grid h-full grid-cols-1 gap-4 sm:grid-cols-2"
         role="grid"
       >
         {/* First banner image */}
-        <Card className="relative h-60 overflow-hidden rounded-lg sm:col-span-3 sm:row-span-2">
+        <Card className="relative h-[330px] overflow-hidden rounded-lg">
           <a
-            href="https://www.thorpe-bedu.com/belton-residences/"
+            href={adData?.[0]?.href || "https://www.thorpe-bedu.com/belton-residences/"}
             target="_blank"
             rel="noopener noreferrer"
             className="relative block h-full"
           >
             <ImageWithFallback
-              src="https://images.unsplash.com/photo-1448630360428-65456885c650?q=80&w=2334&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              src={adData?.[0]?.src || "https://images.unsplash.com/photo-1448630360428-65456885c650?q=80&w=2334&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"}
               alt="Belton Residences - Selling Fast"
               fill
               className={`object-cover transition-all duration-700 ${
                 loadedMap[
-                  "https://images.unsplash.com/photo-1448630360428-65456885c650?q=80&w=2334&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                ]
-                  ? "blur-0 opacity-100"
-                  : "opacity-90 blur-sm"
-              }`}
-              placeholder="blur"
-              blurDataURL={blurDataURL}
-              sizes="(max-width: 768px) 100vw, 50vw"
-              fallbackAlt="Ad image not available"
-            />
-          </a>
-        </Card>
-
-        {/* Second banner image */}
-        <Card className="relative h-60 overflow-hidden rounded-lg sm:col-span-3 sm:row-span-2">
-          <a
-            href="/follow-ad-2502?u=https://meqasa.com/1-bedroom-apartment-for-sale-in-nungua-unit-3222"
-            target="_blank"
-            className="relative block h-full"
-          >
-            <ImageWithFallback
-              src="https://images.unsplash.com/photo-1593696140826-c58b021acf8b?q=80&w=2340&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-              alt="Belton Residences - Premium Properties"
-              fill
-              className={`object-cover transition-all duration-700 ${
-                loadedMap[
-                  "https://images.unsplash.com/photo-1593696140826-c58b021acf8b?q=80&w=2340&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                  adData?.[0]?.src || "https://images.unsplash.com/photo-1448630360428-65456885c650?q=80&w=2334&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                 ]
                   ? "blur-0 opacity-100"
                   : "opacity-90 blur-sm"
@@ -163,17 +143,20 @@ export default function GridAd({ flexiBanner, error }: GridAdProps) {
         </Card>
 
         {/* Flexi banner slot */}
-        {flexiBlocks.length > 0 && (
-          <Card className="h-full overflow-hidden rounded-lg sm:col-span-3 sm:col-start-4 sm:row-span-4 sm:row-start-1">
-            <div className="flex h-full flex-col divide-y divide-orange-200">
-              {flexiBlocks.map((block, index) => (
-                <article
-                  key={`flexi-block-${index}`}
-                  className="flex-1"
-                  dangerouslySetInnerHTML={buildRichInnerHtml(block)}
-                />
-              ))}
-            </div>
+        {flexiBlocks.length > 0 && flexiBlocks[0] && (
+          <Card 
+            className="h-[330px] overflow-hidden rounded-lg cursor-pointer"
+            onClick={() => {
+              const href = adData?.[1]?.href || flexiHref;
+              if (href) {
+                window.open(href, '_blank', 'noopener,noreferrer');
+              }
+            }}
+          >
+            <article
+              className="h-full"
+              dangerouslySetInnerHTML={buildRichInnerHtml(flexiBlocks[0])}
+            />
           </Card>
         )}
       </div>

@@ -19,14 +19,18 @@ export default function HeaderAdClient() {
       try {
         // Determine which banner endpoint to use based on route
         const isSearchPage = pathname?.includes("/search");
-        const endpoint = isSearchPage ? "/api/banner/search" : "/api/banner/default";
+        const endpoint = isSearchPage
+          ? "/api/banner/search"
+          : "/api/banner/default";
 
         const response = await fetch(endpoint);
         const data = await response.json();
 
         // Extract HTML from banner array
         if (Array.isArray(data) && data.length > 0) {
-          const htmlArray = data.map((b: { html: string }) => b.html).filter(Boolean);
+          const htmlArray = data
+            .map((b: { html: string }) => b.html)
+            .filter(Boolean);
           setBannerData(htmlArray);
         } else {
           setBannerData([]);
@@ -74,16 +78,10 @@ export default function HeaderAdClient() {
             aria-label="Advertisement"
           >
             <div
-              dangerouslySetInnerHTML={buildRichInnerHtml(
-                String(bannerData)
-              )}
+              dangerouslySetInnerHTML={buildRichInnerHtml(String(bannerData))}
             />
           </Card>
-        ) : (
-          <div className="flex h-[90px] w-[728px] items-center justify-center rounded-sm border border-gray-200 bg-gray-50">
-            <p className="text-sm text-gray-500">Advertisement space</p>
-          </div>
-        )}
+        ) : null}
       </div>
     </div>
   );

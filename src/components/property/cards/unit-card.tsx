@@ -40,7 +40,7 @@ export default function UnitCard({ unit }: { unit: SimilarUnit | Unit }) {
       <Link
         href={unitUrl}
         aria-label={`View details for ${unit.title}`}
-        className="focus:ring-accent block rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent focus:outline-none"
+        className="focus:ring-accent block cursor-pointer rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent focus:outline-none"
       >
         <CardHeader className="gap-0 rounded-lg border-b border-b-gray-100 !p-0 shadow-none">
           <AspectRatio

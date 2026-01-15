@@ -12,10 +12,10 @@ export function SiteHeader() {
 
   return (
     <header
-      className="sticky top-0 z-[100] w-full border-b border-gray-200 bg-background flex items-center justify-center"
+      className="bg-background sticky top-0 z-[100] flex w-full items-center justify-center border-b border-gray-200"
       role="banner"
     >
-      <div className="flex items-center container h-16 px-4 lg:px-6">
+      <div className="container flex h-16 items-center px-3">
         <MainNav items={siteConfig.mainNav} />
         <MobileNav items={siteConfig.mainNav} />
         <div className="flex flex-1 items-center justify-end space-x-4">

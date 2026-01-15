@@ -201,7 +201,7 @@ export function MobileNav({ items: _ }: MobileNavProps) {
                       key={action.title}
                       href={action.href}
                       onClick={() => setOpen(false)}
-                      className="group flex flex-col items-center rounded-lg border bg-gray-50 p-4 transition-colors hover:bg-gray-100"
+                      className="group flex cursor-pointer flex-col items-center rounded-lg border bg-gray-50 p-4 transition-colors hover:bg-gray-100"
                     >
                       <IconComponent className="text-brand-primary mb-2 h-6 w-6 stroke-[1.5] transition-transform group-hover:scale-110" />
                       <span className="text-center text-xs font-medium text-gray-700">
@@ -246,7 +246,7 @@ export function MobileNav({ items: _ }: MobileNavProps) {
                               href={subItem.href}
                               segment={String(segment)}
                               setOpen={setOpen}
-                              className="rounded-md p-3 transition-colors hover:bg-gray-50"
+                              className="cursor-pointer rounded-md p-3 transition-colors hover:bg-gray-50"
                             >
                               {subItem.title}
                             </MobileLink>
@@ -269,7 +269,7 @@ export function MobileNav({ items: _ }: MobileNavProps) {
                       key={action.title}
                       href={action.href}
                       onClick={() => setOpen(false)}
-                      className="flex items-center gap-3 rounded-lg p-3 transition-colors hover:bg-gray-50"
+                      className="flex cursor-pointer items-center gap-3 rounded-lg p-3 transition-colors hover:bg-gray-50"
                     >
                       <IconComponent className="text-brand-primary h-5 w-5 stroke-[1.5]" />
                       <div>
@@ -313,7 +313,7 @@ function MobileLink({
     <Link
       href={href}
       className={cn(
-        "text-foreground/70 hover:text-foreground transition-colors",
+        "text-foreground/70 hover:text-foreground cursor-pointer transition-colors",
         href.includes(segment) && "text-foreground",
         disabled && "pointer-events-none opacity-60",
         className

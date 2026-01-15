@@ -36,7 +36,7 @@ export default function BlogCard({
   const displayDate = isValidDate ? formatDisplayDate(datePosted) : datePosted;
 
   return (
-    <Link href={href} className="block" aria-label={`Read blog post: ${title}`}>
+    <Link href={href} className="block cursor-pointer" aria-label={`Read blog post: ${title}`}>
       <article className="mb-6 grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_192px]">
         <div className="space-y-2">
           <h3 className="text-brand-accent mb-1 text-base leading-tight font-semibold sm:text-lg">

@@ -124,7 +124,7 @@ export function ResultsPopup({ popupData: serverPopupData, type, contract }: Res
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="max-w-[90vw] overflow-hidden border-none bg-transparent p-0 shadow-none sm:max-w-[600px]">
+      <DialogContent className="max-w-[90vw] overflow-hidden border-none bg-transparent p-0 shadow-none sm:max-w-[900px]">
         <DialogHeader className="sr-only">
           <DialogTitle>{serverPopupData.title}</DialogTitle>
         </DialogHeader>
@@ -169,11 +169,11 @@ export function ResultsPopup({ popupData: serverPopupData, type, contract }: Res
             <Image
               src={serverPopupData.imageUrl}
               alt={serverPopupData.alt}
-              width={600}
-              height={800}
-              className="h-auto w-full object-contain transition-transform duration-500 group-hover:scale-105"
+              width={900}
+              height={500}
+              className="h-auto w-full object-contain"
               priority
-              sizes="(max-width: 640px) 90vw, 600px"
+              sizes="(max-width: 640px) 90vw, 900px"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
             

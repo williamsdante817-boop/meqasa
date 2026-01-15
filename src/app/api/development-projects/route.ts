@@ -196,7 +196,16 @@ const mockData: DevelopmentProjectResponse = {
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    // Handle empty body gracefully
+    let body = {};
+    try {
+      const text = await request.text();
+      if (text) {
+        body = JSON.parse(text);
+      }
+    } catch {
+      // Empty or invalid body, use empty object
+    }
 
     // Try to call the MeQasa API first, fall back to mock data if it fails
     try {
@@ -217,15 +226,10 @@ export async function POST(request: NextRequest) {
         }
       });
 
-      console.log("Development Projects API call:", {
-        url: "https://meqasa.com/real-estate-developments",
-        postParams: Object.fromEntries(postParams.entries()),
-      });
-
       const response = await fetch(
         "https://meqasa.com/real-estate-developments",
         {
-          method: "GET",
+          method: "POST",
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
           },

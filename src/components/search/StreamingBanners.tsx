@@ -17,11 +17,7 @@ function deriveAdvertiserLabel(href: string): string {
   }
 }
 
-function SidebarAdSection({
-  children,
-}: {
-  children: ReactNode;
-}) {
+function SidebarAdSection({ children }: { children: ReactNode }) {
   return (
     <aside
       aria-labelledby={SIDEBAR_AD_HEADING_ID}
@@ -49,13 +45,7 @@ async function StreamingRectangleBanners() {
   const rectangleBanners = await getRectangleBanners();
 
   if (!rectangleBanners || rectangleBanners.length === 0) {
-    return (
-      <SidebarAdSection>
-        <div className="rounded-lg border border-dashed border-gray-200 bg-gray-50 p-6 text-center text-sm text-gray-500">
-          Sponsored content will appear here soon.
-        </div>
-      </SidebarAdSection>
-    );
+    return null;
   }
 
   return (
@@ -95,7 +85,11 @@ async function StreamingFlexiBanner() {
     }
 
     return (
-      <div className="mb-8 space-y-6" role="group" aria-label="Featured advertisements">
+      <div
+        className="mb-8 space-y-6"
+        role="group"
+        aria-label="Featured advertisements"
+      >
         {blocks.map((block, index) => (
           <div
             key={`flexi-block-${index}`}

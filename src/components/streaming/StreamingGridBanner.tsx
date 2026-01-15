@@ -31,7 +31,7 @@ export async function StreamingGridBanner({
     }
 
     return (
-      <Shell>
+      <Shell className="px-0">
         <GridAd flexiBanner={flexiBanner} />
       </Shell>
     );

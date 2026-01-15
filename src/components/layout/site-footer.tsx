@@ -1,5 +1,4 @@
 import PropertyAlertsForm from "@/components/property/forms/property-alerts-form";
-import ScrollTotop from "@/components/scroll-to-top";
 import { siteConfig } from "@/config/site";
 import Shell from "@/layouts/shell";
 import type { SiteConfig } from "@/types";
@@ -63,7 +62,6 @@ export function SiteFooter() {
           </div>
         </section>
       </Shell>
-      <ScrollTotop />
     </footer>
   );
 }

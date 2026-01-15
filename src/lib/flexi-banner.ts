@@ -30,3 +30,9 @@ export function extractImageUrlsFromFlexi(html: string): string[] {
 
   return Array.from(urls);
 }
+
+export function extractHrefFromFlexi(html: string): string | null {
+  const hrefRegex = /<a[^>]+href="([^"]+)"/i;
+  const match = html.match(hrefRegex);
+  return match ? match[1] : null;
+}

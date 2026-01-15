@@ -3,9 +3,10 @@
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Camera, Dot, Phone } from "lucide-react";
 import Link from "next/link";
-import React, { useState } from "react";
+import { useState } from "react";
 
 import { ImageWithFallback } from "@/components/common/image-with-fallback";
+import { DeveloperContactCard } from "@/components/developer/cards/developer-contact-card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -16,16 +17,15 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Skeleton } from "@/components/ui/skeleton";
-import { cn, buildInnerHtml } from "@/lib/utils";
 import { formatRecency } from "@/lib/date-utils";
-import { DeveloperContactCard } from "@/components/developer/cards/developer-contact-card";
+import { buildInnerHtml, cn } from "@/lib/utils";
 
 interface DeveloperUnit {
   id: string;
@@ -78,6 +78,8 @@ export function UnitsResultCard({
 
   // Calculate actual photo count
   const photoCount = unit.coverphoto || unit.image ? 1 : 0;
+
+  console.log("units result", unit);
 
   // Get display values
   const displayContract =
@@ -142,15 +144,28 @@ export function UnitsResultCard({
         return { pricepart1: unit.price };
       } else if (currencySign === "¢" && unit.rentpricepermonth) {
         const rentDurationType = unit.rentdurationtype || "permonth";
-        const formatGHS = (amount: number) => 
-          new Intl.NumberFormat("en-GH", { style: "currency", currency: "GHS", minimumFractionDigits: 0 }).format(amount);
+        const formatGHS = (amount: number) =>
+          new Intl.NumberFormat("en-GH", {
+            style: "currency",
+            currency: "GHS",
+            minimumFractionDigits: 0,
+          }).format(amount);
 
         if (rentDurationType === "perday" && unit.rentpriceperday) {
-          return { pricepart1: formatGHS(unit.rentpriceperday), pricepart2: "/day" };
+          return {
+            pricepart1: formatGHS(unit.rentpriceperday),
+            pricepart2: "/day",
+          };
         } else if (rentDurationType === "perweek" && unit.rentpriceperweek) {
-          return { pricepart1: formatGHS(unit.rentpriceperweek), pricepart2: "/week" };
+          return {
+            pricepart1: formatGHS(unit.rentpriceperweek),
+            pricepart2: "/week",
+          };
         } else {
-          return { pricepart1: formatGHS(unit.rentpricepermonth), pricepart2: "/month" };
+          return {
+            pricepart1: formatGHS(unit.rentpricepermonth),
+            pricepart2: "/month",
+          };
         }
       }
 
@@ -161,8 +176,12 @@ export function UnitsResultCard({
       if (currencySign === "$" && unit.price) {
         return { pricepart1: unit.price };
       } else if (currencySign === "¢" && unit.sellingprice) {
-        return { 
-          pricepart1: new Intl.NumberFormat("en-GH", { style: "currency", currency: "GHS", minimumFractionDigits: 0 }).format(unit.sellingprice) 
+        return {
+          pricepart1: new Intl.NumberFormat("en-GH", {
+            style: "currency",
+            currency: "GHS",
+            minimumFractionDigits: 0,
+          }).format(unit.sellingprice),
         };
       }
 

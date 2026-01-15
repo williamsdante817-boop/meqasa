@@ -108,7 +108,7 @@ function PropertyContainerContent({
               <PropertyPriceRange projectData={projectData} />
 
               <div className="container mx-auto">
-                {projectData.project.aboutproject && (
+                {projectData.project.aboutproject && projectData.project.aboutproject.trim() !== "" && (
                   <ContentSection
                     title="About Developer"
                     description=""
@@ -124,7 +124,7 @@ function PropertyContainerContent({
                   </ContentSection>
                 )}
 
-                {images && images.length > 0 && (
+                {images?.length ? (
                   <ContentSection
                     title="Explore More"
                     description=""
@@ -134,19 +134,21 @@ function PropertyContainerContent({
                   >
                     <PropertyShowcase images={images} />
                   </ContentSection>
-                )}
+                ) : null}
 
-                <ContentSection
-                  title="Project Details"
-                  description=""
-                  href=""
-                  className="hidden px-0 pt-14 md:block md:pt-20"
-                  btnHidden
-                >
-                  <PropertyDetailsTable details={projectDetails} />
-                </ContentSection>
+                {projectDetails?.length ? (
+                  <ContentSection
+                    title="Project Details"
+                    description=""
+                    href=""
+                    className="hidden px-0 pt-14 md:block md:pt-20"
+                    btnHidden
+                  >
+                    <PropertyDetailsTable details={projectDetails} />
+                  </ContentSection>
+                ) : null}
 
-                {projectData.features && projectData.features.length > 0 && (
+                {projectData.features?.length ? (
                   <ContentSection
                     title="Amenities"
                     description=""
@@ -158,14 +160,13 @@ function PropertyContainerContent({
                       amenities={projectData.features.map((f) => f.feature)}
                     />
                   </ContentSection>
-                )}
+                ) : null}
 
-                {projectData.project.tourvideo && (
+                {projectData.project.tourvideo && projectData.project.tourvideo.trim() !== "" && (
                   <ProjectVideo videoUrl={projectData.project.tourvideo} />
                 )}
 
-                {/* Only show site plans if they exist in the data */}
-                {projectData.project.siteplan && (
+                {projectData.project.siteplan && projectData.project.siteplan.trim() !== "" && (
                   <ContentSection
                     title="Site Plans"
                     description=""
@@ -203,55 +204,60 @@ function PropertyContainerContent({
           </aside>
         </div>
       </Shell>
-      <Shell>
-        <div className="w-full" role="complementary">
-          <section
-            id="floor-plan"
-            ref={sectionRefs["floor-plan"]}
-            aria-labelledby="floor-plans-heading"
-          >
-            <ContentSection
-              title="Floor Plans"
-              description="View available floor plan layouts"
-              href="#floor-plan"
-              className="px-0 pt-14 md:pt-20"
-              btnHidden
-              id="floor-plans-heading"
-            >
-              <FloorPlans floorPlans={projectData.floorplans || []} />
-            </ContentSection>
-          </section>
+      {(projectData.floorplans?.length || (projectData.project.lat && projectData.project.lng)) ? (
+        <Shell>
+          <div className="w-full" role="complementary">
+            {projectData.floorplans?.length ? (
+              <section
+                id="floor-plan"
+                ref={sectionRefs["floor-plan"]}
+                aria-labelledby="floor-plans-heading"
+              >
+                <ContentSection
+                  title="Floor Plans"
+                  description="View available floor plan layouts"
+                  href="#floor-plan"
+                  className="px-0 pt-14 md:pt-20"
+                  btnHidden
+                  id="floor-plans-heading"
+                >
+                  <FloorPlans floorPlans={projectData.floorplans} />
+                </ContentSection>
+              </section>
+            ) : null}
 
-          <section
-            id="location"
-            ref={sectionRefs.location}
-            className="w-full py-16"
-            aria-labelledby="location-heading"
-          >
-            <ContentSection
-              title="Nearest Establishments"
-              description="View nearby points of interest"
-              href="#location"
-              className="px-0 pt-14 md:pt-20"
-              btnHidden
-              id="location-heading"
-            >
-              <NearestEstablishments
-                className="mb-8"
-                propertyLocation={{
-                  lat: projectData.project.lat || 5.56,
-                  lng: projectData.project.lng || -0.2057,
-                }}
-                propertyName={projectData.project.projectname}
-                neighborhood={
-                  projectData.project.city || projectData.project.region
-                }
-              />
-              {/* <NearbyLocation /> */}
-            </ContentSection>
-          </section>
-        </div>
-      </Shell>
+            {(projectData.project.lat && projectData.project.lng) ? (
+              <section
+                id="location"
+                ref={sectionRefs.location}
+                className="w-full py-16"
+                aria-labelledby="location-heading"
+              >
+                <ContentSection
+                  title="Nearest Establishments"
+                  description="View nearby points of interest"
+                  href="#location"
+                  className="px-0 pt-14 md:pt-20"
+                  btnHidden
+                  id="location-heading"
+                >
+                  <NearestEstablishments
+                    className="mb-8"
+                    propertyLocation={{
+                      lat: projectData.project.lat,
+                      lng: projectData.project.lng,
+                    }}
+                    propertyName={projectData.project.projectname}
+                    neighborhood={
+                      projectData.project.city || projectData.project.region
+                    }
+                  />
+                </ContentSection>
+              </section>
+            ) : null}
+          </div>
+        </Shell>
+      ) : null}
 
       <ContactSection
         name={projectData.project.companyname}

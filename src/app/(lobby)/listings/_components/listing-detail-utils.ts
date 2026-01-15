@@ -39,7 +39,10 @@ export function buildSimilarSearchHref(listingDetail: ListingDetails): string {
 }
 
 // Build agent profile URL
-export function buildAgentHref(ownerName: string, ownerPageUrl: string): string {
+export function buildAgentHref(
+  ownerName: string,
+  ownerPageUrl: string
+): string {
   const agentNameEncoded = encodeURIComponent(ownerName);
 
   let agentIdFromPage = "";
@@ -60,7 +63,9 @@ export function buildAgentHref(ownerName: string, ownerPageUrl: string): string 
 }
 
 // Determine if property is furnished
-export function getIsFurnished(isfurnished: boolean | string | undefined): boolean {
+export function getIsFurnished(
+  isfurnished: boolean | string | undefined
+): boolean {
   if (typeof isfurnished === "boolean") return isfurnished;
 
   if (typeof isfurnished === "string") {
@@ -87,9 +92,10 @@ export function buildPropertyDetails(listingDetail: ListingDetails) {
     },
     {
       title: "Furnished",
-      value: listingDetail.isfurnished !== ""
-        ? listingDetail.isfurnished
-        : "Not specified",
+      value:
+        listingDetail.isfurnished !== ""
+          ? listingDetail.isfurnished
+          : "Not specified",
     },
     {
       title: "Date Registered",

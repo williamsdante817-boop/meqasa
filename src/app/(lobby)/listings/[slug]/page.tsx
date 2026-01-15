@@ -3,18 +3,7 @@ import Shell from "@/layouts/shell";
 
 import { AddFavoriteButton } from "@/components/add-favorite-button";
 import Amenities from "@/components/amenities";
-import { AlertCard } from "@/components/common/alert-card";
 import ContactCard from "@/components/common/contact-card";
-import {
-  Empty,
-  EmptyHeader,
-  EmptyMedia,
-  EmptyTitle,
-  EmptyDescription,
-  EmptyContent,
-} from "@/components/ui/empty";
-import { Button } from "@/components/ui/button";
-import { Home } from "lucide-react";
 import { DynamicCarousel } from "@/components/common/dynamic-carousel";
 import PropertyContextCard from "@/components/common/property-context-card";
 import PropertyFeatures from "@/components/common/property-features";
@@ -26,7 +15,6 @@ import LeaseOptions from "@/components/lease-option";
 import MortgageCalculator from "@/components/mortgage-calculator";
 import PropertyFavoritesBanner from "@/components/property-favorite-banner";
 import PropertyDetailsTable from "@/components/property/details/property-details";
-import PropertyInsight from "@/components/property/details/property-insight";
 import PropertyShowcase from "@/components/property/details/property-showcase";
 import PropertyListings from "@/components/property/listings/property-listings";
 import SafetyTipsCard from "@/components/safety-tip";
@@ -438,37 +426,34 @@ export default async function DetailsPage({
                   categorytext: listingDetail.categorytext,
                 }}
               />
-              <ContentSection
-                title="Description"
-                description=""
-                href="/listings"
-                className="overflow-hidden px-0 pt-14 pb-10 md:pt-20 md:pb-0"
-                btnHidden
-              >
-                {listingDetail?.description &&
-                listingDetail.description.trim() !== "" ? (
-                  <ExpandableDescription
-                    description={buildInnerHtml(listingDetail.description)}
-                    name={listingDetail.owner.name}
-                    href={agentHref}
-                  />
-                ) : (
-                  <AlertCard
-                    title="No description provided"
-                    description="This listing doesn't have a detailed description yet."
-                    className="my-4 h-[200px] md:h-[300px]"
-                  />
+              {listingDetail?.description &&
+                listingDetail.description.trim() !== "" && (
+                  <ContentSection
+                    title="Description"
+                    description=""
+                    href="/listings"
+                    className="overflow-hidden px-0 pt-14 pb-10 md:pt-20 md:pb-0"
+                    btnHidden
+                  >
+                    <ExpandableDescription
+                      description={buildInnerHtml(listingDetail.description)}
+                      name={listingDetail.owner.name}
+                      href={agentHref}
+                    />
+                  </ContentSection>
                 )}
-              </ContentSection>
-              <ContentSection
-                title="Explore More"
-                description=""
-                href="/listings"
-                className="px-0 pt-14 md:pt-20"
-                btnHidden
-              >
-                <PropertyShowcase images={listingDetail?.imagelist} />
-              </ContentSection>
+              {listingDetail?.imagelist &&
+                listingDetail.imagelist.length > 0 && (
+                  <ContentSection
+                    title="Explore More"
+                    description=""
+                    href="/listings"
+                    className="px-0 pt-14 md:pt-20"
+                    btnHidden
+                  >
+                    <PropertyShowcase images={listingDetail.imagelist} />
+                  </ContentSection>
+                )}
               <PropertyFavoritesBanner
                 propertyId={Number(listingDetail.detailreq.split("-").pop())}
                 propertyType="listing"
@@ -497,9 +482,11 @@ export default async function DetailsPage({
                 <PropertyDetailsTable details={propertyDetails} />
               </ContentSection>
 
-              {listingDetail.contract.toLowerCase() !== CONTRACT_TYPES.SALE && (
-                <LeaseOptions leaseOptions={listingDetail.leaseoptions} />
-              )}
+              {listingDetail.contract.toLowerCase() !== CONTRACT_TYPES.SALE &&
+                listingDetail.leaseoptions &&
+                listingDetail.leaseoptions.length > 0 && (
+                  <LeaseOptions leaseOptions={listingDetail.leaseoptions} />
+                )}
 
               {listingDetail.amenities.length > 0 && (
                 <ContentSection
@@ -514,15 +501,6 @@ export default async function DetailsPage({
               )}
 
               <SafetyTipsCard />
-
-              <PropertyInsight
-                location={listingDetail.locationstring}
-                bedroomType={
-                  listingDetail.beds
-                    ? `${listingDetail.beds}-bedroom`
-                    : undefined
-                }
-              />
             </div>
             <aside className="hidden lg:block">
               <ContactCard
@@ -556,7 +534,7 @@ export default async function DetailsPage({
           image={`${listingDetail.owner.logo !== "" ? listingDetail.owner.logo : listingDetail.owner.profilepic}`}
           listingId={listingDetail.listingid}
         />
-        {listingDetail.similars.length > 0 ? (
+        {listingDetail.similars.length > 0 && (
           <ContentSection
             title="Similar Listings"
             description=""
@@ -571,33 +549,6 @@ export default async function DetailsPage({
               parentContract={listingDetail.contract}
             />
           </ContentSection>
-        ) : (
-          <Shell className="my-10">
-            <Empty>
-              <EmptyHeader>
-                <EmptyMedia variant="icon">
-                  <Home />
-                </EmptyMedia>
-                <EmptyTitle>No similar listings found</EmptyTitle>
-                <EmptyDescription>
-                  We couldn&apos;t find any similar properties at this time.
-                  Check back later or explore other listings.
-                </EmptyDescription>
-              </EmptyHeader>
-              <EmptyContent>
-                <Button
-                  asChild
-                  size="lg"
-                  variant="brand-primary"
-                  className="w-full sm:w-auto"
-                >
-                  <a href={similarSearchHref}>
-                    Browse {listingDetail.location} Properties
-                  </a>
-                </Button>
-              </EmptyContent>
-            </Empty>
-          </Shell>
         )}
       </main>
     </>

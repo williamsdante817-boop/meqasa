@@ -22,7 +22,7 @@ export async function StreamingFeaturedProjects({
     <ContentSection
       title="Featured Projects"
       description="View all featured properties"
-      href="/developments"
+      href="/developers/projects"
       className={sectionClassName}
     >
       <ErrorStateCard
@@ -62,7 +62,7 @@ export async function StreamingFeaturedProjects({
       <ContentSection
         title="Featured Projects"
         description="View all featured properties"
-        href="/developments"
+        href="/developers/projects"
         className="w-full pt-14 md:pt-20 lg:pt-24 [&_h2]:px-4 md:[&_h2]:px-0 [&_p]:px-4 md:[&_p]:px-0"
       >
         <FeaturedProjectsCarousel properties={featuredProjects} delay={5000} />
