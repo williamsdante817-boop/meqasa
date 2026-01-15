@@ -83,7 +83,7 @@ export default function GridAd({ flexiBanner, error, adData }: GridAdProps) {
   }, [mounted, flexiBanner]);
 
   const flexiHref = useMemo(() => {
-    if (!mounted || flexiBlocks.length === 0) return null;
+    if (!mounted || flexiBlocks.length === 0 || !flexiBlocks[0]) return null;
     return extractHrefFromFlexi(flexiBlocks[0]);
   }, [mounted, flexiBlocks]);
 
