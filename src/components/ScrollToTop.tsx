@@ -1,16 +1,13 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { useEffect, startTransition } from 'react';
+import { useEffect } from 'react';
 
 export function ScrollToTop() {
   const pathname = usePathname();
 
   useEffect(() => {
-    startTransition(() => {
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
-    });
+    window.scrollTo(0, 0);
   }, [pathname]);
 
   return null;

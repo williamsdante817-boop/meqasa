@@ -1,12 +1,12 @@
 import AppPromotion from "@/components/app-promotion";
 import { ErrorStateCard } from "@/components/common/error-state-card";
 import LocationCard from "@/components/common/location-card";
+import { AgentLogosErrorBoundary } from "@/components/error-boundaries/agent-logos-error-boundary";
+import { InfiniteMovingCards } from "@/components/infinite-moving-card";
 import ContentSection from "@/components/layout/content-section";
 import SeoText from "@/components/seo-text";
 import Shell from "@/layouts/shell";
 import type { StaticData } from "@/lib/static-data";
-import { AgentLogosErrorBoundary } from "@/components/error-boundaries/agent-logos-error-boundary";
-import { InfiniteMovingCards } from "@/components/infinite-moving-card";
 
 interface StaticContentProps {
   staticData: StaticData;
@@ -52,7 +52,7 @@ export function StaticAgentLogos({ staticData }: StaticContentProps) {
 export function StaticLocationSection({ staticData }: StaticContentProps) {
   return (
     <ContentSection
-      title="Choice Neighborhoods"
+      title="Choice Neighbourhoods"
       description="These neighborhoods are highly desirable for business, living, and pleasure. Find out why!"
       href="/"
       className="w-full flex-[2] pt-14 md:pt-20 lg:pt-24 [&_h2]:px-4 md:[&_h2]:px-0 [&_p]:px-4 md:[&_p]:px-0"
