@@ -6,7 +6,7 @@ import ContactSection from "@/components/contact-section";
 import { ExpandableDescription } from "@/components/expandable-description";
 import { Breadcrumbs } from "@/components/layout/bread-crumbs";
 import ContentSection from "@/components/layout/content-section";
-import MortgageCalculator from "@/components/mortgage-calculator";
+import { MortgageCalculator } from "@/components/lazy";
 import PropertyFavoritesBanner from "@/components/property-favorite-banner";
 import PropertyDetailsTable from "@/components/property/details/property-details";
 

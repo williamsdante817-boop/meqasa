@@ -1,3 +1,6 @@
+// Enable ISR with 24 hour revalidation
+export const revalidate = 86400;
+
 import FeaturedPropertiesAsideWrapper from "@/components/about/featured-properties-aside-wrapper";
 import { StructuredData } from "@/components/structured-data";
 import { Button } from "@/components/ui/button";

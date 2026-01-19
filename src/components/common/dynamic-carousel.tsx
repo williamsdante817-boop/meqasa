@@ -2,7 +2,7 @@
 
 import { AddFavoriteButton } from "@/components/add-favorite-button";
 import { ImageWithFallback } from "@/components/common/image-with-fallback";
-import { ImageCarouselModal } from "@/components/image-carousel-modal";
+import { ImageCarouselModal } from "@/components/lazy";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import {

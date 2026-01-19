@@ -1,4 +1,5 @@
-export const dynamic = "force-dynamic";
+// Enable ISR with 1 hour revalidation
+export const revalidate = 3600;
 
 import { notFound } from "next/navigation";
 

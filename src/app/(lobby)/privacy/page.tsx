@@ -1,3 +1,6 @@
+// Enable ISR with 24 hour revalidation
+export const revalidate = 86400;
+
 import Link from "next/link";
 import { Breadcrumbs } from "@/components/layout/bread-crumbs";
 import Shell from "@/layouts/shell";

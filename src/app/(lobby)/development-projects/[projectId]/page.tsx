@@ -1,3 +1,6 @@
+// Enable ISR with 30 minute revalidation
+export const revalidate = 1800;
+
 import { Breadcrumbs } from "@/components/layout/bread-crumbs";
 import { Badge } from "@/components/ui/badge";
 import Shell from "@/layouts/shell";

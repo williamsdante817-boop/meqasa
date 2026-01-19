@@ -1,24 +1,25 @@
 export const dynamic = "force-dynamic";
-import React from "react";
-import { getFeaturedListings } from "@/lib/get-featured-listings";
-import { getFeaturedProjects } from "@/lib/get-featured-projects";
-
-import { getHeroBanner } from "@/lib/get-hero-banner";
-import { getLatestListings } from "@/lib/get-latest-listing";
-import { getFlexiBanner } from "@/lib/get-flexi-banner";
-import { getStaticData } from "@/lib/static-data";
-import { getBlogData } from "@/lib/get-blog-data";
+import {
+  getBlogData,
+  getFeaturedListings,
+  getFeaturedProjects,
+  getFlexiBanner,
+  getHeroBanner,
+  getLatestListings,
+} from "@/lib/cache/dedupe";
 import { getHomepagePopup } from "@/lib/get-homepage-popup";
-import { LobbySkeleton } from "./_component/lobby-skeleton";
-import Lobby from "./_component/lobby";
+import { getStaticData } from "@/lib/static-data";
 import type { Metadata } from "next";
+import React from "react";
+import Lobby from "./_component/lobby";
+import { LobbySkeleton } from "./_component/lobby-skeleton";
 
+import { StructuredData } from "@/components/structured-data";
 import {
   generateHomepageMetadata,
-  generateWebsiteStructuredData,
   generateOrganizationStructuredData,
+  generateWebsiteStructuredData,
 } from "@/lib/seo";
-import { StructuredData } from "@/components/structured-data";
 
 // Generate metadata for SEO using our utility
 export async function generateMetadata(): Promise<Metadata> {

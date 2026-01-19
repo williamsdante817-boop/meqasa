@@ -12,7 +12,7 @@ import ContactSection from "@/components/contact-section";
 import { ExpandableDescription } from "@/components/expandable-description";
 import ContentSection from "@/components/layout/content-section";
 import LeaseOptions from "@/components/lease-option";
-import MortgageCalculator from "@/components/mortgage-calculator";
+import { MortgageCalculator } from "@/components/lazy";
 import PropertyFavoritesBanner from "@/components/property-favorite-banner";
 import PropertyDetailsTable from "@/components/property/details/property-details";
 import PropertyShowcase from "@/components/property/details/property-showcase";
@@ -26,7 +26,7 @@ import {
 } from "@/lib/compressed-data-utils";
 import { sanitizeHtml } from "@/lib/dom-sanitizer";
 import { createPropertyError } from "@/lib/error-handling";
-import { getListingDetails } from "@/lib/get-listing-detail";
+import { getListingDetails } from "@/lib/cache/dedupe";
 import { logError, logInfo } from "@/lib/logger";
 import {
   generateListingDetailMetadata,

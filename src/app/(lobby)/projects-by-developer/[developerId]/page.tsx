@@ -1,3 +1,6 @@
+// Enable ISR with 2 hour revalidation
+export const revalidate = 7200;
+
 import { Breadcrumbs } from "@/components/layout/bread-crumbs";
 import ContactCard from "@/components/common/contact-card";
 import ContentSection from "@/components/layout/content-section";

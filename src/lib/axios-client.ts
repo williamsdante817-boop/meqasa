@@ -129,7 +129,11 @@ const classifyError = (error: AxiosError): NetworkError => {
 // Default retry configuration
 const defaultRetryConfig: RetryConfig = {
   retries: 3,
-  retryDelay: (retryCount: number) => axiosRetry.exponentialDelay(retryCount), // Use exponential backoff
+  retryDelay: (retryCount: number) => {
+    const baseDelay = axiosRetry.exponentialDelay(retryCount);
+    const jitter = Math.random() * 1000; // Add 0-1000ms jitter
+    return baseDelay + jitter;
+  },
   retryCondition: (error: AxiosError) => {
     const classifiedError = classifyError(error);
     return classifiedError.retryable;
@@ -156,7 +160,7 @@ const defaultRetryConfig: RetryConfig = {
       }
     );
   },
-  shouldResetTimeout: false, // Don't reset timeout between retries
+  shouldResetTimeout: false,
 };
 
 // Create Axios instance with default configuration
@@ -164,7 +168,7 @@ const createAxiosInstance = (
   retryConfig?: Partial<RetryConfig>
 ): AxiosInstance => {
   const instance = axios.create({
-    timeout: 10000, // 10 seconds timeout
+    timeout: 30000, // 30 seconds timeout (increased from 10s)
     headers: {
       "Content-Type": "application/json",
     },
@@ -265,8 +269,13 @@ export class ApiClient {
       const axiosError = error as AxiosError;
       const classifiedError = classifyError(axiosError);
 
-      // Throw error with user-friendly message
-      throw new Error(classifiedError.message);
+      // Create error with better context
+      const enhancedError = new Error(classifiedError.message);
+      enhancedError.name = classifiedError.type;
+      (enhancedError as any).status = axiosError.response?.status;
+      (enhancedError as any).originalError = axiosError;
+      
+      throw enhancedError;
     }
   }
 

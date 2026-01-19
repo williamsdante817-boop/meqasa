@@ -2,7 +2,8 @@
 
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
+import { MotionDiv } from "@/components/motion";
 import { Heart } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -85,7 +86,7 @@ export default function PropertyFavoritesBanner({
             >
               <AnimatePresence mode="wait">
                 {filled || isFavorite ? (
-                  <motion.div
+                  <MotionDiv
                     key="filled"
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
@@ -98,9 +99,9 @@ export default function PropertyFavoritesBanner({
                         isFavorite && "fill-current"
                       )}
                     />
-                  </motion.div>
+                  </MotionDiv>
                 ) : (
-                  <motion.div
+                  <MotionDiv
                     key="outline"
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
@@ -108,7 +109,7 @@ export default function PropertyFavoritesBanner({
                     transition={{ duration: 0.3 }}
                   >
                     <Heart className="text-brand-primary h-5 w-5" />
-                  </motion.div>
+                  </MotionDiv>
                 )}
               </AnimatePresence>
               <span className="text-brand-accent font-medium">

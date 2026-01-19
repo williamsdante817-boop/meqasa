@@ -5,8 +5,7 @@ import type {
   AgentListingsResponse,
   AgentListing,
 } from "@/types/agent-listings";
-
-const MEQASA_API_BASE = "https://meqasa.com";
+import { apiClient } from "@/lib/axios-client";
 
 export async function POST(request: NextRequest) {
   try {
@@ -20,47 +19,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Build URL for agent listings
-    const url = `${MEQASA_API_BASE}/properties-listed-by-${encodeURIComponent(agentName)}?g=${encodeURIComponent(agentId)}&app=vercel`;
+    const url = `https://meqasa.com/properties-listed-by-${encodeURIComponent(agentName)}?g=${encodeURIComponent(agentId)}&app=vercel&page=${page}&limit=${limit}`;
 
-    // Add pagination parameters if provided
-    const searchParams = new URLSearchParams();
-    if (page > 1) {
-      searchParams.set("page", page.toString());
-    }
-    if (limit !== 20) {
-      searchParams.set("limit", limit.toString());
-    }
-
-    const fullUrl = searchParams.toString()
-      ? `${url}&${searchParams.toString()}`
-      : url;
-
-    console.log("Agent listings API call:", {
-      url: fullUrl,
-      agentId,
-      agentName,
-      page,
-      limit,
-    });
-
-    const response = await fetch(fullUrl, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`Meqasa API error: ${response.statusText}`);
-    }
-
-    const data = (await response.json()) as {
+    const data = await apiClient.get<{
       listings?: AgentListing[];
       activelistings?: number;
-    };
+    }>(url);
 
-    // Extract listings and calculate pagination info
     const listings = data.listings ?? [];
     const totalCount = data.activelistings ?? listings.length;
     const totalPages = Math.ceil(totalCount / limit);

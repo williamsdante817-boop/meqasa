@@ -1,3 +1,6 @@
+// Enable ISR with 24 hour revalidation
+export const revalidate = 86400;
+
 import RealEstateReportModal from "@/components/real-estate-report/real-estate-report-modal";
 import { StructuredData } from "@/components/structured-data";
 import { siteConfig } from "@/config/site";

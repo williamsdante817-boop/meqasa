@@ -1,10 +1,10 @@
 "use client";
 
 import { ImageWithFallback } from "@/components/common/image-with-fallback";
-import { ImageCarouselModal } from "@/components/image-carousel-modal";
+import { ImageCarouselModal } from "@/components/lazy";
 import { Skeleton } from "@/components/ui/skeleton";
 import { preloadImages } from "@/lib/image-preload";
-import { motion } from "framer-motion";
+import { MotionDiv } from "@/components/motion";
 import { useEffect, useMemo, useState } from "react";
 
 // Light gray base64 placeholder
@@ -101,15 +101,15 @@ function PropertyShowcaseImages({ images }: { images: string[] }) {
       <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-3">
         {/* Main image */}
         <div className="relative row-span-2 max-h-[300px] md:col-span-2 md:max-h-[450px]">
-          <motion.button
+          <button
             onClick={() => handleImageClick(0)}
             className="group h-full w-full cursor-pointer overflow-hidden rounded-lg shadow-md focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
             aria-label="Open image gallery at main image"
             type="button"
           >
-            <motion.div
+            <MotionDiv
               className="h-full w-full overflow-hidden"
-              whileHover={{ scale: 1.05 }} // ✅ only scales the image
+              whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.97 }}
               transition={{ duration: 0.4, ease: "easeOut" }}
             >
@@ -128,9 +128,9 @@ function PropertyShowcaseImages({ images }: { images: string[] }) {
                 quality={85}
                 withBlur
               />
-            </motion.div>
+            </MotionDiv>
             <div className="pointer-events-none absolute inset-0 rounded-lg bg-black/0 transition-colors duration-300 group-hover:bg-black/10" />
-          </motion.button>
+          </button>
         </div>
 
         {/* Right column */}
@@ -142,18 +142,19 @@ function PropertyShowcaseImages({ images }: { images: string[] }) {
               index === rightImages.length - 1 && remainingCount > 0;
 
             return (
-              <motion.div
+              <div
                 key={image}
                 className="relative h-1/3 flex-1 overflow-hidden rounded-lg"
               >
-                <motion.button
+                <button
                   onClick={() => handleImageClick(actualIndex)}
                   className="group relative h-full w-full cursor-pointer overflow-hidden rounded-lg shadow-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
                   type="button"
+                  aria-label={`Open image gallery at image ${actualIndex + 1}`}
                 >
-                  <motion.div
+                  <MotionDiv
                     className="h-full w-full overflow-hidden"
-                    whileHover={{ scale: 1.08 }} // ✅ only scales the image
+                    whileHover={{ scale: 1.08 }}
                     whileTap={{ scale: 0.95 }}
                     transition={{ duration: 0.4, ease: "easeOut" }}
                   >
@@ -171,7 +172,7 @@ function PropertyShowcaseImages({ images }: { images: string[] }) {
                       quality={75}
                       withBlur
                     />
-                  </motion.div>
+                  </MotionDiv>
                   {showMoreOverlay && (
                     <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-t from-black/70 via-black/40 to-transparent text-white">
                       <span className="text-lg font-semibold drop-shadow-lg">
@@ -179,8 +180,8 @@ function PropertyShowcaseImages({ images }: { images: string[] }) {
                       </span>
                     </div>
                   )}
-                </motion.button>
-              </motion.div>
+                </button>
+              </div>
             );
           })}
         </div>
@@ -188,15 +189,17 @@ function PropertyShowcaseImages({ images }: { images: string[] }) {
 
       {/* See more photos */}
       {totalImagesCount > 1 && (
-        <motion.div className="mt-4 text-left">
-          <motion.button
+        <div className="mt-4 text-left">
+          <button
             className="text-brand-blue inline-flex cursor-pointer items-center gap-2 font-medium hover:underline focus-visible:underline focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
             onClick={() => handleImageClick(0)}
+            type="button"
+            aria-label="View all property photos"
           >
             <span>See more photos</span>
             <span aria-hidden="true">→</span>
-          </motion.button>
-        </motion.div>
+          </button>
+        </div>
       )}
 
       {/* Modal */}

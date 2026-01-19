@@ -253,6 +253,31 @@ export function ImageCarouselModal({
     setIsLoading(false);
   }, []);
 
+  // Keyboard navigation
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      switch (event.key) {
+        case "ArrowLeft":
+          event.preventDefault();
+          handlePrevious();
+          break;
+        case "ArrowRight":
+          event.preventDefault();
+          handleNext();
+          break;
+        case "Escape":
+          event.preventDefault();
+          handleClose();
+          break;
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, handlePrevious, handleNext, handleClose]);
+
   // Always keep a small buffer of preloaded neighbors as the user navigates
   useEffect(() => {
     if (!isOpen || imageUrls.length === 0) return;
@@ -360,7 +385,7 @@ export function ImageCarouselModal({
           <div
             ref={mainImageRef}
             className={cn(
-              "relative flex touch-pan-y items-center justify-center overflow-hidden rounded-lg bg-gray-900",
+              "relative flex touch-pan-y items-center justify-center overflow-hidden rounded-lg bg-gray-900 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black focus-visible:outline-none",
               "transition-all duration-300 ease-out",
               isAnimating
                 ? "scale-95 opacity-0"
@@ -370,7 +395,7 @@ export function ImageCarouselModal({
             tabIndex={0}
             role="img"
             aria-roledescription="carousel"
-            aria-label={`Property image ${currentIndex + 1} of ${validImages.length}`}
+            aria-label={`Property image ${currentIndex + 1} of ${validImages.length}. Use arrow keys to navigate.`}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}

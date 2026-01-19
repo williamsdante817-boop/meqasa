@@ -1,3 +1,6 @@
+// Enable ISR with 24 hour revalidation
+export const revalidate = 86400;
+
 /* eslint-disable react/no-unescaped-entities */
 import FeaturedPropertiesAsideWrapper from "@/components/about/featured-properties-aside-wrapper";
 import { StructuredData } from "@/components/structured-data";

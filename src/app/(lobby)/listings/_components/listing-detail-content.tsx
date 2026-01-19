@@ -5,7 +5,7 @@ import Amenities from "@/components/amenities";
 import ContentSection from "@/components/layout/content-section";
 import { ExpandableDescription } from "@/components/expandable-description";
 import LeaseOptions from "@/components/lease-option";
-import MortgageCalculator from "@/components/mortgage-calculator";
+import { MortgageCalculator } from "@/components/lazy";
 import PropertyDetailsTable from "@/components/property/details/property-details";
 import PropertyFavoritesBanner from "@/components/property-favorite-banner";
 import PropertyInsight from "@/components/property/details/property-insight";
