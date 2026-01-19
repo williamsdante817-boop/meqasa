@@ -41,7 +41,7 @@ export function ErrorCard({
       <div className="grid place-items-center rounded-full border border-dashed border-rose-300/75 p-6">
         <Icon className="size-8 text-rose-500/75" aria-hidden="true" />
       </div>
-      <div className="flex flex-col items-center justify-center space-y-1.5 py-14 text-center">
+      <div className="flex flex-col items-center justify-center space-y-1.5 text-center">
         <CardTitle className="text-xl font-semibold">{title}</CardTitle>
         <CardDescription className="text-brand-muted line-clamp-4">
           {description}
