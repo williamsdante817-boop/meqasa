@@ -45,6 +45,13 @@ export default tseslint.config(
           argsIgnorePattern: "^_",
         },
       ],
+      // Prevent console.log in production
+      "no-console": [
+        "warn",
+        {
+          allow: ["warn", "error"],
+        },
+      ],
       // Loosen overly strict rules to allow integration code and external API responses
       "@typescript-eslint/no-unsafe-assignment": "off",
       "@typescript-eslint/no-unsafe-member-access": "off",

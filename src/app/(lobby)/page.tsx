@@ -1,4 +1,5 @@
 export const dynamic = "force-dynamic";
+import * as Sentry from "@sentry/nextjs";
 import {
   getBlogData,
   getFeaturedListings,
@@ -50,15 +51,8 @@ export default async function HomePage() {
   let popupData = null;
   try {
     popupData = await getHomepagePopup();
-    console.log("✅ Homepage popup data fetched:", {
-      hasData: !!popupData,
-      imageUrl: popupData?.imageUrl,
-      linkUrl: popupData?.linkUrl,
-      id: popupData?.id,
-    });
   } catch (error) {
-    console.error("❌ Failed to fetch homepage popup:", error);
-    // Continue without popup if fetch fails
+    Sentry.captureException(error);
   }
 
   return (

@@ -4,6 +4,8 @@
  */
 // import "./src/env.js";
 
+import { withSentryConfig } from "@sentry/nextjs";
+
 /** @type {import("next").NextConfig} */
 const config = {
   // Performance optimizations
@@ -133,4 +135,16 @@ if (process.env.ANALYZE === "true") {
   finalConfig = withBundleAnalyzer(finalConfig);
 }
 
-export default finalConfig;
+export default withSentryConfig(finalConfig, {
+  org: "meqasa",
+  project: "javascript-nextjs",
+  silent: !process.env.CI,
+  widenClientFileUpload: true,
+  tunnelRoute: "/monitoring",
+  webpack: {
+    automaticVercelMonitors: true,
+    treeshake: {
+      removeDebugLogging: true,
+    },
+  },
+});

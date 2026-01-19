@@ -1,5 +1,6 @@
 "use client";
 
+import * as Sentry from "@sentry/nextjs";
 import React, { Suspense } from "react";
 import { AlertCard } from "@/components/common/alert-card";
 import { AlertTitle, AlertDescription } from "@/components/ui/alert";
@@ -42,8 +43,13 @@ class StreamingErrorBoundaryClass extends React.Component<
       errorInfo,
     });
 
-    // Production error tracking is now handled by our logging service
-    // which can be extended to integrate with Sentry, LogRocket, etc.
+    Sentry.captureException(error, {
+      contexts: {
+        react: {
+          componentStack: errorInfo.componentStack,
+        },
+      },
+    });
   }
 
   handleRetry = () => {

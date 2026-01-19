@@ -1,5 +1,6 @@
+import * as Sentry from "@sentry/nextjs";
+import { logger } from "./logger";
 import { NextResponse } from "next/server";
-import { logError } from "./logger";
 
 export class ApiError extends Error {
   constructor(
@@ -13,7 +14,8 @@ export class ApiError extends Error {
 }
 
 export function handleApiError(error: unknown, context?: string) {
-  logError("API Error", error, { context });
+  logger.error("API Error", error, { context });
+  Sentry.captureException(error, { tags: { context } });
 
   if (error instanceof ApiError) {
     return NextResponse.json(

@@ -3,8 +3,10 @@
  * Based on production patterns from skateshop repository
  */
 
+import * as Sentry from "@sentry/nextjs";
 import { toast } from "sonner";
 import { z } from "zod";
+import { logger } from "./logger";
 
 /**
  * Extract a user-friendly error message from any error type
@@ -46,7 +48,7 @@ export function getErrorMessage(err: unknown): string {
  */
 export function showErrorToast(err: unknown): void {
   const errorMessage = getErrorMessage(err);
-  console.error("Error occurred:", err);
+  logger.error("Error toast displayed", err);
   toast.error(errorMessage);
 }
 
@@ -57,19 +59,12 @@ export function logError(err: unknown, context?: string): void {
   const errorMessage = getErrorMessage(err);
   const logContext = context ? `[${context}]` : "";
 
-  console.error(`${logContext} Error:`, {
-    message: errorMessage,
-    error: err,
-    timestamp: new Date().toISOString(),
-    userAgent:
-      typeof window !== "undefined" ? window.navigator.userAgent : "server",
-  });
+  logger.error(`${logContext} Error`, err, { context });
 
-  // In production, you might want to send this to an error tracking service
-  // Example: Sentry, LogRocket, etc.
-  if (process.env.NODE_ENV === "production") {
-    // sendToErrorTracking(err, context)
-  }
+  Sentry.captureException(err, {
+    tags: { context },
+    extra: { errorMessage, logContext },
+  });
 }
 
 /**
