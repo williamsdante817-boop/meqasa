@@ -50,14 +50,14 @@ const CarouselSlide = ({
   index,
   onImageClick,
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  unitId,
+   
+  unitId: _unitId,
 }: {
   image: string;
   isDeveloper?: boolean;
   index: number;
   onImageClick: () => void;
-  unitId?: number;
+  _unitId?: number;
 }) => {
   const [isLoading, setIsLoading] = useState(true);
 
@@ -129,7 +129,7 @@ export function DynamicCarousel({
   isDeveloper,
   images = [],
   cloudfrontDomain = "https://dve7rykno93gs.cloudfront.net",
-  unitId,
+  unitId: _unitId,
   listingId,
 }: CarouselProps) {
   const [api, setApi] = useState<CarouselApi>();
@@ -185,7 +185,7 @@ export function DynamicCarousel({
         isDeveloper={isDeveloper}
         index={i}
         onImageClick={() => handleImageClick(i)}
-        unitId={unitId}
+        _unitId={_unitId}
       />
     ))
   ) : (
@@ -254,10 +254,10 @@ export function DynamicCarousel({
           </Badge>
         </div>
         {/* Mobile favorite button overlay */}
-        {(unitId || listingId) && (
+        {(_unitId || listingId) && (
           <div className="absolute top-4 right-4 z-20 block md:hidden">
             <AddFavoriteButton
-              listingId={unitId || listingId || 0}
+              listingId={_unitId || listingId || 0}
               showLabel={false}
               size="md"
               hideLabelOnMobile={true}

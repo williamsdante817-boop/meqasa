@@ -99,14 +99,10 @@ export default function PropertyInsight(props: PropertyInsightProps) {
   const {
     location,
     bedroomType,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    priceDeltaPercent,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    avgPriceGhs,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    sizeDeltaPercent,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    avgSizeSqm,
+    priceDeltaPercent: _priceDeltaPercent,
+    avgPriceGhs: _avgPriceGhs,
+    sizeDeltaPercent: _sizeDeltaPercent,
+    avgSizeSqm: _avgSizeSqm,
   } = props;
 
   // Generate dynamic insights based on property characteristics

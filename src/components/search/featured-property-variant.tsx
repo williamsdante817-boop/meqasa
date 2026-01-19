@@ -11,6 +11,13 @@ import { buildDeveloperLogoUrl, buildProjectImageUrl } from "@/lib/image-utils";
 import { shimmer, toBase64 } from "@/lib/utils";
 import type { MeqasaEmptyProject, MeqasaProject } from "@/types/meqasa";
 
+/**
+ * FeaturedPropertyVariantCard - Compact card for search results
+ * Used in: Search results page between listings
+ * Features: Simplified layout, gradient overlay, CTA button
+ * Note: Different from FeaturedPropertyCard (carousel version)
+ */
+
 // Type guard to check if project is not empty
 function isMeqasaProject(
   project: MeqasaProject | MeqasaEmptyProject

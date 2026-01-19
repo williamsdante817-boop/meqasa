@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Breadcrumbs } from "@/components/layout/bread-crumbs";
 import Shell from "@/layouts/shell";
 import type { Metadata } from "next";
@@ -400,12 +401,12 @@ export default function PrivacyPage() {
               your personal information, our privacy team is here to help.
             </p>
             <div className="flex flex-col justify-center gap-4 sm:flex-row">
-              <a
+              <Link
                 href="/contact"
                 className="bg-brand-primary hover:bg-brand-primary-dark rounded-lg px-6 py-3 font-semibold text-white transition-colors"
               >
                 Contact Support
-              </a>
+              </Link>
               <a
                 href="mailto:privacy@meqasa.com"
                 className="border-brand-primary text-brand-primary hover:bg-brand-primary rounded-lg border px-6 py-3 font-semibold transition-colors hover:text-white"

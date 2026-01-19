@@ -58,8 +58,7 @@ export class PropertyContainerErrorBoundary extends Component<
 
 // Enhanced error fallback component
 export function PropertyContainerError({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  error,
+  _error,
   errorId,
   retry,
 }: {

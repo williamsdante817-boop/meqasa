@@ -18,8 +18,7 @@ interface AddFavoriteButtonProps {
 }
 
 export function AddFavoriteButton({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  listingId,
+  listingId: _listingId,
   className,
   showLabel = false,
   size = "md",

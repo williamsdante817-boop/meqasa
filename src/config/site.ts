@@ -12,8 +12,8 @@ interface SelectOptionGroup {
   options: SelectOption[];
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-interface SelectOptionsConfig {
+ 
+interface _SelectOptionsConfig {
   option: {
     propertyType: SelectOptionGroup;
     bedrooms: SelectOptionGroup;

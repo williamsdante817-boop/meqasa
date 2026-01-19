@@ -54,11 +54,43 @@ A modern real estate web application for discovering, listing, and exploring pro
 
 ---
 
+## Code Quality & Bundle Optimization
+
+**Automated Unused Code Detection:**
+
+This project uses `eslint-plugin-unused-imports` to automatically detect and prevent unused code:
+
+- **Unused imports** are flagged as errors and must be removed
+- **Unused variables** are flagged as warnings (except those prefixed with `_`)
+- Run `npm run lint` to check for unused code
+- Run `npm run lint:fix` to automatically remove unused imports
+
+**Bundle Size Optimization:**
+- Unused exports and imports increase bundle size unnecessarily
+- The linting rules help maintain a lean codebase
+- Regular code audits ensure optimal performance
+
+---
+
 ## Scroll Behavior
 
-- Client navigation relies on the default Next.js router scroll reset, so avoid reintroducing manual `window.scrollTo` calls.
-- If a feature needs to preserve scroll (e.g., live search filters), set `scroll: false` explicitly and scope it to that interaction.
-- New layouts should keep the main document as the scroll container; custom scrollable wrappers must manage their own resets if required.
+**Intentional Scroll Management Strategy:**
+
+This application implements custom scroll management to enhance user experience:
+
+- **ScrollToTop Component**: Automatically scrolls to top on route changes for consistent navigation experience
+- **DisableScrollRestoration**: Disables browser's native scroll restoration to prevent conflicts with our custom implementation
+- **Back to Top Button**: Manual scroll-to-top button in footer for user convenience
+
+**Implementation Details:**
+- `ScrollToTop.tsx` - Client component that resets scroll position on pathname changes
+- `DisableScrollRestoration.tsx` - Sets `history.scrollRestoration = 'manual'` to prevent browser interference
+- `scroll-to-top.tsx` - Footer button component with smooth scroll behavior
+
+**Guidelines:**
+- These components are intentionally used together in the root layout
+- For features requiring scroll preservation (e.g., modal interactions), use `scroll: false` in Next.js Link components
+- Custom scrollable containers should manage their own scroll state independently
 
 ---
 

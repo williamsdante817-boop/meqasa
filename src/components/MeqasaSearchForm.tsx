@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { useState, useRef } from "react";
@@ -14,13 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import type {
-  ContractType,
-  RentPeriod,
-  SortOrder,
-  MeqasaListing,
-  MeqasaSearchParams,
-} from "@/types/meqasa";
+import type { ContractType, SortOrder } from "@/types/meqasa";
 import type { PropertyType } from "@/config/property";
 
 const PROPERTY_TYPES: PropertyType[] = [
@@ -50,20 +43,17 @@ const SORT_OPTIONS: { value: SortOrder; label: string }[] = [
 ];
 
 interface MeqasaSearchFormProps {
-  onSearchResults: (
-    results: MeqasaListing[],
+  _onSearchResults?: (
+    results: unknown[],
     totalCount: number,
     searchId: number,
     contract: string,
     locality: string
   ) => void;
-  onLoadMore: () => Promise<void>;
+  _onLoadMore?: () => Promise<void>;
 }
 
-export default function MeqasaSearchForm({
-  onSearchResults,
-  onLoadMore,
-}: MeqasaSearchFormProps) {
+export default function MeqasaSearchForm(_props: MeqasaSearchFormProps) {
   const formRef = useRef<HTMLFormElement>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

@@ -11,12 +11,12 @@ interface MobileSearchTriggerProps {
 
 export function MobileSearchTrigger({
   onOpen,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  className,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  placeholder = "Search for location, area, or project",
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  showFiltersHint = true,
+   
+  className: _className,
+   
+  placeholder: _placeholder = "Search for location, area, or project",
+   
+  showFiltersHint: _showFiltersHint = true,
 }: MobileSearchTriggerProps) {
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();

@@ -49,7 +49,7 @@ export function getStoredNumbers(
     const age = Date.now() - entry.savedAt;
     if (age > ttlMs) {
       // expired; remove lazily
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       
       const { [contextKey]: _removed, ...rest } = cache;
       safeWrite(rest);
       return null;
@@ -71,7 +71,7 @@ export function setStoredNumbers(
 export function clearStoredNumbers(contextKey: string): void {
   const cache = safeRead();
   if (cache[contextKey]) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     const { [contextKey]: _removed, ...rest } = cache;
     safeWrite(rest);
   }

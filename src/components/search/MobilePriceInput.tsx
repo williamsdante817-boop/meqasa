@@ -25,8 +25,8 @@ interface MobilePriceInputProps {
 }
 
 export function MobilePriceInput({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  title,
+   
+  title: _title,
   unit,
   placeholder,
   range,

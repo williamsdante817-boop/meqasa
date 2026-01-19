@@ -41,8 +41,8 @@ export function AgentHeader({ agent, logoUrl }: AgentHeaderProps) {
   const aboutRef = React.useRef<HTMLDivElement>(null);
 
   // Use actual data from API instead of hardcoded values
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const companyName = agent.company ?? agent.name;
+   
+  const _companyName = agent.company ?? agent.name;
   const location = agent.locality?.trim() ?? "Not available";
 
   const totalListings = parseInt(agent.activelistings ?? "0") || 0;

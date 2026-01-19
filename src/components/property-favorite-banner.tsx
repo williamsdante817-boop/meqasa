@@ -8,13 +8,13 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 interface PropertyFavoritesBannerProps {
-  propertyId: number;
+  _propertyId: number;
   propertyType: "listing" | "project";
 }
 
 export default function PropertyFavoritesBanner({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  propertyId,
+   
+  propertyId: _propertyId,
   propertyType,
 }: PropertyFavoritesBannerProps) {
   const [filled, setFilled] = useState(false);

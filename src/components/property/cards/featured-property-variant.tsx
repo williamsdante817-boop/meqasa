@@ -9,6 +9,12 @@ import type { FeaturedProject } from "@/types";
 import Link from "next/link";
 import React from "react";
 
+/**
+ * FeaturedPropertyCard - Detailed card for carousel display
+ * Used in: Featured projects carousel on homepage
+ * Features: Full project details, large images, status badges, unit types
+ */
+
 interface FeaturedPropertyCardProps {
   item: FeaturedProject;
   priority?: boolean;
