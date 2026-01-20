@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger";
 import { apiClient } from "./axios-client";
 import type { ListingDetails } from "@/types";
 import { buildPropertyImageUrl } from "./image-utils";
@@ -52,16 +53,16 @@ export async function getLatestListings(): Promise<LatestListingsResponse> {
   const normalize = (items: RawListing[] | undefined): LatestListing[] =>
     (items ?? []).map((item) => {
       const imageUrl = buildPropertyImageUrl(item.image, "original");
-      
+
       // Log image URL construction for debugging in production
       if (process.env.NODE_ENV === "production" && item.image) {
-        console.log("[Latest Listings] Image URL:", {
+        logger.debug("[Latest Listings] Image URL:", {
           original: item.image,
           built: imageUrl,
           title: item.title,
         });
       }
-      
+
       return {
         ...item,
         image: imageUrl,

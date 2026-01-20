@@ -2,6 +2,7 @@
 
 import { ImageWithFallback } from "@/components/common/image-with-fallback";
 import { MapPin } from "lucide-react";
+import Link from "next/link";
 
 interface DevelopmentCardProps {
   id: string;
@@ -10,6 +11,7 @@ interface DevelopmentCardProps {
   location: string;
   developerName: string;
   developerLogo?: string;
+  href?: string;
   onClick?: () => void;
   className?: string;
 }
@@ -21,18 +23,19 @@ export function DevelopmentCard({
   location,
   developerName,
   developerLogo,
+  href,
   onClick,
   className = "",
 }: DevelopmentCardProps) {
-  const handleClick = () => {
-    onClick?.();
+  const handleClick = (e: React.MouseEvent) => {
+    if (onClick) {
+      e.preventDefault();
+      onClick();
+    }
   };
 
-  return (
-    <div
-      className={`group relative cursor-pointer overflow-hidden rounded-lg border border-brand-border bg-white transition-all duration-300 hover:shadow-lg ${className}`}
-      onClick={handleClick}
-    >
+  const content = (
+    <>
       {/* Main Image */}
       <div className="relative aspect-[4/3] overflow-hidden">
         <ImageWithFallback
@@ -67,6 +70,27 @@ export function DevelopmentCard({
           <span className="line-clamp-1 min-w-0">{location}</span>
         </div>
       </div>
+    </>
+  );
+
+  if (href) {
+    return (
+      <Link
+        href={href}
+        className={`group border-brand-border relative block overflow-hidden rounded-lg border bg-white transition-all duration-300 hover:shadow-lg ${className}`}
+        onClick={handleClick}
+      >
+        {content}
+      </Link>
+    );
+  }
+
+  return (
+    <div
+      className={`group border-brand-border relative cursor-pointer overflow-hidden rounded-lg border bg-white transition-all duration-300 hover:shadow-lg ${className}`}
+      onClick={handleClick}
+    >
+      {content}
     </div>
   );
 }

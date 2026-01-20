@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger";
 import { apiClient } from "./axios-client";
 
 /**
@@ -19,10 +20,14 @@ export async function getFlexiBanner(): Promise<string> {
       }
     );
 
-    console.log("Flexi banner response:", response);
+    logger.debug("Flexi banner response:", {
+      response: response,
+    });
     return response;
   } catch (error) {
-    console.error("Error fetching flexi banner:", error);
+    logger.error("Error fetching flexi banner:", {
+      error: error,
+    });
     throw error;
   }
 }

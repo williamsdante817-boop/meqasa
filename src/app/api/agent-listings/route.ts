@@ -6,6 +6,7 @@ import type {
   AgentListing,
 } from "@/types/agent-listings";
 import { apiClient } from "@/lib/axios-client";
+import { logger } from "@/lib/logger";
 
 export async function POST(request: NextRequest) {
   try {
@@ -41,7 +42,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(result);
   } catch (error) {
-    console.error("Error in agent listings API route:", error);
+    logger.error("Error in agent listings API route", error);
     return NextResponse.json(
       { error: "Failed to fetch agent listings" },
       { status: 500 }

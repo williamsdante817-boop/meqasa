@@ -50,7 +50,7 @@ export function MobileLoadMore({
       >
         {isPending ? (
           <span className="flex items-center gap-2">
-            <div className="h-4 w-4 animate-spin rounded-full border-2 border-brand-primary border-t-transparent"></div>
+            <div className="border-brand-primary h-4 w-4 animate-spin rounded-full border-2 border-t-transparent"></div>
             Loading...
           </span>
         ) : (

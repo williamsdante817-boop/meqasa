@@ -14,8 +14,7 @@ interface PropertyFavoritesBannerProps {
 }
 
 export default function PropertyFavoritesBanner({
-   
-  propertyId: _propertyId,
+  _propertyId,
   propertyType,
 }: PropertyFavoritesBannerProps) {
   const [filled, setFilled] = useState(false);

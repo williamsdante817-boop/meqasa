@@ -27,7 +27,15 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { AlertCard } from "@/components/common/alert-card";
 import { useResilientFetch } from "@/hooks/use-resilient-fetch";
-import { sanitizeName, sanitizeEmail, sanitizeMessage, getNameError, getEmailError, getMessageError } from "@/lib/input-validation";
+import {
+  sanitizeName,
+  sanitizeEmail,
+  sanitizeMessage,
+  getNameError,
+  getEmailError,
+  getMessageError,
+} from "@/lib/input-validation";
+import { logger } from "@/lib/logger";
 
 interface ContactCardProps {
   name: string;
@@ -70,7 +78,7 @@ const getStoredContactInfo = (): StoredContactInfo | null => {
     }
     return null;
   } catch (error) {
-    console.error("Error reading from localStorage:", error);
+    logger.error("Error reading from localStorage:", error);
     return null;
   }
 };
@@ -87,7 +95,7 @@ const setStoredContactInfo = (
       JSON.stringify({ name, phone, countryIso: countryIso?.toUpperCase() })
     );
   } catch (error) {
-    console.error("Error writing to localStorage:", error);
+    logger.error("Error writing to localStorage:", error);
   }
 };
 
@@ -96,7 +104,7 @@ const clearStoredContactInfo = (): void => {
   try {
     localStorage.removeItem("meqasa_contact_info");
   } catch (error) {
-    console.error("Error clearing localStorage:", error);
+    logger.error("Error clearing localStorage:", error);
   }
 };
 
@@ -189,12 +197,16 @@ export default function ContactCard({
   }));
   const submitRequestIdRef = useRef(0);
   const [activeSubmitId, setActiveSubmitId] = useState<number | null>(null);
-  const { data: submitData, loading: submitLoading, error: submitError, refetch: submitRefetch } =
-    useResilientFetch<{ mess?: string }>({
-      input: "/api/contact/send-message",
-      init: submitInit,
-      enabled: false,
-    });
+  const {
+    data: submitData,
+    loading: submitLoading,
+    error: submitError,
+    refetch: submitRefetch,
+  } = useResilientFetch<{ mess?: string }>({
+    input: "/api/contact/send-message",
+    init: submitInit,
+    enabled: false,
+  });
   const lastSubmitDataRef = useRef<{ mess?: string } | null>(null);
   const maskedNumber = "+233 xx xxx xxxx";
 
@@ -292,7 +304,7 @@ export default function ContactCard({
       return;
     }
 
-    console.error("Error sending message:", submitError);
+    logger.error("Error sending message:", submitError);
     setEmailBannerError("Failed to send message. Please try again.");
     setMessageError("Failed to send message. Please try again.");
     lastSubmitDataRef.current = null;
@@ -337,7 +349,7 @@ export default function ContactCard({
     const userPhoneToUse = phone ?? state.userPhone;
 
     if (!userNameToUse || !userPhoneToUse || !entityId) {
-      console.error("❌ [ContactCard] No contact info or entity ID available");
+      logger.error("❌ [ContactCard] No contact info or entity ID available");
       return;
     }
 
@@ -370,7 +382,7 @@ export default function ContactCard({
   // Function to handle getting number with saved contact info
   const handleGetNumberWithSavedInfo = async () => {
     if (!state.userName || !state.userPhone || !entityId) {
-      console.error(
+      logger.error(
         "❌ [ContactCard] No saved contact info or entity ID available"
       );
       return;
@@ -493,7 +505,7 @@ export default function ContactCard({
     setEmailNameError("");
     setEmailPhoneError("");
     setMessageError("");
-    
+
     const emailErr = getEmailError(userEmail);
     if (emailErr) {
       setEmailError(emailErr);
@@ -513,7 +525,7 @@ export default function ContactCard({
       setEmailNameError(nameErr);
       valid = false;
     }
-    
+
     const messageErr = getMessageError(userMessage);
     if (messageErr) {
       setMessageError(messageErr);
@@ -908,7 +920,9 @@ export default function ContactCard({
                           placeholder="Your email address"
                           value={userEmail}
                           aria-invalid={Boolean(emailError)}
-                          onChange={(e) => setUserEmail(sanitizeEmail(e.target.value))}
+                          onChange={(e) =>
+                            setUserEmail(sanitizeEmail(e.target.value))
+                          }
                           maxLength={100}
                         />
                         {emailError && (
@@ -1003,7 +1017,9 @@ export default function ContactCard({
                           placeholder="Your Message"
                           value={userMessage}
                           aria-invalid={Boolean(messageError)}
-                          onChange={(e) => setUserMessage(sanitizeMessage(e.target.value))}
+                          onChange={(e) =>
+                            setUserMessage(sanitizeMessage(e.target.value))
+                          }
                           rows={3}
                           maxLength={1000}
                         />

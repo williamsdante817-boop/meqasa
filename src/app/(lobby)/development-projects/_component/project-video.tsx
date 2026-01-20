@@ -12,14 +12,19 @@ const getYouTubeEmbedUrl = (url: string): string | undefined => {
   try {
     const urlObj = new URL(url);
     const hostname = urlObj.hostname.toLowerCase();
-    
+
     // Only allow HTTPS protocol
-    if (urlObj.protocol !== 'https:') {
+    if (urlObj.protocol !== "https:") {
       return undefined;
     }
-    
+
     // Strict hostname validation - only allow exact YouTube domains
-    const allowedHosts = ['www.youtube.com', 'youtube.com', 'youtu.be', 'www.youtu.be'];
+    const allowedHosts = [
+      "www.youtube.com",
+      "youtube.com",
+      "youtu.be",
+      "www.youtu.be",
+    ];
     if (!allowedHosts.includes(hostname)) {
       return undefined;
     }
@@ -27,10 +32,13 @@ const getYouTubeEmbedUrl = (url: string): string | undefined => {
     let videoId: string | null = null;
 
     // Extract video ID from different YouTube URL formats
-    if (hostname.includes('youtu.be')) {
-      videoId = urlObj.pathname.slice(1).split('/')[0] ?? null;
-    } else if (hostname.includes('youtube.com')) {
-      videoId = urlObj.searchParams.get('v') ?? urlObj.pathname.split('/').pop() ?? null;
+    if (hostname.includes("youtu.be")) {
+      videoId = urlObj.pathname.slice(1).split("/")[0] ?? null;
+    } else if (hostname.includes("youtube.com")) {
+      videoId =
+        urlObj.searchParams.get("v") ??
+        urlObj.pathname.split("/").pop() ??
+        null;
     }
 
     // Validate video ID format (11 alphanumeric characters and hyphens/underscores)

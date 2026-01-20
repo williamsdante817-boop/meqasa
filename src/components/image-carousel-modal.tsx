@@ -182,19 +182,20 @@ export function ImageCarouselModal({
 
   // Navigation handlers
   const handlePrevious = useCallback(() => {
-    setCurrentIndex((prev) =>
-      prev === 0 ? validImages.length - 1 : prev - 1
-    );
+    setCurrentIndex((prev) => (prev === 0 ? validImages.length - 1 : prev - 1));
   }, [validImages.length]);
 
   const handleNext = useCallback(() => {
     setCurrentIndex((prev) => (prev + 1) % validImages.length);
   }, [validImages.length]);
 
-  const handleThumbnailClick = useCallback((index: number) => {
-    if (index < 0 || index >= validImages.length) return;
-    setCurrentIndex(index);
-  }, [validImages.length]);
+  const handleThumbnailClick = useCallback(
+    (index: number) => {
+      if (index < 0 || index >= validImages.length) return;
+      setCurrentIndex(index);
+    },
+    [validImages.length]
+  );
 
   const handleClose = useCallback(() => {
     setIsAnimating(true);
@@ -206,19 +207,25 @@ export function ImageCarouselModal({
   }, [onClose]);
 
   // Swipe gesture handlers for touch devices
-  const handleTouchStart = useCallback((event: React.TouchEvent<HTMLDivElement>) => {
-    const touch = event.targetTouches[0];
-    if (touch) {
-      setTouchStart({ x: touch.clientX, y: touch.clientY });
-    }
-  }, []);
+  const handleTouchStart = useCallback(
+    (event: React.TouchEvent<HTMLDivElement>) => {
+      const touch = event.targetTouches[0];
+      if (touch) {
+        setTouchStart({ x: touch.clientX, y: touch.clientY });
+      }
+    },
+    []
+  );
 
-  const handleTouchMove = useCallback((event: React.TouchEvent<HTMLDivElement>) => {
-    const touch = event.targetTouches[0];
-    if (touch) {
-      setTouchEnd({ x: touch.clientX, y: touch.clientY });
-    }
-  }, []);
+  const handleTouchMove = useCallback(
+    (event: React.TouchEvent<HTMLDivElement>) => {
+      const touch = event.targetTouches[0];
+      if (touch) {
+        setTouchEnd({ x: touch.clientX, y: touch.clientY });
+      }
+    },
+    []
+  );
 
   const handleTouchEnd = useCallback(() => {
     if (!touchStart || !touchEnd) return;
@@ -351,12 +358,12 @@ export function ImageCarouselModal({
         aria-modal="true"
         hideCloseButton
       >
-        <div className="relative flex h-full w-full flex-col items-center justify-center gap-4 px-4 pb-6 pt-10 md:gap-6 md:px-6">
+        <div className="relative flex h-full w-full flex-col items-center justify-center gap-4 px-4 pt-10 pb-6 md:gap-6 md:px-6">
           {/* Close button */}
           <Button
             variant="outline"
             size="icon"
-            className="focus-visible:ring-primary absolute right-4 top-4 z-50 h-10 w-10 rounded-full bg-white/90 text-gray-700 shadow-lg backdrop-blur-sm hover:bg-white focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+            className="focus-visible:ring-primary absolute top-4 right-4 z-50 h-10 w-10 rounded-full bg-white/90 text-gray-700 shadow-lg backdrop-blur-sm hover:bg-white focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
             onClick={handleClose}
             aria-label="Close image gallery"
           >
@@ -387,9 +394,7 @@ export function ImageCarouselModal({
             className={cn(
               "relative flex touch-pan-y items-center justify-center overflow-hidden rounded-lg bg-gray-900 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black focus-visible:outline-none",
               "transition-all duration-300 ease-out",
-              isAnimating
-                ? "scale-95 opacity-0"
-                : "scale-100 opacity-100"
+              isAnimating ? "scale-95 opacity-0" : "scale-100 opacity-100"
             )}
             style={{ width: "min(800px, 100%)", aspectRatio: "800 / 530" }}
             tabIndex={0}

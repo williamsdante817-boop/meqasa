@@ -1,4 +1,5 @@
 "use client";
+import { logger } from "@/lib/logger";
 
 import { useState, useEffect, useCallback, useMemo } from "react";
 import {
@@ -162,7 +163,7 @@ export function NearestEstablishments({
   maxDistance = 10, // 10km radius
   propertyInfo,
 }: NearestEstablishmentsProps) {
-  console.log("🏢 NearestEstablishments component instantiated with:", {
+  logger.debug("🏢 NearestEstablishments component instantiated with:", {
     propertyLocation,
     neighborhood,
   });
@@ -216,63 +217,63 @@ export function NearestEstablishments({
 
   // Test geocoding first - get location string, pass to server-side Google Geocoding API, log coordinates
   const testGeocode = async (locationString: string) => {
-    console.log(
+    logger.debug(
       `🌍 GEOCODING TEST: Starting for "${locationString}" via server-side API`
     );
 
     try {
-      console.log(`📡 Making request to /api/google-maps/geocode...`);
+      logger.debug(`📡 Making request to /api/google-maps/geocode...`);
 
       const response = await fetch(
         `/api/google-maps/geocode?address=${encodeURIComponent(locationString)}`
       );
-      console.log(`📊 Response status: ${response.status}`);
+      logger.debug(`📊 Response status: ${response.status}`);
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const data = await response.json();
-      console.log(`📝 Server response:`, data);
+      logger.debug(`📝 Server response:`, data);
 
       if (data.success && data.coordinates) {
         const coordinates = data.coordinates;
 
-        console.log(`✅ GEOCODING SUCCESS!`);
-        console.log(`📍 Location: "${locationString}"`);
-        console.log(`🎯 Latitude: ${coordinates.lat}`);
-        console.log(`🎯 Longitude: ${coordinates.lng}`);
-        console.log(`📮 Full address: ${data.formatted_address}`);
+        logger.debug(`✅ GEOCODING SUCCESS!`);
+        logger.debug(`📍 Location: "${locationString}"`);
+        logger.debug(`🎯 Latitude: ${coordinates.lat}`);
+        logger.debug(`🎯 Longitude: ${coordinates.lng}`);
+        logger.debug(`📮 Full address: ${data.formatted_address}`);
 
         return coordinates as { lat: number; lng: number };
       } else {
-        console.log(
+        logger.debug(
           `❌ Geocoding failed: ${data.error || "No coordinates returned"}`
         );
         return null;
       }
     } catch (error) {
-      console.error(`🚨 Geocoding error:`, error);
+      logger.error(`🚨 Geocoding error:`, error);
       return null;
     }
   };
 
   // Fetch establishments using our Google Maps API service
   const fetchEstablishments = useCallback(async () => {
-    console.log("🚀 fetchEstablishments called with:", {
+    logger.debug("🚀 fetchEstablishments called with:", {
       propertyLocation,
       neighborhood,
     });
 
     // STEP 1: Test geocoding first!
     if (neighborhood) {
-      console.log(`🔍 TESTING GEOCODING for neighborhood: "${neighborhood}"`);
+      logger.debug(`🔍 TESTING GEOCODING for neighborhood: "${neighborhood}"`);
       const geocodedCoords = await testGeocode(neighborhood);
 
       if (geocodedCoords) {
-        console.log(`🎉 GEOCODING WORKED! Got coordinates:`, geocodedCoords);
+        logger.debug(`🎉 GEOCODING WORKED! Got coordinates:`, geocodedCoords);
       } else {
-        console.log(`⚠️ Geocoding failed, will use fallback data`);
+        logger.debug(`⚠️ Geocoding failed, will use fallback data`);
       }
     }
 
@@ -281,7 +282,7 @@ export function NearestEstablishments({
       setError(null);
 
       // Use our new Google Maps API service
-      console.log("📦 Importing establishments-service...");
+      logger.debug("📦 Importing establishments-service...");
       const { getEstablishments } = await import(
         "@/app/(lobby)/development-projects/_component/establishments-service"
       );
@@ -321,14 +322,14 @@ export function NearestEstablishments({
       setEstablishments(transformedEstablishments);
     } catch (err) {
       setError("Failed to load nearby establishments. Please try again.");
-      console.error("Error fetching establishments:", err);
+      logger.error("Error fetching establishments:", err);
     } finally {
       setLoading(false);
     }
   }, [propertyLocation, neighborhood, maxDistance]);
 
   useEffect(() => {
-    console.log("⚡ useEffect triggered, calling fetchEstablishments");
+    logger.debug("⚡ useEffect triggered, calling fetchEstablishments");
     void fetchEstablishments();
   }, [fetchEstablishments]);
 
@@ -399,7 +400,7 @@ export function NearestEstablishments({
         typeof propertyLocation.lat !== "number" ||
         typeof propertyLocation.lng !== "number"
       ) {
-        console.warn("Invalid property location, using default center");
+        logger.warn("Invalid property location, using default center");
         mapInstance.setCenter(defaultCenter);
         mapInstance.setZoom(12);
         return;
@@ -456,7 +457,7 @@ export function NearestEstablishments({
           mapInstance.setZoom(14);
         }
       } catch (error) {
-        console.error("Error setting map bounds:", error);
+        logger.error("Error setting map bounds:", error);
         // Fallback to property location or default
         const center =
           propertyLocation?.lat && propertyLocation?.lng

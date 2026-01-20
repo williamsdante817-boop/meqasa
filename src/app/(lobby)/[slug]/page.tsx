@@ -18,24 +18,38 @@ export default async function LocationPage({ params }: Props) {
   }
 
   // Extract location name from slug (remove "Locality Profile" suffix for search)
-  const locationName = locationData.title.replace(" Locality Profile", "").trim();
+  const locationName = locationData.title
+    .replace(" Locality Profile", "")
+    .trim();
 
   // Popular search configurations
   const popularSearches = [
-    { label: "Apartments for Rent", href: `/search/rent?q=${encodeURIComponent(locationName)}&ftype=apartment` },
-    { label: "Houses for Sale", href: `/search/sale?q=${encodeURIComponent(locationName)}&ftype=house` },
-    { label: "Land for Sale", href: `/search/sale?q=${encodeURIComponent(locationName)}&ftype=land` },
-    { label: "Commercial Space", href: `/search/rent?q=${encodeURIComponent(locationName)}&ftype=office` },
+    {
+      label: "Apartments for Rent",
+      href: `/search/rent?q=${encodeURIComponent(locationName)}&ftype=apartment`,
+    },
+    {
+      label: "Houses for Sale",
+      href: `/search/sale?q=${encodeURIComponent(locationName)}&ftype=house`,
+    },
+    {
+      label: "Land for Sale",
+      href: `/search/sale?q=${encodeURIComponent(locationName)}&ftype=land`,
+    },
+    {
+      label: "Commercial Space",
+      href: `/search/rent?q=${encodeURIComponent(locationName)}&ftype=office`,
+    },
   ];
 
   return (
     <Shell className="py-8">
       {/* Breadcrumbs */}
-      <Breadcrumbs 
+      <Breadcrumbs
         className="mb-6"
         segments={[
           { title: "Home", href: "/" },
-          { title: locationData.title, href: `/${slug}` }
+          { title: locationData.title, href: `/${slug}` },
         ]}
       />
 
@@ -70,13 +84,15 @@ export default async function LocationPage({ params }: Props) {
 
           {/* SEO / Internal Links Section */}
           <div className="border-t pt-8">
-            <h3 className="mb-4 text-lg font-bold">Popular Searches in {locationName}</h3>
+            <h3 className="mb-4 text-lg font-bold">
+              Popular Searches in {locationName}
+            </h3>
             <div className="flex flex-wrap gap-2">
               {popularSearches.map((search) => (
-                <Link 
-                  key={search.label} 
+                <Link
+                  key={search.label}
                   href={search.href}
-                  className="rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-600 hover:bg-slate-200 transition-colors"
+                  className="rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-600 transition-colors hover:bg-slate-200"
                 >
                   {search.label}
                 </Link>

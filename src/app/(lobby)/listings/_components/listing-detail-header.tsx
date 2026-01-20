@@ -53,10 +53,7 @@ export function ListingDetailHeader({
         <Badge variant="info" className="uppercase">
           {isFurnished ? "Furnished" : "Unfurnished"}
         </Badge>
-        <Badge
-          variant="info"
-          className="max-w-[280px] uppercase md:max-w-full"
-        >
+        <Badge variant="info" className="max-w-[280px] uppercase md:max-w-full">
           <p className="w-full truncate">{listingDetail.location}</p>
         </Badge>
       </div>

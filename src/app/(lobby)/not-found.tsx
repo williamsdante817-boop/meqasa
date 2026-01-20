@@ -15,14 +15,15 @@ export default function NotFound() {
   return (
     <Shell>
       <div className="flex min-h-[60vh] items-center justify-center">
-        <Empty className="max-w-2xl mx-auto">
+        <Empty className="mx-auto max-w-2xl">
           <EmptyHeader>
             <EmptyMedia variant="icon">
               <PackageX />
             </EmptyMedia>
             <EmptyTitle>Product not found</EmptyTitle>
             <EmptyDescription>
-              The product may have expired or you may have already updated your product.
+              The product may have expired or you may have already updated your
+              product.
             </EmptyDescription>
           </EmptyHeader>
           <EmptyContent>

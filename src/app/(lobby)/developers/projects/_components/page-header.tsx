@@ -15,7 +15,6 @@ interface PageHeaderProps {
  * @param segments - Array of breadcrumb segments for navigation
  */
 export function PageHeader({ segments }: PageHeaderProps) {
-
   return (
     <>
       {/* Breadcrumbs */}
@@ -27,10 +26,10 @@ export function PageHeader({ segments }: PageHeaderProps) {
           Developer Projects in Ghana
         </h1>
         <p className="text-brand-muted max-w-4xl text-lg leading-relaxed md:text-xl">
-          Professional Property Developments For Sale & Rent In Ghana.
-          Discover quality residential and commercial projects from verified
-          developers and property companies across Ghana&apos;s leading real
-          estate markets.
+          Professional Property Developments For Sale & Rent In Ghana. Discover
+          quality residential and commercial projects from verified developers
+          and property companies across Ghana&apos;s leading real estate
+          markets.
         </p>
       </header>
     </>

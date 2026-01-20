@@ -14,7 +14,9 @@ export function UnitsErrorState({ error, onRetry }: UnitsErrorStateProps) {
         <h3 className="text-brand-accent text-base font-semibold lg:text-lg">
           Error Loading Units
         </h3>
-        <p className="text-brand-muted mx-auto max-w-md text-sm sm:text-base">{error}</p>
+        <p className="text-brand-muted mx-auto max-w-md text-sm sm:text-base">
+          {error}
+        </p>
         <Button onClick={onRetry || (() => window.location.reload())}>
           Try Again
         </Button>

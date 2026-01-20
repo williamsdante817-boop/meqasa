@@ -346,7 +346,7 @@ export default async function DeveloperUnitPage({
               </ContentSection>
             )}
             <PropertyFavoritesBanner
-              propertyId={Number(unitDetails.unit.unitid)}
+              _propertyId={Number(unitDetails.unit.unitid)}
               propertyType="listing"
             />
 

@@ -111,25 +111,29 @@ export default function GridAd({ flexiBanner, error, adData }: GridAdProps) {
 
   return (
     <section className="hidden lg:block" aria-label="Featured items grid">
-      <div
-        className="grid h-full grid-cols-1 gap-4 sm:grid-cols-2"
-        role="grid"
-      >
+      <div className="grid h-full grid-cols-1 gap-4 sm:grid-cols-2" role="grid">
         {/* First banner image */}
         <Card className="relative h-[330px] overflow-hidden rounded-lg">
           <a
-            href={adData?.[0]?.href || "https://www.thorpe-bedu.com/belton-residences/"}
+            href={
+              adData?.[0]?.href ||
+              "https://www.thorpe-bedu.com/belton-residences/"
+            }
             target="_blank"
             rel="noopener noreferrer"
             className="relative block h-full"
           >
             <ImageWithFallback
-              src={adData?.[0]?.src || "https://images.unsplash.com/photo-1448630360428-65456885c650?q=80&w=2334&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"}
+              src={
+                adData?.[0]?.src ||
+                "https://images.unsplash.com/photo-1448630360428-65456885c650?q=80&w=2334&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              }
               alt="Belton Residences - Selling Fast"
               fill
               className={`object-cover transition-all duration-700 ${
                 loadedMap[
-                  adData?.[0]?.src || "https://images.unsplash.com/photo-1448630360428-65456885c650?q=80&w=2334&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                  adData?.[0]?.src ||
+                    "https://images.unsplash.com/photo-1448630360428-65456885c650?q=80&w=2334&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                 ]
                   ? "blur-0 opacity-100"
                   : "opacity-90 blur-sm"
@@ -144,12 +148,12 @@ export default function GridAd({ flexiBanner, error, adData }: GridAdProps) {
 
         {/* Flexi banner slot */}
         {flexiBlocks.length > 0 && flexiBlocks[0] && (
-          <Card 
-            className="h-[330px] overflow-hidden rounded-lg cursor-pointer"
+          <Card
+            className="h-[330px] cursor-pointer overflow-hidden rounded-lg"
             onClick={() => {
               const href = adData?.[1]?.href || flexiHref;
               if (href) {
-                window.open(href, '_blank', 'noopener,noreferrer');
+                window.open(href, "_blank", "noopener,noreferrer");
               }
             }}
           >

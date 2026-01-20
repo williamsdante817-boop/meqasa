@@ -4,7 +4,7 @@
  */
 
 // Core API client
-export { meqasaApiClient, baseApiClient, type NetworkError } from "./client";
+export { meqasaApiClient, type NetworkError } from "./client";
 
 // Data fetching functions
 export {

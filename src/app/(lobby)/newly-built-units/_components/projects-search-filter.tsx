@@ -69,8 +69,6 @@ export function ProjectsSearchFilter({}: ProjectsSearchFilterProps = {}) {
     setTimeout(() => setIsSearching(false), 100);
   };
 
-
-
   const handleRemoveFilter = (filterKey: keyof DeveloperUnitsFormState) => {
     const resetValues: Record<string, string> = {
       terms: "sale",

@@ -1,3 +1,5 @@
+import { logger } from "./logger";
+
 interface CachedBanner<T> {
   data: T;
   timestamp: number;
@@ -139,7 +141,9 @@ export async function refreshBanner<T>(
 
     return freshData;
   } catch (error) {
-    console.error(`Failed to refresh ${bannerType} banner:`, error);
+    logger.error(`Failed to refresh ${bannerType} banner:`, {
+      error: error,
+    });
     return null;
   }
 }

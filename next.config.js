@@ -124,6 +124,11 @@ const config = {
 
   // Compression
   compress: true,
+
+  // Allow ESLint warnings during build
+  eslint: {
+    ignoreDuringBuilds: false,
+  },
 };
 
 // If ANALYZE=true, wrap config with bundle analyzer

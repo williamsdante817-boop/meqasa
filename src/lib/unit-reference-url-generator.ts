@@ -1,5 +1,6 @@
 import type { UnitDetails } from "./get-unit-details";
 import { getUnitDetails } from "./get-unit-details";
+import { logger } from "@/lib/logger";
 
 /**
  * Unit Reference-based URL generator for developer units
@@ -274,7 +275,12 @@ export async function processUnitReferenceSearch(
 
       const errorMessage =
         apiError instanceof Error ? apiError.message : "API call failed";
-      console.warn(`Unit API failed for ${cleanRef}:`, apiError);
+      logger.warn(`Unit API failed for ${cleanRef}:`, {
+        error:
+          apiError instanceof Error
+            ? { name: apiError.name, message: apiError.message }
+            : apiError,
+      });
 
       // Check if it's a "not found" vs API error
       const isUnitNotFound =

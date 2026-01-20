@@ -5,7 +5,11 @@ import ContentSection from "@/components/layout/content-section";
 // Hero Banner Loading Skeleton
 export function HeroBannerSkeleton() {
   return (
-    <div className="relative hidden h-[305px] max-h-[305px] overflow-hidden rounded-none border-b border-t-0 bg-transparent lg:block" role="status" aria-label="Loading hero banner">
+    <div
+      className="relative hidden h-[305px] max-h-[305px] overflow-hidden rounded-none border-t-0 border-b bg-transparent lg:block"
+      role="status"
+      aria-label="Loading hero banner"
+    >
       <Skeleton
         variant="shimmer"
         className="h-full w-full"
@@ -19,7 +23,11 @@ export function HeroBannerSkeleton() {
 // Grid Banner Loading Skeleton
 export function GridBannerSkeleton() {
   return (
-    <section className="hidden lg:block" role="status" aria-label="Loading grid banners">
+    <section
+      className="hidden lg:block"
+      role="status"
+      aria-label="Loading grid banners"
+    >
       <div className="grid h-full grid-cols-1 gap-4 sm:grid-cols-6 sm:grid-rows-4">
         {/* First banner skeleton - matches first Card (col-span-3, row-span-2) */}
         <Skeleton

@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { BuildingIcon, LayoutIcon, MapIcon, MapPinIcon } from "lucide-react";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import BrochureButton from "./brochure-button";
+import { logger } from "@/lib/logger";
 
 type SectionRefs = Record<string, React.RefObject<HTMLDivElement | null>>;
 
@@ -84,7 +85,7 @@ function PropertyScrollNavComponent({
         const section = sectionRefs[sectionId]?.current;
 
         if (!section) {
-          console.warn(`PropertyScrollNav: Section '${sectionId}' not found`);
+          logger.warn(`PropertyScrollNav: Section '${sectionId}' not found`);
           // Fallback: try to find section by ID in DOM
           const domSection = document.getElementById(sectionId);
           if (!domSection) {
@@ -154,7 +155,7 @@ function PropertyScrollNavComponent({
           setIsScrolling(false);
         }, 800); // Reduced from 1000ms for better responsiveness
       } catch (error) {
-        console.error("PropertyScrollNav: Error scrolling to section:", error);
+        logger.error("PropertyScrollNav: Error scrolling to section:", error);
         setIsScrolling(false); // Ensure we don't get stuck in scrolling state
       }
     },
@@ -266,7 +267,7 @@ function PropertyScrollNavComponent({
         observer.observe(ref.current);
         observedElements.push(ref.current);
       } else {
-        console.warn(`PropertyScrollNav: Section '${sectionId}' ref is null`);
+        logger.warn(`PropertyScrollNav: Section '${sectionId}' ref is null`);
       }
     });
 
@@ -326,10 +327,9 @@ function PropertyScrollNavComponent({
         }
       }
     } catch (error) {
-      console.warn(
-        "PropertyScrollNav: Error scrolling nav item into view:",
-        error
-      );
+      logger.warn("PropertyScrollNav: Error scrolling nav item into view", {
+        error: error instanceof Error ? error.message : String(error),
+      });
     }
   }, [activeSection]);
 
@@ -338,16 +338,15 @@ function PropertyScrollNavComponent({
     // Validate navigation items on mount
     const missingNavItems = navItems.filter((item) => !sectionRefs[item.id]);
     if (missingNavItems.length > 0) {
-      console.warn(
-        "PropertyScrollNav: Missing section refs for:",
-        missingNavItems.map((item) => item.id)
-      );
+      logger.warn("PropertyScrollNav: Missing section refs for", {
+        sections: missingNavItems.map((item) => item.id).join(", "),
+      });
     }
 
     // Setup error handler for scroll events
     const handleError = (event: ErrorEvent) => {
       if (event.message?.includes("PropertyScrollNav")) {
-        console.error("PropertyScrollNav: Unhandled error:", event.error);
+        logger.error("PropertyScrollNav: Unhandled error", event.error);
       }
     };
 

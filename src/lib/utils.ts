@@ -14,6 +14,7 @@ import {
   isValidPhoneNumber,
 } from "libphonenumber-js";
 import type { CountryCode } from "libphonenumber-js";
+import { logger } from "@/lib/logger";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -74,7 +75,12 @@ export function formatDate(
 }
 
 // Re-export date utilities for consistency
-export { formatRecency, formatDisplayDate, formatApiDate, isValidDateString } from "./date-utils";
+export {
+  formatRecency,
+  formatDisplayDate,
+  formatApiDate,
+  isValidDateString,
+} from "./date-utils";
 
 export function formatBytes(
   bytes: number,
@@ -196,7 +202,7 @@ export function toBase64(str: string) {
 // Sanitize HTML to prevent XSS in server/client rendering contexts
 // DEPRECATED: Use sanitizeHtml from dom-sanitizer instead
 export function sanitizeHtmlString(html: string): string {
-  console.warn(
+  logger.warn(
     "sanitizeHtmlString is deprecated. Use sanitizeHtml from dom-sanitizer instead."
   );
   return sanitizeHtml(html);
@@ -205,7 +211,7 @@ export function sanitizeHtmlString(html: string): string {
 // Build a React dangerouslySetInnerHTML payload with sanitized content
 // DEPRECATED: Use sanitizeToInnerHtml from dom-sanitizer instead
 export function toInnerHtml(html: string): { __html: string } {
-  console.warn(
+  logger.warn(
     "toInnerHtml is deprecated. Use sanitizeToInnerHtml from dom-sanitizer instead."
   );
   return sanitizeToInnerHtml(html);
@@ -214,7 +220,7 @@ export function toInnerHtml(html: string): { __html: string } {
 // Rich HTML sanitizer for ad/banner markup that may contain images and links
 // DEPRECATED: Use sanitizeRichHtml from dom-sanitizer instead
 export function sanitizeRichHtmlString(html: string): string {
-  console.warn(
+  logger.warn(
     "sanitizeRichHtmlString is deprecated. Use sanitizeRichHtml from dom-sanitizer instead."
   );
   return sanitizeRichHtml(html);

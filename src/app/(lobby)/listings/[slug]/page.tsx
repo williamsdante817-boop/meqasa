@@ -455,7 +455,7 @@ export default async function DetailsPage({
                   </ContentSection>
                 )}
               <PropertyFavoritesBanner
-                propertyId={Number(listingDetail.detailreq.split("-").pop())}
+                _propertyId={Number(listingDetail.detailreq.split("-").pop())}
                 propertyType="listing"
               />
 

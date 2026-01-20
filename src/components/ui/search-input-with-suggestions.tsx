@@ -432,7 +432,7 @@ export function SearchInputWithSuggestions({
       const dropdownContent = (
         <>
           <div
-            className="fixed inset-0 bg-transparent z-[9999]"
+            className="fixed inset-0 z-[9999] bg-transparent"
             onTouchStart={(e) => {
               // Handle touch events for mobile
               e.preventDefault();
@@ -448,7 +448,7 @@ export function SearchInputWithSuggestions({
             }}
           />
           <div
-            className="fixed bg-white rounded-lg shadow-lg border border-gray-200 max-h-60 overflow-y-auto z-[10000]"
+            className="fixed z-[10000] max-h-60 overflow-y-auto rounded-lg border border-gray-200 bg-white shadow-lg"
             style={{
               top: `${portalPosition.top}px`,
               left: `${portalPosition.left}px`,
@@ -463,8 +463,8 @@ export function SearchInputWithSuggestions({
               {/* Recent Searches Section */}
               {groupedSuggestions.recent.length > 0 && (
                 <>
-                  <li className="px-4 py-3 bg-gradient-to-r from-gray-50 to-gray-100 border-b-2 border-gray-200">
-                    <span className="text-xs font-semibold text-gray-700 uppercase tracking-wide">
+                  <li className="border-b-2 border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100 px-4 py-3">
+                    <span className="text-xs font-semibold tracking-wide text-gray-700 uppercase">
                       Recent Searches
                     </span>
                   </li>
@@ -480,7 +480,7 @@ export function SearchInputWithSuggestions({
                         role="option"
                         aria-selected={isSelected}
                         className={cn(
-                          "pl-8 pr-4 py-3 cursor-pointer hover:bg-gray-50 border-b border-gray-100 transition-colors",
+                          "cursor-pointer border-b border-gray-100 py-3 pr-4 pl-8 transition-colors hover:bg-gray-50",
                           isSelected
                             ? "bg-blue-50 text-blue-600"
                             : "text-gray-700"
@@ -503,7 +503,7 @@ export function SearchInputWithSuggestions({
                       >
                         <div className="flex items-center">
                           <IconComponent
-                            className="w-4 h-4 mr-3 text-orange-500"
+                            className="mr-3 h-4 w-4 text-orange-500"
                             aria-hidden="true"
                           />
                           <span className="text-sm font-medium">
@@ -519,8 +519,8 @@ export function SearchInputWithSuggestions({
               {/* Popular Locations Section */}
               {groupedSuggestions.popular.length > 0 && (
                 <>
-                  <li className="px-4 py-3 bg-gradient-to-r from-gray-50 to-gray-100 border-b-2 border-gray-200">
-                    <span className="text-xs font-semibold text-gray-700 uppercase tracking-wide">
+                  <li className="border-b-2 border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100 px-4 py-3">
+                    <span className="text-xs font-semibold tracking-wide text-gray-700 uppercase">
                       Popular Locations
                     </span>
                   </li>
@@ -536,7 +536,7 @@ export function SearchInputWithSuggestions({
                         role="option"
                         aria-selected={isSelected}
                         className={cn(
-                          "pl-8 pr-4 py-3 cursor-pointer hover:bg-gray-50 border-b border-gray-100 transition-colors",
+                          "cursor-pointer border-b border-gray-100 py-3 pr-4 pl-8 transition-colors hover:bg-gray-50",
                           isSelected
                             ? "bg-blue-50 text-blue-600"
                             : "text-gray-700"
@@ -559,7 +559,7 @@ export function SearchInputWithSuggestions({
                       >
                         <div className="flex items-center">
                           <IconComponent
-                            className="w-4 h-4 mr-3 text-green-500"
+                            className="mr-3 h-4 w-4 text-green-500"
                             aria-hidden="true"
                           />
                           <span className="text-sm font-medium">
@@ -575,8 +575,8 @@ export function SearchInputWithSuggestions({
               {/* Location Results Section */}
               {groupedSuggestions.location.length > 0 && (
                 <>
-                  <li className="px-4 py-3 bg-gradient-to-r from-gray-50 to-gray-100 border-b-2 border-gray-200">
-                    <span className="text-xs font-semibold text-gray-700 uppercase tracking-wide">
+                  <li className="border-b-2 border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100 px-4 py-3">
+                    <span className="text-xs font-semibold tracking-wide text-gray-700 uppercase">
                       Results
                     </span>
                   </li>
@@ -592,7 +592,7 @@ export function SearchInputWithSuggestions({
                         role="option"
                         aria-selected={isSelected}
                         className={cn(
-                          "pl-8 pr-4 py-3 cursor-pointer hover:bg-gray-50 border-b border-gray-100 last:border-b-0 transition-colors",
+                          "cursor-pointer border-b border-gray-100 py-3 pr-4 pl-8 transition-colors last:border-b-0 hover:bg-gray-50",
                           isSelected
                             ? "bg-blue-50 text-blue-600"
                             : "text-gray-700"
@@ -615,7 +615,7 @@ export function SearchInputWithSuggestions({
                       >
                         <div className="flex items-center">
                           <IconComponent
-                            className="w-4 h-4 mr-3 text-blue-500"
+                            className="mr-3 h-4 w-4 text-blue-500"
                             aria-hidden="true"
                           />
                           <span className="text-sm font-medium">
@@ -645,8 +645,8 @@ export function SearchInputWithSuggestions({
             {/* Recent Searches Section */}
             {groupedSuggestions.recent.length > 0 && (
               <>
-                <li className="px-4 py-3 bg-gradient-to-r from-gray-50 to-gray-100 border-b-2 border-gray-200">
-                  <span className="text-xs font-semibold text-gray-700 uppercase tracking-wide">
+                <li className="border-b-2 border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100 px-4 py-3">
+                  <span className="text-xs font-semibold tracking-wide text-gray-700 uppercase">
                     Recent Searches
                   </span>
                 </li>
@@ -662,7 +662,7 @@ export function SearchInputWithSuggestions({
                       role="option"
                       aria-selected={isSelected}
                       className={cn(
-                        "pl-8 pr-4 py-3 cursor-pointer hover:bg-gray-50 border-b border-gray-100 transition-colors",
+                        "cursor-pointer border-b border-gray-100 py-3 pr-4 pl-8 transition-colors hover:bg-gray-50",
                         isSelected
                           ? "bg-blue-50 text-blue-600"
                           : "text-gray-700"
@@ -685,7 +685,7 @@ export function SearchInputWithSuggestions({
                     >
                       <div className="flex items-center">
                         <IconComponent
-                          className="w-4 h-4 mr-3 text-orange-500"
+                          className="mr-3 h-4 w-4 text-orange-500"
                           aria-hidden="true"
                         />
                         <span className="text-sm font-medium">
@@ -701,8 +701,8 @@ export function SearchInputWithSuggestions({
             {/* Popular Locations Section */}
             {groupedSuggestions.popular.length > 0 && (
               <>
-                <li className="px-4 py-3 bg-gradient-to-r from-gray-50 to-gray-100 border-b-2 border-gray-200">
-                  <span className="text-xs font-semibold text-gray-700 uppercase tracking-wide">
+                <li className="border-b-2 border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100 px-4 py-3">
+                  <span className="text-xs font-semibold tracking-wide text-gray-700 uppercase">
                     Popular Locations
                   </span>
                 </li>
@@ -718,7 +718,7 @@ export function SearchInputWithSuggestions({
                       role="option"
                       aria-selected={isSelected}
                       className={cn(
-                        "pl-8 pr-4 py-3 cursor-pointer hover:bg-gray-50 border-b border-gray-100 transition-colors",
+                        "cursor-pointer border-b border-gray-100 py-3 pr-4 pl-8 transition-colors hover:bg-gray-50",
                         isSelected
                           ? "bg-blue-50 text-blue-600"
                           : "text-gray-700"
@@ -741,7 +741,7 @@ export function SearchInputWithSuggestions({
                     >
                       <div className="flex items-center">
                         <IconComponent
-                          className="w-4 h-4 mr-3 text-green-500"
+                          className="mr-3 h-4 w-4 text-green-500"
                           aria-hidden="true"
                         />
                         <span className="text-sm font-medium">
@@ -757,8 +757,8 @@ export function SearchInputWithSuggestions({
             {/* Location Results Section */}
             {groupedSuggestions.location.length > 0 && (
               <>
-                <li className="px-4 py-3 bg-gradient-to-r from-gray-50 to-gray-100 border-b-2 border-gray-200">
-                  <span className="text-xs font-semibold text-gray-700 uppercase tracking-wide">
+                <li className="border-b-2 border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100 px-4 py-3">
+                  <span className="text-xs font-semibold tracking-wide text-gray-700 uppercase">
                     Results
                   </span>
                 </li>
@@ -774,7 +774,7 @@ export function SearchInputWithSuggestions({
                       role="option"
                       aria-selected={isSelected}
                       className={cn(
-                        "pl-8 pr-4 py-3 cursor-pointer hover:bg-gray-50 border-b border-gray-100 last:border-b-0 transition-colors",
+                        "cursor-pointer border-b border-gray-100 py-3 pr-4 pl-8 transition-colors last:border-b-0 hover:bg-gray-50",
                         isSelected
                           ? "bg-blue-50 text-blue-600"
                           : "text-gray-700"
@@ -797,7 +797,7 @@ export function SearchInputWithSuggestions({
                     >
                       <div className="flex items-center">
                         <IconComponent
-                          className="w-4 h-4 mr-3 text-blue-500"
+                          className="mr-3 h-4 w-4 text-blue-500"
                           aria-hidden="true"
                         />
                         <span className="text-sm font-medium">

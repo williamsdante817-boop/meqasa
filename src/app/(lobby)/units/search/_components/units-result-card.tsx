@@ -1,4 +1,5 @@
 "use client";
+import { logger } from "@/lib/logger";
 
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Camera, Dot, Phone } from "lucide-react";
@@ -79,7 +80,7 @@ export function UnitsResultCard({
   // Calculate actual photo count
   const photoCount = unit.coverphoto || unit.image ? 1 : 0;
 
-  console.log("units result", unit);
+  logger.debug("units result", unit);
 
   // Get display values
   const displayContract =

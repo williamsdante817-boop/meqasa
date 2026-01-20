@@ -1,4 +1,5 @@
-import type { DevelopmentProjectResponse } from '@/app/api/development-projects/route';
+import { logger } from "@/lib/logger";
+import type { DevelopmentProjectResponse } from "@/app/api/development-projects/route";
 
 const CLOUDFRONT_BASE = "https://dve7rykno93gs.cloudfront.net";
 
@@ -45,30 +46,37 @@ export async function getDevelopments(): Promise<DevelopmentProjectResponse | nu
 
     const url = `https://meqasa.com/real-estate-developments?${queryParams.toString()}`;
 
-    console.log("Fetching development projects from:", {
+    logger.debug("Fetching development projects from:", {
       url,
       queryParams: Object.fromEntries(queryParams.entries()),
     });
 
     const response = await fetch(url, {
       method: "GET",
+      next: { revalidate: 3600 }, // Cache for 1 hour
     });
 
     if (response.ok) {
       const rawData: DevelopmentProjectResponse = await response.json();
-      console.log("Raw development projects API response:", rawData);
+      logger.debug("Raw development projects API response:", {
+        projectCount: rawData.projects?.length ?? 0,
+        developerCount: rawData.developers?.length ?? 0,
+      });
 
       // Process the data to add CloudFront URLs
       const processedData = processApiResponse(rawData);
-      console.log("Processed development projects data:", processedData);
+      logger.debug("Processed development projects data:", {
+        projectCount: processedData.projects?.length ?? 0,
+        developerCount: processedData.developers?.length ?? 0,
+      });
 
       return processedData;
     } else {
-      console.error(`API returned ${response.status}`);
+      logger.error(`API returned ${response.status}`);
       return null;
     }
   } catch (error) {
-    console.error("Error fetching development projects:", error);
+    logger.error("Error fetching development projects:", error);
     return null;
   }
 }

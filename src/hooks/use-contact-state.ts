@@ -1,4 +1,5 @@
 "use client";
+import { logger } from "@/lib/logger";
 
 import { useState, useEffect } from "react";
 
@@ -87,7 +88,7 @@ export const useContactState = (contextKey: string) => {
     const prev = getOrCreateState(contextKey);
     const newState: ContactState = { ...prev, ...updates, contextKey };
     if (process.env.NODE_ENV !== "production") {
-      console.log("🔄 [useContactState] Updating state:", {
+      logger.debug("🔄 [useContactState] Updating state:", {
         contextKey,
         oldState: prev,
         updates,
@@ -100,7 +101,7 @@ export const useContactState = (contextKey: string) => {
 
   const setPhoneNumbers = (phone: string, whatsapp: string) => {
     if (process.env.NODE_ENV !== "production") {
-      console.log("🔄 [useContactState] Setting phone numbers:", {
+      logger.debug("🔄 [useContactState] Setting phone numbers:", {
         phone,
         whatsapp,
         contextKey,
@@ -116,7 +117,7 @@ export const useContactState = (contextKey: string) => {
 
   const setLoading = (loading: boolean) => {
     if (process.env.NODE_ENV !== "production") {
-      console.log("🔄 [useContactState] Setting loading:", {
+      logger.debug("🔄 [useContactState] Setting loading:", {
         loading,
         contextKey,
       });

@@ -23,6 +23,7 @@ import { isShortLetQuery } from "@/lib/search/short-let";
 import { type FormState } from "@/types/search";
 import { AlertCircle } from "lucide-react";
 import { ActiveFilterChips } from "./ActiveFilterChips";
+import { logger } from "@/lib/logger";
 
 // Constants for better maintainability
 const DEFAULT_LOCATION = "ghana";
@@ -392,7 +393,7 @@ export function ResultSearchFilter() {
       // Navigate to search page (no y or page for new search)
       router.push(`/search/${apiContract}?${searchParams.toString()}`);
     } catch (err) {
-      console.error("Search error:", err);
+      logger.error("Search error:", err);
       setError(
         "An error occurred while processing your search. Please try again."
       );

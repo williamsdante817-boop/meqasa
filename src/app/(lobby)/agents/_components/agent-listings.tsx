@@ -269,7 +269,12 @@ export function AgentListings({
             </EmptyDescription>
           </EmptyHeader>
           <EmptyContent>
-            <Button asChild size="lg" variant="brand-primary" className="w-full sm:w-auto">
+            <Button
+              asChild
+              size="lg"
+              variant="brand-primary"
+              className="w-full sm:w-auto"
+            >
               <Link href="/agents">View All Agents</Link>
             </Button>
           </EmptyContent>

@@ -59,7 +59,10 @@ export function normalizeHeroBanner(
 
   const alt = banner.alt?.trim() || "";
   const ariaLabel =
-    banner.ariaLabel?.trim() || (alt || undefined) || "View featured property promotion";
+    banner.ariaLabel?.trim() ||
+    alt ||
+    undefined ||
+    "View featured property promotion";
 
   return {
     src,

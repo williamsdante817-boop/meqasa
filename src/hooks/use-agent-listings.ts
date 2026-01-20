@@ -2,6 +2,7 @@
 
 import type { AgentListing } from "@/types/agent";
 import { useCallback, useEffect, useState } from "react";
+import { logger } from "@/lib/logger";
 
 interface AgentListingsPaginationResponse {
   listings: AgentListing[];
@@ -71,7 +72,7 @@ export function useAgentListings(
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Unknown error";
       setError(errorMessage);
-      console.error("Failed to fetch agent listings:", err);
+      logger.error("Failed to fetch agent listings:", err);
     } finally {
       setLoading(false);
     }

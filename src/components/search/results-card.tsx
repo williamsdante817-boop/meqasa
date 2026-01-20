@@ -57,7 +57,9 @@ export function ResultsCard({ result }: { result: MeqasaListing }) {
   );
 
   // Normalize image URL - fix double slashes and remove query params
-  const normalizedImageUrl = result.image?.replace(/([^:])(\/\/+)/g, '$1/').split('?')[0];
+  const normalizedImageUrl = result.image
+    ?.replace(/([^:])(\/\/+)/g, "$1/")
+    .split("?")[0];
 
   const agentImageUrl = result.owner.image?.startsWith("http")
     ? result.owner.image

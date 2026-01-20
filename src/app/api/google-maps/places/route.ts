@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
@@ -107,7 +108,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    console.log(
+    logger.debug(
       `🔍 Server-side places search: ${type} near ${location} (radius: ${radius}m, limit: ${limit})`
     );
 
@@ -138,11 +139,13 @@ export async function GET(request: NextRequest) {
         // Small delay to avoid rate limiting
         await new Promise((resolve) => setTimeout(resolve, 100));
       } catch (error) {
-        console.warn(`Failed to search for type ${searchType}:`, error);
+        logger.warn(`Failed to search for type ${searchType}`, {
+          error: error instanceof Error ? error.message : String(error),
+        });
       }
     }
 
-    console.log(
+    logger.debug(
       `📝 Raw results: ${allPlaces.length} places found before filtering`
     );
 
@@ -184,7 +187,7 @@ export async function GET(request: NextRequest) {
         })) || [],
     }));
 
-    console.log(
+    logger.debug(
       `✅ Filtered to ${places.length} relevant ${type} establishments (from ${uniquePlaces.length} unique results)`
     );
 
@@ -196,7 +199,7 @@ export async function GET(request: NextRequest) {
       next_page_token: null, // We handle pagination ourselves
     });
   } catch (error) {
-    console.error(`🚨 Places search error:`, error);
+    logger.error(`Places search error`, error);
     return NextResponse.json(
       {
         error: "Internal server error",

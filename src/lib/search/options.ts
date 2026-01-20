@@ -1,7 +1,4 @@
-import type {
-  MeqasaRentPeriod,
-  MeqasaSortOption,
-} from "./constants";
+import type { MeqasaRentPeriod, MeqasaSortOption } from "./constants";
 
 export interface LabeledOption<T extends string> {
   value: T;
@@ -20,6 +17,4 @@ export const FALLBACK_RENT_PERIOD_OPTIONS = [
   { value: "shortrent", label: "Weekly" },
   { value: "longrent", label: "Up to 6 months" },
   { value: "longrent", label: "12 months plus" },
-] satisfies ReadonlyArray<
-  LabeledOption<Exclude<MeqasaRentPeriod, "- Any -">>
->;
+] satisfies ReadonlyArray<LabeledOption<Exclude<MeqasaRentPeriod, "- Any -">>>;

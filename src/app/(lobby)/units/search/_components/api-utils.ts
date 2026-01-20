@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger";
 import { fetchDeveloperUnitsServer } from "@/lib/developer-units-server";
 import { API_CONFIG } from "./constants";
 import type { ApiSearchParams, DeveloperUnit, SearchParams } from "./types";
@@ -104,20 +105,18 @@ export async function fetchUnitsSearchResults(
   try {
     const apiParams = mapSearchParamsToApi(searchParams);
 
-    console.log("[Server] Units search params:", apiParams);
+    logger.debug("[Server] Units search params:", { apiParams });
 
     const units = await fetchDeveloperUnitsServer(apiParams);
 
-    console.log(`[Server] Units search returned ${units.length} units`);
+    logger.debug(`[Server] Units search returned ${units.length} units`);
 
     return {
       units,
       hasMore: units.length > 0,
     };
   } catch (error) {
-    console.error("[Server] Units search error:", error);
+    logger.error("[Server] Units search error", error);
     return { units: [], hasMore: false };
   }
 }
-
-

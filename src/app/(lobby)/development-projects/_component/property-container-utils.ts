@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger";
 /**
  * Data utilities for PropertyContainer component
  * Handles validation, transformation, and business logic
@@ -63,7 +64,7 @@ export function validateProjectData(data: DeveloperProject): {
 
 // Memoized project data transformers with safety checks
 export function useProjectDataTransformers(projectData: DeveloperProject) {
-  console.log(projectData);
+  logger.debug("Project data", { projectData });
   return useMemo(
     () => ({
       markup: sanitizeRichHtmlToInnerHtml(

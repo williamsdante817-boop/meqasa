@@ -11,7 +11,14 @@ import {
 } from "@/components/ui/dialog";
 import { generateContextKey, useContactState } from "@/hooks/use-contact-state";
 import { useContactMessage } from "@/hooks/use-contact-message";
-import { sanitizeName, sanitizeEmail, sanitizeMessage, getNameError, getEmailError, getMessageError } from "@/lib/input-validation";
+import {
+  sanitizeName,
+  sanitizeEmail,
+  sanitizeMessage,
+  getNameError,
+  getEmailError,
+  getMessageError,
+} from "@/lib/input-validation";
 import { parsePhoneNumber, isValidPhoneNumber } from "libphonenumber-js";
 import type { CountryCode } from "libphonenumber-js";
 import { Mail, MessageSquare, User } from "lucide-react";
@@ -25,6 +32,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
+import { logger } from "@/lib/logger";
 
 interface ContactSectionProps {
   name: string;
@@ -65,7 +73,7 @@ const getStoredContactInfo = (): StoredContactInfo | null => {
     }
     return null;
   } catch (error) {
-    console.error("Error reading from localStorage:", error);
+    logger.error("Error reading from localStorage:", error);
     return null;
   }
 };
@@ -82,7 +90,7 @@ const setStoredContactInfo = (
       JSON.stringify({ name, phone, countryIso: countryIso?.toUpperCase() })
     );
   } catch (error) {
-    console.error("Error writing to localStorage:", error);
+    logger.error("Error writing to localStorage:", error);
   }
 };
 
@@ -91,7 +99,7 @@ const clearStoredContactInfo = (): void => {
   try {
     localStorage.removeItem("meqasa_contact_info");
   } catch (error) {
-    console.error("Error clearing localStorage:", error);
+    logger.error("Error clearing localStorage:", error);
   }
 };
 
@@ -264,7 +272,7 @@ export default function ContactSection({
     const userPhoneToUse = phone ?? state.userPhone;
 
     if (!userNameToUse || !userPhoneToUse || !entityId) {
-      console.error(
+      logger.error(
         "❌ [ContactSection] No contact info or entity ID available"
       );
       return;
@@ -297,7 +305,7 @@ export default function ContactSection({
   // Function to handle getting number with saved contact info
   const handleGetNumberWithSavedInfo = async () => {
     if (!state.userName || !state.userPhone || !entityId) {
-      console.error(
+      logger.error(
         "❌ [ContactSection] No saved contact info or entity ID available"
       );
       return;
@@ -433,7 +441,7 @@ export default function ContactSection({
       setEmailNameError(nameErr);
       valid = false;
     }
-    
+
     const messageErr = getMessageError(userMessage);
     if (messageErr) {
       setMessageError(messageErr);
@@ -458,13 +466,15 @@ export default function ContactSection({
           setEmailFormSubmitted(true);
         } else {
           setMessageError(
-            sendMessageError?.message ?? "Failed to send message. Please try again."
+            sendMessageError?.message ??
+              "Failed to send message. Please try again."
           );
         }
       } catch (error) {
-        console.error("Error sending message:", error);
+        logger.error("Error sending message:", error);
         setMessageError(
-          sendMessageError?.message ?? "Failed to send message. Please try again."
+          sendMessageError?.message ??
+            "Failed to send message. Please try again."
         );
       } finally {
         setEmailLoading(false);
@@ -589,162 +599,161 @@ export default function ContactSection({
       {/* Email Modal */}
       <Dialog open={emailModalOpen} onOpenChange={setEmailModalOpen}>
         <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Contact Agent</DialogTitle>
-              <DialogDescription>
-                Send a message to the property agent. They will get back to you
-                soon.
-              </DialogDescription>
-            </DialogHeader>
-            {!emailFormSubmitted ? (
-              <form onSubmit={handleEmailFormSubmit} className="mt-2 space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="cs-email">Your Email Address*</Label>
-                  <Input
-                    id="cs-email"
-                    type="email"
-                    name="email"
-                    required
-                    placeholder="Your email address"
-                    value={userEmail}
-                    aria-invalid={Boolean(emailError)}
-                    onChange={(e) => setUserEmail(sanitizeEmail(e.target.value))}
-                    maxLength={100}
-                  />
-                  {emailError && (
-                    <p className="text-xs text-red-500">{emailError}</p>
-                  )}
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="cs-phone-2">Your Phone Number</Label>
-                  <PhoneInput
-                    country={"gh"}
-                    value={state.userPhone}
-                    onChange={(phone: string, country: unknown) => {
-                      dispatch({
-                        type: "setField",
-                        field: "userPhone",
-                        value: phone,
-                      });
-                      let iso: CountryCode | undefined;
-                      if (
-                        country &&
-                        typeof country === "object" &&
-                        "countryCode" in country
-                      ) {
-                        const cc = (country as { countryCode?: string })
-                          .countryCode;
-                        if (cc) iso = cc.toUpperCase() as CountryCode;
-                      }
-                      dispatch({
-                        type: "setField",
-                        field: "userCountryIso",
-                        value: iso,
-                      });
-                      // Live validate phone for email form
-                      const possible = phone
-                        ? phone.startsWith("+")
-                          ? isValidPhoneNumber(phone)
-                          : isValidPhoneNumber(phone, iso)
-                        : false;
-                      if (!possible) {
-                        // set local email phone error helper text
-                        setEmailPhoneError("Valid phone number is required");
-                      } else {
-                        setEmailPhoneError("");
-                      }
-                    }}
-                    containerStyle={{ width: "100%" }}
-                    inputStyle={{ width: "100%" }}
-                    inputClass={`file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] ${emailPhoneError ? "aria-[invalid]:ring-destructive/20 aria-[invalid]:border-destructive" : ""}`}
-                    inputProps={{
-                      id: "cs-phone-2",
-                      name: "phone",
-                      required: true,
-                      "aria-invalid": Boolean(emailPhoneError),
-                    }}
-                  />
-                  {emailPhoneError && (
-                    <p className="text-xs text-red-500">{emailPhoneError}</p>
-                  )}
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="cs-name-2">Your Name</Label>
-                  <Input
-                    id="cs-name-2"
-                    type="text"
-                    name="name"
-                    required
-                    placeholder="Your Name"
-                    value={state.userName}
-                    aria-invalid={Boolean(emailNameError)}
-                    onChange={(e) =>
-                      dispatch({
-                        type: "setField",
-                        field: "userName",
-                        value: sanitizeName(e.target.value),
-                      })
-                    }
-                    maxLength={100}
-                  />
-                  {emailNameError && (
-                    <p className="text-xs text-red-500">{emailNameError}</p>
-                  )}
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="cs-message">Your Message</Label>
-                  <Textarea
-                    id="cs-message"
-                    name="message"
-                    required
-                    placeholder="Your Message"
-                    value={userMessage}
-                    aria-invalid={Boolean(messageError)}
-                    onChange={(e) => setUserMessage(sanitizeMessage(e.target.value))}
-                    rows={3}
-                    maxLength={1000}
-                  />
-                  {messageError && (
-                    <p className="text-xs text-red-500">{messageError}</p>
-                  )}
-                </div>
-                <div className="flex items-center gap-2">
-                  <Checkbox
-                    id="alertsCheckbox"
-                    checked={alertsChecked}
-                    onCheckedChange={(checked) =>
-                      setAlertsChecked(Boolean(checked))
-                    }
-                  />
-                  <Label
-                    htmlFor="alertsCheckbox"
-                    className="text-sm font-normal"
-                  >
-                    Send me alerts for offices for rent in East legon up to
-                    $1,800/month
-                  </Label>
-                </div>
-                <Button
-                  type="submit"
-                  className="mt-2 h-12 w-full bg-[#232335] text-lg font-bold text-white"
-                  disabled={emailLoading}
-                >
-                  {emailLoading ? "Sending..." : "Send"}
-                </Button>
-              </form>
-            ) : (
-              <div className="py-6 text-center">
-                <div className="mb-2 text-lg font-semibold text-green-700">
-                  Your enquiry has been sent!
-                </div>
-                <div className="text-brand-muted">
-                  The agent will contact you soon.
-                </div>
-                <DialogClose asChild>
-                  <Button className="mt-4 w-full">Close</Button>
-                </DialogClose>
+          <DialogHeader>
+            <DialogTitle>Contact Agent</DialogTitle>
+            <DialogDescription>
+              Send a message to the property agent. They will get back to you
+              soon.
+            </DialogDescription>
+          </DialogHeader>
+          {!emailFormSubmitted ? (
+            <form onSubmit={handleEmailFormSubmit} className="mt-2 space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="cs-email">Your Email Address*</Label>
+                <Input
+                  id="cs-email"
+                  type="email"
+                  name="email"
+                  required
+                  placeholder="Your email address"
+                  value={userEmail}
+                  aria-invalid={Boolean(emailError)}
+                  onChange={(e) => setUserEmail(sanitizeEmail(e.target.value))}
+                  maxLength={100}
+                />
+                {emailError && (
+                  <p className="text-xs text-red-500">{emailError}</p>
+                )}
               </div>
-            )}
+              <div className="space-y-2">
+                <Label htmlFor="cs-phone-2">Your Phone Number</Label>
+                <PhoneInput
+                  country={"gh"}
+                  value={state.userPhone}
+                  onChange={(phone: string, country: unknown) => {
+                    dispatch({
+                      type: "setField",
+                      field: "userPhone",
+                      value: phone,
+                    });
+                    let iso: CountryCode | undefined;
+                    if (
+                      country &&
+                      typeof country === "object" &&
+                      "countryCode" in country
+                    ) {
+                      const cc = (country as { countryCode?: string })
+                        .countryCode;
+                      if (cc) iso = cc.toUpperCase() as CountryCode;
+                    }
+                    dispatch({
+                      type: "setField",
+                      field: "userCountryIso",
+                      value: iso,
+                    });
+                    // Live validate phone for email form
+                    const possible = phone
+                      ? phone.startsWith("+")
+                        ? isValidPhoneNumber(phone)
+                        : isValidPhoneNumber(phone, iso)
+                      : false;
+                    if (!possible) {
+                      // set local email phone error helper text
+                      setEmailPhoneError("Valid phone number is required");
+                    } else {
+                      setEmailPhoneError("");
+                    }
+                  }}
+                  containerStyle={{ width: "100%" }}
+                  inputStyle={{ width: "100%" }}
+                  inputClass={`file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] ${emailPhoneError ? "aria-[invalid]:ring-destructive/20 aria-[invalid]:border-destructive" : ""}`}
+                  inputProps={{
+                    id: "cs-phone-2",
+                    name: "phone",
+                    required: true,
+                    "aria-invalid": Boolean(emailPhoneError),
+                  }}
+                />
+                {emailPhoneError && (
+                  <p className="text-xs text-red-500">{emailPhoneError}</p>
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="cs-name-2">Your Name</Label>
+                <Input
+                  id="cs-name-2"
+                  type="text"
+                  name="name"
+                  required
+                  placeholder="Your Name"
+                  value={state.userName}
+                  aria-invalid={Boolean(emailNameError)}
+                  onChange={(e) =>
+                    dispatch({
+                      type: "setField",
+                      field: "userName",
+                      value: sanitizeName(e.target.value),
+                    })
+                  }
+                  maxLength={100}
+                />
+                {emailNameError && (
+                  <p className="text-xs text-red-500">{emailNameError}</p>
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="cs-message">Your Message</Label>
+                <Textarea
+                  id="cs-message"
+                  name="message"
+                  required
+                  placeholder="Your Message"
+                  value={userMessage}
+                  aria-invalid={Boolean(messageError)}
+                  onChange={(e) =>
+                    setUserMessage(sanitizeMessage(e.target.value))
+                  }
+                  rows={3}
+                  maxLength={1000}
+                />
+                {messageError && (
+                  <p className="text-xs text-red-500">{messageError}</p>
+                )}
+              </div>
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="alertsCheckbox"
+                  checked={alertsChecked}
+                  onCheckedChange={(checked) =>
+                    setAlertsChecked(Boolean(checked))
+                  }
+                />
+                <Label htmlFor="alertsCheckbox" className="text-sm font-normal">
+                  Send me alerts for offices for rent in East legon up to
+                  $1,800/month
+                </Label>
+              </div>
+              <Button
+                type="submit"
+                className="mt-2 h-12 w-full bg-[#232335] text-lg font-bold text-white"
+                disabled={emailLoading}
+              >
+                {emailLoading ? "Sending..." : "Send"}
+              </Button>
+            </form>
+          ) : (
+            <div className="py-6 text-center">
+              <div className="mb-2 text-lg font-semibold text-green-700">
+                Your enquiry has been sent!
+              </div>
+              <div className="text-brand-muted">
+                The agent will contact you soon.
+              </div>
+              <DialogClose asChild>
+                <Button className="mt-4 w-full">Close</Button>
+              </DialogClose>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
 

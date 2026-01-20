@@ -8,6 +8,7 @@ import {
 import { cn } from "@/lib/utils";
 import Image, { type ImageProps } from "next/image";
 import React, { useEffect, useRef, useState } from "react";
+import { logger } from "@/lib/logger";
 
 // Safe inline error placeholder (lightweight SVG)
 const ERROR_IMG_SRC =
@@ -73,17 +74,20 @@ export function ImageWithFallback({
     const currentAttempt = attempts + 1;
     setAttempts(currentAttempt);
     setIsLoading(false);
-    
+
     // Log error in development for debugging
     if (process.env.NODE_ENV === "development") {
-      console.warn(`Image load failed (attempt ${currentAttempt}/${maxRetries}):`, {
-        src: effectiveSrc,
-        originalSrc: src,
-        imageType,
-        imageSize,
-      });
+      logger.warn(
+        `Image load failed (attempt ${currentAttempt}/${maxRetries}):`,
+        {
+          src: effectiveSrc,
+          originalSrc: src,
+          imageType,
+          imageSize,
+        }
+      );
     }
-    
+
     userOnError?.(event);
   };
 

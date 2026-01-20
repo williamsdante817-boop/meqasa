@@ -1,4 +1,5 @@
 import DOMPurify from "dompurify";
+import { logger } from "@/lib/logger";
 
 // Check if we're in a browser environment
 const isBrowser = typeof window !== "undefined";
@@ -96,7 +97,9 @@ const configureDOMPurify = () => {
       KEEP_CONTENT: true,
     });
   } catch (error) {
-    console.warn("DOMPurify configuration failed:", error);
+    logger.warn("DOMPurify configuration failed:", {
+      error: error,
+    });
   }
 };
 
@@ -123,7 +126,9 @@ export function sanitizeHtml(html: string): string {
       return fallbackSanitize(html);
     }
   } catch (error) {
-    console.error("HTML sanitization error:", error);
+    logger.error("HTML sanitization error:", {
+      error: error,
+    });
     return fallbackSanitize(html);
   }
 }
@@ -230,7 +235,9 @@ export function sanitizeRichHtml(html: string): string {
       return fallbackSanitize(html);
     }
   } catch (error) {
-    console.error("Rich HTML sanitization error:", error);
+    logger.error("Rich HTML sanitization error:", {
+      error: error,
+    });
     return fallbackSanitize(html);
   }
 }
@@ -255,7 +262,9 @@ export function sanitizeStructuredData(data: unknown): { __html: string } {
     // For structured data, we only allow safe JSON content
     return { __html: jsonString };
   } catch (error) {
-    console.error("Structured data sanitization error:", error);
+    logger.error("Structured data sanitization error:", {
+      error: error,
+    });
     return { __html: "{}" };
   }
 }

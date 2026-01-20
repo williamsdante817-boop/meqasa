@@ -61,7 +61,7 @@ export function ServerPagination({
             {currentPage > 1 ? (
               <PaginationPrevious href={buildPageUrl(currentPage - 1)} />
             ) : (
-              <span className="inline-flex h-10 items-center justify-center gap-1 whitespace-nowrap rounded-md px-4 py-2 text-sm font-medium opacity-50 cursor-not-allowed">
+              <span className="inline-flex h-10 cursor-not-allowed items-center justify-center gap-1 rounded-md px-4 py-2 text-sm font-medium whitespace-nowrap opacity-50">
                 ← Previous
               </span>
             )}
@@ -88,7 +88,7 @@ export function ServerPagination({
             {currentPage < totalPages ? (
               <PaginationNext href={buildPageUrl(currentPage + 1)} />
             ) : (
-              <span className="inline-flex h-10 items-center justify-center gap-1 whitespace-nowrap rounded-md px-4 py-2 text-sm font-medium opacity-50 cursor-not-allowed">
+              <span className="inline-flex h-10 cursor-not-allowed items-center justify-center gap-1 rounded-md px-4 py-2 text-sm font-medium whitespace-nowrap opacity-50">
                 Next →
               </span>
             )}

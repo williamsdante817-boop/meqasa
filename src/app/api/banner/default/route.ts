@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { apiClient } from "@/lib/axios-client";
+import { logger } from "@/lib/logger";
 
 interface LeaderboardBanner {
   html: string;
@@ -42,7 +43,7 @@ export async function GET() {
 
     return NextResponse.json([]);
   } catch (error) {
-    console.error("Error fetching homepage leaderboard banner:", error);
+    logger.error("Error fetching homepage leaderboard banner", error);
     return NextResponse.json([], { status: 500 });
   }
 }

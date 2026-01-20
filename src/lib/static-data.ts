@@ -2,6 +2,7 @@ import { blog } from "@/assets/data/blog";
 import { location } from "@/assets/data/location";
 import { agentDataFetchers } from "./api/agent-fetchers";
 import { CACHE_KEYS, getCachedBanner, setCachedBanner } from "./banner-cache";
+import { logger } from "@/lib/logger";
 
 // Static data types
 export interface StaticData {
@@ -67,7 +68,7 @@ export async function getCachedBlogData() {
 
     return data;
   } catch (error) {
-    console.error("Failed to fetch blog data:", error);
+    logger.error("Failed to fetch blog data:", error);
     return blog; // Fallback to static data
   }
 }
@@ -91,7 +92,7 @@ export async function getCachedLocationData() {
 
     return data;
   } catch (error) {
-    console.error("Failed to fetch location data:", error);
+    logger.error("Failed to fetch location data:", error);
     return location; // Fallback to static data
   }
 }
@@ -116,7 +117,7 @@ export async function getCachedSeoText() {
 
     return data;
   } catch (error) {
-    console.error("Failed to fetch SEO text:", error);
+    logger.error("Failed to fetch SEO text:", error);
     return "Discover the best properties in Ghana with MeQasa."; // Fallback
   }
 }

@@ -89,7 +89,12 @@ export function UnitsSearchResults({
           </EmptyDescription>
         </EmptyHeader>
         <EmptyContent>
-          <Button onClick={() => (window.location.href = "/units/search")} size="lg" variant="brand-primary" className="w-full sm:w-auto">
+          <Button
+            onClick={() => (window.location.href = "/units/search")}
+            size="lg"
+            variant="brand-primary"
+            className="w-full sm:w-auto"
+          >
             Reset Search
           </Button>
         </EmptyContent>
@@ -111,11 +116,7 @@ export function UnitsSearchResults({
 
       {initialHasMore && (
         <div className="mt-12 mb-8 text-center">
-          <Button
-            onClick={handleLoadMore}
-            size="lg"
-            className="min-w-[160px]"
-          >
+          <Button onClick={handleLoadMore} size="lg" className="min-w-[160px]">
             Load More Units
           </Button>
         </div>

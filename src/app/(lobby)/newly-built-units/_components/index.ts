@@ -11,7 +11,5 @@ export { UnitsGrid } from "./units-grid";
 export { UnitsGridSkeleton } from "./units-grid-skeleton";
 export { UnitsErrorState } from "./units-error-state";
 
-
-
 // Constants
 export * from "./constants";

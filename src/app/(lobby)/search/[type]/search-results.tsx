@@ -101,19 +101,25 @@ export function SearchResults({
 
       {/* No Results */}
       {results.length === 0 && (
-        <Empty className="max-w-2xl mx-auto">
+        <Empty className="mx-auto max-w-2xl">
           <EmptyHeader>
             <EmptyMedia variant="icon">
               <Search />
             </EmptyMedia>
             <EmptyTitle>No properties found</EmptyTitle>
             <EmptyDescription>
-              We couldn&apos;t find any properties matching your search criteria.
-              Try adjusting your filters or search for a different location.
+              We couldn&apos;t find any properties matching your search
+              criteria. Try adjusting your filters or search for a different
+              location.
             </EmptyDescription>
           </EmptyHeader>
           <EmptyContent>
-            <Button asChild size="lg" variant="brand-primary" className="w-full sm:w-auto">
+            <Button
+              asChild
+              size="lg"
+              variant="brand-primary"
+              className="w-full sm:w-auto"
+            >
               <Link href="/">Browse All Properties</Link>
             </Button>
           </EmptyContent>

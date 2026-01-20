@@ -17,6 +17,7 @@ import type { AdLink } from "@/types/common";
 import { transformLegacyProperty } from "@/types/property-standardized";
 import { meqasaApiClient } from "./client";
 import { transformApiToPropertyListing } from "./transformers";
+import { logger } from "@/lib/logger";
 
 // Property-related data fetchers
 export const propertyDataFetchers = {
@@ -53,7 +54,7 @@ export const propertyDataFetchers = {
         selling: (response.selling ?? []).map(transformListing),
       };
     } catch (error) {
-      console.error("Failed to fetch featured listings:", error);
+      logger.error("Failed to fetch featured listings:", error);
       return { rentals: [], selling: [] };
     }
   },
@@ -77,10 +78,7 @@ export const propertyDataFetchers = {
       // Transform to standardized format
       return transformLegacyProperty(legacyProperty);
     } catch (error) {
-      console.error(
-        `Failed to fetch property details for ${reference}:`,
-        error
-      );
+      logger.error(`Failed to fetch property details for ${reference}:`, error);
       return null;
     }
   },
@@ -234,7 +232,7 @@ export const propertyDataFetchers = {
         },
       };
     } catch (error) {
-      console.error("Property search failed:", error);
+      logger.error("Property search failed:", error);
       return {
         properties: [],
         pagination: {
@@ -395,7 +393,7 @@ export const projectDataFetchers = {
         };
       });
     } catch (error) {
-      console.error("Failed to fetch featured projects:", error);
+      logger.error("Failed to fetch featured projects:", error);
       return [];
     }
   },
@@ -521,7 +519,7 @@ export const projectDataFetchers = {
         };
       });
     } catch (error) {
-      console.error(`Failed to fetch units for project ${projectId}:`, error);
+      logger.error(`Failed to fetch units for project ${projectId}:`, error);
       return [];
     }
   },
@@ -534,7 +532,7 @@ export const bannerDataFetchers = {
       const response = await meqasaApiClient.getHeroBanner<AdLink>();
       return response;
     } catch (error) {
-      console.error("Failed to fetch hero banner:", error);
+      logger.error("Failed to fetch hero banner:", error);
       return null;
     }
   },
@@ -544,7 +542,7 @@ export const bannerDataFetchers = {
       const response = await meqasaApiClient.getFlexiBanner<AdLink>();
       return response;
     } catch (error) {
-      console.error("Failed to fetch flexi banner:", error);
+      logger.error("Failed to fetch flexi banner:", error);
       return null;
     }
   },
@@ -554,7 +552,7 @@ export const bannerDataFetchers = {
       const response = await meqasaApiClient.getGridBanner<AdLink>();
       return response;
     } catch (error) {
-      console.error("Failed to fetch grid banner:", error);
+      logger.error("Failed to fetch grid banner:", error);
       return null;
     }
   },
@@ -573,7 +571,7 @@ export const blogDataFetchers = {
         market: Array.isArray(response.market) ? response.market : [],
       };
     } catch (error) {
-      console.error("Failed to fetch blog data:", error);
+      logger.error("Failed to fetch blog data:", error);
       return {
         featured: [],
         market: [],

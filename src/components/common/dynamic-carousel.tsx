@@ -49,9 +49,7 @@ const CarouselSlide = ({
   isDeveloper,
   index,
   onImageClick,
-
-   
-  unitId: _unitId,
+  _unitId,
 }: {
   image: string;
   isDeveloper?: boolean;

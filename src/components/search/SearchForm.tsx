@@ -119,7 +119,7 @@ export function SearchForm({
       // Don't send fhowshort when user selects "- Any -" - let API route handle the default
     }
 
-    // console.log("Search Params:", Object.fromEntries(searchParams.entries()));
+    // logger.info("Search Params:", Object.fromEntries(searchParams.entries()));
 
     // Navigate to search page with parameters (no y or page for new search)
     router.push(`/search/${apiContract}?${searchParams.toString()}`);

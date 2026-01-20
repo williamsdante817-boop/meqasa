@@ -1,4 +1,5 @@
 "use client";
+import { logger } from "@/lib/logger";
 
 import * as React from "react";
 import { useState } from "react";
@@ -123,7 +124,7 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
     setTimeout(() => {
       setIsLoading(false);
       // Handle successful sign up here
-      console.log("Sign up submitted:", formData);
+      logger.debug("Sign up submitted:", formData);
     }, 2000);
   }
 
@@ -132,7 +133,7 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
     // Handle social sign up
     setTimeout(() => {
       setIsLoading(false);
-      console.log(`${provider} sign up initiated`);
+      logger.debug(`${provider} sign up initiated`);
     }, 1000);
   };
 

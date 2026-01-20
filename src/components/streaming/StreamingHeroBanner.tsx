@@ -1,7 +1,4 @@
-import {
-  HeroBanner,
-  HeroBannerFallback,
-} from "@/components/search/HeroBanner";
+import { HeroBanner, HeroBannerFallback } from "@/components/search/HeroBanner";
 import { logError } from "@/lib/logger";
 import { normalizeHeroBanner } from "@/lib/hero-banner";
 import type { AdLink } from "@/types";

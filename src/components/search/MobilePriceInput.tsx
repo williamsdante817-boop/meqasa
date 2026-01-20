@@ -25,7 +25,6 @@ interface MobilePriceInputProps {
 }
 
 export function MobilePriceInput({
-   
   title: _title,
   unit,
   placeholder,

@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { getResultsPopup } from "@/lib/popups";
+import { logger } from "@/lib/logger";
 
 export async function GET(request: NextRequest) {
   try {
@@ -32,7 +33,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(popupData);
   } catch (error) {
-    console.error("Failed to fetch results popup:", error);
+    logger.error("Failed to fetch results popup", error);
     return NextResponse.json(
       { error: "Failed to fetch popup data" },
       { status: 500 }

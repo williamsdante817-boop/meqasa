@@ -10,7 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 // Development card skeleton component
 function DevelopmentCardSkeleton() {
   return (
-    <div className="bg-white rounded-lg border border-brand-border overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+    <div className="border-brand-border overflow-hidden rounded-lg border bg-white shadow-sm transition-shadow hover:shadow-md">
       <div className="relative">
         <Skeleton className="h-48 w-full" />
         <div className="absolute top-3 right-3">
@@ -19,7 +19,7 @@ function DevelopmentCardSkeleton() {
       </div>
       <div className="p-4">
         <div className="mb-2">
-          <Skeleton className="h-6 w-3/4 mb-1" />
+          <Skeleton className="mb-1 h-6 w-3/4" />
           <Skeleton className="h-4 w-1/2" />
         </div>
         <div className="flex items-center justify-between">
@@ -34,7 +34,7 @@ function DevelopmentCardSkeleton() {
 // Developer logos skeleton
 function DeveloperLogosSkeleton() {
   return (
-    <div className="py-12 border-b border-brand-border">
+    <div className="border-brand-border border-b py-12">
       <div className="flex items-center justify-center space-x-8 md:space-x-12">
         {Array.from({ length: 6 }).map((_, i) => (
           <Skeleton key={i} className="h-12 w-24 md:h-16 md:w-32" />
@@ -73,7 +73,7 @@ export default function DeveloperProjectsLoading() {
 
         {/* Header Loading */}
         <header className="mb-16 text-left">
-          <Skeleton className="h-12 w-3/4 mb-6 md:h-16" />
+          <Skeleton className="mb-6 h-12 w-3/4 md:h-16" />
           <div className="max-w-4xl space-y-3">
             <Skeleton className="h-6 w-full" />
             <Skeleton className="h-6 w-5/6" />
@@ -90,14 +90,16 @@ export default function DeveloperProjectsLoading() {
       </Shell>
 
       {/* Call to Action Section */}
-      <section className="border-t border-brand-border bg-gray-50">
+      <section className="border-brand-border border-t bg-gray-50">
         <Shell className="py-16 md:py-20">
           <div className="mx-auto max-w-3xl text-center">
-            <h2 className="text-brand-accent mb-6 text-3xl font-bold leading-tight md:text-4xl">
+            <h2 className="text-brand-accent mb-6 text-3xl leading-tight font-bold md:text-4xl">
               Looking for Your Dream Property?
             </h2>
             <p className="text-brand-muted mb-8 text-lg leading-relaxed md:text-xl">
-              Explore our extensive portfolio of premium developments across Ghana. From luxury apartments to family homes, find the perfect property that suits your lifestyle.
+              Explore our extensive portfolio of premium developments across
+              Ghana. From luxury apartments to family homes, find the perfect
+              property that suits your lifestyle.
             </p>
             <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Button
@@ -114,7 +116,7 @@ export default function DeveloperProjectsLoading() {
                 asChild
                 variant="outline"
                 size="lg"
-                className="text-brand-accent hover:bg-brand-primary hover:text-white w-full border-brand-primary sm:w-auto"
+                className="text-brand-accent hover:bg-brand-primary border-brand-primary w-full hover:text-white sm:w-auto"
               >
                 <Link href="/newly-built-units">
                   <Building2 className="mr-2 h-5 w-5" />

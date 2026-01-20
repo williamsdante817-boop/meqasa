@@ -131,7 +131,10 @@ export async function searchPropertiesServer(
       postParams.set("ffsbo", "1");
     }
 
-    if (params.frentperiod && MEQASA_RENT_PERIODS.includes(params.frentperiod)) {
+    if (
+      params.frentperiod &&
+      MEQASA_RENT_PERIODS.includes(params.frentperiod)
+    ) {
       postParams.set("frentperiod", params.frentperiod);
     }
 

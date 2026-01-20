@@ -143,7 +143,7 @@ export default function DeveloperUnitCard({
           <div className="p-4 md:p-5">
             <h3
               id={`unit-title-${unit.id}`}
-              className="text-brand-accent group-hover:text-brand-primary line-clamp-2 text-base font-semibold leading-snug transition-colors duration-200"
+              className="text-brand-accent group-hover:text-brand-primary line-clamp-2 text-base leading-snug font-semibold transition-colors duration-200"
             >
               {constructedTitle}
             </h3>

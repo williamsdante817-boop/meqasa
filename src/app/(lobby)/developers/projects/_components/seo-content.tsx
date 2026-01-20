@@ -14,7 +14,15 @@ export function SeoContent() {
                 Top Estate Developers in Accra
               </h2>
               <p className="text-brand-muted mb-6 leading-relaxed">
-                Kumasi, Takoradi and Tema boast of being the leading Real Estate Development cities in Ghana. However, Accra tends to play a major role with residential apartments and major estates. Accra has somehow attracted the top Real Estate Developers in Ghana like Clifton Homes, Devtraco Limited, Denya Developers, Regimanuel Estates, and more. The quality of construction in real estate has improved in recent times. People are now willing to pay for quality in high-demand areas like East Legon, Adjiringanor, Airport Residential Area and Ogbojo.
+                Kumasi, Takoradi and Tema boast of being the leading Real Estate
+                Development cities in Ghana. However, Accra tends to play a
+                major role with residential apartments and major estates. Accra
+                has somehow attracted the top Real Estate Developers in Ghana
+                like Clifton Homes, Devtraco Limited, Denya Developers,
+                Regimanuel Estates, and more. The quality of construction in
+                real estate has improved in recent times. People are now willing
+                to pay for quality in high-demand areas like East Legon,
+                Adjiringanor, Airport Residential Area and Ogbojo.
               </p>
             </div>
 
@@ -23,7 +31,10 @@ export function SeoContent() {
                 Real Estate Companies Selling Lands in Ghana
               </h2>
               <p className="text-brand-muted mb-6 leading-relaxed">
-                The top real estate companies selling land in Ghana include TDC land, Appolonia City, Properties Portfolio and Redrow Ghana. Other property developers to look out for are luxury real estate developers in Ghana.
+                The top real estate companies selling land in Ghana include TDC
+                land, Appolonia City, Properties Portfolio and Redrow Ghana.
+                Other property developers to look out for are luxury real estate
+                developers in Ghana.
               </p>
             </div>
 
@@ -38,7 +49,11 @@ export function SeoContent() {
                     Finance:
                   </h3>
                   <p className="text-brand-muted leading-relaxed">
-                    You save a significant amount of money when you select one of the leading real estate developers in Ghana. The transaction includes VAT which is paid by the developer. Usually, most of these properties are first initialized with a 10 percent down-payment before everything is completed.
+                    You save a significant amount of money when you select one
+                    of the leading real estate developers in Ghana. The
+                    transaction includes VAT which is paid by the developer.
+                    Usually, most of these properties are first initialized with
+                    a 10 percent down-payment before everything is completed.
                   </p>
                 </div>
 
@@ -47,7 +62,12 @@ export function SeoContent() {
                     Customization:
                   </h3>
                   <p className="text-brand-muted leading-relaxed">
-                    With a development property, you have the power to choose different designs, layout, size and finishes before they are even built for you. You may have to glance through their portfolio to select the right design, location and price before the project starts. Or you have the choice to select an already built apartment or house.
+                    With a development property, you have the power to choose
+                    different designs, layout, size and finishes before they are
+                    even built for you. You may have to glance through their
+                    portfolio to select the right design, location and price
+                    before the project starts. Or you have the choice to select
+                    an already built apartment or house.
                   </p>
                 </div>
 
@@ -56,7 +76,10 @@ export function SeoContent() {
                     Comfort:
                   </h3>
                   <p className="text-brand-muted leading-relaxed">
-                    Developed estates typically have security, good road infrastructure, utilities and other amenities that make life easy. You are less likely to have to worry about bad roads or disturbances in your community.
+                    Developed estates typically have security, good road
+                    infrastructure, utilities and other amenities that make life
+                    easy. You are less likely to have to worry about bad roads
+                    or disturbances in your community.
                   </p>
                 </div>
               </div>

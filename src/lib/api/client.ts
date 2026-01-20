@@ -1,24 +1,16 @@
 /**
- * Enhanced API client for MeQasa
- * Built on top of the existing axios-client with MeQasa-specific configurations
+ * MeQasa API client with form-encoded request support
  */
 
 import { apiConfig, defaultHeaders, endpoints } from "@/config/api";
-import { apiClient, type NetworkError } from "@/lib/axios-client";
+import { apiClient } from "@/lib/axios-client";
 import { logError } from "@/lib/handle-error";
 import type { AxiosRequestConfig } from "axios";
 
-/**
- * MeQasa-specific API client that extends the base ApiClient
- * with domain-specific configurations and error handling
- */
 export class MeQasaApiClient {
   private baseClient = apiClient;
   private baseUrl = apiConfig.baseUrl;
 
-  /**
-   * Generic request method with MeQasa-specific defaults
-   */
   private async request<T>(
     endpoint: string,
     config: AxiosRequestConfig = {},
@@ -44,9 +36,6 @@ export class MeQasaApiClient {
     }
   }
 
-  /**
-   * GET request
-   */
   async get<T>(
     endpoint: string,
     params?: Record<string, unknown>,
@@ -64,9 +53,6 @@ export class MeQasaApiClient {
     );
   }
 
-  /**
-   * POST request with form data (MeQasa's preferred format)
-   */
   async postForm<T>(
     endpoint: string,
     data?: Record<string, unknown>,
@@ -74,17 +60,18 @@ export class MeQasaApiClient {
     context?: string
   ): Promise<T> {
     const formData = new URLSearchParams();
-
-    // Always include the app identifier for MeQasa API
     formData.append("app", "vercel");
 
-    // Add other data as form fields
     if (data) {
       Object.entries(data).forEach(([key, value]) => {
         if (value !== null && value !== undefined) {
           if (typeof value === "object" && value !== null) {
             formData.append(key, JSON.stringify(value));
-          } else if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
+          } else if (
+            typeof value === "string" ||
+            typeof value === "number" ||
+            typeof value === "boolean"
+          ) {
             formData.append(key, String(value));
           }
         }
@@ -105,91 +92,8 @@ export class MeQasaApiClient {
     );
   }
 
-  /**
-   * POST request with JSON data
-   */
-  async postJson<T>(
-    endpoint: string,
-    data?: Record<string, unknown>,
-    config?: AxiosRequestConfig,
-    context?: string
-  ): Promise<T> {
-    return this.request<T>(
-      endpoint,
-      {
-        method: "POST",
-        data: {
-          app: "vercel",
-          ...data,
-        },
-        ...config,
-      },
-      context
-    );
-  }
-
-  /**
-   * PUT request
-   */
-  async put<T>(
-    endpoint: string,
-    data?: Record<string, unknown>,
-    config?: AxiosRequestConfig,
-    context?: string
-  ): Promise<T> {
-    return this.request<T>(
-      endpoint,
-      {
-        method: "PUT",
-        data,
-        ...config,
-      },
-      context
-    );
-  }
-
-  /**
-   * DELETE request
-   */
-  async delete<T>(
-    endpoint: string,
-    config?: AxiosRequestConfig,
-    context?: string
-  ): Promise<T> {
-    return this.request<T>(
-      endpoint,
-      {
-        method: "DELETE",
-        ...config,
-      },
-      context
-    );
-  }
-
-  /**
-   * Specialized method for property-related requests
-   */
-  async getProperty<T>(
-    endpoint: string,
-    params?: Record<string, unknown>,
-    config?: AxiosRequestConfig
-  ): Promise<T> {
-    return this.get<T>(endpoint, params, config, `Property API: ${endpoint}`);
-  }
-
-  async searchProperties<T>(
-    data: Record<string, unknown>,
-    config?: AxiosRequestConfig
-  ): Promise<T> {
-    return this.postForm<T>(
-      endpoints.properties.search,
-      data,
-      config,
-      "Property Search"
-    );
-  }
-
-  async getPropertyDetails<T>(
+  // Convenience methods used in data-fetchers
+  getPropertyDetails<T>(
     reference: string,
     config?: AxiosRequestConfig
   ): Promise<T> {
@@ -201,10 +105,19 @@ export class MeQasaApiClient {
     );
   }
 
-  /**
-   * Specialized methods for projects
-   */
-  async getFeaturedProjects<T>(config?: AxiosRequestConfig): Promise<T> {
+  searchProperties<T>(
+    data: Record<string, unknown>,
+    config?: AxiosRequestConfig
+  ): Promise<T> {
+    return this.postForm<T>(
+      endpoints.properties.search,
+      data,
+      config,
+      "Property Search"
+    );
+  }
+
+  getFeaturedProjects<T>(config?: AxiosRequestConfig): Promise<T> {
     return this.postForm<T>(
       endpoints.projects.featured,
       {},
@@ -213,36 +126,11 @@ export class MeQasaApiClient {
     );
   }
 
-  /**
-   * Specialized methods for agents
-   */
-  async getAgents<T>(
-    params?: Record<string, unknown>,
-    config?: AxiosRequestConfig
-  ): Promise<T> {
-    return this.get<T>(endpoints.agents.list, params, config, "Agents List");
-  }
-
-  async getAgentDetails<T>(
-    agentId: string,
-    config?: AxiosRequestConfig
-  ): Promise<T> {
-    return this.get<T>(
-      `${endpoints.agents.details}/${agentId}`,
-      {},
-      config,
-      `Agent Details: ${agentId}`
-    );
-  }
-
-  /**
-   * Specialized methods for banners/ads
-   */
-  async getHeroBanner<T>(config?: AxiosRequestConfig): Promise<T> {
+  getHeroBanner<T>(config?: AxiosRequestConfig): Promise<T> {
     return this.postForm<T>(endpoints.banners.hero, {}, config, "Hero Banner");
   }
 
-  async getFlexiBanner<T>(config?: AxiosRequestConfig): Promise<T> {
+  getFlexiBanner<T>(config?: AxiosRequestConfig): Promise<T> {
     return this.postForm<T>(
       endpoints.banners.flexi,
       {},
@@ -251,21 +139,11 @@ export class MeQasaApiClient {
     );
   }
 
-  async getGridBanner<T>(config?: AxiosRequestConfig): Promise<T> {
+  getGridBanner<T>(config?: AxiosRequestConfig): Promise<T> {
     return this.postForm<T>(endpoints.banners.grid, {}, config, "Grid Banner");
   }
 
-  /**
-   * Specialized methods for blog content
-   */
-  async getBlogPosts<T>(
-    params?: Record<string, unknown>,
-    config?: AxiosRequestConfig
-  ): Promise<T> {
-    return this.postForm<T>(endpoints.blog.posts, params, config, "Blog Posts");
-  }
-
-  async getFeaturedBlogPosts<T>(config?: AxiosRequestConfig): Promise<T> {
+  getFeaturedBlogPosts<T>(config?: AxiosRequestConfig): Promise<T> {
     return this.postForm<T>(
       endpoints.blog.featured,
       {},
@@ -273,71 +151,7 @@ export class MeQasaApiClient {
       "Featured Blog Posts"
     );
   }
-
-  /**
-   * Contact form submission
-   */
-  async submitContactForm<T>(
-    data: Record<string, unknown>,
-    config?: AxiosRequestConfig
-  ): Promise<T> {
-    return this.postForm<T>(
-      endpoints.contact.submit,
-      data,
-      config,
-      "Contact Form Submission"
-    );
-  }
-
-  async contactAgent<T>(
-    data: Record<string, unknown>,
-    config?: AxiosRequestConfig
-  ): Promise<T> {
-    return this.postForm<T>(
-      endpoints.contact.agent,
-      data,
-      config,
-      "Agent Contact"
-    );
-  }
-
-  /**
-   * Health check method
-   */
-  async healthCheck(): Promise<{ status: string; timestamp: number }> {
-    try {
-      // Simple request to test API connectivity
-      await this.get("/", {}, { timeout: 5000 });
-      return {
-        status: "healthy",
-        timestamp: Date.now(),
-      };
-    } catch {
-      return {
-        status: "unhealthy",
-        timestamp: Date.now(),
-      };
-    }
-  }
-
-  /**
-   * Get error details from the underlying client
-   */
-  getDetailedError(error: unknown): NetworkError | null {
-    return this.baseClient.getDetailedError(error);
-  }
-
-  /**
-   * Check network status
-   */
-  isOnline(): boolean {
-    return this.baseClient.isOnline();
-  }
 }
 
-// Create singleton instance
 export const meqasaApiClient = new MeQasaApiClient();
-
-// Export for backward compatibility and direct access
-export { apiClient as baseApiClient } from "@/lib/axios-client";
 export type { NetworkError } from "@/lib/axios-client";

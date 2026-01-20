@@ -29,7 +29,7 @@ export default function PropertyListings({
   listings: Listing[] | SimilarUnit[] | ListingDetails[];
   parentContract?: string;
 }) {
-  // console.log('Testing Property Listings',listings);
+  // logger.info('Testing Property Listings',listings);
 
   const transformedListings = useMemo<Array<Listing | SimilarUnit>>(() => {
     if (!listings || listings.length === 0)

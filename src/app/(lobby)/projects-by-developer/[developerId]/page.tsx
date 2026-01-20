@@ -18,11 +18,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import type { DeveloperDetails } from "@/types";
 import type { Metadata } from "next";
 import { ExpandableDescription } from "@/components/expandable-description";
+import { logger } from "@/lib/logger";
 
 // Data validation helper - more lenient validation
 function validateDeveloperData(developer: DeveloperDetails) {
   if (!developer?.developer) {
-    console.warn("Developer data missing developer object");
+    logger.warn("Developer data missing developer object");
     return false;
   }
 
@@ -31,17 +32,17 @@ function validateDeveloperData(developer: DeveloperDetails) {
   const hasRequiredFields = requiredFields.every((field) => {
     const hasField = developer.developer[field];
     if (!hasField) {
-      console.warn(`Missing required field: ${field}`);
+      logger.warn(`Missing required field: ${field}`);
     }
     return hasField;
   });
 
   // Log optional fields for debugging
   if (!developer.developer.hero) {
-    console.warn("Missing hero image - will show fallback");
+    logger.warn("Missing hero image - will show fallback");
   }
   if (!developer.developer.logo) {
-    console.warn("Missing logo - will show fallback");
+    logger.warn("Missing logo - will show fallback");
   }
 
   return hasRequiredFields;
@@ -195,7 +196,7 @@ export default async function DeveloperProfilePage({
 
     // Validate required data
     if (!validateDeveloperData(developer)) {
-      console.error("Developer data validation failed:", developer);
+      logger.error("Developer data validation failed:", developer);
       notFound();
     }
 
@@ -432,7 +433,7 @@ export default async function DeveloperProfilePage({
       </>
     );
   } catch (error: unknown) {
-    console.error("Error fetching developer profile:", error);
+    logger.error("Error fetching developer profile:", error);
     notFound();
   }
 }

@@ -1,4 +1,5 @@
 "use client";
+import { logger } from "@/lib/logger";
 
 import * as React from "react";
 import { useState } from "react";
@@ -49,7 +50,7 @@ export function ForgotPasswordForm({
       setIsLoading(false);
       setIsSuccess(true);
       // Handle password reset request here
-      console.log("Password reset requested for:", email);
+      logger.debug("Password reset requested for:", { email });
     }, 2000);
   }
 

@@ -396,11 +396,16 @@ export function createStructuredDataScript(
 }
 
 // Generate metadata for listing detail page (for API response format)
-export function generateListingDetailMetadata(listingDetail: any, slug: string): Metadata {
+export function generateListingDetailMetadata(
+  listingDetail: any,
+  slug: string
+): Metadata {
   if (!listingDetail) {
     return {
-      title: "Property Not Found | MeQasa - Ghana's Leading Real Estate Marketplace",
-      description: "The requested property listing could not be found. Browse thousands of verified properties for rent and sale on MeQasa.",
+      title:
+        "Property Not Found | MeQasa - Ghana's Leading Real Estate Marketplace",
+      description:
+        "The requested property listing could not be found. Browse thousands of verified properties for rent and sale on MeQasa.",
       openGraph: {
         title: "Property Not Found | MeQasa",
         description: "The requested property listing could not be found.",
@@ -536,7 +541,10 @@ export function generateListingDetailMetadata(listingDetail: any, slug: string):
 }
 
 // Generate structured data for listing detail page
-export function generateListingDetailStructuredData(listingDetail: any, slug: string) {
+export function generateListingDetailStructuredData(
+  listingDetail: any,
+  slug: string
+) {
   const cleanPrice = listingDetail.price
     ? listingDetail.price.replace(/<[^>]*>/g, "").replace(/[^\d.,]/g, "")
     : null;

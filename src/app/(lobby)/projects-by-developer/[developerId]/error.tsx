@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle, Home, RefreshCw } from "lucide-react";
 import Link from "next/link";
+import { logger } from "@/lib/logger";
 
 export default function Error({
   error,
@@ -14,7 +15,7 @@ export default function Error({
 }) {
   useEffect(() => {
     // Log the error to an error reporting service
-    console.error("Developer profile page error:", error);
+    logger.error("Developer profile page error:", error);
   }, [error]);
 
   return (

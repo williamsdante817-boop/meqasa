@@ -1,3 +1,5 @@
+import { logger } from "@/lib/logger";
+
 // Simple analytics utility for production monitoring
 export const analytics = {
   // Track page views
@@ -40,7 +42,7 @@ export const analytics = {
 
     // Also log to console in development
     if (process.env.NODE_ENV === "development") {
-      console.error("Analytics Error:", { error, context });
+      logger.error("Analytics Error:", { error, context });
     }
   },
 

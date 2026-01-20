@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { apiClient } from "@/lib/axios-client";
@@ -5,21 +6,23 @@ import { apiClient } from "@/lib/axios-client";
 export async function POST(request: NextRequest) {
   try {
     if (process.env.NODE_ENV !== "production") {
-      console.log("🔍 [view-number] Starting request processing");
+      logger.debug("🔍 [view-number] Starting request processing");
     }
 
     const body = await request.formData();
 
     // Log all form data entries
     if (process.env.NODE_ENV !== "production") {
-      console.log("📝 [view-number] All form data entries:");
+      logger.debug("📝 [view-number] All form data entries:");
       for (const [key, value] of body.entries()) {
-        console.log(`  ${key}:`, value);
+        const stringValue =
+          value instanceof File ? `[File: ${value.name}]` : value.toString();
+        logger.debug(`  ${key}:`, { value: stringValue });
       }
     }
 
     if (process.env.NODE_ENV !== "production") {
-      console.log("📝 [view-number] Form data received:", {
+      logger.debug("📝 [view-number] Form data received:", {
         rfifromph: body.get("rfifromph"),
         nurfiname: body.get("nurfiname"),
         rfilid: body.get("rfilid"),
@@ -38,7 +41,7 @@ export async function POST(request: NextRequest) {
     const app = body.get("app") as string;
 
     if (process.env.NODE_ENV !== "production") {
-      console.log("🔍 [view-number] Extracted values:", {
+      logger.debug("🔍 [view-number] Extracted values:", {
         rfifromph,
         nurfiname,
         rfilid,
@@ -50,8 +53,8 @@ export async function POST(request: NextRequest) {
 
     if (!rfifromph || !nurfiname || !rfilid) {
       if (process.env.NODE_ENV !== "production") {
-        console.error("❌ [view-number] Missing required fields");
-        console.error("❌ [view-number] Validation failed:", {
+        logger.error("❌ [view-number] Missing required fields");
+        logger.error("❌ [view-number] Validation failed", {
           rfifromph: !!rfifromph,
           nurfiname: !!nurfiname,
           rfilid: !!rfilid,
@@ -64,7 +67,7 @@ export async function POST(request: NextRequest) {
     }
 
     if (process.env.NODE_ENV !== "production") {
-      console.log("🌐 [view-number] Making request to MeQasa API");
+      logger.debug("🌐 [view-number] Making request to MeQasa API");
     }
 
     // Prepare the request data
@@ -78,7 +81,7 @@ export async function POST(request: NextRequest) {
     };
 
     if (process.env.NODE_ENV !== "production") {
-      console.log("📤 [view-number] Request data being sent:", requestData);
+      logger.debug("📤 [view-number] Request data being sent:", requestData);
     }
 
     // Use the same endpoint that works for send message
@@ -96,13 +99,18 @@ export async function POST(request: NextRequest) {
     );
 
     if (process.env.NODE_ENV !== "production") {
-      console.log("✅ [view-number] MeQasa API response received:", response);
-      console.log("📊 [view-number] Response data:", response);
-      console.log("📊 [view-number] Response type:", typeof response);
-      console.log(
-        "📊 [view-number] Response keys:",
-        Object.keys(response ?? {})
-      );
+      logger.debug("✅ [view-number] MeQasa API response received:", {
+        response: JSON.stringify(response),
+      });
+      logger.debug("📊 [view-number] Response data:", {
+        response: JSON.stringify(response),
+      });
+      logger.debug("📊 [view-number] Response type:", {
+        type: typeof response,
+      });
+      logger.debug("📊 [view-number] Response keys:", {
+        keys: Object.keys(response ?? {}).join(", "),
+      });
     }
 
     // Check if we have the expected response format
@@ -113,12 +121,14 @@ export async function POST(request: NextRequest) {
       "stph3" in response
     ) {
       if (process.env.NODE_ENV !== "production") {
-        console.log("✅ [view-number] Valid response format received");
+        logger.debug("✅ [view-number] Valid response format received");
       }
       return NextResponse.json(response);
     } else {
       if (process.env.NODE_ENV !== "production") {
-        console.error("❌ [view-number] Invalid response format:", response);
+        logger.error("❌ [view-number] Invalid response format", {
+          response: JSON.stringify(response),
+        });
       }
       return NextResponse.json(
         { error: "Invalid response from server" },
@@ -127,12 +137,13 @@ export async function POST(request: NextRequest) {
     }
   } catch (error) {
     if (process.env.NODE_ENV !== "production") {
-      console.error("❌ [view-number] Error details:", error);
-      console.error(
-        "❌ [view-number] Error message:",
-        (error as Error).message
-      );
-      console.error("❌ [view-number] Error stack:", (error as Error).stack);
+      logger.error("❌ [view-number] Error details", error);
+      logger.error("❌ [view-number] Error message", undefined, {
+        message: (error as Error).message,
+      });
+      logger.error("❌ [view-number] Error stack", undefined, {
+        stack: (error as Error).stack,
+      });
     }
 
     return NextResponse.json(

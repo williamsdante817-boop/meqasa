@@ -55,9 +55,10 @@ export function useResilientFetch<TResponse>(
   const retriesRef = useRef<number>(0);
   const onlineListenerRef = useRef<(() => void) | null>(null);
   const isMountedRef = useRef<boolean>(true);
-  const lastRequestRef = useRef<{ input: RequestInfo | URL; init?: RequestInit }>(
-    { input, init }
-  );
+  const lastRequestRef = useRef<{
+    input: RequestInfo | URL;
+    init?: RequestInit;
+  }>({ input, init });
 
   const clearAbortController = () => {
     abortControllerRef.current?.abort();
@@ -72,100 +73,105 @@ export function useResilientFetch<TResponse>(
     }
   };
 
-  const executeFetch = useCallback(async (override?: FetchOverride) => {
-    clearAbortController();
-    detachOnlineListener();
-    const controller = new AbortController();
-    abortControllerRef.current = controller;
+  const executeFetch = useCallback(
+    async (override?: FetchOverride) => {
+      clearAbortController();
+      detachOnlineListener();
+      const controller = new AbortController();
+      abortControllerRef.current = controller;
 
-    const requestInput = override?.input ?? lastRequestRef.current.input ?? input;
-    const requestInit = override?.init ?? lastRequestRef.current.init ?? init;
-    lastRequestRef.current = { input: requestInput, init: requestInit };
+      const requestInput =
+        override?.input ?? lastRequestRef.current.input ?? input;
+      const requestInit = override?.init ?? lastRequestRef.current.init ?? init;
+      lastRequestRef.current = { input: requestInput, init: requestInit };
 
-    const scheduleOnlineRetry = () => {
-      if (typeof window === "undefined") {
-        return;
-      }
+      const scheduleOnlineRetry = () => {
+        if (typeof window === "undefined") {
+          return;
+        }
 
-      if (onlineListenerRef.current) {
-        return;
-      }
+        if (onlineListenerRef.current) {
+          return;
+        }
 
-      const handleOnline = () => {
-        if (!isMountedRef.current) return;
-        window.removeEventListener("online", handleOnline);
-        onlineListenerRef.current = null;
-        retriesRef.current = 0;
-        void executeFetch(lastRequestRef.current);
+        const handleOnline = () => {
+          if (!isMountedRef.current) return;
+          window.removeEventListener("online", handleOnline);
+          onlineListenerRef.current = null;
+          retriesRef.current = 0;
+          void executeFetch(lastRequestRef.current);
+        };
+
+        onlineListenerRef.current = handleOnline;
+        window.addEventListener("online", handleOnline, { once: true });
       };
 
-      onlineListenerRef.current = handleOnline;
-      window.addEventListener("online", handleOnline, { once: true });
-    };
+      const isNavigatorDefined = typeof navigator !== "undefined";
+      const isOffline = isNavigatorDefined && navigator.onLine === false;
 
-    const isNavigatorDefined = typeof navigator !== "undefined";
-    const isOffline = isNavigatorDefined && navigator.onLine === false;
-
-    if (isOffline) {
-      const offlineError = new Error(
-        "No internet connection. Please check your network and try again."
-      );
-      retriesRef.current = retryCount;
-      setError(offlineError);
-      setLoading(false);
-      scheduleOnlineRetry();
-      return null;
-    }
-
-    setLoading(true);
-    setError(null);
-
-    let result: TResponse | null = null;
-
-    try {
-      const response = await fetch(requestInput, {
-        cache: "no-store",
-        ...requestInit,
-        signal: controller.signal,
-      });
-
-      if (!response.ok) {
-        throw new Error(`Fetch failed with status ${response.status}`);
-      }
-
-      const parsed = await parser(response);
-      if (isMountedRef.current) {
-        setData(parsed);
-        setError(null);
-      }
-      result = parsed;
-    } catch (err) {
-      if (!isMountedRef.current || controller.signal.aborted) {
-        return result;
-      }
-
-      const nextError = err instanceof Error ? err : new Error("Fetch failed");
-      setError(nextError);
-
-      if (retriesRef.current < retryCount) {
-        const attempt = retriesRef.current + 1;
-        retriesRef.current = attempt;
-        const delay = retryDelayMs * Math.pow(2, attempt - 1);
-        window.setTimeout(() => {
-          if (isMountedRef.current) {
-            void executeFetch(lastRequestRef.current);
-          }
-        }, delay);
-      }
-
-      scheduleOnlineRetry();
-    } finally {
-      if (isMountedRef.current) {
+      if (isOffline) {
+        const offlineError = new Error(
+          "No internet connection. Please check your network and try again."
+        );
+        retriesRef.current = retryCount;
+        setError(offlineError);
         setLoading(false);
+        scheduleOnlineRetry();
+        return null;
       }
-    }
-    return result;
-  }, [input, init, parser, retryCount, retryDelayMs]);
+
+      setLoading(true);
+      setError(null);
+
+      let result: TResponse | null = null;
+
+      try {
+        const response = await fetch(requestInput, {
+          cache: "no-store",
+          ...requestInit,
+          signal: controller.signal,
+        });
+
+        if (!response.ok) {
+          throw new Error(`Fetch failed with status ${response.status}`);
+        }
+
+        const parsed = await parser(response);
+        if (isMountedRef.current) {
+          setData(parsed);
+          setError(null);
+        }
+        result = parsed;
+      } catch (err) {
+        if (!isMountedRef.current || controller.signal.aborted) {
+          return result;
+        }
+
+        const nextError =
+          err instanceof Error ? err : new Error("Fetch failed");
+        setError(nextError);
+
+        if (retriesRef.current < retryCount) {
+          const attempt = retriesRef.current + 1;
+          retriesRef.current = attempt;
+          const delay = retryDelayMs * Math.pow(2, attempt - 1);
+          window.setTimeout(() => {
+            if (isMountedRef.current) {
+              void executeFetch(lastRequestRef.current);
+            }
+          }, delay);
+        }
+
+        scheduleOnlineRetry();
+      } finally {
+        if (isMountedRef.current) {
+          setLoading(false);
+        }
+      }
+      return result;
+    },
+    [input, init, parser, retryCount, retryDelayMs]
+  );
 
   const refetch = useCallback(
     async (override?: FetchOverride) => {

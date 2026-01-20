@@ -1,3 +1,17 @@
+import { logger } from "./logger";
+
+// Extend Window interface for error monitoring services
+declare global {
+  interface Window {
+    Sentry?: {
+      captureException: (
+        error: Error,
+        context?: { tags?: Record<string, string> }
+      ) => void;
+    };
+  }
+}
+
 export enum PropertyErrorType {
   INVALID_SLUG = "INVALID_SLUG",
   PROPERTY_NOT_FOUND = "PROPERTY_NOT_FOUND",
@@ -298,39 +312,27 @@ export function logPropertyError(error: unknown, context?: string): void {
 
   // Only log detailed errors in development or when debugging is enabled
   if (process.env.NODE_ENV === "development" || process.env.DEBUG_ERRORS) {
-    console.error("Property page error:", {
+    logger.error("Property page error:", {
       type: propertyError.type,
       message: propertyError.message,
       context,
-      stack: propertyError.stack,
-      timestamp: new Date().toISOString(),
     });
   } else {
     // In production, log minimal info to console and send to monitoring service
-    console.error(
-      `Property error: ${propertyError.type} - ${propertyError.message}`
-    );
+    logger.error("Property error:", {
+      type: propertyError.type,
+      message: propertyError.message,
+      context,
+    });
   }
 
   // In production, send to error monitoring service
   if (process.env.NODE_ENV === "production" && typeof window !== "undefined") {
-    // Example integrations (uncomment as needed):
     // Sentry
-    // if (window.Sentry) {
-    //   window.Sentry.captureException(propertyError, {
-    //     tags: { context, errorType: propertyError.type },
-    //   });
-    // }
-    // LogRocket
-    // if (window.LogRocket) {
-    //   window.LogRocket.captureException(propertyError);
-    // }
-    // Custom analytics
-    // if (window.gtag) {
-    //   window.gtag('event', 'exception', {
-    //     description: `${propertyError.type}: ${propertyError.message}`,
-    //     fatal: false,
-    //   });
-    // }
+    if (window.Sentry) {
+      window.Sentry.captureException(propertyError, {
+        tags: { context: context || "unknown", errorType: propertyError.type },
+      });
+    }
   }
 }

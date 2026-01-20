@@ -227,7 +227,7 @@ const renderPropertyChips = ({
               <Badge
                 key={filter.key}
                 variant="outline"
-                className={`${filter.color} flex-shrink-0 whitespace-nowrap border transition-all hover:shadow-sm`}
+                className={`${filter.color} flex-shrink-0 border whitespace-nowrap transition-all hover:shadow-sm`}
               >
                 <IconComponent className="mr-1 h-3 w-3" />
                 <span className="text-xs font-medium">
@@ -270,7 +270,10 @@ const renderDeveloperChips = ({
 }: DeveloperFilterProps) => {
   const activeFilters: FilterChip<keyof DeveloperUnitsFormState>[] = [];
 
-  if (formState.terms && formState.terms !== DEFAULT_DEVELOPER_FORM_STATE.terms) {
+  if (
+    formState.terms &&
+    formState.terms !== DEFAULT_DEVELOPER_FORM_STATE.terms
+  ) {
     activeFilters.push({
       key: "terms",
       label: "Terms",
@@ -280,7 +283,10 @@ const renderDeveloperChips = ({
     });
   }
 
-  if (formState.unittype && formState.unittype !== DEFAULT_DEVELOPER_FORM_STATE.unittype) {
+  if (
+    formState.unittype &&
+    formState.unittype !== DEFAULT_DEVELOPER_FORM_STATE.unittype
+  ) {
     activeFilters.push({
       key: "unittype",
       label: "Type",
@@ -355,7 +361,7 @@ const renderDeveloperChips = ({
               <Badge
                 key={filter.key}
                 variant="outline"
-                className={`${filter.color} flex-shrink-0 whitespace-nowrap border transition-all hover:shadow-sm`}
+                className={`${filter.color} flex-shrink-0 border whitespace-nowrap transition-all hover:shadow-sm`}
               >
                 <IconComponent className="mr-1 h-3 w-3" />
                 <span className="text-xs font-medium">

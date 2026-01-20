@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import type { Establishment } from "./establishment-item";
+import { logger } from "@/lib/logger";
 import {
   getEstablishments,
   getEstablishmentTypeCounts,
@@ -82,7 +83,7 @@ export function useEstablishments({
       const errorMessage =
         err instanceof Error ? err.message : "Failed to fetch establishments";
       setError(errorMessage);
-      console.error("Error fetching establishments:", err);
+      logger.error("Error fetching establishments:", err);
     } finally {
       setLoading(false);
     }

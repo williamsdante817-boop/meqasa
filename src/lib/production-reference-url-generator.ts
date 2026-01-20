@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger";
 import { getListingDetails } from "./get-listing-detail";
 import { prodReferenceCache } from "./production-reference-cache";
 import type { ListingDetails } from "@/types/property";
@@ -71,9 +72,11 @@ export async function processProductionReferenceSearch(
     let listingDetails;
     try {
       listingDetails = await getListingDetails(cleanRef);
-      console.log(`🔄 Got property data for reference: ${cleanRef}`);
+      logger.debug(`🔄 Got property data for reference: ${cleanRef}`);
     } catch (dataError) {
-      console.warn(`Failed to get property data for ${cleanRef}:`, dataError);
+      logger.warn(`Failed to get property data for ${cleanRef}:`, {
+        error: dataError,
+      });
     }
 
     return {
@@ -146,8 +149,11 @@ async function generateUrlWithRetry(
       if (attempt < maxRetries) {
         const delay = Math.min(1000 * Math.pow(2, attempt - 1), 5000);
         await new Promise((resolve) => setTimeout(resolve, delay));
-        console.warn(
-          `[Reference Search] Retry ${attempt}/${maxRetries} after ${delay}ms for ref: ${reference}`
+        logger.warn(
+          `[Reference Search] Retry ${attempt}/${maxRetries} after ${delay}ms for ref: ${reference}`,
+          {
+            error: error,
+          }
         );
       }
     }
@@ -276,10 +282,9 @@ export async function hybridReferenceNavigation(
     }
   } catch (error) {
     // Silent fail for background enhancement
-    console.debug(
-      `[Hybrid Navigation] Background enhancement failed for ${cleanRef}:`,
-      error
-    );
+    logger.warn(`Failed to get property data for ${cleanRef}:`, {
+      error: error,
+    });
   }
 }
 

@@ -1,5 +1,6 @@
 import { apiClient } from "./axios-client";
 import { getCachedBanner, setCachedBanner, CACHE_KEYS } from "./banner-cache";
+import { logger } from "@/lib/logger";
 
 export type BannerType = "home" | "results";
 
@@ -65,7 +66,7 @@ export async function getBanner(type: keyof typeof BANNER_CONFIGS) {
 
     return result;
   } catch (error) {
-    console.error(`Failed to fetch ${type} banner:`, error);
+    logger.error(`Failed to fetch ${type} banner:`, error);
     return null;
   }
 }
@@ -76,7 +77,7 @@ export async function getHeroBanner() {
   const config = BANNER_CONFIGS.hero;
 
   if (!config) {
-    console.error("Hero banner config not found");
+    logger.error("Hero banner config not found");
     return null;
   }
 
@@ -101,7 +102,7 @@ export async function getHeroBanner() {
       href: "https://meqasa.com" + data.href,
     };
   } catch (error) {
-    console.error("Failed to fetch hero banner:", error);
+    logger.error("Failed to fetch hero banner:", error);
     return null;
   }
 }
@@ -111,7 +112,7 @@ export async function getResultsHeroBanner() {
   const config = BANNER_CONFIGS.resultsHero;
 
   if (!config) {
-    console.error("Results hero banner config not found");
+    logger.error("Results hero banner config not found");
     return null;
   }
 
@@ -136,7 +137,7 @@ export async function getResultsHeroBanner() {
       href: "https://meqasa.com" + data.href,
     };
   } catch (error) {
-    console.error("Failed to fetch results hero banner:", error);
+    logger.error("Failed to fetch results hero banner:", error);
     return null;
   }
 }
@@ -168,7 +169,7 @@ export async function getLeaderboardBanner() {
 
     return result;
   } catch (error) {
-    console.error("Failed to fetch leaderboard banner:", error);
+    logger.error("Failed to fetch leaderboard banner:", error);
     return null;
   }
 }
@@ -200,7 +201,7 @@ export async function getFlexiBanner() {
 
     return result;
   } catch (error) {
-    console.error("Failed to fetch flexi banner:", error);
+    logger.error("Failed to fetch flexi banner:", error);
     return null;
   }
 }
@@ -237,7 +238,7 @@ export async function getRectangleBanners() {
 
     return result;
   } catch (error) {
-    console.error("Failed to fetch rectangle banners:", error);
+    logger.error("Failed to fetch rectangle banners:", error);
     return [];
   }
 }

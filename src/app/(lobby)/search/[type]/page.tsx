@@ -1,4 +1,3 @@
-
 import { Breadcrumbs } from "@/components/layout/bread-crumbs";
 import { ResultsPopup } from "@/components/results-popup";
 import { HeroBanner, HeroBannerFallback } from "@/components/search/HeroBanner";
@@ -14,8 +13,11 @@ import { siteConfig } from "@/config/site";
 import Shell from "@/layouts/shell";
 import { getResultsHeroBanner } from "@/lib/banners";
 import { normalizeHeroBanner } from "@/lib/hero-banner";
-import { logError } from "@/lib/logger";
-import { loadMorePropertiesServer, searchPropertiesServer } from "@/lib/meqasa-server";
+import { logger, logError } from "@/lib/logger";
+import {
+  loadMorePropertiesServer,
+  searchPropertiesServer,
+} from "@/lib/meqasa-server";
 import { getResultsPopup } from "@/lib/get-results-popup";
 import { ANY_SENTINEL } from "@/lib/search/constants";
 import type { Metadata } from "next";
@@ -132,7 +134,11 @@ export default async function SearchPage({
             loadMoreParams.frentperiod = "shortrent";
           }
 
-          const loadMoreResult = await loadMorePropertiesServer(type, location, loadMoreParams);
+          const loadMoreResult = await loadMorePropertiesServer(
+            type,
+            location,
+            loadMoreParams
+          );
           if (
             canonicalResultTotal !== null &&
             !Number.isNaN(canonicalResultTotal)
@@ -149,9 +155,7 @@ export default async function SearchPage({
           if (resolvedSearchParams.ftype)
             sanitizedSearchParams.ftype = resolvedSearchParams.ftype;
           if (resolvedSearchParams.fbeds)
-            sanitizedSearchParams.fbeds = parseInt(
-              resolvedSearchParams.fbeds
-            );
+            sanitizedSearchParams.fbeds = parseInt(resolvedSearchParams.fbeds);
           if (resolvedSearchParams.fbaths)
             sanitizedSearchParams.fbaths = parseInt(
               resolvedSearchParams.fbaths
@@ -206,7 +210,7 @@ export default async function SearchPage({
           return searchResult;
         }
       } catch (error) {
-        console.error("Error fetching search data:", error);
+        logger.error("Error fetching search data", error);
         // Return a fallback response instead of throwing
         return {
           results: [],
@@ -223,7 +227,7 @@ export default async function SearchPage({
     })(),
     getResultsPopup({
       type: resolvedSearchParams.ftype || "house",
-      contract: type === "rent" ? "rent" : "sale"
+      contract: type === "rent" ? "rent" : "sale",
     }).catch(() => null),
   ]);
 
@@ -433,7 +437,7 @@ export default async function SearchPage({
       payload: heroBanner,
     });
   }
-  
+
   // Prepare params for heading generation
   const headingParams: Record<string, string> = {
     ...resolvedSearchParams,
@@ -534,10 +538,10 @@ export default async function SearchPage({
             </div>
           </div>
         </Shell>
-        <ResultsPopup 
-          popupData={popupData} 
-          type={type} 
-          contract={type === "rent" ? "rent" : "sale"} 
+        <ResultsPopup
+          popupData={popupData}
+          type={type}
+          contract={type === "rent" ? "rent" : "sale"}
         />
       </div>
     </>

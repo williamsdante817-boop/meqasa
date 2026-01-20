@@ -103,11 +103,7 @@ const developmentConfig: ImageConfig = {
       "/uploads/imgs/",
       "/uploads/properties/",
     ],
-    "agent-logo": [
-      "/fascimos/somics/",
-      "/uploads/agents/",
-      "/uploads/imgs/",
-    ],
+    "agent-logo": ["/fascimos/somics/", "/uploads/agents/", "/uploads/imgs/"],
     "developer-logo": ["/uploads/imgs/", "/uploads/developers/"],
     "project-photo": [
       "/tn2/uploads/imgs/",

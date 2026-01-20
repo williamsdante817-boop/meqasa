@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger";
 import type { ListingDetails } from "@/types";
 import { propertyDataFetchers } from "./api/data-fetchers";
 import { buildPropertyImageUrl } from "./image-utils";
@@ -45,16 +46,16 @@ export async function getFeaturedListings(): Promise<FeaturedListingsResponse> {
     ): Listing[] => {
       return properties.map((property) => {
         const imageUrl = buildPropertyImageUrl(property.coverImage, "original");
-        
+
         // Log image URL construction for debugging in production
         if (process.env.NODE_ENV === "production" && property.coverImage) {
-          console.log("[Featured Listings] Image URL:", {
+          logger.debug("[Featured Listings] Image URL:", {
             original: property.coverImage,
             built: imageUrl,
             title: property.title,
           });
         }
-        
+
         return {
           detailreq: property.reference,
           image: imageUrl,
@@ -76,7 +77,7 @@ export async function getFeaturedListings(): Promise<FeaturedListingsResponse> {
       selling: transformToLegacy(standardizedResponse.selling),
     };
   } catch (error) {
-    console.error("Featured listings fetch failed:", error);
+    logger.error("Featured listings fetch failed:", error);
     // Return empty arrays instead of throwing to maintain application stability
     return {
       rentals: [],

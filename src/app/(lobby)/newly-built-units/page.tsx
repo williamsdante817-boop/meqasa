@@ -105,9 +105,21 @@ export default async function AllUnitsPage({
 
   // Fetch units server-side
   const [housesSale, apartmentsSale, apartmentsRent] = await Promise.all([
-    fetchDeveloperUnitsServer({ terms: "sale", unittype: "house", app: "vercel" }).then(units => units.slice(0, 3)),
-    fetchDeveloperUnitsServer({ terms: "sale", unittype: "apartment", app: "vercel" }).then(units => units.slice(0, 3)),
-    fetchDeveloperUnitsServer({ terms: "rent", unittype: "apartment", app: "vercel" }).then(units => units.slice(0, 3)),
+    fetchDeveloperUnitsServer({
+      terms: "sale",
+      unittype: "house",
+      app: "vercel",
+    }).then((units) => units.slice(0, 3)),
+    fetchDeveloperUnitsServer({
+      terms: "sale",
+      unittype: "apartment",
+      app: "vercel",
+    }).then((units) => units.slice(0, 3)),
+    fetchDeveloperUnitsServer({
+      terms: "rent",
+      unittype: "apartment",
+      app: "vercel",
+    }).then((units) => units.slice(0, 3)),
   ]);
 
   const segments = [
@@ -139,7 +151,7 @@ export default async function AllUnitsPage({
 
         {/* Introductory Content */}
         <header className="mb-16 text-left">
-          <h1 className="text-brand-accent mb-4 text-2xl font-bold leading-tight tracking-tight lg:text-3xl">
+          <h1 className="text-brand-accent mb-4 text-2xl leading-tight font-bold tracking-tight lg:text-3xl">
             Newly Built Units in Ghana
           </h1>
           <p className="text-brand-muted max-w-4xl text-sm leading-normal sm:text-base sm:leading-7">

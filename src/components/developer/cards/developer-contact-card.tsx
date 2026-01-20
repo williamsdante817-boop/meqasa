@@ -17,7 +17,15 @@ import { generateContextKey, useContactState } from "@/hooks/use-contact-state";
 import { useContactMessage } from "@/hooks/use-contact-message";
 import { viewNumber } from "@/lib/contact-api";
 import { getStoredNumbers, setStoredNumbers } from "@/lib/contact-cache";
-import { sanitizeName, sanitizeEmail, sanitizeMessage, getNameError, getEmailError, getMessageError } from "@/lib/input-validation";
+import {
+  sanitizeName,
+  sanitizeEmail,
+  sanitizeMessage,
+  getNameError,
+  getEmailError,
+  getMessageError,
+} from "@/lib/input-validation";
+import { logger } from "@/lib/logger";
 
 interface DeveloperContactCardProps {
   developerName: string;
@@ -77,7 +85,7 @@ const getStoredContactInfo = (): StoredContactInfo | null => {
     }
     return null;
   } catch (error) {
-    console.error("Error reading from localStorage:", error);
+    logger.error("Error reading from localStorage:", error);
     return null;
   }
 };
@@ -94,7 +102,7 @@ const setStoredContactInfo = (
       JSON.stringify({ name, phone, countryIso: countryIso?.toUpperCase() })
     );
   } catch (error) {
-    console.error("Error writing to localStorage:", error);
+    logger.error("Error writing to localStorage:", error);
   }
 };
 
@@ -103,7 +111,7 @@ const clearStoredContactInfo = (): void => {
   try {
     localStorage.removeItem("meqasa_contact_info");
   } catch (error) {
-    console.error("Error clearing localStorage:", error);
+    logger.error("Error clearing localStorage:", error);
   }
 };
 
@@ -227,7 +235,7 @@ export function DeveloperContactCard({
       if (emailErr) {
         newErrors.email = emailErr;
       }
-      
+
       const messageErr = getMessageError(contactForm.message);
       if (messageErr) {
         newErrors.message = messageErr;
@@ -320,7 +328,7 @@ export function DeveloperContactCard({
       setIsSuccess(true);
       setFormSubmitted(true);
     } catch (error) {
-      console.error("Error contacting developer:", error);
+      logger.error("Error contacting developer:", error);
 
       // Provide more specific error messages
       let errorMessage = "An unexpected error occurred. Please try again.";
@@ -400,7 +408,7 @@ export function DeveloperContactCard({
       // Close the dialog after opening WhatsApp
       onClose();
     } catch (error) {
-      console.error("Error opening WhatsApp:", error);
+      logger.error("Error opening WhatsApp:", error);
       setBannerError("Failed to get phone number. Please try again.");
     } finally {
       setIsLoading(false);
@@ -414,7 +422,7 @@ export function DeveloperContactCard({
         setCopiedNumber(true);
         setTimeout(() => setCopiedNumber(false), 2000);
       } catch (error) {
-        console.error("Failed to copy number:", error);
+        logger.error("Failed to copy number:", error);
         setBannerError("Failed to copy number. Please try again.");
       }
     }
@@ -465,8 +473,10 @@ export function DeveloperContactCard({
         setBannerError("Failed to send email. Please try again.");
       }
     } catch (error) {
-      console.error("Error sending email:", error);
-      setBannerError(sendMessageError?.message ?? "Failed to send email. Please try again.");
+      logger.error("Error sending email:", error);
+      setBannerError(
+        sendMessageError?.message ?? "Failed to send email. Please try again."
+      );
     } finally {
       setIsLoading(false);
     }
@@ -527,7 +537,7 @@ export function DeveloperContactCard({
         setIsSuccess(true);
       }
     } catch (error) {
-      console.error("Error getting phone number:", error);
+      logger.error("Error getting phone number:", error);
       setBannerError("Failed to get phone number. Please try again.");
     } finally {
       setIsLoading(false);
@@ -570,7 +580,7 @@ export function DeveloperContactCard({
         onClose(); // Close the dialog
       }
     } catch (error) {
-      console.error("Error getting phone number:", error);
+      logger.error("Error getting phone number:", error);
       setBannerError("Failed to get phone number. Please try again.");
     } finally {
       setIsLoading(false);
@@ -666,7 +676,12 @@ export function DeveloperContactCard({
                 <Textarea
                   id="success-email-message"
                   value={contactForm.message}
-                  onChange={(e) => handleInputChange("message", sanitizeMessage(e.target.value))}
+                  onChange={(e) =>
+                    handleInputChange(
+                      "message",
+                      sanitizeMessage(e.target.value)
+                    )
+                  }
                   placeholder="Enter your message to the agent"
                   rows={4}
                   className="w-full text-base sm:text-sm"
@@ -835,7 +850,9 @@ export function DeveloperContactCard({
                 <Input
                   id="phone-name"
                   value={contactForm.name}
-                  onChange={(e) => handleInputChange("name", sanitizeName(e.target.value))}
+                  onChange={(e) =>
+                    handleInputChange("name", sanitizeName(e.target.value))
+                  }
                   placeholder="Enter your full name"
                   className={`${errors.name ? "border-red-500" : ""} h-10 text-base sm:h-10 sm:text-sm`}
                   disabled={formSubmitted}
@@ -944,7 +961,9 @@ export function DeveloperContactCard({
                 <Input
                   id="whatsapp-name"
                   value={contactForm.name}
-                  onChange={(e) => handleInputChange("name", sanitizeName(e.target.value))}
+                  onChange={(e) =>
+                    handleInputChange("name", sanitizeName(e.target.value))
+                  }
                   placeholder="Enter your full name"
                   className={`${errors.name ? "border-red-500" : ""} h-10 text-base sm:h-10 sm:text-sm`}
                   disabled={formSubmitted}
@@ -1136,7 +1155,10 @@ export function DeveloperContactCard({
                       type="email"
                       value={contactForm.email}
                       onChange={(e) =>
-                        handleInputChange("email", sanitizeEmail(e.target.value))
+                        handleInputChange(
+                          "email",
+                          sanitizeEmail(e.target.value)
+                        )
                       }
                       placeholder="Enter your email address"
                       className={`${errors.email ? "border-red-500" : ""} h-10 text-base sm:h-10 sm:text-sm`}
@@ -1155,7 +1177,10 @@ export function DeveloperContactCard({
                       id="message"
                       value={contactForm.message}
                       onChange={(e) =>
-                        handleInputChange("message", sanitizeMessage(e.target.value))
+                        handleInputChange(
+                          "message",
+                          sanitizeMessage(e.target.value)
+                        )
                       }
                       placeholder="Enter your message"
                       rows={4}

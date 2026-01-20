@@ -11,11 +11,11 @@ interface MobileSearchTriggerProps {
 
 export function MobileSearchTrigger({
   onOpen,
-   
+
   className: _className,
-   
+
   placeholder: _placeholder = "Search for location, area, or project",
-   
+
   showFiltersHint: _showFiltersHint = true,
 }: MobileSearchTriggerProps) {
   const handleClick = (e: React.MouseEvent) => {

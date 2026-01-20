@@ -1,10 +1,4 @@
-import {
-  User,
-  ChevronLeft,
-  Settings,
-  Home,
-  Image,
-} from "lucide-react";
+import { User, ChevronLeft, Settings, Home, Image } from "lucide-react";
 
 export type IconProps = React.HTMLAttributes<SVGElement>;
 

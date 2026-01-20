@@ -20,6 +20,7 @@ import {
   useState,
   type KeyboardEvent,
 } from "react";
+import { logger } from "@/lib/logger";
 import {
   ActiveFilterChips,
   type DeveloperUnitsFormState,
@@ -227,7 +228,7 @@ export function UnitsSearchFilter() {
 
       router.replace(`/units/search?${params.toString()}`);
     } catch (err) {
-      console.error("UnitsSearchFilter::handleSearch", err);
+      logger.error("UnitsSearchFilter::handleSearch", err);
       setError(
         "An error occurred while processing your search. Please try again."
       );

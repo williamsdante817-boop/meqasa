@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
@@ -21,7 +22,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    console.log(`🌍 Server-side geocoding for: "${address}"`);
+    logger.debug(`🌍 Server-side geocoding for: "${address}"`);
 
     // Make address more specific by appending Ghana if not already present
     const enhancedAddress = address.toLowerCase().includes("ghana")
@@ -37,8 +38,8 @@ export async function GET(request: NextRequest) {
     }
 
     const data = await response.json();
-    console.log(`📝 Geocoding response status: ${data.status}`);
-    console.log(`🔍 Enhanced address used: "${enhancedAddress}"`);
+    logger.debug(`📝 Geocoding response status: ${data.status}`);
+    logger.debug(`🔍 Enhanced address used: "${enhancedAddress}"`);
 
     if (data.status === "OK" && data.results && data.results.length > 0) {
       const result = data.results[0];
@@ -47,8 +48,8 @@ export async function GET(request: NextRequest) {
         lng: result.geometry.location.lng,
       };
 
-      console.log(`✅ SUCCESS: "${address}" geocoded to:`, coordinates);
-      console.log(`📍 Full address: ${result.formatted_address}`);
+      logger.debug(`✅ SUCCESS: "${address}" geocoded to:`, coordinates);
+      logger.debug(`📍 Full address: ${result.formatted_address}`);
 
       return NextResponse.json({
         success: true,
@@ -57,10 +58,10 @@ export async function GET(request: NextRequest) {
         place_id: result.place_id,
       });
     } else {
-      console.log(
+      logger.debug(
         `❌ Geocoding failed: ${data.status} - ${data.error_message || "No results"}`
       );
-      console.log(`🔍 Full response:`, JSON.stringify(data, null, 2));
+      logger.debug(`🔍 Full response`, { data: JSON.stringify(data, null, 2) });
       return NextResponse.json(
         {
           error: `Geocoding failed: ${data.status}`,
@@ -71,7 +72,7 @@ export async function GET(request: NextRequest) {
       );
     }
   } catch (error) {
-    console.error(`🚨 Geocoding error:`, error);
+    logger.error(`Geocoding error`, error);
     return NextResponse.json(
       {
         error: "Internal server error",

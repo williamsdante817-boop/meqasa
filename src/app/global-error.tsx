@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle } from "lucide-react";
+import { logger } from "@/lib/logger";
 
 export default function GlobalError({
   error,
@@ -12,7 +13,7 @@ export default function GlobalError({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error("Global error:", error);
+    logger.error("Global error:", error);
   }, [error]);
 
   return (
@@ -28,7 +29,8 @@ export default function GlobalError({
                 Application Error
               </h1>
               <p className="text-sm text-gray-600">
-                A critical error occurred. Please refresh the page or contact support if the problem persists.
+                A critical error occurred. Please refresh the page or contact
+                support if the problem persists.
               </p>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">

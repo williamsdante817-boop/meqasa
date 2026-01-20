@@ -46,27 +46,28 @@ export default function Error({
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-red-50">
             <AlertCircle className="h-8 w-8 text-red-600" aria-hidden="true" />
           </div>
-          
+
           <div className="space-y-2">
             <h1 className="text-brand-accent text-2xl font-bold sm:text-3xl">
               Oops! Something went wrong
             </h1>
             <p className="text-brand-muted text-sm sm:text-base">
-              We apologize for the inconvenience. An unexpected error occurred while loading this page.
+              We apologize for the inconvenience. An unexpected error occurred
+              while loading this page.
             </p>
           </div>
 
           {process.env.NODE_ENV === "development" && error.message && (
             <div className="rounded-lg bg-gray-50 p-4 text-left">
-              <p className="text-xs font-mono text-gray-600 break-words">
+              <p className="font-mono text-xs break-words text-gray-600">
                 {error.message}
               </p>
             </div>
           )}
 
           <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:justify-center">
-            <Button 
-              onClick={handleReset} 
+            <Button
+              onClick={handleReset}
               disabled={isResetting}
               className="w-full sm:w-auto"
             >
@@ -81,7 +82,7 @@ export default function Error({
             </Button>
           </div>
 
-          <p className="text-brand-muted text-xs pt-4">
+          <p className="text-brand-muted pt-4 text-xs">
             If this problem persists, please contact our support team.
           </p>
         </div>

@@ -15,7 +15,7 @@ interface PropertyPlanProps {
 export default function PropertyPlan({
   className,
   planUrl,
-  planTitle = "Property floor plan"
+  planTitle = "Property floor plan",
 }: PropertyPlanProps) {
   const [imgError, setImgError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);

@@ -34,12 +34,12 @@ export function FullscreenModal({
   return (
     <div className="fixed inset-0 z-50 bg-black/50">
       <div
-        className={cn("fixed inset-0 bg-white z-50 overflow-y-auto", className)}
+        className={cn("fixed inset-0 z-50 overflow-y-auto bg-white", className)}
       >
         <div className="relative min-h-full">
           <button
             onClick={onClose}
-            className="absolute right-4 top-4 z-50 rounded-full p-2 hover:bg-gray-100"
+            className="absolute top-4 right-4 z-50 rounded-full p-2 hover:bg-gray-100"
             aria-label="Close modal"
           >
             <X className="h-6 w-6" />

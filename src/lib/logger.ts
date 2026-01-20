@@ -92,9 +92,8 @@ class Logger {
     if (!this.shouldLog("debug")) return;
 
     if (this.isDevelopment) {
+      // eslint-disable-next-line no-console
       console.debug(`🐛 ${message}`, context);
-    } else {
-      console.debug(this.formatMessage("debug", message, context));
     }
   }
 
@@ -102,9 +101,8 @@ class Logger {
     if (!this.shouldLog("info")) return;
 
     if (this.isDevelopment) {
+      // eslint-disable-next-line no-console
       console.info(`ℹ️ ${message}`, context);
-    } else {
-      console.info(this.formatMessage("info", message, context));
     }
   }
 
@@ -178,7 +176,12 @@ class Logger {
     } catch (e) {
       // Silently fail if logging fails - no console output in production
       if (this.isDevelopment) {
-        console.warn("Failed to store log entry:", e);
+        console.warn("Failed to store log entry:", {
+          error:
+            e instanceof Error
+              ? { name: e.name, message: e.message, stack: e.stack }
+              : e,
+        });
       }
     }
   }

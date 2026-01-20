@@ -28,8 +28,14 @@ export function DeveloperLogos({ className, developers }: DeveloperLogosProps) {
   const router = useRouter();
 
   // Helper function to create developer URL slug
-  function createDeveloperSlug(developerName: string, developerId: string): string {
-    const nameSlug = developerName.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+  function createDeveloperSlug(
+    developerName: string,
+    developerId: string
+  ): string {
+    const nameSlug = developerName
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/[^a-z0-9-]/g, "");
     return `${nameSlug}-${developerId}`;
   }
 
@@ -76,7 +82,7 @@ export function DeveloperLogos({ className, developers }: DeveloperLogosProps) {
   return (
     <div className={cn("mt-8 space-y-6", className)}>
       {/* Marquee Container */}
-      <div className="relative overflow-hidden rounded-md border border-brand-border bg-white py-8">
+      <div className="border-brand-border relative overflow-hidden rounded-md border bg-white py-8">
         {/* Gradient overlays */}
         <div className="absolute top-0 bottom-0 left-0 z-10 w-16 bg-gradient-to-r from-white to-transparent" />
         <div className="absolute top-0 right-0 bottom-0 z-10 w-16 bg-gradient-to-l from-white to-transparent" />
@@ -94,14 +100,14 @@ export function DeveloperLogos({ className, developers }: DeveloperLogosProps) {
               role="button"
               tabIndex={0}
               onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
+                if (e.key === "Enter" || e.key === " ") {
                   e.preventDefault();
                   handleDeveloperClick(logo);
                 }
               }}
               aria-label={`View projects by ${logo.name}`}
             >
-              <div className="flex h-20 w-32 items-center justify-center overflow-hidden rounded-lg border border-brand-border bg-white p-3 transition-all duration-300 group-hover:scale-105 group-hover:shadow-lg">
+              <div className="border-brand-border flex h-20 w-32 items-center justify-center overflow-hidden rounded-lg border bg-white p-3 transition-all duration-300 group-hover:scale-105 group-hover:shadow-lg">
                 <Image
                   src={logo.logoUrl}
                   alt={`${logo.name} logo`}
@@ -111,7 +117,7 @@ export function DeveloperLogos({ className, developers }: DeveloperLogosProps) {
                 />
               </div>
               <div className="mt-2 text-center">
-                <p className="text-xs text-brand-muted transition-colors group-hover:text-brand-accent">
+                <p className="text-brand-muted group-hover:text-brand-accent text-xs transition-colors">
                   {logo.name}
                 </p>
               </div>

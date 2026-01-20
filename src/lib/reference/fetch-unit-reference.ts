@@ -1,6 +1,9 @@
-import { resolveInternalApiBase } from "@/lib/internal-api-base";
 import type { UnitDetails } from "@/lib/get-unit-details";
-import { cleanUnitReference } from "@/lib/unit-reference-url-generator";
+import {
+  cleanUnitReference,
+  constructUnitUrlFromData,
+  generateGenericUnitSlug,
+} from "@/lib/unit-reference-url-generator";
 
 export interface UnitReferenceLookupResult {
   reference: string;
@@ -19,6 +22,7 @@ interface LookupOptions {
 }
 
 const DEFAULT_TIMEOUT_MS = 6000;
+const MEQASA_UNIT_ENDPOINT = "https://meqasa.com/developer-units/details";
 
 export async function fetchUnitReferenceLookup(
   reference: string,
@@ -45,7 +49,9 @@ export async function fetchUnitReferenceLookup(
     if (signal.aborted) {
       controller.abort();
     } else {
-      signal.addEventListener("abort", () => controller.abort(), { once: true });
+      signal.addEventListener("abort", () => controller.abort(), {
+        once: true,
+      });
     }
   }
 
@@ -53,9 +59,12 @@ export async function fetchUnitReferenceLookup(
     ? setTimeout(() => controller.abort(), timeoutMs)
     : null;
 
-  const isServer = typeof window === "undefined";
-  const baseUrl = resolveInternalApiBase(isServer);
-  const fetchUrl = `${baseUrl}/api/unit-reference?ref=${encodeURIComponent(cleanRef)}`;
+  // Direct call to Meqasa API (server-side only)
+  const slug = generateGenericUnitSlug(cleanRef).replace(
+    "/developer-unit/",
+    ""
+  );
+  const fetchUrl = `${MEQASA_UNIT_ENDPOINT}/${slug}?app=vercel`;
 
   try {
     const response = await fetch(fetchUrl, {
@@ -64,26 +73,50 @@ export async function fetchUnitReferenceLookup(
         Accept: "application/json",
       },
       signal: controller?.signal ?? signal,
+      next: { revalidate: 1800 }, // Cache for 30 minutes
     });
-
-    const payload = (await response.json()) as UnitReferenceLookupResult;
 
     if (!response.ok) {
       return {
-        ...payload,
+        reference: cleanRef,
+        url: "",
         isValid: false,
-        source: payload.source ?? "api",
-        statusCode: payload.statusCode ?? response.status,
-        error: payload.error ?? "Unit reference lookup failed",
+        source: "api",
+        error: "Unit reference lookup failed",
+        statusCode: response.status,
       };
     }
 
+    const unitData = (await response.json()) as UnitDetails & {
+      status?: string;
+      msg?: string;
+    };
+
+    if ("status" in unitData && unitData.status === "fail") {
+      return {
+        reference: cleanRef,
+        url: "",
+        isValid: false,
+        source: "api",
+        error: unitData.msg ?? "Unit not available",
+        statusCode: 404,
+      };
+    }
+
+    const urlPath = constructUnitUrlFromData(unitData as UnitDetails);
+
     return {
-      ...payload,
-      statusCode: payload.statusCode ?? response.status,
+      reference: cleanRef.toUpperCase(),
+      url: urlPath,
+      isValid: true,
+      source: "api",
+      cachedAt: new Date().toISOString(),
+      unitData: unitData as UnitDetails,
+      statusCode: 200,
     };
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Unit reference lookup failed";
+    const message =
+      error instanceof Error ? error.message : "Unit reference lookup failed";
     return {
       reference: cleanRef,
       url: "",

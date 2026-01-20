@@ -1,4 +1,5 @@
 "use client";
+import { logger } from "@/lib/logger";
 
 import React, { useState, useCallback, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -131,7 +132,7 @@ export function ProductionReferenceSearch({
           setMetrics(currentMetrics);
 
           // Log analytics
-          console.log(
+          logger.debug(
             `[Production Reference Search] ${result.reference} -> ${result.url} (${result.source}, ${result.responseTime?.toFixed(0)}ms)`
           );
 
@@ -342,10 +343,14 @@ export function SimpleProductionReferenceSearch({
       useHybridNavigation={true}
       showPerformanceInfo={showPerformanceInfo}
       onSearch={(ref, url, metrics) => {
-        console.log(`[Production Reference Search] ${ref} -> ${url}`, metrics);
+        logger.debug(`[Production Reference Search] ${ref} -> ${url}`, {
+          metrics: typeof metrics === "object" ? metrics : { value: metrics },
+        });
       }}
       onError={(error) => {
-        console.error("[Production Reference Search Error]:", error);
+        logger.error("[Production Reference Search Error]:", {
+          error: error,
+        });
       }}
     />
   );

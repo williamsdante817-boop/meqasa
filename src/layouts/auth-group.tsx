@@ -3,12 +3,7 @@
 import Link from "next/link";
 import * as React from "react";
 // import type { User } from "@clerk/nextjs/server";
-import {
-  LayoutDashboard,
-  LogOut,
-  Settings,
-  Home,
-} from "lucide-react";
+import { LayoutDashboard, LogOut, Settings, Home } from "lucide-react";
 
 // import { getStoreByUserId } from "@/lib/queries/store";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -48,7 +43,7 @@ export function AuthDropdown({
 
         <Button
           size="default"
-          className="bg-[#f93a5d] hover:bg-[#f93a5d]/9- cursor-pointer"
+          className="hover:bg-[#f93a5d]/9- cursor-pointer bg-[#f93a5d]"
         >
           <Link href="/dashboard">
             List Property
@@ -83,10 +78,10 @@ export function AuthDropdown({
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">
+            <p className="text-sm leading-none font-medium">
               {"Clement"} {"Adjei"}
             </p>
-            <p className="text-xs leading-none text-muted-foreground">
+            <p className="text-muted-foreground text-xs leading-none">
               {"test@gmail.com"}
             </p>
           </div>

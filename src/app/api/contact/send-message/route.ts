@@ -32,8 +32,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    logger.debug("[send-message] Sending to MeQasa API", requestData);
-
     const requestData = {
       rfifrom: rfifrom,
       rfimessage: rfimessage,

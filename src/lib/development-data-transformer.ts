@@ -1,13 +1,22 @@
-import type { Development, DevelopmentProjectResponse, ApiProject } from '@/types/development';
+import { logger } from "@/lib/logger";
+import type {
+  ApiProject,
+  Development,
+  DevelopmentProjectResponse,
+} from "@/types/development";
 
 /**
  * Transforms API data to component format with error handling and validation
  * @param apiData - Raw API response data
  * @returns Array of transformed Development objects
  */
-export function transformApiDataToDevelopments(apiData: DevelopmentProjectResponse | null): Development[] {
+export function transformApiDataToDevelopments(
+  apiData: DevelopmentProjectResponse | null
+): Development[] {
   if (!apiData?.projects || !Array.isArray(apiData.projects)) {
-    console.warn("Invalid or missing projects data:", apiData);
+    logger.warn("Invalid or missing projects data:", {
+      data: apiData,
+    });
     return [];
   }
 
@@ -39,8 +48,5 @@ function formatProjectLocation(project: ApiProject): string {
   const address = project.address || "";
   const city = project.city || "";
 
-  return `${address}, ${city}`
-    .trim()
-    .replace(/^,\s*/, "")
-    .replace(/,\s*$/, "");
+  return `${address}, ${city}`.trim().replace(/^,\s*/, "").replace(/,\s*$/, "");
 }

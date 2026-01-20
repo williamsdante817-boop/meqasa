@@ -15,6 +15,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import type { ContractType, SortOrder } from "@/types/meqasa";
 import type { PropertyType } from "@/config/property";
+import { logger } from "@/lib/logger";
 
 const PROPERTY_TYPES: PropertyType[] = [
   "apartment",
@@ -106,7 +107,7 @@ export default function MeqasaSearchForm(_props: MeqasaSearchFormProps) {
       // Navigate to search page with parameters
       window.location.href = `/search/${contract}?${searchParams.toString()}`;
     } catch (error) {
-      console.error("Error preparing search:", error);
+      logger.error("Error preparing search:", error);
       setError("Failed to prepare search. Please try again.");
     } finally {
       setIsLoading(false);

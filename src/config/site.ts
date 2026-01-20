@@ -12,7 +12,6 @@ interface SelectOptionGroup {
   options: SelectOption[];
 }
 
- 
 interface _SelectOptionsConfig {
   option: {
     propertyType: SelectOptionGroup;

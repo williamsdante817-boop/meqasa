@@ -5,6 +5,7 @@
 
 import type { AgentDetails, AgentListing } from "@/types/agent";
 import { meqasaApiClient } from "./client";
+import { logger } from "@/lib/logger";
 
 // Agent logo type for homepage display
 export interface BrokerDetail {
@@ -54,7 +55,7 @@ export async function getAgentLogos(): Promise<BrokerDetail[] | null> {
 
     return response;
   } catch (error) {
-    console.error("Failed to fetch agent logos:", error);
+    logger.error("Failed to fetch agent logos:", error);
     return null;
   }
 }
@@ -70,7 +71,7 @@ export async function getAllAgents(): Promise<AgentsResponse> {
     );
     return response ?? { list: [] };
   } catch (error) {
-    console.error("Failed to fetch all agents:", error);
+    logger.error("Failed to fetch all agents:", error);
     return { list: [] };
   }
 }
@@ -87,7 +88,7 @@ export async function getAgentDetails(
     const response = await meqasaApiClient.get<AgentDetails>(url);
     return response;
   } catch (error) {
-    console.error(`Failed to fetch agent details for ${agentId}:`, error);
+    logger.error(`Failed to fetch agent details for ${agentId}:`, error);
     throw error;
   }
 }
@@ -113,7 +114,7 @@ export async function getAgentListings(
     });
     return response ?? { listings: [], totalPages: 0 };
   } catch (error) {
-    console.error(`Failed to fetch agent listings for ${agentId}:`, error);
+    logger.error(`Failed to fetch agent listings for ${agentId}:`, error);
     return { listings: [], totalPages: 0 };
   }
 }

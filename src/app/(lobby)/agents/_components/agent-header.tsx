@@ -41,7 +41,7 @@ export function AgentHeader({ agent, logoUrl }: AgentHeaderProps) {
   const aboutRef = React.useRef<HTMLDivElement>(null);
 
   // Use actual data from API instead of hardcoded values
-   
+
   const _companyName = agent.company ?? agent.name;
   const location = agent.locality?.trim() ?? "Not available";
 

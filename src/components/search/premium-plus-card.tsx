@@ -90,7 +90,10 @@ export function PremiumPlusPropertyCard({
   const summary = data.summary || "Property Listing";
 
   // Normalize image URLs - fix double slashes and remove query params
-  const normalizedImage = (data.image2 || data.image)?.replace(/([^:])(\/\/+)/g, '$1/').split('?')[0] || "/placeholder-image.png";
+  const normalizedImage =
+    (data.image2 || data.image)
+      ?.replace(/([^:])(\/\/+)/g, "$1/")
+      .split("?")[0] || "/placeholder-image.png";
 
   // Parse numbers safely
   const listingId = Number(data.listingid) || 0;

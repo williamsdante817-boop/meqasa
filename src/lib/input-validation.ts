@@ -47,7 +47,8 @@ export const sanitizeMessage = (message: string): string => {
 // Get validation error message
 export const getNameError = (name: string): string => {
   if (!name || name.trim().length === 0) return "Name is required";
-  if (!validateName(name)) return "Name can only contain letters, spaces, hyphens, and apostrophes";
+  if (!validateName(name))
+    return "Name can only contain letters, spaces, hyphens, and apostrophes";
   return "";
 };
 

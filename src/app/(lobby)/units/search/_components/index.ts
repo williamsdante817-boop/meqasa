@@ -8,10 +8,7 @@ export { UnitsSearchWrapper } from "./units-search-wrapper";
 export { UnitsSearchResults } from "./units-search-results";
 export { UnitsSearchFilter } from "./units-search-filter";
 export { UnitsResultCard } from "./units-result-card";
-export {
-  ResultCountProvider,
-  useResultCount,
-} from "./result-count-context";
+export { ResultCountProvider, useResultCount } from "./result-count-context";
 export { UnitsSearchSubtitle } from "./units-search-subtitle";
 
 // UI components
@@ -86,8 +83,4 @@ export type {
 } from "./types";
 
 // Type helpers from constants
-export type {
-  UnitTypes,
-  BedroomOptions,
-  BathroomOptions,
-} from "./constants";
+export type { UnitTypes, BedroomOptions, BathroomOptions } from "./constants";

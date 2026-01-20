@@ -1,5 +1,6 @@
 import { getListingDetails } from "./get-listing-detail";
 import type { ListingDetails } from "@/types/property";
+import { logger } from "@/lib/logger";
 
 /**
  * Reference-based URL generator for property listings
@@ -53,7 +54,9 @@ export async function generatePropertyUrlFromReference(
     return constructUrlFromPropertyData(propertyDetails);
   } catch (error) {
     // Fallback: Use generic URL that still works
-    console.warn(`Failed to fetch property details for ${cleanRef}:`, error);
+    logger.warn(`Failed to fetch property details for ${cleanRef}:`, {
+      error: error,
+    });
     return `/listings/property-ref-${cleanRef}`;
   }
 }

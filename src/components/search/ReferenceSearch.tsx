@@ -1,4 +1,5 @@
 "use client";
+import { logger } from "@/lib/logger";
 
 import React, { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
@@ -124,7 +125,7 @@ export function ReferenceSearch({
         const unitData = (result as any).unitData;
         let navigationUrl = result.url;
 
-        console.log(`🔍 Checking data to compress:`, {
+        logger.debug(`🔍 Checking data to compress:`, {
           hasPropertyData: !!propertyData,
           hasUnitData: !!unitData,
           searchType: searchType,
@@ -133,13 +134,13 @@ export function ReferenceSearch({
         if (propertyData) {
           // Compress property data and build URL
           navigationUrl = buildCompressedUrl(result.url, propertyData);
-          console.log(`🗜️ Built compressed URL for property data`);
+          logger.debug(`🗜️ Built compressed URL for property data`);
         } else if (unitData) {
           // Compress unit data and build URL
           navigationUrl = buildCompressedUrl(result.url, unitData);
-          console.log(`🗜️ Built compressed URL for unit data`);
+          logger.debug(`🗜️ Built compressed URL for unit data`);
         } else {
-          console.warn(
+          logger.warn(
             `⚠️ No data to compress - neither property nor unit data available`
           );
         }
@@ -150,7 +151,7 @@ export function ReferenceSearch({
         const searchInfo = enableUnifiedSearch
           ? `${(result as UnifiedSearchResult).searchType} search: ${result.reference} -> ${result.url}`
           : `Property search: ${result.reference} -> ${result.url}`;
-        console.log(searchInfo);
+        logger.debug(searchInfo);
 
         // Call success callback if provided
         onSearch?.(result.reference, result.url);
@@ -313,10 +314,10 @@ export function SimpleReferenceSearch({ className }: { className?: string }) {
       placeholder="Enter property or unit reference..."
       enableUnifiedSearch={true}
       onSearch={(ref, url) => {
-        console.log(`Reference search: ${ref} -> ${url}`);
+        logger.debug(`Reference search: ${ref} -> ${url}`);
       }}
       onError={(error) => {
-        console.error("Reference search error:", error);
+        logger.error("Reference search error:", error);
       }}
     />
   );
@@ -331,10 +332,10 @@ export function PropertyReferenceSearch({ className }: { className?: string }) {
       placeholder="Enter property reference..."
       enableUnifiedSearch={false} // Property-only for backward compatibility
       onSearch={(ref, url) => {
-        console.log(`Property search: ${ref} -> ${url}`);
+        logger.debug(`Property search: ${ref} -> ${url}`);
       }}
       onError={(error) => {
-        console.error("Property search error:", error);
+        logger.error("Property search error:", error);
       }}
     />
   );

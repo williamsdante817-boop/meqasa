@@ -1,4 +1,5 @@
 "use client";
+import { logger } from "@/lib/logger";
 
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
@@ -9,7 +10,7 @@ export default function PropertyAlertsForm() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Subscribing with email:", email);
+    logger.debug("Subscribing with email:", { email });
     // Reset form or show success message
     setEmail(""); // Reset the email input after submission
   };

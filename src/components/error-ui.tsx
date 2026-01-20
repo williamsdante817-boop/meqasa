@@ -67,7 +67,9 @@ export function PropertyErrorUI({
             <h1 className="text-foreground text-xl font-bold md:text-2xl">
               {errorDetails.title}
             </h1>
-            <p className="text-muted-foreground text-sm md:text-base">{errorDetails.description}</p>
+            <p className="text-muted-foreground text-sm md:text-base">
+              {errorDetails.description}
+            </p>
           </div>
         </div>
 

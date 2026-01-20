@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger";
 import type { Establishment } from "./establishment-item";
 
 // Types for the service
@@ -265,7 +266,7 @@ export async function getEstablishmentsFromGoogleMaps(
   filters?: EstablishmentFilters
 ): Promise<Establishment[]> {
   try {
-    console.log(`🌍 Using server-side API for location: "${neighborhood}"`);
+    logger.debug(`🌍 Using server-side API for location: "${neighborhood}"`);
 
     // Step 1: Geocode the location string using our API route
     let coordinates: LocationCoordinates;
@@ -286,14 +287,16 @@ export async function getEstablishmentsFromGoogleMaps(
       }
 
       coordinates = geocodeData.coordinates;
-      console.log(`✅ Geocoded "${neighborhood}" to coordinates:`, coordinates);
-      console.log(`📍 Full address: ${geocodeData.formatted_address}`);
+      logger.debug(`✅ Geocoded "${neighborhood}" to coordinates:`, {
+        coordinates,
+      });
+      logger.debug(`📍 Full address: ${geocodeData.formatted_address}`);
     } catch (geocodeError) {
-      console.error("Geocoding failed:", geocodeError);
+      logger.error("Geocoding failed:", geocodeError);
 
       // If geocoding fails, try to use provided coordinates as fallback (if valid)
       if (projectLocation && isValidCoordinates(projectLocation)) {
-        console.log("Using provided coordinates as fallback");
+        logger.debug("Using provided coordinates as fallback");
         coordinates = projectLocation;
       } else {
         throw new Error(
@@ -313,7 +316,9 @@ export async function getEstablishmentsFromGoogleMaps(
       typesToSearch = ["school", "bank", "hospital", "supermarket", "airport"];
     }
 
-    console.log(`🔍 Searching for establishments: ${typesToSearch.join(", ")}`);
+    logger.debug(
+      `🔍 Searching for establishments: ${typesToSearch.join(", ")}`
+    );
 
     // Search for each type of establishment with configurable limit
     const limitPerType = filters?.type ? 20 : 15; // More results if searching for specific type
@@ -363,19 +368,21 @@ export async function getEstablishmentsFromGoogleMaps(
               });
             });
 
-            console.log(
+            logger.debug(
               `📍 Found ${placesData.places.length} ${type}(s) from Google Places (${placesData.filtered_count} after server-side filtering from ${placesData.total_found} raw results)`
             );
           }
         } else {
-          console.warn(`Failed to fetch ${type}s:`, placesResponse.status);
+          logger.warn(`Failed to fetch ${type}s`, {
+            status: placesResponse.status,
+          });
         }
       } catch (error) {
-        console.error(`Error fetching ${type}s:`, error);
+        logger.error(`Error fetching ${type}s`, error);
       }
     }
 
-    console.log(
+    logger.debug(
       `📍 Total found ${establishments.length} establishments from Google Maps`
     );
 
@@ -384,7 +391,7 @@ export async function getEstablishmentsFromGoogleMaps(
 
     return sorted;
   } catch (error) {
-    console.error("Google Maps API error, falling back to local data:", error);
+    logger.error("Google Maps API error, falling back to local data:", error);
 
     // Fallback to local data if Google Maps fails
     const fallbackLocation =
@@ -413,7 +420,7 @@ async function getEstablishmentsFromLocalData(
   const locationData = ESTABLISHMENTS_DATABASE[locationKey];
 
   if (!locationData) {
-    console.warn(`No establishment data found for location: ${locationKey}`);
+    logger.warn(`No establishment data found for location: ${locationKey}`);
     return [] as Establishment[];
   }
 
@@ -493,7 +500,7 @@ export async function getEstablishments(
     const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
     if (apiKey && neighborhood) {
-      console.log(`🗺️ Using Google Maps API for location: ${neighborhood}`);
+      logger.debug(`🗺️ Using Google Maps API for location: ${neighborhood}`);
 
       // Use location string as primary input - Google will geocode it
       return await getEstablishmentsFromGoogleMaps(
@@ -502,7 +509,7 @@ export async function getEstablishments(
         filters
       );
     } else {
-      console.log(
+      logger.debug(
         "Google Maps API key not found or neighborhood not provided, using local data"
       );
 
@@ -519,7 +526,7 @@ export async function getEstablishments(
       );
     }
   } catch (error) {
-    console.error("Error fetching establishments:", error);
+    logger.error("Error fetching establishments:", error);
     throw new Error("Failed to fetch establishments. Please try again later.");
   }
 }

@@ -7,6 +7,7 @@ import { AlertCircle, Home, RefreshCw, Search, Building2 } from "lucide-react";
 import Link from "next/link";
 import Shell from "@/layouts/shell";
 import { useEffect } from "react";
+import { logger } from "@/lib/logger";
 
 interface ErrorProps {
   error: Error & { digest?: string };
@@ -16,7 +17,7 @@ interface ErrorProps {
 export default function DeveloperProjectsError({ error, reset }: ErrorProps) {
   useEffect(() => {
     // Log the error to an error reporting service
-    console.error("Developer Projects page error:", error);
+    logger.error("Developer Projects page error:", error);
   }, [error]);
 
   const segments = [
@@ -39,16 +40,17 @@ export default function DeveloperProjectsError({ error, reset }: ErrorProps) {
         {/* Error Content */}
         <div className="flex min-h-[60vh] flex-col items-center justify-center text-center">
           <div className="mx-auto max-w-md">
-            <div className="bg-red-50 border border-red-200 rounded-full p-4 w-20 h-20 mx-auto mb-6 flex items-center justify-center">
+            <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full border border-red-200 bg-red-50 p-4">
               <AlertCircle className="h-10 w-10 text-red-600" />
             </div>
 
-            <h1 className="text-brand-accent mb-4 text-2xl font-bold leading-tight md:text-3xl">
+            <h1 className="text-brand-accent mb-4 text-2xl leading-tight font-bold md:text-3xl">
               Something went wrong
             </h1>
 
             <p className="text-brand-muted mb-8 text-base leading-relaxed md:text-lg">
-              We&apos;re having trouble loading the developer projects page. This could be due to a temporary issue with our servers.
+              We&apos;re having trouble loading the developer projects page.
+              This could be due to a temporary issue with our servers.
             </p>
 
             <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
@@ -65,7 +67,7 @@ export default function DeveloperProjectsError({ error, reset }: ErrorProps) {
                 asChild
                 variant="outline"
                 size="lg"
-                className="text-brand-accent hover:bg-brand-primary hover:text-white w-full border-brand-primary sm:w-auto"
+                className="text-brand-accent hover:bg-brand-primary border-brand-primary w-full hover:text-white sm:w-auto"
               >
                 <Link href="/">
                   <Home className="mr-2 h-4 w-4" />
@@ -83,7 +85,9 @@ export default function DeveloperProjectsError({ error, reset }: ErrorProps) {
                 <div className="mt-2 rounded bg-gray-100 p-4 text-xs text-gray-800">
                   <p className="font-mono break-all">{error.message}</p>
                   {error.digest && (
-                    <p className="mt-2 text-gray-600">Error ID: {error.digest}</p>
+                    <p className="mt-2 text-gray-600">
+                      Error ID: {error.digest}
+                    </p>
                   )}
                 </div>
               </details>
@@ -93,14 +97,15 @@ export default function DeveloperProjectsError({ error, reset }: ErrorProps) {
       </Shell>
 
       {/* Alternative Actions Section */}
-      <section className="border-t border-brand-border bg-gray-50">
+      <section className="border-brand-border border-t bg-gray-50">
         <Shell className="py-16 md:py-20">
           <div className="mx-auto max-w-3xl text-center">
-            <h2 className="text-brand-accent mb-6 text-2xl font-bold leading-tight md:text-3xl">
+            <h2 className="text-brand-accent mb-6 text-2xl leading-tight font-bold md:text-3xl">
               Explore Other Options
             </h2>
             <p className="text-brand-muted mb-8 text-base leading-relaxed md:text-lg">
-              While we fix this issue, you can still browse our extensive property portfolio and find your perfect home.
+              While we fix this issue, you can still browse our extensive
+              property portfolio and find your perfect home.
             </p>
             <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Button
@@ -117,7 +122,7 @@ export default function DeveloperProjectsError({ error, reset }: ErrorProps) {
                 asChild
                 variant="outline"
                 size="lg"
-                className="text-brand-accent hover:bg-brand-primary hover:text-white w-full border-brand-primary sm:w-auto"
+                className="text-brand-accent hover:bg-brand-primary border-brand-primary w-full hover:text-white sm:w-auto"
               >
                 <Link href="/newly-built-units">
                   <Building2 className="mr-2 h-5 w-5" />

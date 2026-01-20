@@ -108,21 +108,22 @@ function PropertyContainerContent({
               <PropertyPriceRange projectData={projectData} />
 
               <div className="container mx-auto">
-                {projectData.project.aboutproject && projectData.project.aboutproject.trim() !== "" && (
-                  <ContentSection
-                    title="About Developer"
-                    description=""
-                    href=""
-                    className="px-0 pt-14 pb-10 md:pt-20 md:pb-0"
-                    btnHidden
-                  >
-                    <ExpandableDescription
-                      description={markup}
-                      name={projectData.project.companyname}
+                {projectData.project.aboutproject &&
+                  projectData.project.aboutproject.trim() !== "" && (
+                    <ContentSection
+                      title="About Developer"
+                      description=""
                       href=""
-                    />
-                  </ContentSection>
-                )}
+                      className="px-0 pt-14 pb-10 md:pt-20 md:pb-0"
+                      btnHidden
+                    >
+                      <ExpandableDescription
+                        description={markup}
+                        name={projectData.project.companyname}
+                        href=""
+                      />
+                    </ContentSection>
+                  )}
 
                 {images?.length ? (
                   <ContentSection
@@ -162,34 +163,36 @@ function PropertyContainerContent({
                   </ContentSection>
                 ) : null}
 
-                {projectData.project.tourvideo && projectData.project.tourvideo.trim() !== "" && (
-                  <ProjectVideo videoUrl={projectData.project.tourvideo} />
-                )}
+                {projectData.project.tourvideo &&
+                  projectData.project.tourvideo.trim() !== "" && (
+                    <ProjectVideo videoUrl={projectData.project.tourvideo} />
+                  )}
 
-                {projectData.project.siteplan && projectData.project.siteplan.trim() !== "" && (
-                  <ContentSection
-                    title="Site Plans"
-                    description=""
-                    href=""
-                    className="px-0 pt-14 md:pt-20"
-                    btnHidden
-                    sectionId="site-plan"
-                  >
-                    <div
-                      id="site-plan"
-                      ref={sectionRefs["site-plan"]}
-                      className="relative h-96 overflow-hidden rounded-lg border border-gray-200 bg-white"
+                {projectData.project.siteplan &&
+                  projectData.project.siteplan.trim() !== "" && (
+                    <ContentSection
+                      title="Site Plans"
+                      description=""
+                      href=""
+                      className="px-0 pt-14 md:pt-20"
+                      btnHidden
+                      sectionId="site-plan"
                     >
-                      <Image
-                        src={`https://meqasa.com/uploads/imgs/${projectData.project.siteplan}`}
-                        alt={`Site plan for ${projectData.project.projectname}`}
-                        fill
-                        className="object-contain"
-                        sizes="(min-width: 768px) 100vw, 100vw"
-                      />
-                    </div>
-                  </ContentSection>
-                )}
+                      <div
+                        id="site-plan"
+                        ref={sectionRefs["site-plan"]}
+                        className="relative h-96 overflow-hidden rounded-lg border border-gray-200 bg-white"
+                      >
+                        <Image
+                          src={`https://meqasa.com/uploads/imgs/${projectData.project.siteplan}`}
+                          alt={`Site plan for ${projectData.project.projectname}`}
+                          fill
+                          className="object-contain"
+                          sizes="(min-width: 768px) 100vw, 100vw"
+                        />
+                      </div>
+                    </ContentSection>
+                  )}
               </div>
             </div>
           </div>
@@ -204,7 +207,8 @@ function PropertyContainerContent({
           </aside>
         </div>
       </Shell>
-      {(projectData.floorplans?.length || (projectData.project.lat && projectData.project.lng)) ? (
+      {projectData.floorplans?.length ||
+      (projectData.project.lat && projectData.project.lng) ? (
         <Shell>
           <div className="w-full" role="complementary">
             {projectData.floorplans?.length ? (
@@ -226,7 +230,7 @@ function PropertyContainerContent({
               </section>
             ) : null}
 
-            {(projectData.project.lat && projectData.project.lng) ? (
+            {projectData.project.lat && projectData.project.lng ? (
               <section
                 id="location"
                 ref={sectionRefs.location}

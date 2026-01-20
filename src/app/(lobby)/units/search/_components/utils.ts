@@ -8,7 +8,7 @@ import {
   API_CONFIG,
   SEARCH_CONFIG,
   IMAGE_CONFIG,
-  VALIDATION_RULES
+  VALIDATION_RULES,
 } from "./constants";
 
 /**
@@ -17,7 +17,10 @@ import {
  * @param defaultValue - Default value if conversion fails
  * @returns Converted number or default value
  */
-export function safeNumber(value: string | undefined, defaultValue = 0): number {
+export function safeNumber(
+  value: string | undefined,
+  defaultValue = 0
+): number {
   if (!value || value.trim() === "" || value === "all") return defaultValue;
   const num = Number(value);
   return !isNaN(num) && num >= 0 ? num : defaultValue;
@@ -109,7 +112,9 @@ export function getUnitImageUrl(photoPath?: string): string {
  * @param searchParams - Search parameters from URL
  * @returns Validated API parameters
  */
-export function mapSearchParamsToApi(searchParams: SearchParams): ApiSearchParams {
+export function mapSearchParamsToApi(
+  searchParams: SearchParams
+): ApiSearchParams {
   const apiParams: ApiSearchParams = {
     app: API_CONFIG.APP_ID,
   };
@@ -124,7 +129,10 @@ export function mapSearchParamsToApi(searchParams: SearchParams): ApiSearchParam
   }
 
   // Unit type
-  if (searchParams.unittype && searchParams.unittype !== SEARCH_CONFIG.DEFAULT_UNIT_TYPE) {
+  if (
+    searchParams.unittype &&
+    searchParams.unittype !== SEARCH_CONFIG.DEFAULT_UNIT_TYPE
+  ) {
     apiParams.unittype = Array.isArray(searchParams.unittype)
       ? searchParams.unittype[0]
       : searchParams.unittype;
@@ -150,7 +158,10 @@ export function mapSearchParamsToApi(searchParams: SearchParams): ApiSearchParam
   }
 
   // Bedrooms
-  if (searchParams.beds && searchParams.beds !== SEARCH_CONFIG.DEFAULT_BED_BATH_COUNT) {
+  if (
+    searchParams.beds &&
+    searchParams.beds !== SEARCH_CONFIG.DEFAULT_BED_BATH_COUNT
+  ) {
     const beds = safeNumber(
       Array.isArray(searchParams.beds)
         ? searchParams.beds[0]
@@ -162,7 +173,10 @@ export function mapSearchParamsToApi(searchParams: SearchParams): ApiSearchParam
   }
 
   // Bathrooms
-  if (searchParams.baths && searchParams.baths !== SEARCH_CONFIG.DEFAULT_BED_BATH_COUNT) {
+  if (
+    searchParams.baths &&
+    searchParams.baths !== SEARCH_CONFIG.DEFAULT_BED_BATH_COUNT
+  ) {
     const baths = safeNumber(
       Array.isArray(searchParams.baths)
         ? searchParams.baths[0]
@@ -193,7 +207,9 @@ export function validateSearchParams(params: SearchParams): {
       Array.isArray(params.maxprice) ? params.maxprice[0] : params.maxprice
     );
     if (price > VALIDATION_RULES.MAX_PRICE) {
-      errors.push(`Maximum price cannot exceed ${VALIDATION_RULES.MAX_PRICE.toLocaleString()}`);
+      errors.push(
+        `Maximum price cannot exceed ${VALIDATION_RULES.MAX_PRICE.toLocaleString()}`
+      );
     }
   }
 
@@ -203,7 +219,9 @@ export function validateSearchParams(params: SearchParams): {
       Array.isArray(params.beds) ? params.beds[0] : params.beds
     );
     if (beds > VALIDATION_RULES.MAX_BEDROOMS) {
-      errors.push(`Maximum bedrooms cannot exceed ${VALIDATION_RULES.MAX_BEDROOMS}`);
+      errors.push(
+        `Maximum bedrooms cannot exceed ${VALIDATION_RULES.MAX_BEDROOMS}`
+      );
     }
   }
 
@@ -213,15 +231,21 @@ export function validateSearchParams(params: SearchParams): {
       Array.isArray(params.baths) ? params.baths[0] : params.baths
     );
     if (baths > VALIDATION_RULES.MAX_BATHROOMS) {
-      errors.push(`Maximum bathrooms cannot exceed ${VALIDATION_RULES.MAX_BATHROOMS}`);
+      errors.push(
+        `Maximum bathrooms cannot exceed ${VALIDATION_RULES.MAX_BATHROOMS}`
+      );
     }
   }
 
   // Validate search query length
   if (params.address) {
-    const address = Array.isArray(params.address) ? params.address[0] : params.address;
+    const address = Array.isArray(params.address)
+      ? params.address[0]
+      : params.address;
     if (address && address.length > VALIDATION_RULES.MAX_SEARCH_QUERY_LENGTH) {
-      errors.push(`Search query cannot exceed ${VALIDATION_RULES.MAX_SEARCH_QUERY_LENGTH} characters`);
+      errors.push(
+        `Search query cannot exceed ${VALIDATION_RULES.MAX_SEARCH_QUERY_LENGTH} characters`
+      );
     }
   }
 
@@ -254,7 +278,10 @@ export function debounce<T extends (...args: unknown[]) => void>(
  * @param currency - Currency code (GHS or USD)
  * @returns Formatted currency string
  */
-export function formatCurrency(amount: number, currency: "GHS" | "USD" = "GHS"): string {
+export function formatCurrency(
+  amount: number,
+  currency: "GHS" | "USD" = "GHS"
+): string {
   return new Intl.NumberFormat("en-GH", {
     style: "currency",
     currency,

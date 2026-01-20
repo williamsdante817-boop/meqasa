@@ -49,7 +49,7 @@ export function HeroBanner({
   );
 
   return (
-    <Card className="relative hidden h-[305px] max-h-[305px] overflow-hidden rounded-none border-b border-t-0 bg-transparent lg:block">
+    <Card className="relative hidden h-[305px] max-h-[305px] overflow-hidden rounded-none border-t-0 border-b bg-transparent lg:block">
       {href ? (
         <a
           href={href}
@@ -71,9 +71,9 @@ export function HeroBanner({
 
 export function HeroBannerFallback() {
   return (
-    <Card className="relative hidden h-[305px] max-h-[305px] items-center justify-center overflow-hidden rounded-none border-b border-t-0 bg-muted/40 text-muted-foreground lg:flex">
+    <Card className="bg-muted/40 text-muted-foreground relative hidden h-[305px] max-h-[305px] items-center justify-center overflow-hidden rounded-none border-t-0 border-b lg:flex">
       <div className="flex flex-col items-center gap-3 px-8 text-center">
-        <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground/70">
+        <p className="text-muted-foreground/70 text-xs tracking-[0.18em] uppercase">
           Promotional Spotlight
         </p>
         <p className="max-w-[36rem] text-sm leading-relaxed">
@@ -82,7 +82,7 @@ export function HeroBannerFallback() {
         </p>
         <Link
           href="/search/rent?q=ghana&w=1"
-          className="text-sm font-medium text-brand-primary underline-offset-4 hover:underline"
+          className="text-brand-primary text-sm font-medium underline-offset-4 hover:underline"
         >
           Browse listings
         </Link>

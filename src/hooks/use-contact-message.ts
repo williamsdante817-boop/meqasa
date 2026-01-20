@@ -14,10 +14,12 @@ interface UseContactMessageResult {
 }
 
 export function useContactMessage(): UseContactMessageResult {
-  const { loading, error, refetch } = useResilientFetch<ContactMessageResponse>({
-    input: "/api/contact/send-message",
-    enabled: false,
-  });
+  const { loading, error, refetch } = useResilientFetch<ContactMessageResponse>(
+    {
+      input: "/api/contact/send-message",
+      enabled: false,
+    }
+  );
 
   const sendMessage = useCallback(
     async (formData: FormData) => {

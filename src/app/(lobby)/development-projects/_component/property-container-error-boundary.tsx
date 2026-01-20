@@ -2,6 +2,7 @@
 
 import { Component, type ReactNode } from "react";
 import { AlertCircle, RefreshCw } from "lucide-react";
+import { logger } from "@/lib/logger";
 
 // Enhanced error boundary for production
 export class PropertyContainerErrorBoundary extends Component<
@@ -23,7 +24,7 @@ export class PropertyContainerErrorBoundary extends Component<
 
   componentDidCatch(error: Error, errorInfo: unknown) {
     // Enhanced error logging for production monitoring
-    console.error("PropertyContainer Error:", {
+    logger.error("PropertyContainer Error:", {
       error: error.message,
       stack: error.stack,
       errorInfo,
@@ -58,7 +59,7 @@ export class PropertyContainerErrorBoundary extends Component<
 
 // Enhanced error fallback component
 export function PropertyContainerError({
-  _error,
+  error: _error,
   errorId,
   retry,
 }: {

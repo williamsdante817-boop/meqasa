@@ -3,7 +3,6 @@ import "@/styles/globals.css";
 import { DisableScrollRestoration } from "@/components/DisableScrollRestoration";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { Toaster } from "@/components/ui/toast";
-import { WebVitals } from "@/components/web-vitals";
 import { fontSans } from "@/lib/fonts";
 import { cn } from "@/lib/utils";
 import { Analytics } from "@vercel/analytics/react";
@@ -42,7 +41,6 @@ export default function RootLayout({
         <ScrollToTop />
         {children}
         <Toaster />
-        <WebVitals />
         <SpeedInsights />
         <Analytics />
       </body>

@@ -1,6 +1,7 @@
 import { getHomepagePopup } from "./get-homepage-popup";
 import { getResultsPopup, type ResultsPopupParams } from "./get-results-popup";
 import type { PopupDataWithUrls } from "@/types";
+import { logger } from "@/lib/logger";
 
 export { getHomepagePopup, getResultsPopup };
 export type { ResultsPopupParams, PopupDataWithUrls };
@@ -39,7 +40,7 @@ export async function getPopupData(
     }
     return null;
   } catch (error) {
-    console.error("Failed to fetch popup data:", error);
+    logger.error("Failed to fetch popup data:", error);
     return null;
   }
 }

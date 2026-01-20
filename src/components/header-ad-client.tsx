@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { logger } from "@/lib/logger";
 
 export default function HeaderAdClient() {
   const pathname = usePathname();
@@ -36,7 +37,7 @@ export default function HeaderAdClient() {
           setBannerData([]);
         }
       } catch (error) {
-        console.error("Failed to fetch leaderboard banner:", error);
+        logger.error("Failed to fetch leaderboard banner:", error);
         setBannerData([]);
       } finally {
         setIsLoading(false);

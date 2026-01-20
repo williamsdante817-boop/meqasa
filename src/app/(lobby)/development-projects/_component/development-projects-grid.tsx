@@ -184,7 +184,12 @@ export default function DevelopmentProjectsGrid({
           </EmptyDescription>
         </EmptyHeader>
         <EmptyContent>
-          <Button asChild size="lg" variant="brand-primary" className="w-full sm:w-auto">
+          <Button
+            asChild
+            size="lg"
+            variant="brand-primary"
+            className="w-full sm:w-auto"
+          >
             <Link href="/">Browse All Properties</Link>
           </Button>
         </EmptyContent>

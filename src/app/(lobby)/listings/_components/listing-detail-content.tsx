@@ -71,7 +71,7 @@ export function ListingDetailContent({
 
       {/* Favorites Banner */}
       <PropertyFavoritesBanner
-        propertyId={Number(listingDetail.detailreq.split("-").pop())}
+        _propertyId={Number(listingDetail.detailreq.split("-").pop())}
         propertyType="listing"
       />
 

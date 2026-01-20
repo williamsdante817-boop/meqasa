@@ -73,7 +73,7 @@ export function ClientPagination({
             {[...Array(3)].map((_, i) => (
               <div
                 key={i}
-                className="h-2 w-2 animate-bounce rounded-full bg-brand-primary"
+                className="bg-brand-primary h-2 w-2 animate-bounce rounded-full"
                 style={{
                   animationDelay: `${i * 0.15}s`,
                   animationDuration: "0.6s",
@@ -92,12 +92,12 @@ export function ClientPagination({
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={isPending}
-                className="inline-flex h-10 cursor-pointer items-center justify-center gap-1 whitespace-nowrap rounded-md px-4 py-2 text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+                className="ring-offset-background hover:bg-accent hover:text-accent-foreground focus-visible:ring-ring inline-flex h-10 cursor-pointer items-center justify-center gap-1 rounded-md px-4 py-2 text-sm font-medium whitespace-nowrap transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
               >
                 Previous
               </button>
             ) : (
-              <span className="inline-flex h-10 cursor-not-allowed items-center justify-center gap-1 whitespace-nowrap rounded-md px-4 py-2 text-sm font-medium opacity-50">
+              <span className="inline-flex h-10 cursor-not-allowed items-center justify-center gap-1 rounded-md px-4 py-2 text-sm font-medium whitespace-nowrap opacity-50">
                 Previous
               </span>
             )}
@@ -112,9 +112,9 @@ export function ClientPagination({
                 <button
                   onClick={() => handlePageChange(item as number)}
                   disabled={isPending}
-                  className={`inline-flex h-10 min-w-10 cursor-pointer items-center justify-center whitespace-nowrap rounded-md px-4 py-2 text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
+                  className={`ring-offset-background focus-visible:ring-ring inline-flex h-10 min-w-10 cursor-pointer items-center justify-center rounded-md px-4 py-2 text-sm font-medium whitespace-nowrap transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 ${
                     currentPage === item
-                      ? "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground"
+                      ? "border-input bg-background hover:bg-accent hover:text-accent-foreground border shadow-sm"
                       : "hover:bg-accent hover:text-accent-foreground"
                   }`}
                 >
@@ -130,12 +130,12 @@ export function ClientPagination({
               <button
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={isPending}
-                className="inline-flex h-10 cursor-pointer items-center justify-center gap-1 whitespace-nowrap rounded-md px-4 py-2 text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+                className="ring-offset-background hover:bg-accent hover:text-accent-foreground focus-visible:ring-ring inline-flex h-10 cursor-pointer items-center justify-center gap-1 rounded-md px-4 py-2 text-sm font-medium whitespace-nowrap transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
               >
                 Next
               </button>
             ) : (
-              <span className="inline-flex h-10 cursor-not-allowed items-center justify-center gap-1 whitespace-nowrap rounded-md px-4 py-2 text-sm font-medium opacity-50">
+              <span className="inline-flex h-10 cursor-not-allowed items-center justify-center gap-1 rounded-md px-4 py-2 text-sm font-medium whitespace-nowrap opacity-50">
                 Next
               </span>
             )}

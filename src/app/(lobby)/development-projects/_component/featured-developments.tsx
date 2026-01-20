@@ -10,6 +10,7 @@ import { ArrowRight, Building2, MapPin, Star } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useResilientFetch } from "@/hooks/use-resilient-fetch";
+import { logger } from "@/lib/logger";
 
 interface FeaturedDevelopment {
   projectid: number;
@@ -44,7 +45,9 @@ export default function FeaturedDevelopments() {
     []
   );
 
-  const { data, loading, error } = useResilientFetch<{ projects?: FeaturedDevelopment[] }>({
+  const { data, loading, error } = useResilientFetch<{
+    projects?: FeaturedDevelopment[];
+  }>({
     input: "/api/development-projects",
     init: requestInit,
   });
@@ -53,7 +56,7 @@ export default function FeaturedDevelopments() {
     if (!error) {
       return;
     }
-    console.error("Error fetching featured development projects:", error);
+    logger.error("Error fetching featured development projects:", error);
   }, [error]);
 
   useEffect(() => {

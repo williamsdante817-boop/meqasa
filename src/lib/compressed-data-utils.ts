@@ -1,11 +1,12 @@
+import { logger } from "@/lib/logger";
 /**
  * Production-Ready Compressed Data Utilities
  * Enables SSR-compatible data passing via compressed URL parameters
  * Features: gzip compression, base64 encoding, URL-safe, error recovery
  */
 
-import pako from "pako";
 import type { ListingDetails } from "@/types/property";
+import pako from "pako";
 import type { UnitDetails } from "./get-unit-details";
 
 // Configuration
@@ -23,11 +24,11 @@ export function compressDataForUrl<T>(data: T): string {
   try {
     // Step 1: JSON stringify
     const jsonString = JSON.stringify(data);
-    console.log(`📊 Original JSON size: ${jsonString.length} bytes`);
+    logger.debug(`📊 Original JSON size: ${jsonString.length} bytes`);
 
     // Step 2: Compress with gzip
     const compressed = pako.deflate(jsonString);
-    console.log(
+    logger.debug(
       `🗜️ Compressed size: ${compressed.length} bytes (${Math.round((1 - compressed.length / jsonString.length) * 100)}% reduction)`
     );
 
@@ -38,17 +39,19 @@ export function compressDataForUrl<T>(data: T): string {
       .replace(/\//g, "_")
       .replace(/=/g, "");
 
-    console.log(`🔗 Final URL param size: ${urlSafe.length} characters`);
+    logger.debug(`🔗 Final URL param size: ${urlSafe.length} characters`);
 
     if (urlSafe.length > COMPRESSION_CONFIG.MAX_URL_LENGTH) {
-      console.warn(
+      logger.warn(
         `⚠️ Compressed data is large (${urlSafe.length} chars). Consider reducing data size.`
       );
     }
 
     return urlSafe;
   } catch (_error) {
-    console.error("Failed to compress data for URL:", _error);
+    logger.error("Failed to compress data for URL:", {
+      error: _error,
+    });
     throw new Error("Data compression failed");
   }
 }
@@ -76,12 +79,14 @@ export function decompressDataFromUrl<T>(encodedData: string): T {
     // Step 4: Parse JSON
     const data = JSON.parse(decompressed) as T;
 
-    console.log(
+    logger.debug(
       `✅ Successfully decompressed data (${decompressed.length} bytes)`
     );
     return data;
   } catch (error) {
-    console.error("Failed to decompress data from URL:", error);
+    logger.error("Failed to decompress data from URL:", {
+      error: error,
+    });
     throw new Error("Data decompression failed");
   }
 }
@@ -102,14 +107,15 @@ export function buildCompressedUrl<T>(baseUrl: string, data: T): string {
     urlObj.searchParams.set("v", COMPRESSION_CONFIG.VERSION);
 
     const finalUrl = urlObj.pathname + urlObj.search;
-    console.log(`🔗 Built compressed URL: ${finalUrl.length} total characters`);
+    logger.debug(
+      `🔗 Built compressed URL: ${finalUrl.length} total characters`
+    );
 
     return finalUrl;
   } catch (error) {
-    console.warn(
-      "Failed to build compressed URL, falling back to base URL:",
-      error
-    );
+    logger.warn("Failed to build compressed URL, falling back to base URL:", {
+      error: error,
+    });
     return baseUrl;
   }
 }
@@ -132,14 +138,16 @@ export function extractCompressedData<T>(
     }
 
     if (!encodedData) {
-      console.log("No compressed data parameter found");
+      logger.debug("No compressed data parameter found");
       return null;
     }
 
     const data = decompressDataFromUrl<T>(encodedData);
     return data;
   } catch (error) {
-    console.error("Failed to extract compressed data:", error);
+    logger.error("Failed to extract compressed data:", {
+      error: error,
+    });
     return null;
   }
 }

@@ -1,6 +1,7 @@
+import { logger } from "@/lib/logger";
 /**
  * Server-side utilities for fetching developer units directly from Meqasa API
- * 
+ *
  * **SERVER COMPONENTS ONLY** - Use these functions in Server Components
  * All data fetching is now server-side for optimal performance
  */
@@ -110,7 +111,9 @@ export async function fetchDeveloperUnitsServer(
     }
 
     const apiUrl = `https://meqasa.com/new-development-units?${searchParams.toString()}`;
-    console.log("🏠 [Server] Fetching developer units from:", apiUrl);
+    logger.debug("🏠 [Server] Fetching developer units from:", {
+      url: apiUrl,
+    });
 
     const response = await fetch(apiUrl, {
       method: "GET",
@@ -123,7 +126,7 @@ export async function fetchDeveloperUnitsServer(
     });
 
     if (!response.ok) {
-      console.error("Developer units API error:", {
+      logger.error("Developer units API error:", {
         status: response.status,
         statusText: response.statusText,
         url: apiUrl,
@@ -133,47 +136,63 @@ export async function fetchDeveloperUnitsServer(
 
     const contentType = response.headers.get("content-type");
     if (!contentType?.includes("application/json")) {
-      console.warn("Developer units API returned non-JSON response");
+      logger.warn("Developer units API returned non-JSON response");
       return [];
     }
 
     const rawData = await response.json();
 
     if (!Array.isArray(rawData)) {
-      console.warn("Developer units API returned non-array data");
+      logger.warn("Developer units API returned non-array data");
       return [];
     }
 
     const units = rawData as RawDeveloperUnit[];
-    console.log(`✅ [Server] Developer units API returned ${units.length} units`);
+    logger.debug(
+      `✅ [Server] Developer units API returned ${units.length} units`
+    );
 
     return units.map((unit) => {
-      const unitIdString = unit.unitid != null ? String(unit.unitid) : Math.random().toString();
+      const unitIdString =
+        unit.unitid != null ? String(unit.unitid) : Math.random().toString();
       const bedsValue = Number(unit.beds ?? 0) || 0;
       const bathsValue = Number(unit.baths ?? 0) || 0;
-      const propertyType = (unit.unittypename ?? unit.unittype ?? "Apartment").toString();
+      const propertyType = (
+        unit.unittypename ??
+        unit.unittype ??
+        "Apartment"
+      ).toString();
       const terms = (unit.terms ?? "sale").toString();
-      const locationSource = unit.address ?? unit.city ?? unit.location ?? "Ghana";
-      const locationText = typeof locationSource === "string" ? locationSource : String(locationSource);
-      
-      const coverPhoto = typeof unit.coverphoto === "string" ? unit.coverphoto : undefined;
-      const fallbackImage = "https://dve7rykno93gs.cloudfront.net/pieoq/1572277987";
+      const locationSource =
+        unit.address ?? unit.city ?? unit.location ?? "Ghana";
+      const locationText =
+        typeof locationSource === "string"
+          ? locationSource
+          : String(locationSource);
+
+      const coverPhoto =
+        typeof unit.coverphoto === "string" ? unit.coverphoto : undefined;
+      const fallbackImage =
+        "https://dve7rykno93gs.cloudfront.net/pieoq/1572277987";
       const imageUrl = coverPhoto
         ? `https://dve7rykno93gs.cloudfront.net/uploads/imgs/${coverPhoto}?dim=256x190`
         : fallbackImage;
 
       const priceValue = unit.price != null ? String(unit.price) : "";
-      const sellingPriceValue = unit.sellingprice != null ? String(unit.sellingprice) : undefined;
+      const sellingPriceValue =
+        unit.sellingprice != null ? String(unit.sellingprice) : undefined;
 
-      const numericUnitId = typeof unit.unitid === "number" 
-        ? unit.unitid 
-        : typeof unit.unitid === "string" 
-          ? parseInt(unit.unitid, 10) 
-          : undefined;
+      const numericUnitId =
+        typeof unit.unitid === "number"
+          ? unit.unitid
+          : typeof unit.unitid === "string"
+            ? parseInt(unit.unitid, 10)
+            : undefined;
 
       return {
         id: unitIdString,
-        unitid: numericUnitId && !isNaN(numericUnitId) ? numericUnitId : undefined,
+        unitid:
+          numericUnitId && !isNaN(numericUnitId) ? numericUnitId : undefined,
         title:
           typeof unit.title === "string" && unit.title.trim() !== ""
             ? unit.title
@@ -197,9 +216,13 @@ export async function fetchDeveloperUnitsServer(
             : typeof unit.name === "string"
               ? unit.name
               : "Developer",
-        companyname: typeof unit.companyname === "string" ? unit.companyname : undefined,
+        companyname:
+          typeof unit.companyname === "string" ? unit.companyname : undefined,
         name: typeof unit.name === "string" ? unit.name : undefined,
-        area: unit.floorarea != null && unit.floorarea !== "" ? `${String(unit.floorarea)} sqm` : undefined,
+        area:
+          unit.floorarea != null && unit.floorarea !== ""
+            ? `${String(unit.floorarea)} sqm`
+            : undefined,
         floorarea:
           typeof unit.floorarea === "number"
             ? unit.floorarea
@@ -207,10 +230,20 @@ export async function fetchDeveloperUnitsServer(
               ? Number(unit.floorarea) || undefined
               : undefined,
         sellingprice: sellingPriceValue,
-        sellingpricecsign: typeof unit.sellingpricecsign === "string" ? unit.sellingpricecsign : undefined,
-        rentpricepermonth: unit.rentpricepermonth != null ? String(unit.rentpricepermonth) : undefined,
-        rentpricecsignpermonth: typeof unit.rentpricecsignpermonth === "string" ? unit.rentpricecsignpermonth : undefined,
-        description: typeof unit.description === "string" ? unit.description : undefined,
+        sellingpricecsign:
+          typeof unit.sellingpricecsign === "string"
+            ? unit.sellingpricecsign
+            : undefined,
+        rentpricepermonth:
+          unit.rentpricepermonth != null
+            ? String(unit.rentpricepermonth)
+            : undefined,
+        rentpricecsignpermonth:
+          typeof unit.rentpricecsignpermonth === "string"
+            ? unit.rentpricecsignpermonth
+            : undefined,
+        description:
+          typeof unit.description === "string" ? unit.description : undefined,
         featured: Boolean(unit.featured),
         developerlogo:
           typeof unit.developerlogo === "string"
@@ -230,12 +263,20 @@ export async function fetchDeveloperUnitsServer(
             : typeof unit.email === "string"
               ? unit.email
               : undefined,
-        timestamp: typeof unit.timestamp === "string" ? unit.timestamp : typeof unit.dateadded === "string" ? unit.dateadded : undefined,
-        dateadded: typeof unit.dateadded === "string" ? unit.dateadded : undefined,
+        timestamp:
+          typeof unit.timestamp === "string"
+            ? unit.timestamp
+            : typeof unit.dateadded === "string"
+              ? unit.dateadded
+              : undefined,
+        dateadded:
+          typeof unit.dateadded === "string" ? unit.dateadded : undefined,
       };
     });
   } catch (error) {
-    console.error("Error fetching developer units:", error);
+    logger.error("Error fetching developer units:", {
+      error: error,
+    });
     return [];
   }
 }

@@ -24,7 +24,8 @@ function MarketNewsCard({
 
   const hasValidISO = dateISO ? isValidDateString(dateISO) : false;
   const readableDate =
-    displayDate ?? (hasValidISO && dateISO ? formatDisplayDate(dateISO) : undefined);
+    displayDate ??
+    (hasValidISO && dateISO ? formatDisplayDate(dateISO) : undefined);
 
   return (
     <article className="mt-12 grid grid-cols-[min-content_minmax(0,1fr)] gap-[16px]">

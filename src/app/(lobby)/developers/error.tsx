@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { AlertCard } from "@/components/common/alert-card";
 import Shell from "@/layouts/shell";
+import { logger } from "@/lib/logger";
 
 export default function DevelopersError({
   error,
@@ -14,7 +15,7 @@ export default function DevelopersError({
 }) {
   useEffect(() => {
     // Log the error to an error reporting service
-    console.error("Developers page error:", error);
+    logger.error("Developers page error:", error);
   }, [error]);
 
   return (

@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger";
 import axios from "axios";
 import type {
   AxiosInstance,
@@ -140,7 +141,7 @@ const defaultRetryConfig: RetryConfig = {
   },
   onRetry: (retryCount, error, requestConfig) => {
     const classifiedError = classifyError(error);
-    console.warn(
+    logger.warn(
       `Retry attempt ${retryCount} for ${requestConfig?.url ?? "unknown"}`,
       {
         errorType: classifiedError.type,
@@ -151,7 +152,7 @@ const defaultRetryConfig: RetryConfig = {
   },
   onMaxRetryTimesExceeded: (error, retryCount) => {
     const classifiedError = classifyError(error);
-    console.error(
+    logger.error(
       `Max retry attempts (${retryCount}) exceeded for ${error.config?.url ?? "unknown"}`,
       {
         errorType: classifiedError.type,
@@ -186,7 +187,7 @@ const createAxiosInstance = (
 
       // Log outgoing requests in development
       if (process.env.NODE_ENV === "development") {
-        console.log(
+        logger.debug(
           `🚀 API Request: ${config.method?.toUpperCase()} ${config.url}`,
           {
             params: config.params as Record<string, unknown>,
@@ -198,7 +199,7 @@ const createAxiosInstance = (
       return config;
     },
     (error: AxiosError) => {
-      console.error("Request interceptor error:", error);
+      logger.error("Request interceptor error:", error);
       return Promise.reject(error);
     }
   );
@@ -213,7 +214,7 @@ const createAxiosInstance = (
 
       // Log successful responses in development
       if (process.env.NODE_ENV === "development") {
-        console.log(
+        logger.debug(
           `✅ API Response: ${response.config.method?.toUpperCase()} ${response.config.url}`,
           {
             status: response.status,
@@ -232,7 +233,7 @@ const createAxiosInstance = (
         : 0;
 
       // Log errors
-      console.error(
+      logger.error(
         `❌ API Error: ${error.config?.method?.toUpperCase()} ${error.config?.url}`,
         {
           status: error.response?.status,
@@ -274,7 +275,7 @@ export class ApiClient {
       enhancedError.name = classifiedError.type;
       (enhancedError as any).status = axiosError.response?.status;
       (enhancedError as any).originalError = axiosError;
-      
+
       throw enhancedError;
     }
   }

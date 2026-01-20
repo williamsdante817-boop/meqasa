@@ -2,7 +2,8 @@ export function extractFlexiBannerBlocks(html: string): string[] {
   const trimmed = html?.trim();
   if (!trimmed) return [];
 
-  const blockRegex = /<div class="row mqs-featured-prop-inner-wrap"[\s\S]*?(?=<div class="row mqs-featured-prop-inner-wrap"|$)/g;
+  const blockRegex =
+    /<div class="row mqs-featured-prop-inner-wrap"[\s\S]*?(?=<div class="row mqs-featured-prop-inner-wrap"|$)/g;
   const matches = trimmed.match(blockRegex);
 
   if (matches && matches.length > 0) {

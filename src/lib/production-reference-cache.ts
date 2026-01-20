@@ -174,6 +174,7 @@ class ProductionReferenceCache {
     }
 
     if (cleaned > 0 && typeof window !== "undefined") {
+      // eslint-disable-next-line no-console
       console.debug(`[ReferenceCache] Cleaned ${cleaned} expired entries`);
     }
   }

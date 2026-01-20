@@ -15,15 +15,15 @@ export default function NotFound() {
   return (
     <Shell>
       <div className="flex min-h-[60vh] items-center justify-center">
-        <Empty className="max-w-2xl mx-auto">
+        <Empty className="mx-auto max-w-2xl">
           <EmptyHeader>
             <EmptyMedia variant="icon">
               <FileQuestion />
             </EmptyMedia>
             <EmptyTitle>Page Not Found</EmptyTitle>
             <EmptyDescription>
-              Sorry, we couldn&lsquo;t find the page you&lsquo;re looking for. It
-              might have been moved, deleted, or you entered the wrong URL.
+              Sorry, we couldn&lsquo;t find the page you&lsquo;re looking for.
+              It might have been moved, deleted, or you entered the wrong URL.
             </EmptyDescription>
           </EmptyHeader>
           <EmptyContent className="flex-row justify-center">

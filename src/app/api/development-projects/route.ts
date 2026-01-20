@@ -1,4 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
+import { logger } from "@/lib/logger";
 
 export interface DevelopmentProjectResponse {
   hero: {
@@ -241,14 +242,22 @@ export async function POST(request: NextRequest) {
         const data: DevelopmentProjectResponse = await response.json();
         // Process live data
         const processedData = processApiResponse(data);
-        return NextResponse.json(processedData);
+        return NextResponse.json(processedData, {
+          headers: {
+            "Cache-Control":
+              "public, s-maxage=3600, stale-while-revalidate=7200",
+          },
+        });
       } else {
-        console.warn(
+        logger.warn(
           `API returned ${response.status}, falling back to mock data`
         );
       }
     } catch (fetchError) {
-      console.warn("API fetch failed, falling back to mock data:", fetchError);
+      logger.warn("API fetch failed, falling back to mock data", {
+        error:
+          fetchError instanceof Error ? fetchError.message : String(fetchError),
+      });
     }
 
     // Use mock data as fallback
@@ -256,7 +265,7 @@ export async function POST(request: NextRequest) {
     const processedData = processApiResponse(data);
     return NextResponse.json(processedData);
   } catch (error) {
-    console.error("Error fetching development projects:", error);
+    logger.error("Error fetching development projects", error);
     return NextResponse.json(
       { error: "Failed to fetch development projects" },
       { status: 500 }

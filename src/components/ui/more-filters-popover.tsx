@@ -74,14 +74,14 @@ export function MoreFiltersPopover({
       case "buy":
         return {
           title: "For Sale by Owner",
-          description: "Properties sold directly by the owner"
+          description: "Properties sold directly by the owner",
         };
       case "rent":
       case "short-let":
       default:
         return {
           title: "For Rent by Owner",
-          description: "Properties rented directly by the owner"
+          description: "Properties rented directly by the owner",
         };
     }
   };
@@ -124,10 +124,10 @@ export function MoreFiltersPopover({
     return (
       <div className="space-y-6 p-4 sm:p-6">
         <div className="flex items-center justify-between">
-          <h4 className="font-semibold text-base text-brand-accent">
+          <h4 className="text-brand-accent text-base font-semibold">
             Additional Filters
           </h4>
-          <div className="w-8 h-1 bg-brand-primary/20 rounded-full" />
+          <div className="bg-brand-primary/20 h-1 w-8 rounded-full" />
         </div>
 
         {/* Filter Controls Section */}
@@ -136,24 +136,24 @@ export function MoreFiltersPopover({
             {/* Rent Period - Only show for rent tab */}
             {contractType === "rent" && (
               <div className="space-y-3">
-                <Label className="text-sm font-medium text-brand-accent">
+                <Label className="text-brand-accent text-sm font-medium">
                   Rent Period
                 </Label>
                 <Select
                   value={formState.period}
                   onValueChange={(value) => updateFormState({ period: value })}
                 >
-                  <SelectTrigger className="h-12 shadow-none cursor-pointer border-gray-200 focus:border-brand-primary hover:border-gray-300 bg-gray-50/50 focus:bg-white text-sm font-medium transition-all duration-200">
+                  <SelectTrigger className="focus:border-brand-primary h-12 cursor-pointer border-gray-200 bg-gray-50/50 text-sm font-medium shadow-none transition-all duration-200 hover:border-gray-300 focus:bg-white">
                     <SelectValue placeholder="Select period" />
                   </SelectTrigger>
                   <SelectContent
-                    className="bg-white border border-gray-200 shadow-xl rounded-lg"
+                    className="rounded-lg border border-gray-200 bg-white shadow-xl"
                     style={{ zIndex: 99999 }}
                   >
                     <SelectGroup>
                       <SelectItem
                         value="- Any -"
-                        className="text-sm py-3 hover:bg-brand-primary/5"
+                        className="hover:bg-brand-primary/5 py-3 text-sm"
                       >
                         Any Period
                       </SelectItem>
@@ -161,7 +161,7 @@ export function MoreFiltersPopover({
                         <SelectItem
                           key={`${value}-${index}`}
                           value={value}
-                          className="text-sm py-3 hover:bg-brand-primary/5"
+                          className="hover:bg-brand-primary/5 py-3 text-sm"
                         >
                           {label}
                         </SelectItem>
@@ -173,18 +173,18 @@ export function MoreFiltersPopover({
             )}
 
             <div className="space-y-3">
-              <Label className="text-sm font-medium text-brand-accent">
+              <Label className="text-brand-accent text-sm font-medium">
                 Sort by
               </Label>
               <Select
                 value={formState.sort}
                 onValueChange={(value) => updateFormState({ sort: value })}
               >
-                <SelectTrigger className="h-12 shadow-none cursor-pointer border-gray-200 focus:border-brand-primary hover:border-gray-300 bg-gray-50/50 focus:bg-white text-sm font-medium transition-all duration-200">
+                <SelectTrigger className="focus:border-brand-primary h-12 cursor-pointer border-gray-200 bg-gray-50/50 text-sm font-medium shadow-none transition-all duration-200 hover:border-gray-300 focus:bg-white">
                   <SelectValue placeholder="Sort by" />
                 </SelectTrigger>
                 <SelectContent
-                  className="bg-white border border-gray-200 shadow-xl rounded-lg"
+                  className="rounded-lg border border-gray-200 bg-white shadow-xl"
                   style={{ zIndex: 99999 }}
                 >
                   <SelectGroup>
@@ -192,7 +192,7 @@ export function MoreFiltersPopover({
                       <SelectItem
                         key={value + label}
                         value={value}
-                        className="text-sm py-3 hover:bg-brand-primary/5"
+                        className="hover:bg-brand-primary/5 py-3 text-sm"
                       >
                         {label}
                       </SelectItem>
@@ -207,49 +207,49 @@ export function MoreFiltersPopover({
         {/* Property Features Section - Hide furnished and owner options for land */}
         {contractType !== "land" && (
           <div className="space-y-4 border-t border-gray-100 pt-5">
-            <Label className="text-sm font-semibold text-brand-accent">
+            <Label className="text-brand-accent text-sm font-semibold">
               Property Features
             </Label>
             <div className="">
-              <div className="flex items-start space-x-4 p-3 rounded-lg hover:bg-gray-50/50 transition-colors duration-200">
+              <div className="flex items-start space-x-4 rounded-lg p-3 transition-colors duration-200 hover:bg-gray-50/50">
                 <Checkbox
                   id="furnished-results"
                   checked={formState.furnished}
                   onCheckedChange={(checked) =>
                     updateFormState({ furnished: !!checked })
                   }
-                  className="mt-0.5 h-5 w-5 border-2 border-gray-300 data-[state=checked]:bg-brand-primary data-[state=checked]:border-brand-primary transition-all duration-200"
+                  className="data-[state=checked]:bg-brand-primary data-[state=checked]:border-brand-primary mt-0.5 h-5 w-5 border-2 border-gray-300 transition-all duration-200"
                 />
                 <div className="flex-1">
                   <Label
                     htmlFor="furnished-results"
-                    className="text-sm font-medium cursor-pointer text-brand-accent leading-tight"
+                    className="text-brand-accent cursor-pointer text-sm leading-tight font-medium"
                   >
                     Furnished Properties
                   </Label>
-                  <p className="text-xs text-brand-muted">
+                  <p className="text-brand-muted text-xs">
                     Properties that come with furniture included
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-start space-x-4 p-3 rounded-lg hover:bg-gray-50/50 transition-colors duration-200">
+              <div className="flex items-start space-x-4 rounded-lg p-3 transition-colors duration-200 hover:bg-gray-50/50">
                 <Checkbox
                   id="owner-results"
                   checked={formState.owner}
                   onCheckedChange={(checked) =>
                     updateFormState({ owner: !!checked })
                   }
-                  className="mt-0.5 h-5 w-5 border-2 border-gray-300 data-[state=checked]:bg-brand-primary data-[state=checked]:border-brand-primary transition-all duration-200"
+                  className="data-[state=checked]:bg-brand-primary data-[state=checked]:border-brand-primary mt-0.5 h-5 w-5 border-2 border-gray-300 transition-all duration-200"
                 />
                 <div className="flex-1">
                   <Label
                     htmlFor="owner-results"
-                    className="text-sm font-medium cursor-pointer text-brand-accent leading-tight"
+                    className="text-brand-accent cursor-pointer text-sm leading-tight font-medium"
                   >
                     {ownerText.title}
                   </Label>
-                  <p className="text-xs text-brand-muted">
+                  <p className="text-brand-muted text-xs">
                     {ownerText.description}
                   </p>
                 </div>
@@ -274,9 +274,9 @@ export function MoreFiltersPopover({
 
     return (
       <Button variant="outline" className={getTriggerClassName()}>
-        <span className="hidden sm:inline flex-shrink-0">{title}</span>
-        <span className="sm:hidden flex-shrink-0">More</span>
-        <SlidersHorizontal className="ml-1 sm:ml-2 h-4 w-4 flex-shrink-0" />
+        <span className="hidden flex-shrink-0 sm:inline">{title}</span>
+        <span className="flex-shrink-0 sm:hidden">More</span>
+        <SlidersHorizontal className="ml-1 h-4 w-4 flex-shrink-0 sm:ml-2" />
       </Button>
     );
   };
