@@ -10,6 +10,17 @@ import {
 import { PackageX } from "lucide-react";
 import Link from "next/link";
 import Shell from "@/layouts/shell";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Product Not Found",
+  description:
+    "The product you're looking for could not be found. It may have expired or been removed.",
+  robots: {
+    index: false,
+    follow: true,
+  },
+};
 
 export default function NotFound() {
   return (

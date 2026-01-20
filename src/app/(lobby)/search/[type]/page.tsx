@@ -56,15 +56,78 @@ export async function generateMetadata({
   searchParams,
 }: SearchPageProps): Promise<Metadata> {
   const { type } = await params;
-  const { q } = await searchParams;
+  const { q, ftype, fbeds } = await searchParams;
 
-  const title = q
-    ? `Property for ${type === "rent" ? "Rent" : "Sale"} in ${q} | ${siteConfig.name}`
-    : `Property for ${type === "rent" ? "Rent" : "Sale"} | ${siteConfig.name}`;
+  const location = q || "Ghana";
+  const propertyType = ftype && ftype !== "all" ? ftype : "";
+  const bedrooms = fbeds && fbeds !== "- Any -" ? fbeds : "";
+
+  // Build dynamic title
+  let title = "";
+  if (propertyType) {
+    title = `${propertyType.charAt(0).toUpperCase() + propertyType.slice(1)}${bedrooms ? ` ${bedrooms} Bedroom` : ""} for ${type === "rent" ? "Rent" : "Sale"}`;
+  } else {
+    title = `Property for ${type === "rent" ? "Rent" : "Sale"}`;
+  }
+  title += ` in ${location} | ${siteConfig.name}`;
+
+  // Build dynamic description
+  const description = `Find ${propertyType ? `${propertyType}s` : "properties"}${bedrooms ? ` with ${bedrooms} bedrooms` : ""} for ${type === "rent" ? "rent" : "sale"} in ${location}, Ghana. Browse verified listings from trusted agents and property owners on MeQasa.`;
 
   return {
     title,
-    description: `Find the best property for ${type === "rent" ? "rent" : "sale"} in Ghana. Search for apartments, houses, office space and land.`,
+    description,
+    keywords: [
+      `${propertyType || "property"} for ${type} ${location}`,
+      `${location} ${propertyType || "property"}`,
+      `${type} ${propertyType || "property"} Ghana`,
+      `Ghana real estate ${location}`,
+      `${location} property listings`,
+      "MeQasa Ghana",
+      "Ghana property search",
+    ],
+    authors: [{ name: "MeQasa" }],
+    creator: "MeQasa",
+    publisher: "MeQasa",
+    metadataBase: new URL(siteConfig.url),
+    alternates: {
+      canonical: `/search/${type}?q=${encodeURIComponent(location)}`,
+    },
+    openGraph: {
+      type: "website",
+      locale: "en_GH",
+      url: `/search/${type}?q=${encodeURIComponent(location)}`,
+      siteName: siteConfig.name,
+      title,
+      description,
+      images: [
+        {
+          url: `${siteConfig.url}/og-search.jpg`,
+          width: 1200,
+          height: 630,
+          alt: `Property Search Results - ${location}`,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      site: "@meqasa",
+      creator: "@meqasa",
+      title,
+      description,
+      images: [`${siteConfig.url}/og-search.jpg`],
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
+    },
   };
 }
 

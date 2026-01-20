@@ -10,17 +10,66 @@ import { EmptyDevelopersState } from "@/components/developer/developers/empty-de
 import { ErrorFallback } from "@/components/developer/developers/error-fallback";
 import { analytics } from "@/lib/analytics";
 
-export const metadata = {
-  title: "Real Estate Developers | Meqasa",
+import { siteConfig } from "@/config/site";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Real Estate Developers | MeQasa Ghana",
   description:
-    "Browse through our list of trusted real estate developers in Ghana",
-  keywords:
-    "real estate developers, Ghana, property developers, construction companies",
+    "Browse through our list of trusted real estate developers in Ghana. Find verified property developers and construction companies for your next project.",
+  keywords: [
+    "real estate developers Ghana",
+    "property developers Ghana",
+    "construction companies Ghana",
+    "Ghana developers",
+    "property development Ghana",
+    "real estate companies Ghana",
+    "trusted developers Ghana",
+    "Accra developers",
+  ],
+  authors: [{ name: "MeQasa" }],
+  creator: "MeQasa",
+  publisher: "MeQasa",
+  metadataBase: new URL(siteConfig.url),
+  alternates: {
+    canonical: "/developers",
+  },
   openGraph: {
-    title: "Real Estate Developers | Meqasa",
-    description:
-      "Browse through our list of trusted real estate developers in Ghana",
     type: "website",
+    locale: "en_GH",
+    url: "/developers",
+    siteName: siteConfig.name,
+    title: "Real Estate Developers | MeQasa Ghana",
+    description:
+      "Browse through our list of trusted real estate developers in Ghana. Find verified property developers and construction companies.",
+    images: [
+      {
+        url: `${siteConfig.url}/og-developers.jpg`,
+        width: 1200,
+        height: 630,
+        alt: "MeQasa Real Estate Developers",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    site: "@meqasa",
+    creator: "@meqasa",
+    title: "Real Estate Developers | MeQasa Ghana",
+    description:
+      "Browse through our list of trusted real estate developers in Ghana. Find verified property developers and construction companies.",
+    images: [`${siteConfig.url}/og-developers.jpg`],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
 };
 

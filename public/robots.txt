@@ -1,0 +1,27 @@
+# *
+User-agent: *
+Allow: /
+
+# Disallow admin and API routes
+Disallow: /api/
+Disallow: /dashboard/
+Disallow: /auth/
+
+# Disallow error pages
+Disallow: /error
+Disallow: /404
+Disallow: /500
+
+# Allow search engines to crawl all public pages
+Allow: /search/
+Allow: /listings/
+Allow: /agents/
+Allow: /developers/
+Allow: /units/
+Allow: /newly-built-units/
+Allow: /development-projects/
+Allow: /projects-by-developer/
+Allow: /developer-unit/
+
+# Sitemap location
+Sitemap: https://meqasa.com/sitemap.xml

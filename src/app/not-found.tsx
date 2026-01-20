@@ -10,6 +10,17 @@ import {
 } from "@/components/ui/empty";
 import { FileQuestion } from "lucide-react";
 import Shell from "@/layouts/shell";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Page Not Found",
+  description:
+    "The page you're looking for could not be found. Browse our property listings or return to the homepage.",
+  robots: {
+    index: false,
+    follow: true,
+  },
+};
 
 export default function NotFound() {
   return (

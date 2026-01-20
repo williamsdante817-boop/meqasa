@@ -356,11 +356,17 @@ export function generateHomepageMetadata(): Metadata {
     title: `${siteConfig.name} | ${siteConfig.description}`,
     description: siteConfig.description,
     keywords: Array.from(siteConfig.keywords),
+    authors: [{ name: siteConfig.name }],
+    creator: siteConfig.name,
+    publisher: siteConfig.name,
+    metadataBase: new URL(siteConfig.url),
     openGraph: {
       title: siteConfig.name,
       description: siteConfig.description,
       url: siteConfig.url,
       siteName: siteConfig.name,
+      locale: "en_GH",
+      type: "website",
       images: [
         {
           url: siteConfig.ogImage,
@@ -369,14 +375,14 @@ export function generateHomepageMetadata(): Metadata {
           alt: siteConfig.name,
         },
       ],
-      type: "website",
     },
     twitter: {
       card: "summary_large_image",
+      site: siteConfig.creator,
+      creator: siteConfig.creator,
       title: siteConfig.name,
       description: siteConfig.description,
       images: [siteConfig.ogImage],
-      creator: siteConfig.creator,
     },
     alternates: {
       canonical: siteConfig.url,
@@ -384,6 +390,13 @@ export function generateHomepageMetadata(): Metadata {
     robots: {
       index: true,
       follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
     },
   };
 }
