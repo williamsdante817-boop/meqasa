@@ -79,9 +79,25 @@ export async function NearestEstablishmentsServer({
       );
     }
 
+    const transformedEstablishments = establishments.map((est) => ({
+      ...est,
+      type: `${est.type}s`,
+    })) as Array<{
+      id: string;
+      name: string;
+      address: string;
+      distance: number;
+      travelTime: number;
+      type: "schools" | "banks" | "hospitals" | "supermarkets" | "airports";
+      rating?: number;
+      phone?: string;
+      openNow?: boolean;
+      coordinates: { lat: number; lng: number };
+    }>;
+
     return (
       <NearestEstablishmentsClient
-        establishments={establishments}
+        establishments={transformedEstablishments}
         propertyLocation={propertyLocation}
         propertyName={propertyName}
         neighborhood={neighborhood}

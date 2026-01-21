@@ -102,7 +102,7 @@ function categorizePlace(place: any): Establishment["type"] | null {
 export async function getEstablishmentsServer(
   neighborhood: string,
   propertyLocation?: Coordinates,
-  maxDistance: number = 5000
+  maxDistance = 5000
 ): Promise<Establishment[]> {
   return Sentry.startSpan(
     {
@@ -161,8 +161,8 @@ export async function getEstablishmentsServer(
 
         const distance = Math.round(
           calculateDistance(
-            coordinates!.lat,
-            coordinates!.lng,
+            coordinates.lat,
+            coordinates.lng,
             place.geometry.location.lat,
             place.geometry.location.lng
           )

@@ -15,18 +15,12 @@ import {
   ZoomIn,
   ZoomOut,
   Maximize2,
-  Bed,
-  Bath,
-  Maximize,
-  Home,
-  User,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { cn } from "@/lib/utils";
-import Image from "next/image";
 import {
   GoogleMap,
   useJsApiLoader,
@@ -114,10 +108,8 @@ export function NearestEstablishmentsClient({
   establishments,
   propertyLocation,
   propertyName = "Property",
-  neighborhood = "Accra",
   className,
   maxDistance = 10,
-  propertyInfo,
 }: NearestEstablishmentsClientProps) {
   const [activeCategory, setActiveCategory] =
     useState<EstablishmentType>("schools");
@@ -127,7 +119,6 @@ export function NearestEstablishmentsClient({
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [mapType, setMapType] = useState<"roadmap" | "satellite">("roadmap");
   const [mobileView, setMobileView] = useState<"list" | "map">("list");
-  const [showPropertyInfo, setShowPropertyInfo] = useState(false);
 
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
@@ -451,10 +442,7 @@ export function NearestEstablishmentsClient({
                   onLoad={onMapLoad}
                   onUnmount={() => setMap(null)}
                 >
-                  <Marker
-                    position={propertyLocation}
-                    onClick={() => setShowPropertyInfo(true)}
-                  />
+                  <Marker position={propertyLocation} />
 
                   {filteredEstablishments.map((est) => (
                     <Marker

@@ -4,7 +4,7 @@ import { ImageResponse } from "next/og";
 export const runtime = "edge";
 
 // Image metadata
-export const alt = "MeQasa - Ghana's Leading Real Estate Marketplace";
+export const alt = "MeQasa - Ghana&apos;s Leading Real Estate Marketplace";
 export const size = {
   width: 1200,
   height: 630,
@@ -56,7 +56,7 @@ export default async function Image() {
               opacity: 0.9,
             }}
           >
-            Ghana's Leading Real Estate Marketplace
+            Ghana&apos;s Leading Real Estate Marketplace
           </div>
         </div>
       </div>
