@@ -16,7 +16,7 @@ import { useMemo, useRef } from "react";
 
 // Import components directly for better performance and simpler code
 import { ExpandableDescription } from "@/components/expandable-description";
-import { NearestEstablishments } from "@/components/nearest-establishments";
+import { NearestEstablishmentsServer } from "@/components/nearest-establishments-server";
 import FloorPlans from "./floor-plan";
 import ProjectVideo from "./project-video";
 import PropertyScrollNav from "./property-scroll-nav";
@@ -245,7 +245,7 @@ function PropertyContainerContent({
                   btnHidden
                   id="location-heading"
                 >
-                  <NearestEstablishments
+                  <NearestEstablishmentsServer
                     className="mb-8"
                     propertyLocation={{
                       lat: projectData.project.lat,

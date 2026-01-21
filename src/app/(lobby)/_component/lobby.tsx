@@ -1,6 +1,6 @@
-import dynamic from "next/dynamic";
-import { StreamingErrorBoundary } from "@/components/streaming/StreamingErrorBoundary";
 import { HomepagePopup } from "@/components/homepage-popup";
+import { StreamingErrorBoundary } from "@/components/streaming/StreamingErrorBoundary";
+import dynamic from "next/dynamic";
 
 import { SearchFilter } from "@/components/search";
 import {
@@ -20,6 +20,12 @@ import { StreamingFeaturedProjects } from "@/components/streaming/StreamingFeatu
 import { StreamingGridBanner } from "@/components/streaming/StreamingGridBanner";
 import { StreamingHeroBanner } from "@/components/streaming/StreamingHeroBanner";
 import { StreamingLatestListings } from "@/components/streaming/StreamingLatestListings";
+import type { FeaturedListingsResponse } from "@/lib/get-featured-listings";
+import type { LatestListingsResponse } from "@/lib/get-latest-listing";
+import type { StaticData } from "@/lib/static-data";
+import type { AdLink, FeaturedProject, PopupDataWithUrls } from "@/types";
+import type { BlogResponse } from "@/types/blog";
+import MobilePageHeader from "./mobile-page-header";
 // Dynamic import for blog section (below fold)
 const StreamingBlog = dynamic(
   () =>
@@ -30,12 +36,6 @@ const StreamingBlog = dynamic(
     loading: () => <div className="animate-pulse bg-gray-50 py-14" />,
   }
 );
-import type { FeaturedListingsResponse } from "@/lib/get-featured-listings";
-import type { LatestListingsResponse } from "@/lib/get-latest-listing";
-import type { StaticData } from "@/lib/static-data";
-import type { FeaturedProject, AdLink, PopupDataWithUrls } from "@/types";
-import type { BlogResponse } from "@/types/blog";
-import MobilePageHeader from "./mobile-page-header";
 
 interface LobbyProps {
   // Static data (resolved immediately)
@@ -68,7 +68,6 @@ async function LobbyContent({
         <StreamingErrorBoundary fallback={<HeroBannerSkeleton />}>
           <StreamingHeroBanner heroBannerPromise={heroBannerPromise} />
         </StreamingErrorBoundary>
-
         <MobilePageHeader />
         <SearchFilter />
       </div>

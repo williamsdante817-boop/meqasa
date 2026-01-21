@@ -19,8 +19,10 @@ const config = {
 
   // Bundle analysis is configured below via wrapper when ANALYZE=true
 
-  // Image optimizations
+  // Image optimizations - CloudFront loader for AWS Amplify
   images: {
+    loader: "custom",
+    loaderFile: "./src/lib/image-loader.ts",
     remotePatterns: [
       {
         protocol: "https",
@@ -110,13 +112,8 @@ const config = {
         pathname: "/fallback.png",
       },
     ],
-    formats: ["image/webp", "image/avif"],
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    minimumCacheTTL: 86400, // 24 hour cache
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
-    qualities: [75, 85, 90, 95],
   },
 
   // Production optimizations

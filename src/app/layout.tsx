@@ -5,8 +5,7 @@ import { ScrollToTop } from "@/components/ScrollToTop";
 import { Toaster } from "@/components/ui/toast";
 import { fontSans } from "@/lib/fonts";
 import { cn } from "@/lib/utils";
-import { Analytics } from "@vercel/analytics/react";
-import { SpeedInsights } from "@vercel/speed-insights/next";
+
 import { type Metadata, type Viewport } from "next";
 
 export const metadata: Metadata = {
@@ -101,8 +100,6 @@ export default function RootLayout({
         <ScrollToTop />
         {children}
         <Toaster />
-        <SpeedInsights />
-        <Analytics />
       </body>
     </html>
   );

@@ -5,13 +5,13 @@
 import * as Sentry from "@sentry/nextjs";
 
 Sentry.init({
-  dsn: "https://df1d21ab68a0d41e788796215aca2252@o4510734968881152.ingest.de.sentry.io/4510734974320720",
+  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
   enableLogs: true,
   integrations: [
     Sentry.replayIntegration(),
     Sentry.consoleLoggingIntegration({ levels: ["log", "warn", "error"] }),
   ],
-  tracesSampleRate: 1,
+  tracesSampleRate: 0.1,
   replaysSessionSampleRate: 0.1,
   replaysOnErrorSampleRate: 1.0,
   sendDefaultPii: true,
