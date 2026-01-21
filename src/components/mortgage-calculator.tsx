@@ -130,15 +130,17 @@ export default function MortgageCalculator({ price }: { price: string }) {
   const handleDownPaymentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseFloat(e.target.value) || 0;
     const sanitizedValue = Math.max(0, value);
-    
+
     if (sanitizedValue > propertyPrice) {
-      const defaultDownPayment = Math.round(propertyPrice * DEFAULT_DOWN_PAYMENT_RATIO);
+      const defaultDownPayment = Math.round(
+        propertyPrice * DEFAULT_DOWN_PAYMENT_RATIO
+      );
       setDownPayment(defaultDownPayment);
       toast.error("Down payment can not be greater than property price");
       hasUserChangedDownPaymentRef.current = false;
       return;
     }
-    
+
     setDownPayment(sanitizedValue);
     hasUserChangedDownPaymentRef.current = true;
   };
@@ -190,7 +192,7 @@ export default function MortgageCalculator({ price }: { price: string }) {
                     value={propertyPrice || ""}
                     readOnly
                     min={0}
-                    className="text-brand-accent rounded-l-none bg-gray-50 cursor-not-allowed"
+                    className="text-brand-accent cursor-not-allowed rounded-l-none bg-gray-50"
                     placeholder="Enter property price"
                   />
                 </div>
@@ -209,7 +211,9 @@ export default function MortgageCalculator({ price }: { price: string }) {
                     type="number"
                     value={downPayment || ""}
                     onChange={handleDownPaymentChange}
-                    onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
+                    onKeyDown={(e) =>
+                      ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()
+                    }
                     min={0}
                     className="text-brand-accent rounded-l-none"
                     placeholder="Enter down payment"
@@ -228,7 +232,10 @@ export default function MortgageCalculator({ price }: { price: string }) {
                       type="number"
                       value={tenure}
                       onChange={handleTenureChange}
-                      onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
+                      onKeyDown={(e) =>
+                        ["e", "E", "+", "-"].includes(e.key) &&
+                        e.preventDefault()
+                      }
                       className="text-brand-accent mr-2 h-8 w-20"
                       min={1}
                       max={30}
@@ -260,7 +267,10 @@ export default function MortgageCalculator({ price }: { price: string }) {
                       type="number"
                       value={interestRate}
                       onChange={handleInterestRateChange}
-                      onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
+                      onKeyDown={(e) =>
+                        ["e", "E", "+", "-"].includes(e.key) &&
+                        e.preventDefault()
+                      }
                       className="text-brand-accent mr-2 h-8 w-20"
                       min={0}
                       max={30}

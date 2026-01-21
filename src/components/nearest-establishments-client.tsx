@@ -192,7 +192,12 @@ export function NearestEstablishmentsClient({
       });
 
       if (!bounds.isEmpty()) {
-        mapInstance.fitBounds(bounds, { top: 50, right: 50, bottom: 50, left: 50 });
+        mapInstance.fitBounds(bounds, {
+          top: 50,
+          right: 50,
+          bottom: 50,
+          left: 50,
+        });
       }
     },
     [propertyLocation, filteredEstablishments]
@@ -301,7 +306,7 @@ export function NearestEstablishmentsClient({
 
         {/* Search */}
         <div className="relative">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
           <Input
             placeholder={`Search ${ESTABLISHMENT_CATEGORIES[activeCategory].label.toLowerCase()}...`}
             value={searchQuery}
@@ -315,7 +320,9 @@ export function NearestEstablishmentsClient({
           <Button
             variant="outline"
             size="sm"
-            onClick={() => setMobileView(mobileView === "list" ? "map" : "list")}
+            onClick={() =>
+              setMobileView(mobileView === "list" ? "map" : "list")
+            }
           >
             {mobileView === "list" ? "Show Map" : "Show List"}
           </Button>
@@ -339,7 +346,8 @@ export function NearestEstablishmentsClient({
               {filteredEstablishments.map((establishment) => {
                 const config = ESTABLISHMENT_CATEGORIES[establishment.type];
                 const Icon = config.icon;
-                const isSelected = selectedEstablishment?.id === establishment.id;
+                const isSelected =
+                  selectedEstablishment?.id === establishment.id;
 
                 return (
                   <div
@@ -349,7 +357,7 @@ export function NearestEstablishmentsClient({
                       "group flex cursor-pointer items-center justify-between rounded-lg border p-3 sm:p-4",
                       isSelected
                         ? "border-brand-blue bg-brand-blue/5"
-                        : "border-gray-200 hover:border-brand-blue/30"
+                        : "hover:border-brand-blue/30 border-gray-200"
                     )}
                   >
                     <div className="flex min-w-0 flex-1 items-center space-x-3 sm:space-x-4">
@@ -370,7 +378,9 @@ export function NearestEstablishmentsClient({
                           {establishment.rating && (
                             <div className="flex items-center gap-1">
                               <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
-                              <span className="text-xs">{establishment.rating}</span>
+                              <span className="text-xs">
+                                {establishment.rating}
+                              </span>
                             </div>
                           )}
                         </div>
@@ -380,7 +390,9 @@ export function NearestEstablishmentsClient({
                         <div className="flex items-center gap-3 text-xs">
                           <div className="flex items-center gap-1">
                             <MapPin className="h-3 w-3" />
-                            <span>{formatDistance(establishment.distance)}</span>
+                            <span>
+                              {formatDistance(establishment.distance)}
+                            </span>
                           </div>
                           <div className="flex items-center gap-1">
                             <Clock className="h-3 w-3" />
@@ -458,7 +470,9 @@ export function NearestEstablishmentsClient({
                       onCloseClick={() => setSelectedEstablishment(null)}
                     >
                       <div className="p-2">
-                        <h3 className="font-semibold">{selectedEstablishment.name}</h3>
+                        <h3 className="font-semibold">
+                          {selectedEstablishment.name}
+                        </h3>
                         <p className="text-sm text-gray-600">
                           {selectedEstablishment.address}
                         </p>
