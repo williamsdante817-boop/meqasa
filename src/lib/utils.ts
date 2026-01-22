@@ -12,7 +12,6 @@ import {
   isValidPhoneNumber,
 } from "libphonenumber-js";
 import type { CountryCode } from "libphonenumber-js";
-import { logger } from "@/lib/logger";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
