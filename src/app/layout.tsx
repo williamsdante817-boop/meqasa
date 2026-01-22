@@ -3,6 +3,7 @@ import "@/styles/globals.css";
 import { DisableScrollRestoration } from "@/components/DisableScrollRestoration";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { Toaster } from "@/components/ui/toast";
+import { MobileSearchProvider } from "@/contexts/mobile-search-context";
 import { fontSans } from "@/lib/fonts";
 import { cn } from "@/lib/utils";
 
@@ -96,10 +97,12 @@ export default function RootLayout({
         )}
         suppressHydrationWarning
       >
-        <DisableScrollRestoration />
-        <ScrollToTop />
-        {children}
-        <Toaster />
+        <MobileSearchProvider>
+          <DisableScrollRestoration />
+          <ScrollToTop />
+          {children}
+          <Toaster />
+        </MobileSearchProvider>
       </body>
     </html>
   );

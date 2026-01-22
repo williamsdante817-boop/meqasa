@@ -3,9 +3,7 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 // Import new DOMPurify-based sanitization functions
 import {
-  sanitizeHtml,
   sanitizeToInnerHtml,
-  sanitizeRichHtml,
   sanitizeRichHtmlToInnerHtml,
 } from "./dom-sanitizer";
 import type { PropertyType, Currency, ContractType } from "@/config/property";
@@ -197,33 +195,6 @@ export function toBase64(str: string) {
   return typeof window === "undefined"
     ? Buffer.from(str).toString("base64")
     : window.btoa(str);
-}
-
-// Sanitize HTML to prevent XSS in server/client rendering contexts
-// DEPRECATED: Use sanitizeHtml from dom-sanitizer instead
-export function sanitizeHtmlString(html: string): string {
-  logger.warn(
-    "sanitizeHtmlString is deprecated. Use sanitizeHtml from dom-sanitizer instead."
-  );
-  return sanitizeHtml(html);
-}
-
-// Build a React dangerouslySetInnerHTML payload with sanitized content
-// DEPRECATED: Use sanitizeToInnerHtml from dom-sanitizer instead
-export function toInnerHtml(html: string): { __html: string } {
-  logger.warn(
-    "toInnerHtml is deprecated. Use sanitizeToInnerHtml from dom-sanitizer instead."
-  );
-  return sanitizeToInnerHtml(html);
-}
-
-// Rich HTML sanitizer for ad/banner markup that may contain images and links
-// DEPRECATED: Use sanitizeRichHtml from dom-sanitizer instead
-export function sanitizeRichHtmlString(html: string): string {
-  logger.warn(
-    "sanitizeRichHtmlString is deprecated. Use sanitizeRichHtml from dom-sanitizer instead."
-  );
-  return sanitizeRichHtml(html);
 }
 
 export function buildInnerHtml(html: string): { __html: string } {

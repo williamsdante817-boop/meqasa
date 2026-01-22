@@ -6,6 +6,7 @@ import {
   MEQASA_RENT_PERIODS,
   MEQASA_SORT_OPTIONS,
 } from "@/lib/search/constants";
+import { useMobileSearch } from "@/contexts/mobile-search-context";
 import { MobileSearchModal } from "./MobileSearchModal";
 import { MobileSearchTrigger } from "./MobileSearchTrigger";
 
@@ -27,15 +28,7 @@ const getDefaultFormState = (): FormState => ({
 });
 
 export function MobileSearchOverlay() {
-  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
-
-  const handleOpen = () => {
-    setIsMobileSearchOpen(true);
-  };
-
-  const handleClose = () => {
-    setIsMobileSearchOpen(false);
-  };
+  const { isOpen, openSearch, closeSearch } = useMobileSearch();
 
   // Separate form states for each tab
   const [rentFormState, setRentFormState] = useState<FormState>(
@@ -77,12 +70,12 @@ export function MobileSearchOverlay() {
   return (
     <>
       {/* Mobile Search Trigger - Positioned absolutely on top of everything */}
-      <MobileSearchTrigger onOpen={handleOpen} />
+      <MobileSearchTrigger onOpen={openSearch} />
 
       {/* Mobile Search Modal */}
       <MobileSearchModal
-        isOpen={isMobileSearchOpen}
-        onClose={handleClose}
+        isOpen={isOpen}
+        onClose={closeSearch}
         rentFormState={rentFormState}
         buyFormState={buyFormState}
         landFormState={landFormState}

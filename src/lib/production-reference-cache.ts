@@ -3,6 +3,8 @@
  * Handles caching, deduplication, and performance monitoring
  */
 
+import { logger } from "@/lib/logger";
+
 interface CacheEntry {
   url: string;
   timestamp: number;
@@ -174,8 +176,7 @@ class ProductionReferenceCache {
     }
 
     if (cleaned > 0 && typeof window !== "undefined") {
-      // eslint-disable-next-line no-console
-      console.debug(`[ReferenceCache] Cleaned ${cleaned} expired entries`);
+      logger.debug(`[ReferenceCache] Cleaned ${cleaned} expired entries`);
     }
   }
 

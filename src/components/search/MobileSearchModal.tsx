@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { type FormState } from "@/types/search";
-import { ChevronRight, Search, X } from "lucide-react";
+import { Search, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { ActiveFilterChips } from "./ActiveFilterChips";
@@ -431,7 +431,6 @@ export function MobileSearchModal({
               >
                 <Search className="mr-2 h-5 w-5" />
                 Search Properties
-                <ChevronRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
           </div>
