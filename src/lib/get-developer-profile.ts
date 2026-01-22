@@ -34,7 +34,8 @@ export async function getDeveloperProfile(
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    return await response.json();
+    const data = await response.json() as DeveloperDetails;
+    return data;
   } catch (error) {
     clearTimeout(timeoutId);
     if (error instanceof Error && error.name === "AbortError") {
