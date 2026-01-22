@@ -1,14 +1,16 @@
+// Enable ISR with 1 hour revalidation
+export const revalidate = 3600;
+
 import Shell from "@/layouts/shell";
 import { DeveloperCard } from "@/components/developer/cards/developer-card";
+import { Breadcrumbs } from "@/components/layout/bread-crumbs";
 import SearchInput from "@/components/search-input";
 import { getDevelopers } from "@/lib/get-developers";
-import { Breadcrumbs } from "@/components/layout/bread-crumbs";
 import { Suspense } from "react";
 import { StreamingErrorBoundary } from "@/components/streaming/StreamingErrorBoundary";
 import { DevelopersSkeleton } from "@/components/developer/developers/developers-skeleton";
 import { EmptyDevelopersState } from "@/components/developer/developers/empty-developers-state";
 import { ErrorFallback } from "@/components/developer/developers/error-fallback";
-import { analytics } from "@/lib/analytics";
 
 import { siteConfig } from "@/config/site";
 import type { Metadata } from "next";
@@ -74,22 +76,8 @@ export const metadata: Metadata = {
 };
 
 async function DevelopersContent() {
-  const startTime = performance.now();
-
   try {
     const { developers } = await getDevelopers();
-
-    // Track performance
-    const loadTime = performance.now() - startTime;
-    if (typeof window !== "undefined") {
-      analytics.trackPerformance("developers_load_time", loadTime);
-      analytics.trackEvent(
-        "developers_loaded",
-        "page_performance",
-        "developers_page",
-        developers.length
-      );
-    }
 
     if (!developers || developers.length === 0) {
       return <EmptyDevelopersState />;
@@ -116,10 +104,6 @@ async function DevelopersContent() {
       </>
     );
   } catch (error) {
-    // Track errors
-    if (typeof window !== "undefined" && error instanceof Error) {
-      analytics.trackError(error, "developers_content");
-    }
     throw error;
   }
 }

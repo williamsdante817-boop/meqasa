@@ -43,6 +43,7 @@ export async function getDevelopers(): Promise<DevelopersResponse> {
         Accept: "application/json",
       },
       signal: controller.signal,
+      // No cache - ISR will handle caching at page level
     });
 
     clearTimeout(timeoutId);

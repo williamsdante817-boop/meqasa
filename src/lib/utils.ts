@@ -1,17 +1,15 @@
-// import type { User } from "@clerk/nextjs/server"
+import type { ContractType, Currency, PropertyType } from "@/config/property";
 import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
-// Import new DOMPurify-based sanitization functions
 import {
-  sanitizeToInnerHtml,
-  sanitizeRichHtmlToInnerHtml,
-} from "./dom-sanitizer";
-import type { PropertyType, Currency, ContractType } from "@/config/property";
-import {
-  parsePhoneNumberFromString,
   isValidPhoneNumber,
+  parsePhoneNumberFromString,
+  type CountryCode,
 } from "libphonenumber-js";
-import type { CountryCode } from "libphonenumber-js";
+import { twMerge } from "tailwind-merge";
+import {
+  sanitizeRichHtmlToInnerHtml,
+  sanitizeToInnerHtml,
+} from "./dom-sanitizer";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -73,10 +71,7 @@ export function formatDate(
 
 // Re-export date utilities for consistency
 export {
-  formatRecency,
-  formatDisplayDate,
-  formatApiDate,
-  isValidDateString,
+  formatApiDate, formatDisplayDate, formatRecency, isValidDateString
 } from "./date-utils";
 
 export function formatBytes(

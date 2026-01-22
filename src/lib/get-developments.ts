@@ -53,7 +53,7 @@ export async function getDevelopments(): Promise<DevelopmentProjectResponse | nu
 
     const response = await fetch(url, {
       method: "GET",
-      next: { revalidate: 3600 }, // Cache for 1 hour
+      next: { revalidate: 300 }, // Cache for 5 minutes
     });
 
     if (response.ok) {

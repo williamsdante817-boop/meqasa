@@ -1,10 +1,9 @@
-import { apiClient } from "./axios-client";
 import type { DeveloperDetails } from "@/types";
 
 /**
  * Fetches the developer profile details for a specific developer ID from the MeQasa server.
  *
- * @param projectId - The unique identifier for the developer project to retrieve details for.
+ * @param developerId - The unique identifier for the developer to retrieve details for.
  * @returns A promise that resolves with an object of type {@link DeveloperDetails},
  *          which includes various details such as the developer's name, logo, contact details,
  *          and an array of project IDs.
@@ -15,9 +14,32 @@ export async function getDeveloperProfile(
 ): Promise<DeveloperDetails> {
   const url = `https://meqasa.com/developer-developer/${developerId}?app=vercel`;
 
-  return await apiClient.get<DeveloperDetails>(url, {
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded", // Set content type to x-www-form-urlencoded
-    },
-  });
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        Accept: "application/json",
+      },
+      signal: controller.signal,
+      next: { revalidate: 300 }, // Cache for 5 minutes
+    });
+
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    clearTimeout(timeoutId);
+    if (error instanceof Error && error.name === "AbortError") {
+      throw new Error("Request timed out. Please try again.");
+    }
+    throw error;
+  }
 }
