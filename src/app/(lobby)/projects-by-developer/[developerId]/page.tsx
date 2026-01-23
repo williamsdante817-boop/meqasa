@@ -22,6 +22,7 @@ import type { Metadata } from "next";
 import { ExpandableDescription } from "@/components/expandable-description";
 import { logger } from "@/lib/logger";
 import { getDevelopers } from "@/lib/get-developers";
+import { RetryButton } from "../_component/retry-button";
 
 // Generate static params for top developers at build time
 export async function generateStaticParams() {
@@ -348,13 +349,7 @@ export default async function DeveloperProfilePage({
                         We encountered an error while loading the developer
                         projects. Please try again.
                       </p>
-                      <button
-                        onClick={() => window.location.reload()}
-                        className="bg-brand-primary hover:bg-brand-primary/90 focus:ring-brand-primary rounded-md px-4 py-2 text-white transition-colors focus:ring-2 focus:ring-offset-2 focus:outline-none"
-                        aria-label="Retry loading developer projects"
-                      >
-                        Try again
-                      </button>
+                      <RetryButton message="developer projects" />
                     </div>
                   }
                 >
@@ -414,13 +409,7 @@ export default async function DeveloperProfilePage({
                             We encountered an error while loading client
                             reviews. Please try again.
                           </p>
-                          <button
-                            onClick={() => window.location.reload()}
-                            className="bg-brand-primary hover:bg-brand-primary/90 focus:ring-brand-primary rounded-md px-4 py-2 text-white transition-colors focus:ring-2 focus:ring-offset-2 focus:outline-none"
-                            aria-label="Retry loading client reviews"
-                          >
-                            Try again
-                          </button>
+                          <RetryButton message="client reviews" />
                         </div>
                       }
                     >
