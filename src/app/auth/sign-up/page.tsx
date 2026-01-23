@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 export default function SignUpPage() {
   return (
-    <div className="flex min-h-screen flex-col lg:flex-row">
+    <div className="flex flex-col lg:flex-row">
       {/* Mobile Header - Only visible on mobile */}
       <div className="from-brand-primary to-brand-primary-dark bg-gradient-to-r p-6 text-center text-white lg:hidden">
         <Link href="/" className="mb-4 inline-block">
@@ -56,7 +56,7 @@ export default function SignUpPage() {
       </div>
 
       {/* Right side - Sign Up Form */}
-      <div className="flex min-h-0 flex-1 flex-col justify-center bg-white p-4 sm:p-6 lg:w-1/2 lg:p-8">
+      <div className="flex flex-1 flex-col justify-center bg-white p-4 sm:p-6 lg:w-1/2 lg:p-8">
         <div className="mx-auto w-full max-w-md overflow-y-auto">
           <div className="mb-4 lg:mb-6">
             <h2 className="text-brand-accent mb-2 text-xl font-bold lg:text-2xl">

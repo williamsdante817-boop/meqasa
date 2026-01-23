@@ -1,13 +1,12 @@
 "use client";
 
 import { MapPin } from "lucide-react";
-import { useState, memo } from "react";
-import type { MouseEvent } from "react";
-import { analytics } from "@/lib/analytics";
 import Link from "next/link";
+import type { MouseEvent } from "react";
+import { memo, useState } from "react";
 
 import { ImageWithFallback } from "@/components/common/image-with-fallback";
-import { Skeleton } from "@/components/ui/skeleton";
+import { DeveloperContactCard } from "@/components/developer/cards/developer-contact-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -18,8 +17,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Skeleton } from "@/components/ui/skeleton";
 import { formatNumber } from "@/lib/utils";
-import { DeveloperContactCard } from "@/components/developer/cards/developer-contact-card";
 
 // Constants
 const DEFAULT_CDN_URL = "https://dve7rykno93gs.cloudfront.net/uploads/imgs";
@@ -72,14 +71,6 @@ function DeveloperCardComponent({ developer, className }: DeveloperCardProps) {
     e.preventDefault();
     e.stopPropagation();
 
-    // Track user interaction
-    if (typeof window !== "undefined") {
-      analytics.trackEvent(
-        "contact_developer_clicked",
-        "user_interaction",
-        developer.companyname
-      );
-    }
     setIsOpen(true);
   };
 

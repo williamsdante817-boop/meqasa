@@ -2,6 +2,7 @@ import HeaderAdClient from "@/components/header-ad-client";
 import BackToTopButton from "@/components/back-to-top-button";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/layouts/site-header";
+import { MobileSearchOverlay } from "@/components/search/MobileSearchOverlay";
 import React from "react";
 
 export default function LobbyLayout({
@@ -14,6 +15,7 @@ export default function LobbyLayout({
       {children}
       <BackToTopButton />
       <SiteFooter />
+      <MobileSearchOverlay />
     </div>
   );
 }

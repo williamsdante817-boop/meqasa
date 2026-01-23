@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import * as React from "react";
 
 interface MobileSearchContextValue {
@@ -18,9 +19,15 @@ export function MobileSearchProvider({
   children: React.ReactNode;
 }) {
   const [isOpen, setIsOpen] = React.useState(false);
+  const pathname = usePathname();
 
   const openSearch = React.useCallback(() => setIsOpen(true), []);
   const closeSearch = React.useCallback(() => setIsOpen(false), []);
+
+  // Auto-close modal on route change
+  React.useEffect(() => {
+    setIsOpen(false);
+  }, [pathname]);
 
   const value = React.useMemo(
     () => ({ isOpen, openSearch, closeSearch }),

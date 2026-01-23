@@ -1,6 +1,6 @@
 // Dynamic page with short cache for fresh data
 export const revalidate = 0; // Always fetch fresh data
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 import { Breadcrumbs } from "@/components/layout/bread-crumbs";
 import ContactCard from "@/components/common/contact-card";

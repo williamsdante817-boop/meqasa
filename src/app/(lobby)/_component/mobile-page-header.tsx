@@ -1,11 +1,16 @@
+"use client";
+
 import {
   PageHeader,
   PageHeaderDescription,
   PageHeaderHeading,
 } from "@/components/layout/page-header";
-import { MobileSearchOverlay } from "@/components/search/MobileSearchOverlay";
+import { MobileSearchTrigger } from "@/components/search/MobileSearchTrigger";
+import { useMobileSearch } from "@/contexts/mobile-search-context";
 
 export default function MobilePageHeader() {
+  const { openSearch } = useMobileSearch();
+
   return (
     <PageHeader
       as="section"
@@ -27,9 +32,7 @@ export default function MobilePageHeader() {
       >
         Discover the perfect property tailored to your lifestyle and preference
       </PageHeaderDescription>
-      {/* Mobile Search Overlay - Rendered at root level */}
-      <MobileSearchOverlay />
-      {/* <MobileSearchForm /> */}
+      <MobileSearchTrigger onOpen={openSearch} />
     </PageHeader>
   );
 }

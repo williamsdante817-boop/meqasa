@@ -24,7 +24,7 @@ export function SiteHeader() {
           className="mr-4 hidden items-center lg:flex"
         >
           <Image
-            src="/meqasa-logo-minimize.png"
+            src="/meqasa-logo-0.png"
             alt="MeQasa"
             width={36}
             height={36}
@@ -39,7 +39,7 @@ export function SiteHeader() {
         <div className="flex items-center gap-2 lg:hidden">
           <Link href="/" aria-label="MeQasa Home" className="flex items-center">
             <Image
-              src="/meqasa-logo-minimize.png"
+              src="/meqasa-logo-0.png"
               alt="MeQasa"
               width={40}
               height={40}
