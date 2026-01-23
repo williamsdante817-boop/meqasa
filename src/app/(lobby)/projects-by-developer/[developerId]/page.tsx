@@ -1,6 +1,7 @@
-// Dynamic page with short cache for fresh data
-export const revalidate = 0; // Always fetch fresh data
-export const dynamic = "force-dynamic";
+// ISR: Revalidate every 6 hours (21600 seconds)
+// Developers update profiles 1-2 times per week, so 6-hour revalidation is optimal
+export const revalidate = 21600;
+export const dynamicParams = true; // Allow on-demand generation for new developers
 
 import { Breadcrumbs } from "@/components/layout/bread-crumbs";
 import ContactCard from "@/components/common/contact-card";
@@ -20,6 +21,30 @@ import type { DeveloperDetails } from "@/types";
 import type { Metadata } from "next";
 import { ExpandableDescription } from "@/components/expandable-description";
 import { logger } from "@/lib/logger";
+import { getDevelopers } from "@/lib/get-developers";
+
+// Generate static params for top developers at build time
+export async function generateStaticParams() {
+  try {
+    const { developers } = await getDevelopers();
+    
+    // Pre-generate pages for top 20 most active developers
+    const topDevelopers = developers
+      .sort((a, b) => {
+        const aTotal = (a.unitcount || 0) + (a.prcount || 0) + (a.landcount || 0);
+        const bTotal = (b.unitcount || 0) + (b.prcount || 0) + (b.landcount || 0);
+        return bTotal - aTotal;
+      })
+      .slice(0, 20);
+
+    return topDevelopers.map((dev) => ({
+      developerId: `${dev.companyname.toLowerCase().replace(/\s+/g, "-")}-${dev.developerid}`,
+    }));
+  } catch (error) {
+    logger.error("Failed to generate static params for developers:", error);
+    return [];
+  }
+}
 
 // Data validation helper - more lenient validation
 function validateDeveloperData(developer: DeveloperDetails) {

@@ -25,7 +25,6 @@ export async function getDeveloperProfile(
         Accept: "application/json",
       },
       signal: controller.signal,
-      next: { revalidate: 300 }, // Cache for 5 minutes
     });
 
     clearTimeout(timeoutId);
