@@ -3,10 +3,10 @@
 import { ImageWithFallback } from "@/components/common/image-with-fallback";
 import {
   extractFlexiBannerBlocks,
-  extractImageUrlsFromFlexi,
   extractHrefFromFlexi,
+  extractImageUrlsFromFlexi,
 } from "@/lib/flexi-banner";
-import { buildRichInnerHtml } from "@/lib/utils";
+import { buildRichInnerHtml, resolveAdLink } from "@/lib/utils";
 import { useEffect, useMemo, useState } from "react";
 import { GridBannerSkeleton } from "./streaming/GridBannerSkeleton";
 import { Card } from "./ui/card";
@@ -116,7 +116,7 @@ export default function GridAd({ flexiBanner, error, adData }: GridAdProps) {
         <Card className="relative h-[330px] overflow-hidden rounded-lg">
           <a
             href={
-              adData?.[0]?.href ||
+              resolveAdLink(adData?.[0]?.href) ||
               "https://www.thorpe-bedu.com/belton-residences/"
             }
             target="_blank"
@@ -151,7 +151,7 @@ export default function GridAd({ flexiBanner, error, adData }: GridAdProps) {
           <Card
             className="h-[330px] cursor-pointer overflow-hidden rounded-lg"
             onClick={() => {
-              const href = adData?.[1]?.href || flexiHref;
+              const href = resolveAdLink(adData?.[1]?.href || flexiHref);
               if (href) {
                 window.open(href, "_blank", "noopener,noreferrer");
               }

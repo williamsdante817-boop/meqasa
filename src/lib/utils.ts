@@ -419,3 +419,25 @@ export function getPropertyStatusBadgeColor(status: string): string {
 
   return colors[status] ?? "bg-gray-100 text-gray-800";
 }
+
+export function resolveAdLink(
+  href: string | undefined | null
+): string | undefined | null {
+  if (!href) return href;
+
+  // Check if it's a follow-ad link
+  if (href.includes("follow-ad")) {
+    try {
+      const url = new URL(href, "http://dummybase.com"); // Use dummy base for relative URLs
+      const destination = url.searchParams.get("u");
+      if (destination) {
+        return destination;
+      }
+    } catch {
+      // If URL parsing fails, return original
+      return href;
+    }
+  }
+
+  return href;
+}

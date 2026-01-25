@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { apiClient } from "@/lib/axios-client";
 import { logger } from "@/lib/logger";
+import { processBannerHtml } from "@/lib/process-banner-html";
 
 interface LeaderboardBanner {
   html: string;
@@ -31,7 +32,7 @@ export async function GET() {
     if (typeof response === "string") {
       return NextResponse.json([
         {
-          html: response,
+          html: processBannerHtml(response),
           type: "leaderboard",
         },
       ] as LeaderboardBanner[]);

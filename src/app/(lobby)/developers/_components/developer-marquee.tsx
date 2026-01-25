@@ -94,7 +94,7 @@ export function DeveloperLogos({ className, developers }: DeveloperLogosProps) {
         >
           {allLogos.map((logo, index) => (
             <div
-              key={`${logo.id}-${index}`}
+              key={`logo-${index}`}
               className="group flex-shrink-0 cursor-pointer"
               onClick={() => handleDeveloperClick(logo)}
               role="button"

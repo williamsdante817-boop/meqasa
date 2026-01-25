@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import Image, { type ImageProps } from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 import { logger } from "@/lib/logger";
+import * as Sentry from "@sentry/nextjs";
 
 // Safe inline error placeholder (lightweight SVG)
 const ERROR_IMG_SRC =
@@ -75,17 +76,35 @@ export function ImageWithFallback({
     setAttempts(currentAttempt);
     setIsLoading(false);
 
+    const errorContext = {
+      src: effectiveSrc,
+      originalSrc: src,
+      imageType,
+      imageSize,
+      attempt: currentAttempt,
+      maxRetries,
+    };
+
     // Log error in development for debugging
     if (process.env.NODE_ENV === "development") {
       logger.warn(
         `Image load failed (attempt ${currentAttempt}/${maxRetries}):`,
-        {
-          src: effectiveSrc,
-          originalSrc: src,
-          imageType,
-          imageSize,
-        }
+        errorContext
       );
+    }
+
+    // Capture in Sentry if max retries exceeded
+    if (currentAttempt >= maxRetries) {
+      const error = new Error(
+        `Image failed to load after ${maxRetries} attempts`
+      );
+      Sentry.captureException(error, {
+        extra: errorContext,
+        tags: {
+          imageType,
+          component: "ImageWithFallback",
+        },
+      });
     }
 
     userOnError?.(event);
@@ -130,6 +149,9 @@ export function ImageWithFallback({
   // Respect alt="" for decorative images
   const safeAlt =
     alt !== undefined ? alt : (fallbackAlt ?? "Image could not be loaded");
+
+  const isExternalImage =
+    typeof effectiveSrc === "string" && effectiveSrc.startsWith("http");
 
   return (
     <Image

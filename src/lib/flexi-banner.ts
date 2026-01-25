@@ -35,5 +35,15 @@ export function extractImageUrlsFromFlexi(html: string): string[] {
 export function extractHrefFromFlexi(html: string): string | null {
   const hrefRegex = /<a[^>]+href="([^"]+)"/i;
   const match = hrefRegex.exec(html);
-  return match?.[1] ?? null;
+  const href = match?.[1] ?? null;
+
+  if (!href) return null;
+
+  try {
+    const url = new URL(href, "https://meqasa.com");
+    const redirectUrl = url.searchParams.get("u");
+    return redirectUrl || href;
+  } catch {
+    return href;
+  }
 }

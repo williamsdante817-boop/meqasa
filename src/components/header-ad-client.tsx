@@ -2,12 +2,12 @@
 
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { buildRichInnerHtml } from "@/lib/utils";
+import { logger } from "@/lib/logger";
+import { buildRichInnerHtml, resolveAdLink } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { logger } from "@/lib/logger";
 
 export default function HeaderAdClient() {
   const pathname = usePathname();
@@ -80,7 +80,15 @@ export default function HeaderAdClient() {
           >
             <div
               className="[&_a]:pointer-events-auto [&_a]:cursor-pointer [&_img]:pointer-events-none"
-              dangerouslySetInnerHTML={buildRichInnerHtml(bannerData[0] || "")}
+              dangerouslySetInnerHTML={buildRichInnerHtml(
+                (bannerData[0] || "").replace(
+                  /href="([^"]*)"/g,
+                  (match, url) => {
+                    const resolved = resolveAdLink(url);
+                    return `href="${resolved || url}"`;
+                  }
+                )
+              )}
             />
           </Card>
         ) : null}

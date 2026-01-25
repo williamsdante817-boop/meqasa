@@ -12,13 +12,13 @@ import {
 import { siteConfig } from "@/config/site";
 import Shell from "@/layouts/shell";
 import { getResultsHeroBanner } from "@/lib/banners";
+import { getResultsPopup } from "@/lib/get-results-popup";
 import { normalizeHeroBanner } from "@/lib/hero-banner";
-import { logger, logError } from "@/lib/logger";
+import { logError, logger } from "@/lib/logger";
 import {
   loadMorePropertiesServer,
   searchPropertiesServer,
 } from "@/lib/meqasa-server";
-import { getResultsPopup } from "@/lib/get-results-popup";
 import { ANY_SENTINEL } from "@/lib/search/constants";
 import type { Metadata } from "next";
 import { Suspense } from "react";
@@ -410,7 +410,7 @@ export default async function SearchPage({
     const minPrice = searchParams.fmin;
     const maxPrice = searchParams.fmax;
 
-    let subheading = `${resultCount} ${resultCount === 1 ? "property" : "properties"} found`;
+    let subheading = `${resultCount.toLocaleString()} ${resultCount === 1 ? "property" : "properties"} found`;
 
     if (minPrice || maxPrice) {
       if (minPrice && maxPrice) {

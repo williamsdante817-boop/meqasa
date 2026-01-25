@@ -40,7 +40,7 @@ export function DevelopmentCardsGrid({
 }: DevelopmentCardsGridProps) {
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
-      {developments.map((development) => {
+      {developments.map((development, index) => {
         // Determine href based on development data
         let href: string | undefined;
         let onClick: (() => void) | undefined;
@@ -62,7 +62,7 @@ export function DevelopmentCardsGrid({
 
         return (
           <DevelopmentCard
-            key={development.id}
+            key={`${development.id}-${index}`}
             id={development.id}
             imageUrl={development.imageUrl}
             developmentName={development.developmentName}

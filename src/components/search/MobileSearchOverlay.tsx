@@ -8,7 +8,6 @@ import {
 } from "@/lib/search/constants";
 import { useMobileSearch } from "@/contexts/mobile-search-context";
 import { MobileSearchModal } from "./MobileSearchModal";
-import { MobileSearchTrigger } from "./MobileSearchTrigger";
 
 // Default form state for each tab
 const getDefaultFormState = (): FormState => ({
@@ -28,7 +27,7 @@ const getDefaultFormState = (): FormState => ({
 });
 
 export function MobileSearchOverlay() {
-  const { isOpen, openSearch, closeSearch } = useMobileSearch();
+  const { isOpen, closeSearch } = useMobileSearch();
 
   // Separate form states for each tab
   const [rentFormState, setRentFormState] = useState<FormState>(
@@ -68,20 +67,14 @@ export function MobileSearchOverlay() {
   };
 
   return (
-    <>
-      {/* Mobile Search Trigger - Positioned absolutely on top of everything */}
-      <MobileSearchTrigger onOpen={openSearch} />
-
-      {/* Mobile Search Modal */}
-      <MobileSearchModal
-        isOpen={isOpen}
-        onClose={closeSearch}
-        rentFormState={rentFormState}
-        buyFormState={buyFormState}
-        landFormState={landFormState}
-        shortLetFormState={shortLetFormState}
-        updateFormState={updateFormState}
-      />
-    </>
+    <MobileSearchModal
+      isOpen={isOpen}
+      onClose={closeSearch}
+      rentFormState={rentFormState}
+      buyFormState={buyFormState}
+      landFormState={landFormState}
+      shortLetFormState={shortLetFormState}
+      updateFormState={updateFormState}
+    />
   );
 }

@@ -19,97 +19,22 @@ const config = {
 
   // Bundle analysis is configured below via wrapper when ANALYZE=true
 
-  // Image optimizations - CloudFront loader for AWS Amplify
+  // Image optimizations - Standard Next.js Optimization (uses 'sharp' in production)
   images: {
-    loader: "custom",
-    loaderFile: "./src/lib/image-loader.ts",
     remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "meqasa.com",
-      },
-      {
-        protocol: "https",
-        hostname: "staging.meqasa.com",
-      },
       {
         protocol: "https",
         hostname: "dve7rykno93gs.cloudfront.net",
       },
       {
-        protocol: "http",
-        hostname: "localhost",
-        port: "3000",
-      },
-      {
         protocol: "https",
-        hostname: "images.unsplash.com",
-      },
-      {
-        protocol: "https",
-        hostname: "unsplash.com",
-      },
-      {
-        protocol: "https",
-        hostname: "placehold.co",
-      },
-      {
-        protocol: "https",
-        hostname: "i0.wp.com",
-      },
-      {
-        protocol: "https",
-        hostname: "blog.meqasa.com",
+        hostname: "**",
       },
     ],
     localPatterns: [
       {
-        pathname: "/placeholder.svg**",
-      },
-      {
-        pathname: "/logo.png",
-      },
-      {
-        pathname: "/insights_**",
-      },
-      {
-        pathname: "/placeholder-image.png",
-      },
-      {
-        pathname: "/plan-4.webp",
-      },
-      {
-        pathname: "/accra-housing-guide.jpg",
-      },
-      {
-        pathname: "/real-estate-report.jpg",
-      },
-      {
-        pathname: "/meqasa-newsletter-leaderboard.png",
-      },
-      {
-        pathname: "/desktop-leaderboard.png",
-      },
-      {
-        pathname: "/leaderboard-ad.png",
-      },
-      {
-        pathname: "/mobile-ad.png",
-      },
-      {
-        pathname: "/east-legon-poster.jpg",
-      },
-      {
-        pathname: "/airport-poster.jpg",
-      },
-      {
-        pathname: "/Osu-poster.jpg",
-      },
-      {
-        pathname: "/dzorwulu-poster.jpg",
-      },
-      {
-        pathname: "/fallback.png",
+        pathname: "/**",
+        search: "",
       },
     ],
     dangerouslyAllowSVG: true,

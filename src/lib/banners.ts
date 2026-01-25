@@ -2,6 +2,16 @@ import { apiClient } from "./axios-client";
 import { getCachedBanner, setCachedBanner, CACHE_KEYS } from "./banner-cache";
 import { logger } from "@/lib/logger";
 
+function extractRedirectUrl(href: string): string {
+  try {
+    const url = new URL(href, "https://meqasa.com");
+    const redirectUrl = url.searchParams.get("u");
+    return redirectUrl || href;
+  } catch {
+    return href;
+  }
+}
+
 export type BannerType = "home" | "results";
 
 interface BannerConfig {
@@ -58,7 +68,7 @@ export async function getBanner(type: keyof typeof BANNER_CONFIGS) {
 
     const result = {
       src: "https://dve7rykno93gs.cloudfront.net" + data.src,
-      href: "https://meqasa.com" + data.href,
+      href: extractRedirectUrl(data.href),
     };
 
     // Cache the result for 7 minutes
@@ -99,7 +109,7 @@ export async function getHeroBanner() {
     return {
       src:
         "https://dve7rykno93gs.cloudfront.net" + data.src + "?v=" + Date.now(),
-      href: "https://meqasa.com" + data.href,
+      href: extractRedirectUrl(data.href),
     };
   } catch (error) {
     logger.error("Failed to fetch hero banner:", error);
@@ -134,7 +144,7 @@ export async function getResultsHeroBanner() {
     return {
       src:
         "https://dve7rykno93gs.cloudfront.net" + data.src + "?v=" + Date.now(),
-      href: "https://meqasa.com" + data.href,
+      href: extractRedirectUrl(data.href),
     };
   } catch (error) {
     logger.error("Failed to fetch results hero banner:", error);
@@ -230,7 +240,7 @@ export async function getRectangleBanners() {
 
     const result = data.map((banner) => ({
       src: "https://dve7rykno93gs.cloudfront.net" + banner.src,
-      href: "https://meqasa.com" + banner.href,
+      href: extractRedirectUrl(banner.href),
     }));
 
     // Cache the result for 7 minutes

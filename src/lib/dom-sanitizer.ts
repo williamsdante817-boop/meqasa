@@ -151,21 +151,21 @@ function decodeHtmlEntities(html: string): string {
     let decoded = html;
     let previousDecoded = "";
     let iterations = 0;
-    
+
     while (decoded !== previousDecoded && iterations < 5) {
       previousDecoded = decoded;
       textarea.innerHTML = decoded;
       decoded = textarea.value;
       iterations++;
     }
-    
+
     return decoded;
   }
-  
+
   let result = html;
   let previousResult = "";
   let iterations = 0;
-  
+
   while (result !== previousResult && iterations < 5) {
     previousResult = result;
     result = result
@@ -176,7 +176,7 @@ function decodeHtmlEntities(html: string): string {
       .replace(/&amp;/g, "&");
     iterations++;
   }
-  
+
   return result;
 }
 
@@ -192,7 +192,7 @@ export function sanitizeRichHtml(html: string): string {
 
   try {
     const decodedHtml = decodeHtmlEntities(html);
-    
+
     if (isBrowser && DOMPurify && typeof DOMPurify.sanitize === "function") {
       const sanitized = DOMPurify.sanitize(decodedHtml, {
         ALLOWED_TAGS: [
@@ -259,13 +259,13 @@ export function sanitizeRichHtml(html: string): string {
       try {
         const tempDiv = document.createElement("div");
         tempDiv.innerHTML = sanitized;
-        
+
         // Extract hrefs from original HTML
         const originalDiv = document.createElement("div");
         originalDiv.innerHTML = decodedHtml;
         const originalLinks = originalDiv.querySelectorAll("a[href]");
         const sanitizedLinks = tempDiv.querySelectorAll("a");
-        
+
         // Restore href attributes that were stripped
         originalLinks.forEach((origLink, index) => {
           const sanitizedLink = sanitizedLinks[index];
@@ -280,7 +280,7 @@ export function sanitizeRichHtml(html: string): string {
             }
           }
         });
-        
+
         return tempDiv.innerHTML;
       } catch {
         return sanitized;

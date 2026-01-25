@@ -28,12 +28,14 @@ import { RetryButton } from "../_component/retry-button";
 export async function generateStaticParams() {
   try {
     const { developers } = await getDevelopers();
-    
+
     // Pre-generate pages for top 20 most active developers
     const topDevelopers = developers
       .sort((a, b) => {
-        const aTotal = (a.unitcount || 0) + (a.prcount || 0) + (a.landcount || 0);
-        const bTotal = (b.unitcount || 0) + (b.prcount || 0) + (b.landcount || 0);
+        const aTotal =
+          (a.unitcount || 0) + (a.prcount || 0) + (a.landcount || 0);
+        const bTotal =
+          (b.unitcount || 0) + (b.prcount || 0) + (b.landcount || 0);
         return bTotal - aTotal;
       })
       .slice(0, 20);
