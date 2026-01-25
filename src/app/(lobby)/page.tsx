@@ -1,5 +1,4 @@
 export const dynamic = "force-dynamic";
-import * as Sentry from "@sentry/nextjs";
 import {
   getBlogData,
   getFeaturedListings,
@@ -10,6 +9,7 @@ import {
 } from "@/lib/cache/dedupe";
 import { getHomepagePopup } from "@/lib/get-homepage-popup";
 import { getStaticData } from "@/lib/static-data";
+import * as Sentry from "@sentry/nextjs";
 import type { Metadata } from "next";
 import React from "react";
 import Lobby from "./_component/lobby";
@@ -29,7 +29,6 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function HomePage() {
   /**
-   * Skateshop-inspired streaming pattern:
    * - Create "hot promises" that start executing immediately
    * - Pass promises to components for true parallel execution
    * - Each component awaits its own promise for progressive rendering
@@ -40,12 +39,12 @@ export default async function HomePage() {
   const staticData = await getStaticData();
 
   // Create "hot promises" - these start executing immediately in parallel
-  const featuredProjectsPromise = getFeaturedProjects(); // Starts now
-  const featuredListingsPromise = getFeaturedListings(); // Starts now
-  const latestListingsPromise = getLatestListings(); // Starts now
-  const heroBannerPromise = getHeroBanner(); // Starts now
-  const flexiBannerPromise = getFlexiBanner(); // Starts now
-  const blogDataPromise = getBlogData(); // Starts now
+  const featuredProjectsPromise = getFeaturedProjects();
+  const featuredListingsPromise = getFeaturedListings();
+  const latestListingsPromise = getLatestListings();
+  const heroBannerPromise = getHeroBanner();
+  const flexiBannerPromise = getFlexiBanner();
+  const blogDataPromise = getBlogData();
 
   // Fetch popup data server-side (non-blocking, fails gracefully)
   let popupData = null;
@@ -65,6 +64,7 @@ export default async function HomePage() {
       {/* Structured Data for SEO */}
       <StructuredData data={generateWebsiteStructuredData()} />
       <StructuredData data={generateOrganizationStructuredData()} />
+
       {/* Streaming rendering with promises - components render as data arrives */}
       <React.Suspense fallback={<LobbySkeleton />}>
         <Lobby

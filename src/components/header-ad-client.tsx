@@ -79,7 +79,8 @@ export default function HeaderAdClient() {
             aria-label="Advertisement"
           >
             <div
-              dangerouslySetInnerHTML={buildRichInnerHtml(String(bannerData))}
+              className="[&_a]:pointer-events-auto [&_a]:cursor-pointer [&_img]:pointer-events-none"
+              dangerouslySetInnerHTML={buildRichInnerHtml(bannerData[0] || "")}
             />
           </Card>
         ) : null}

@@ -143,6 +143,44 @@ export function sanitizeToInnerHtml(html: string): { __html: string } {
 }
 
 /**
+ * Decode HTML entities to actual HTML (handles multiple levels of encoding)
+ */
+function decodeHtmlEntities(html: string): string {
+  if (isBrowser) {
+    const textarea = document.createElement("textarea");
+    let decoded = html;
+    let previousDecoded = "";
+    let iterations = 0;
+    
+    while (decoded !== previousDecoded && iterations < 5) {
+      previousDecoded = decoded;
+      textarea.innerHTML = decoded;
+      decoded = textarea.value;
+      iterations++;
+    }
+    
+    return decoded;
+  }
+  
+  let result = html;
+  let previousResult = "";
+  let iterations = 0;
+  
+  while (result !== previousResult && iterations < 5) {
+    previousResult = result;
+    result = result
+      .replace(/&lt;/g, "<")
+      .replace(/&gt;/g, ">")
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'")
+      .replace(/&amp;/g, "&");
+    iterations++;
+  }
+  
+  return result;
+}
+
+/**
  * Sanitize rich HTML content (ads, banners, etc.) with more permissive settings
  * @param html - The HTML string to sanitize
  * @returns Sanitized HTML string
@@ -153,9 +191,10 @@ export function sanitizeRichHtml(html: string): string {
   }
 
   try {
+    const decodedHtml = decodeHtmlEntities(html);
+    
     if (isBrowser && DOMPurify && typeof DOMPurify.sanitize === "function") {
-      // Use DOMPurify with rich content settings
-      const sanitized = DOMPurify.sanitize(html, {
+      const sanitized = DOMPurify.sanitize(decodedHtml, {
         ALLOWED_TAGS: [
           "div",
           "p",
@@ -194,7 +233,6 @@ export function sanitizeRichHtml(html: string): string {
           "srcset",
           "type",
         ],
-        ALLOWED_URI_REGEXP: /^(https?|mailto|tel|callto):/i,
         FORBID_TAGS: [
           "script",
           "object",
@@ -217,22 +255,39 @@ export function sanitizeRichHtml(html: string): string {
         ADD_URI_SAFE_ATTR: ["target"],
       });
 
-      // Post-process to add security attributes to links (browser only)
+      // Post-process to restore relative URLs and add security attributes
       try {
         const tempDiv = document.createElement("div");
         tempDiv.innerHTML = sanitized;
-        const links = tempDiv.querySelectorAll('a[href^="http"]');
-        links.forEach((link) => {
-          link.setAttribute("rel", "noopener noreferrer");
-          link.setAttribute("target", "_blank");
+        
+        // Extract hrefs from original HTML
+        const originalDiv = document.createElement("div");
+        originalDiv.innerHTML = decodedHtml;
+        const originalLinks = originalDiv.querySelectorAll("a[href]");
+        const sanitizedLinks = tempDiv.querySelectorAll("a");
+        
+        // Restore href attributes that were stripped
+        originalLinks.forEach((origLink, index) => {
+          const sanitizedLink = sanitizedLinks[index];
+          if (sanitizedLink && !sanitizedLink.hasAttribute("href")) {
+            const href = origLink.getAttribute("href");
+            if (href && (href.startsWith("/") || href.startsWith("http"))) {
+              sanitizedLink.setAttribute("href", href);
+              sanitizedLink.setAttribute("rel", "noopener noreferrer");
+              if (!sanitizedLink.hasAttribute("target")) {
+                sanitizedLink.setAttribute("target", "_blank");
+              }
+            }
+          }
         });
+        
         return tempDiv.innerHTML;
       } catch {
-        return sanitized; // Return sanitized content if DOM manipulation fails
+        return sanitized;
       }
     } else {
-      // Server-side fallback
-      return fallbackSanitize(html);
+      const decodedHtml = decodeHtmlEntities(html);
+      return fallbackSanitize(decodedHtml);
     }
   } catch (error) {
     logger.error("Rich HTML sanitization error:", {
